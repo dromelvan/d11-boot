@@ -1,0 +1,65 @@
+plugins {
+    id 'java'
+	id 'org.springframework.boot' version '2.3.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'checkstyle'
+	id 'pmd'
+	id "com.github.spotbugs" version "4.5.1"
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_10
+targetCompatibility = JavaVersion.VERSION_1_10
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+    implementation project(':d11-boot-api')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	//implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.session:spring-session-core'
+	implementation 'com.google.guava:guava:29.0-jre'
+	implementation 'org.modelmapper:modelmapper:2.3.8'
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.2'
+	implementation 'org.flywaydb:flyway-core'
+
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'org.postgresql:postgresql'
+
+	testImplementation project(':d11-boot-api-client')
+	testImplementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.4.RELEASE'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.jeasy:easy-random-core:4.2.0'
+}
+
+checkstyle {
+	toolVersion '8.36.2'
+	configFile rootProject.file("plugins/checkstyle.xml")
+}
+
+pmd {
+	ruleSets = []
+	ruleSetFiles = rootProject.files("plugins/pmd.xml")
+}
+
+test {
+	useJUnitPlatform()
+}
+
+springBoot {
+	buildInfo()
+}
+
+bootRun {
+    // Support passing -Dsystem.property=value to the bootRun task.
+    systemProperties = System.properties
+}

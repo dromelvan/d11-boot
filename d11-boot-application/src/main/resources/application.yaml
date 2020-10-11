@@ -1,0 +1,21 @@
+jasypt:
+  encryptor:
+    bean: encryptor
+
+spring:
+  flyway:
+    baselineOnMigrate: true
+    schemas: production
+    locations: classpath:db/migration/postgres    
+  datasource:
+    # default connection pool
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5    
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        generate_statistics: false
+        default_schema: production
+    open-in-view: false

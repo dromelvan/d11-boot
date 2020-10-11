@@ -1,0 +1,161 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: D11 API
+  description: API for the D11 Spring Boot application
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8080
+  
+paths:
+  /seasons:
+    get:
+      summary: Finds all seasons.
+      operationId: findAllSeasons
+      tags:
+        - season
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Season"
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /seasons/{seasonId}:
+    get:
+      summary: Find a season by id.
+      operationId: findSeasonById
+      tags:
+        - season
+      parameters:
+        - name: seasonId
+          in: path
+          required: true
+          description: The id of the season to find.
+          schema:
+            type: integer
+            format: int64            
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Season"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        #'401':
+        #  $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /seasons/current:
+    get:
+      summary: Find the current season.
+      operationId: findCurrentSeason
+      tags:
+        - season
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Season"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+
+components:
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/D11BootError'
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/D11BootError'
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/D11BootError'
+    Unexpected:
+      description: Unexpected Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/D11BootError'            
+  schemas:
+    D11BootError:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string  
+
+    D11ApiModel:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          format: int64
+      discriminator:
+        propertyName: objectType
+
+    Status:
+      type: string
+      enum:
+        - 'Pending'
+        - 'Active'
+        - 'Finished'
+        - 'Full Time'
+
+    Season:
+      allOf:
+        - $ref: '#/components/schemas/D11ApiModel'
+        - type: object
+          additionalProperties: true
+          required:
+            - objectType
+            - name
+            - shortName
+            - status
+            - date
+            - legacy
+          properties:
+            objectType:
+              type: string
+            name:
+              type: string
+              pattern: \d{4}-\d{4}
+            shortName:
+              type: string
+              pattern: \d{2}-\d{2}
+            status:
+              $ref: '#/components/schemas/Status'
+            date:
+              type: string
+              format: date
+            legacy:
+              type: boolean
