@@ -1,11 +1,26 @@
 package org.d11.boot.application.api;
 
+import org.d11.boot.application.mock.SeasonRandomParameters;
+import org.d11.boot.application.model.PremierLeague;
+import org.d11.boot.application.model.Season;
+import org.d11.boot.application.repository.SeasonRepository;
 import org.d11.boot.application.util.MappingProvider;
 import org.d11.boot.client.ApiClient;
+import org.jeasy.random.EasyRandom;
+import org.junit.jupiter.api.BeforeAll;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Base class for API tests.
@@ -17,6 +32,30 @@ public abstract class AbstractApiTests extends MappingProvider {
      */
     @LocalServerPort
     private int localServerPort;
+
+    /**
+     * Season repository.
+     */
+    @Autowired
+    private SeasonRepository seasonRepository;
+
+    /**
+     * Sets up the tests by creating test data.
+     */
+    @BeforeAll
+    public void beforeAllApiTests() {
+        final List<Season> seasons = new EasyRandom(new SeasonRandomParameters())
+                .objects(Season.class, 2)
+                .collect(Collectors.toList());
+
+        final EasyRandom easyRandom = new EasyRandom();
+        for(final Season season : seasons) {
+            final PremierLeague premierLeague = easyRandom.nextObject(PremierLeague.class);
+            season.setPremierLeague(premierLeague);
+            premierLeague.setSeason(season);
+        }
+        this.seasonRepository.saveAll(seasons);
+    }
 
     /**
      * Base path for test server.
@@ -39,13 +78,13 @@ public abstract class AbstractApiTests extends MappingProvider {
     }
 
     /**
-     * Gets an object from an URL.
+     * Gets a mono from an URI.
      *
-     * @param uri The URL to get the object from.
-     * @return The object the URL returns.
+     * @param uri The uri we want to get a mono for, based on the webclient basepath.
+     * @return A mono for the request URI.
      */
-    protected Object getUri(final String uri) {
-        return getWebClient().get().uri(uri).retrieve().bodyToMono(Object.class).block();
+    protected Mono getMono(final String uri) {
+        return getWebClient().get().uri(uri).retrieve().bodyToMono(Object.class);
     }
 
     /**
@@ -57,8 +96,48 @@ public abstract class AbstractApiTests extends MappingProvider {
         return WebClient.builder()
                 .baseUrl(String.format("%s/%s/",
                                        getApiClient().getBasePath(),
-                                       getClass().getSimpleName().replace("ApiTest", "")
-                                               .toLowerCase(Locale.getDefault())))
+                                       getResourceString()))
                 .build();
     }
+
+    /**
+     * Turns FooBarApiTests into foo-bars.
+     *
+     * @return Kebab cased resource name derived from test class name.
+     */
+    protected String getResourceString() {
+        return getClass().getSimpleName()
+                .replace("ApiTest", "")
+                .replaceAll("([a-z])([A-Z])", "$1-$2")
+                .toLowerCase(Locale.getDefault());
+    }
+
+    /**
+     * Blocks the mono and assert that it throws a 404 NOT_FOUND exception.
+     *
+     * @param mono The mono performing thw web request we want to test.
+     */
+    protected void assertNotFound(final Mono mono) {
+        final WebClientResponseException webClientResponseException = assertThrows(WebClientResponseException.class, () -> {
+            mono.block();
+        });
+        assertEquals(HttpStatus.NOT_FOUND,
+                webClientResponseException.getStatusCode(),
+                "Response should have status NOT_FOUND.");
+    }
+
+    /**
+     * Blocks the mono and assert that it throws a 400 BAD_REQUEST exception.
+     *
+     * @param mono The mono performing thw web request we want to test.
+     */
+    protected void assertBadRequest(final Mono mono) {
+        final WebClientResponseException webClientResponseException = assertThrows(WebClientResponseException.class, () -> {
+            mono.block();
+        });
+        assertEquals(HttpStatus.BAD_REQUEST,
+                webClientResponseException.getStatusCode(),
+                "Response should have status BAD_REQUEST.");
+    }
+
 }

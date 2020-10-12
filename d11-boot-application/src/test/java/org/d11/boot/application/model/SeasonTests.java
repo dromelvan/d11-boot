@@ -53,6 +53,10 @@ public class SeasonTests {
         assertFalse(season.isValid(), "Null date should not be valid.");
         season.setDate(LocalDate.now());
 
+        season.setPremierLeague(null);
+        assertFalse(season.isValid(), "Null Premier League should not be valid.");
+        season.setPremierLeague(new PremierLeague());
+
         assertTrue(season.isValid(), "Season should be valid.");
     }
 

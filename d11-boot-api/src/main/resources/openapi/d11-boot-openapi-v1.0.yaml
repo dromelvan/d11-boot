@@ -7,7 +7,7 @@ info:
     name: MIT
 servers:
   - url: http://localhost:8080
-  
+
 paths:
   /seasons:
     get:
@@ -39,7 +39,7 @@ paths:
           description: The id of the season to find.
           schema:
             type: integer
-            format: int64            
+            format: int64
       responses:
         '200':
           description: OK
@@ -72,6 +72,35 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /premier-leagues/{premierLeagueId}:
+    get:
+      summary: Find a premier league by id.
+      operationId: findPremierLeagueById
+      tags:
+        - premierLeague
+      parameters:
+        - name: premierLeagueId
+          in: path
+          required: true
+          description: The id of the premier league to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PremierLeague"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        #'401':
+        #  $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
 
 components:
   responses:
@@ -98,7 +127,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/D11BootError'            
+            $ref: '#/components/schemas/D11BootError'
   schemas:
     D11BootError:
       type: object
@@ -110,7 +139,7 @@ components:
           type: integer
           format: int32
         message:
-          type: string  
+          type: string
 
     D11ApiModel:
       type: object
@@ -159,3 +188,18 @@ components:
               format: date
             legacy:
               type: boolean
+
+    PremierLeague:
+      allOf:
+        - $ref: '#/components/schemas/D11ApiModel'
+        - type: object
+          additionalProperties: true
+          required:
+            - objectType
+            - name
+          properties:
+            objectType:
+              type: string
+            name:
+              type: string
+

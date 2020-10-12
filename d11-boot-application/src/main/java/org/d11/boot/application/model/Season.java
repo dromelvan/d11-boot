@@ -2,11 +2,15 @@ package org.d11.boot.application.model;
 
 import com.google.common.collect.ComparisonChain;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.d11.boot.application.model.converter.StatusConverter;
 import org.d11.boot.application.model.validation.YearInterval;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.regex.Matcher;
@@ -44,6 +48,15 @@ public class Season extends D11Entity implements Comparable<Season> {
      * a match belonging to a legacy season is updated.
      */
     private boolean legacy;
+
+    /**
+     * The Premier League of this season.
+     */
+    @OneToOne(mappedBy = "season", cascade = CascadeType.ALL)
+    @NotNull
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private PremierLeague premierLeague;
 
     /**
      * Gets a shortened version of the season name with the two last digits of the start and end years.
