@@ -1,7 +1,6 @@
 package org.d11.boot.application.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.d11.boot.api.model.D11ApiModelDTO;
 import org.d11.boot.api.model.DTOClassMapper;
 import org.d11.boot.application.model.D11Entity;
 import org.d11.boot.application.repository.D11EntityRepository;
@@ -22,7 +21,7 @@ import java.util.Optional;
  */
 @Slf4j
 @Transactional
-public abstract class AbstractRepositoryService<T extends D11Entity, U extends D11ApiModelDTO, V extends D11EntityRepository<T>> extends D11BootService {
+public abstract class AbstractRepositoryService<T extends D11Entity, U, V extends D11EntityRepository<T>> extends D11BootService {
 
     /**
      * The repository this service will use.

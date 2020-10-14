@@ -86,13 +86,4 @@ public class D11Entity {
         this.updatedAt = LocalDateTime.now();
     }
 
-    /**
-     * Needed in the DTOs for OpenAPI 3.0 inheritance.
-     *
-     * @return The object type for this entity.
-     */
-    public String getObjectType() {
-        return getClass().getSimpleName();
-    }
-
 }

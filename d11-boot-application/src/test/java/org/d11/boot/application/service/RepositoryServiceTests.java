@@ -1,6 +1,5 @@
 package org.d11.boot.application.service;
 
-import org.d11.boot.api.model.D11ApiModelDTO;
 import org.d11.boot.application.model.D11Entity;
 import org.d11.boot.application.repository.D11EntityRepository;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ public class RepositoryServiceTests {
      * Repository service that will not be able to generate a valid DTO class from its name.
      */
     @SuppressWarnings("PMD.CommentDefaultAccessModifier")
-    private static class InvalidClassService extends AbstractRepositoryService<D11Entity, D11ApiModelDTO, D11EntityRepository<D11Entity>> {
+    private static class InvalidClassService extends AbstractRepositoryService<D11Entity, Object, D11EntityRepository<D11Entity>> {
         InvalidClassService(final D11EntityRepository<D11Entity> d11EntityRepository) {
             super(d11EntityRepository);
         }
@@ -32,9 +31,7 @@ public class RepositoryServiceTests {
     public void invalidDTOClass() {
         final D11EntityRepository<D11Entity> d11EntityRepository = mock(D11EntityRepository.class);
 
-        assertThrows(ApplicationContextException.class, () -> {
-            new InvalidClassService(d11EntityRepository);
-        });
+        assertThrows(ApplicationContextException.class, () -> new InvalidClassService(d11EntityRepository));
     }
 
 }
