@@ -19,12 +19,12 @@ public class PremierLeagueController extends RepositoryController<PremierLeagueD
      * @param premierLeagueService The service that will be used by this controller.
      */
     @Autowired
-    public PremierLeagueController(PremierLeagueService premierLeagueService) {
+    public PremierLeagueController(final PremierLeagueService premierLeagueService) {
         super(premierLeagueService);
     }
 
     @Override
-    public ResponseEntity<PremierLeagueDTO> findPremierLeagueById(Long premierLeagueId) {
+    public ResponseEntity<PremierLeagueDTO> findPremierLeagueById(final Long premierLeagueId) {
         return findById(premierLeagueId);
     }
 

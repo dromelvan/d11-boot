@@ -18,7 +18,7 @@ public class PremierLeagueService extends AbstractRepositoryService<PremierLeagu
      * @param premierLeagueRepository The repository this service will use.
      */
     @Autowired
-    public PremierLeagueService(PremierLeagueRepository premierLeagueRepository) {
+    public PremierLeagueService(final PremierLeagueRepository premierLeagueRepository) {
         super(premierLeagueRepository);
     }
 
