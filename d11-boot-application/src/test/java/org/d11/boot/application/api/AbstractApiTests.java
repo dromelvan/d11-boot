@@ -1,13 +1,12 @@
 package org.d11.boot.application.api;
 
-import org.d11.boot.application.mock.SeasonRandomParameters;
+import org.d11.boot.application.mock.D11EasyRandom;
 import org.d11.boot.application.model.D11League;
 import org.d11.boot.application.model.PremierLeague;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.repository.SeasonRepository;
 import org.d11.boot.application.util.MappingProvider;
 import org.d11.boot.client.ApiClient;
-import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,17 +52,17 @@ public abstract class AbstractApiTests extends MappingProvider {
      */
     @BeforeAll
     public void beforeAllApiTests() {
-        final List<Season> seasons = new EasyRandom(new SeasonRandomParameters())
+        final D11EasyRandom d11EasyRandom = new D11EasyRandom();
+        final List<Season> seasons = d11EasyRandom
                 .objects(Season.class, 2)
                 .collect(Collectors.toList());
 
-        final EasyRandom easyRandom = new EasyRandom();
         for(final Season season : seasons) {
-            final PremierLeague premierLeague = easyRandom.nextObject(PremierLeague.class);
+            final PremierLeague premierLeague = d11EasyRandom.nextObject(PremierLeague.class);
             season.setPremierLeague(premierLeague);
             premierLeague.setSeason(season);
 
-            final D11League d11League = easyRandom.nextObject(D11League.class);
+            final D11League d11League = d11EasyRandom.nextObject(D11League.class);
             season.setD11League(d11League);
             d11League.setSeason(season);
         }

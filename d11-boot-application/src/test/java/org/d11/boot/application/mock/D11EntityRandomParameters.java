@@ -1,5 +1,6 @@
 package org.d11.boot.application.mock;
 
+import org.d11.boot.application.model.Season;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;
 import org.jeasy.random.randomizers.range.LongRangeRandomizer;
@@ -19,6 +20,7 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
      */
     public D11EntityRandomParameters() {
         randomize(FieldPredicates.named("id"), new LongRangeRandomizer(1L, MAX_ID));
+        randomize(FieldPredicates.named("name").and(FieldPredicates.inClass(Season.class)), new YearIntervalRandomizer());
     }
 
 }
