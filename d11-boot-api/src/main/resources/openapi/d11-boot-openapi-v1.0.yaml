@@ -95,8 +95,33 @@ paths:
                 $ref: "#/components/schemas/PremierLeague"
         '400':
           $ref: '#/components/responses/BadRequest'
-        #'401':
-        #  $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /d11-leagues/{d11LeagueId}:
+    get:
+      summary: Find a D11 league by id.
+      operationId: findD11LeagueById
+      tags:
+        - d11League
+      parameters:
+        - name: d11LeagueId
+          in: path
+          required: true
+          description: The id of the D11 league to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/D11League"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
@@ -185,6 +210,7 @@ components:
         - date
         - legacy
         - premierLeague
+        - d11League
       properties:
         id:
           type: integer
@@ -204,6 +230,8 @@ components:
           type: boolean
         premierLeague:
           $ref: '#/components/schemas/PremierLeagueBase'
+        d11League:
+          $ref: '#/components/schemas/D11LeagueBase'
 
     PremierLeagueBase:
       type: object
@@ -217,6 +245,32 @@ components:
         name:
           type: string
     PremierLeague:
+      type: object
+      required:
+        - id
+        - name
+        - season
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        season:
+          $ref: '#/components/schemas/SeasonBase'
+
+    D11LeagueBase:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    D11League:
       type: object
       required:
         - id

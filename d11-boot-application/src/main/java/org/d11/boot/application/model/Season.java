@@ -59,6 +59,15 @@ public class Season extends D11Entity implements Comparable<Season> {
     private PremierLeague premierLeague;
 
     /**
+     * The D11 league of this season.
+     */
+    @OneToOne(mappedBy = "season", cascade = CascadeType.ALL)
+    @NotNull
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private D11League d11League;
+
+    /**
      * Gets a shortened version of the season name with the two last digits of the start and end years.
      *
      * @return A shortened version of the season name.

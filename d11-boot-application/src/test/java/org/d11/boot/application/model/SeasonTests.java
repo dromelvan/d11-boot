@@ -57,6 +57,10 @@ public class SeasonTests {
         assertFalse(season.isValid(), "Null Premier League should not be valid.");
         season.setPremierLeague(new PremierLeague());
 
+        season.setD11League(null);
+        assertFalse(season.isValid(), "Null D11 league should not be valid.");
+        season.setD11League(new D11League());
+
         assertTrue(season.isValid(), "Season should be valid.");
     }
 
