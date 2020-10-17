@@ -1,0 +1,72 @@
+package org.d11.boot.application.model;
+
+import org.d11.boot.api.model.StadiumDTO;
+import org.d11.boot.application.mock.D11EasyRandom;
+import org.d11.boot.application.util.D11BootModelMapper;
+import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+/**
+ * Stadium tests.
+ */
+public class StadiumTests {
+
+    /**
+     * Random stadium generator.
+     */
+    private final D11EasyRandom d11EasyRandom = new D11EasyRandom();
+
+    /**
+     * Tests stadium validity.
+     */
+    @Test
+    public void isValid() {
+        final Stadium stadium = this.d11EasyRandom.nextObject(Stadium.class);
+
+        assertTrue(stadium.isValid(), "New stadium should be valid.");
+
+        stadium.setName("");
+        assertFalse(stadium.isValid(), "Empty name should not be valid.");
+        stadium.setName(null);
+        assertFalse(stadium.isValid(), "Null name should not be valid.");
+        stadium.setName("Name");
+
+        stadium.setCity("");
+        assertFalse(stadium.isValid(), "Empty city should not be valid.");
+        stadium.setCity(null);
+        assertFalse(stadium.isValid(), "Null city should not be valid.");
+        stadium.setCity("City");
+
+        stadium.setCapacity(0);
+        assertFalse(stadium.isValid(), "Capacity must be positive.");
+        stadium.setCapacity(1);
+
+        stadium.setOpened(Stadium.MIN_OPENED_YEAR - 1);
+        assertFalse(stadium.isValid(), "Too low year opened should not be valid.");
+        stadium.setOpened(Stadium.MAX_OPENED_YEAR + 1);
+        assertFalse(stadium.isValid(), "Too high year opened should not be valid.");
+        stadium.setOpened(Stadium.MIN_OPENED_YEAR);
+
+        assertTrue(stadium.isValid(), "Stadium should be valid.");
+    }
+
+    /**
+     * Tests mapping between Stadium and StadiumDTO.
+     */
+    @Test
+    public void map() {
+        final Stadium stadium = this.d11EasyRandom.nextObject(Stadium.class);
+
+        final ModelMapper modelMapper = new D11BootModelMapper();
+
+        final StadiumDTO stadiumDTO = modelMapper.map(stadium, StadiumDTO.class);
+        final Stadium mappedStadium = modelMapper.map(stadiumDTO, Stadium.class);
+
+        assertEquals(stadium, mappedStadium, "Stadium should equal mapped stadium.");
+    }
+
+}

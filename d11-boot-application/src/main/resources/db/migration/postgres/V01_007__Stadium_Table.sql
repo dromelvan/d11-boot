@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS stadium (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    city VARCHAR(255) NOT NULL,
+    capacity INTEGER NOT NULL,
+    opened INTEGER NOT NULL,
+    photo_file_name VARCHAR(64),
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);
