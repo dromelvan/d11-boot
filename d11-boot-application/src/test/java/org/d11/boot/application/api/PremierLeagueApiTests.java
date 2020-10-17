@@ -38,10 +38,10 @@ public class PremierLeagueApiTests extends AbstractApiTests {
     }
 
     /**
-     * Tests the findPremierLeaguesById API operation.
+     * Tests the findPremierLeagueById API operation.
      */
     @Test
-    public void findPremierLeaguesById() {
+    public void findPremierLeagueById() {
         final PremierLeagueApi premierLeagueApi = new PremierLeagueApi(getApiClient());
 
         for(final PremierLeague premierLeague : this.premierLeagues) {

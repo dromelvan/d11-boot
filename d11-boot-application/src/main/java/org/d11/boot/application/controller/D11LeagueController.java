@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller that implements the D11LeaguesApi and provides D11 league endpoints.
  */
 @RestController
-public class D11LeagueController extends RepositoryController<D11LeagueDTO, D11LeagueService> implements D11LeaguesApi {
+public class D11LeagueController extends AbstractRepositoryServiceController<D11LeagueDTO, D11LeagueService> implements D11LeaguesApi {
 
     /**
      * Creates a new controller.

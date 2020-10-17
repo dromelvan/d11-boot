@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Abstract base class for repositry services.
+ * Abstract base class for repository services.
  *
  * @param <T> Database entity class that this service will handle.
  * @param <U> DTO class that this service will handle.

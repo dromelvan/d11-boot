@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller that implements the PremierLeaguesApi and provides premier league endpoints.
  */
 @RestController
-public class PremierLeagueController extends RepositoryController<PremierLeagueDTO, PremierLeagueService> implements PremierLeaguesApi {
+public class PremierLeagueController extends AbstractRepositoryServiceController<PremierLeagueDTO, PremierLeagueService> implements PremierLeaguesApi {
 
     /**
      * Creates a new controller.

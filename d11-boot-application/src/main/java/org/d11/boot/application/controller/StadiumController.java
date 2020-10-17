@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller that implements the StadiaApi and provides stadium endpoints.
  */
 @RestController
-public class StadiumController extends RepositoryController<StadiumDTO, StadiumService> implements StadiaApi {
+public class StadiumController extends AbstractRepositoryServiceController<StadiumDTO, StadiumService> implements StadiaApi {
 
     /**
      * Creates a new controller.

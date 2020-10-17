@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
  * @param <T> The DTO class this controller will return.
  * @param <U> The repository service class this controller will use.
  */
-public class RepositoryController<T, U extends AbstractRepositoryService<?, T, ?>> extends D11BootController {
+public abstract class AbstractRepositoryServiceController<T, U extends AbstractRepositoryService<?, T, ?>> extends D11BootController {
 
     /**
      * The repository service this controller will use.
@@ -23,7 +23,7 @@ public class RepositoryController<T, U extends AbstractRepositoryService<?, T, ?
      * @param repositoryService The repository service this
      */
     @Autowired
-    public RepositoryController(final U repositoryService) {
+    public AbstractRepositoryServiceController(final U repositoryService) {
         this.repositoryService = repositoryService;
     }
 

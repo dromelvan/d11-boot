@@ -13,7 +13,7 @@ import java.util.List;
  * Controller that implements the SeasonsApi and provides season endpoints.
  */
 @RestController
-public class SeasonController extends RepositoryController<SeasonDTO, SeasonService> implements SeasonsApi {
+public class SeasonController extends AbstractRepositoryServiceController<SeasonDTO, SeasonService> implements SeasonsApi {
 
     /**
      * Creates a new controller.

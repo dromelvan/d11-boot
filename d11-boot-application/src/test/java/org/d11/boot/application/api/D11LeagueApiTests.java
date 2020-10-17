@@ -38,10 +38,10 @@ public class D11LeagueApiTests extends AbstractApiTests {
     }
 
     /**
-     * Tests the findD11LeaguesById API operation.
+     * Tests the findD11LeagueById API operation.
      */
     @Test
-    public void findD11LeaguesById() {
+    public void findD11LeagueById() {
         final D11LeagueApi d11LeagueApi = new D11LeagueApi(getApiClient());
 
         for(final D11League d11League : this.d11Leagues) {
