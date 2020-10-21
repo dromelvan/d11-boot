@@ -9,6 +9,8 @@
     <property name="optional" value="false"/>
   </module>
 
+  <module name="SuppressWarningsFilter" />
+
   <module name="NewlineAtEndOfFile"/>
   <module name="OrderedProperties"/>
   <module name="UniqueProperties">
@@ -24,6 +26,7 @@
 
   <module name="TreeWalker">
     <module name="SuppressionCommentFilter"/>
+    <module name="SuppressWarningsHolder" />
 
     <module name="AnnotationLocation"/>
     <module name="AnnotationUseStyle"/>

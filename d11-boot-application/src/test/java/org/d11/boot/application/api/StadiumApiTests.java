@@ -29,7 +29,7 @@ public class StadiumApiTests extends AbstractApiTests {
     private List<Stadium> stadia;
 
     /**
-     * Sets up mocked premier leagues for the tests to use.
+     * Sets up mocked stadia for the tests to use.
      */
     @BeforeAll
     public void beforeAll() {
@@ -40,7 +40,7 @@ public class StadiumApiTests extends AbstractApiTests {
      * Tests the findStadiumById API operation.
      */
     @Test
-    public void findPremierLeaguesById() {
+    public void findStadiumById() {
         final StadiumApi stadiumApi = new StadiumApi(getApiClient());
 
         for(final Stadium stadium : this.stadia) {
