@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,6 +29,7 @@ public class StadiumTests {
         final Stadium stadium = this.d11EasyRandom.nextObject(Stadium.class);
 
         assertTrue(stadium.isValid(), "New stadium should be valid.");
+        assertNotNull(stadium.getTeams(), "100% test coverage or go home.");
 
         stadium.setName("");
         assertFalse(stadium.isValid(), "Empty name should not be valid.");

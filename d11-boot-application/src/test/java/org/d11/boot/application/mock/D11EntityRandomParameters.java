@@ -2,10 +2,12 @@ package org.d11.boot.application.mock;
 
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Stadium;
+import org.d11.boot.application.model.Team;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;
 import org.jeasy.random.randomizers.range.IntegerRangeRandomizer;
 import org.jeasy.random.randomizers.range.LongRangeRandomizer;
+import org.jeasy.random.randomizers.text.StringRandomizer;
 
 /**
  * Base entity random parameters.
@@ -34,9 +36,13 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
      */
     public D11EntityRandomParameters() {
         randomize(FieldPredicates.named("id"), new LongRangeRandomizer(1L, MAX_ID));
+        randomize(FieldPredicates.named("whoscoredId"), new IntegerRangeRandomizer(1, (int) MAX_ID));
+        randomize(FieldPredicates.named("code"), new StringRandomizer(Team.CODE_LENGTH, Team.CODE_LENGTH, System.currentTimeMillis()));
 
         randomize(FieldPredicates.named("capacity").and(FieldPredicates.inClass(Stadium.class)), new IntegerRangeRandomizer(1, MAX_POSITIVE));
         randomize(FieldPredicates.named("opened").and(FieldPredicates.inClass(Stadium.class)), new IntegerRangeRandomizer(MIN_YEAR, MAX_YEAR));
+
+        randomize(FieldPredicates.named("established").and(FieldPredicates.inClass(Team.class)), new IntegerRangeRandomizer(MIN_YEAR, MAX_YEAR));
 
         randomize(FieldPredicates.named("name").and(FieldPredicates.inClass(Season.class)), new YearIntervalRandomizer());
     }

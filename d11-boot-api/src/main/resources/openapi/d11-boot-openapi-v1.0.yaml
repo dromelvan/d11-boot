@@ -36,6 +36,33 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /teams/{teamId}:
+    get:
+      summary: Find a team by id.
+      operationId: findTeamById
+      tags:
+        - team
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          description: The id of the team to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /seasons:
     get:
       summary: Finds all seasons.
@@ -209,7 +236,7 @@ components:
         - city
         - capacity
         - opened
-        - photo_file_name
+        - photoFileName
       properties:
         id:
           type: integer
@@ -224,8 +251,92 @@ components:
         opened:
           type: integer
           format: int32
-        photo_file_name:
+        photoFileName:
           type: string
+
+    TeamBase:
+      type: object
+      required:
+        - id
+        - whoscoredId
+        - name
+        - shortName
+        - code
+        - nickname
+        - established
+        - motto
+        - colour
+        - dummy
+        - photoFileName
+      properties:
+        id:
+          type: integer
+          format: int64
+        whoscoredId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        shortName:
+          type: string
+        code:
+          type: string
+        nickname:
+          type: string
+        established:
+          type: integer
+          format: int32
+        motto:
+          type: string
+        colour:
+          type: string
+        dummy:
+          type: boolean
+        photoFileName:
+          type: string
+    Team:
+      type: object
+      required:
+        - id
+        - whoscoredId
+        - name
+        - shortName
+        - code
+        - nickname
+        - established
+        - motto
+        - colour
+        - dummy
+        - photoFileName
+        - stadium
+      properties:
+        id:
+          type: integer
+          format: int64
+        whoscoredId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        shortName:
+          type: string
+        code:
+          type: string
+        nickname:
+          type: string
+        established:
+          type: integer
+          format: int32
+        motto:
+          type: string
+        colour:
+          type: string
+        dummy:
+          type: boolean
+        photoFileName:
+          type: string
+        stadium:
+          $ref: '#/components/schemas/Stadium'
 
     SeasonBase:
       type: object

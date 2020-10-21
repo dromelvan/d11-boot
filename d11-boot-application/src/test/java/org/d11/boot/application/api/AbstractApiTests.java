@@ -4,7 +4,11 @@ import org.d11.boot.application.mock.D11EasyRandom;
 import org.d11.boot.application.model.D11League;
 import org.d11.boot.application.model.PremierLeague;
 import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.Stadium;
+import org.d11.boot.application.model.Team;
 import org.d11.boot.application.repository.SeasonRepository;
+import org.d11.boot.application.repository.StadiumRepository;
+import org.d11.boot.application.repository.TeamRepository;
 import org.d11.boot.application.util.MappingProvider;
 import org.d11.boot.client.ApiClient;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,6 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -33,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public abstract class AbstractApiTests extends MappingProvider {
 
     /**
@@ -40,7 +46,16 @@ public abstract class AbstractApiTests extends MappingProvider {
      */
     @LocalServerPort
     private int localServerPort;
-
+    /**
+     * Stadium repository.
+     */
+    @Autowired
+    private StadiumRepository stadiumRepository;
+    /**
+     * Team repository.
+     */
+    @Autowired
+    private TeamRepository teamRepository;
     /**
      * Season repository.
      */
@@ -53,6 +68,19 @@ public abstract class AbstractApiTests extends MappingProvider {
     @BeforeAll
     public void beforeAllApiTests() {
         final D11EasyRandom d11EasyRandom = new D11EasyRandom();
+
+        List<Stadium> stadia = d11EasyRandom
+                .objects(Stadium.class, 2)
+                .collect(Collectors.toList());
+        stadia.forEach(stadium -> stadium.setTeams(new HashSet<>()));
+        stadia = this.stadiumRepository.saveAll(stadia);
+
+        for(final Stadium stadium : stadia) {
+            final Team team = d11EasyRandom.nextObject(Team.class);
+            team.setStadium(stadium);
+            this.teamRepository.save(team);
+        }
+
         final List<Season> seasons = d11EasyRandom
                 .objects(Season.class, 2)
                 .collect(Collectors.toList());
