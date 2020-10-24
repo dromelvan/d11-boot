@@ -3,6 +3,7 @@ package org.d11.boot.application.mock;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Stadium;
 import org.d11.boot.application.model.Team;
+import org.d11.boot.application.model.User;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;
 import org.jeasy.random.randomizers.range.IntegerRangeRandomizer;
@@ -39,6 +40,7 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
         randomize(FieldPredicates.named("whoscoredId"), new IntegerRangeRandomizer(1, (int) MAX_ID));
         randomize(FieldPredicates.named("code"), new StringRandomizer(Team.CODE_LENGTH, Team.CODE_LENGTH, System.currentTimeMillis()));
 
+        randomize(FieldPredicates.named("email").and(FieldPredicates.inClass(User.class)), new EmailRandomizer());
         randomize(FieldPredicates.named("capacity").and(FieldPredicates.inClass(Stadium.class)), new IntegerRangeRandomizer(1, MAX_POSITIVE));
         randomize(FieldPredicates.named("opened").and(FieldPredicates.inClass(Stadium.class)), new IntegerRangeRandomizer(MIN_YEAR, MAX_YEAR));
 

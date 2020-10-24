@@ -6,9 +6,11 @@ import org.d11.boot.application.model.PremierLeague;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Stadium;
 import org.d11.boot.application.model.Team;
+import org.d11.boot.application.model.User;
 import org.d11.boot.application.repository.SeasonRepository;
 import org.d11.boot.application.repository.StadiumRepository;
 import org.d11.boot.application.repository.TeamRepository;
+import org.d11.boot.application.repository.UserRepository;
 import org.d11.boot.application.util.MappingProvider;
 import org.d11.boot.client.ApiClient;
 import org.junit.jupiter.api.BeforeAll;
@@ -47,6 +49,11 @@ public abstract class AbstractApiTests extends MappingProvider {
     @LocalServerPort
     private int localServerPort;
     /**
+     * User repository.
+     */
+    @Autowired
+    private UserRepository userRepository;
+    /**
      * Stadium repository.
      */
     @Autowired
@@ -69,9 +76,10 @@ public abstract class AbstractApiTests extends MappingProvider {
     public void beforeAllApiTests() {
         final D11EasyRandom d11EasyRandom = new D11EasyRandom();
 
-        List<Stadium> stadia = d11EasyRandom
-                .objects(Stadium.class, 2)
-                .collect(Collectors.toList());
+        final List<User> users = d11EasyRandom.objects(User.class, 2).collect(Collectors.toList());
+        this.userRepository.saveAll(users);
+
+        List<Stadium> stadia = d11EasyRandom.objects(Stadium.class, 2).collect(Collectors.toList());
         stadia.forEach(stadium -> stadium.setTeams(new HashSet<>()));
         stadia = this.stadiumRepository.saveAll(stadia);
 
