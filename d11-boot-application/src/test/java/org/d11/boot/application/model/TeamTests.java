@@ -17,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TeamTests {
 
     /**
-     * Random stadium generator.
+     * Random team generator.
      */
     private final D11EasyRandom d11EasyRandom = new D11EasyRandom();
 
     /**
-     * Tests stadium validity.
+     * Tests team validity.
      */
     @Test
     public void isValid() {

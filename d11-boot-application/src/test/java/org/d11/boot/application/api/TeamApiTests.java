@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class TeamApiTests extends AbstractApiTests {
 
     /**
-     * Stadium repository.
+     * Team repository.
      */
     @Autowired
     private TeamRepository teamRepository;
