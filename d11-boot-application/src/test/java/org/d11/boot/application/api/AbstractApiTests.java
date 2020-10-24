@@ -3,11 +3,13 @@ package org.d11.boot.application.api;
 import org.d11.boot.application.mock.D11EasyRandom;
 import org.d11.boot.application.model.D11Entity;
 import org.d11.boot.application.model.D11League;
+import org.d11.boot.application.model.D11Team;
 import org.d11.boot.application.model.PremierLeague;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Stadium;
 import org.d11.boot.application.model.Team;
 import org.d11.boot.application.model.User;
+import org.d11.boot.application.repository.D11TeamRepository;
 import org.d11.boot.application.repository.SeasonRepository;
 import org.d11.boot.application.repository.StadiumRepository;
 import org.d11.boot.application.repository.TeamRepository;
@@ -69,6 +71,11 @@ public abstract class AbstractApiTests extends MappingProvider {
     @Autowired
     private TeamRepository teamRepository;
     /**
+     * D11 team repository.
+     */
+    @Autowired
+    private D11TeamRepository d11TeamRepository;
+    /**
      * Season repository.
      */
     @Autowired
@@ -79,8 +86,15 @@ public abstract class AbstractApiTests extends MappingProvider {
      */
     @BeforeAll
     public void beforeAllApiTests() {
-        final List<User> users = generate(User.class, 2);
-        this.userRepository.saveAll(users);
+        List<User> users = generate(User.class, 2);
+        users = this.userRepository.saveAll(users);
+
+        for(final User user : users) {
+            final D11Team d11Team = generate(D11Team.class);
+            d11Team.setOwner(user);
+            d11Team.setCoOwner(user);
+            this.d11TeamRepository.save(d11Team);
+        }
 
         List<Stadium> stadia = generate(Stadium.class, 2);
         stadia.forEach(stadium -> stadium.setTeams(new HashSet<>()));
