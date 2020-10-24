@@ -1,8 +1,10 @@
 spring:
   flyway:
-    schemas: development  
+    schemas: development
   jpa:
     properties:
       hibernate:
         generate_statistics: true
-        default_schema: development        
+        default_schema: development
+        # format_sql: true
+    # show-sql: true
