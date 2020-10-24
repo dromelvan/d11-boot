@@ -1,6 +1,7 @@
 package org.d11.boot.application.api;
 
 import org.d11.boot.application.mock.D11EasyRandom;
+import org.d11.boot.application.model.D11Entity;
 import org.d11.boot.application.model.D11League;
 import org.d11.boot.application.model.PremierLeague;
 import org.d11.boot.application.model.Season;
@@ -40,9 +41,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext
-@SuppressWarnings("checkstyle:ClassFanOutComplexity")
+@SuppressWarnings({ "checkstyle:ClassFanOutComplexity", "PMD.ExcessiveImports" })
 public abstract class AbstractApiTests extends MappingProvider {
 
+    /**
+     * Random object generator.
+     */
+    private final D11EasyRandom d11EasyRandom = new D11EasyRandom();
     /**
      * Server port used when running tests with SpringBootTest.WebEnvironment.RANDOM_PORT.
      */
@@ -74,31 +79,27 @@ public abstract class AbstractApiTests extends MappingProvider {
      */
     @BeforeAll
     public void beforeAllApiTests() {
-        final D11EasyRandom d11EasyRandom = new D11EasyRandom();
-
-        final List<User> users = d11EasyRandom.objects(User.class, 2).collect(Collectors.toList());
+        final List<User> users = generate(User.class, 2);
         this.userRepository.saveAll(users);
 
-        List<Stadium> stadia = d11EasyRandom.objects(Stadium.class, 2).collect(Collectors.toList());
+        List<Stadium> stadia = generate(Stadium.class, 2);
         stadia.forEach(stadium -> stadium.setTeams(new HashSet<>()));
         stadia = this.stadiumRepository.saveAll(stadia);
 
         for(final Stadium stadium : stadia) {
-            final Team team = d11EasyRandom.nextObject(Team.class);
+            final Team team = generate(Team.class);
             team.setStadium(stadium);
             this.teamRepository.save(team);
         }
 
-        final List<Season> seasons = d11EasyRandom
-                .objects(Season.class, 2)
-                .collect(Collectors.toList());
+        final List<Season> seasons = generate(Season.class, 2);
 
         for(final Season season : seasons) {
-            final PremierLeague premierLeague = d11EasyRandom.nextObject(PremierLeague.class);
+            final PremierLeague premierLeague = generate(PremierLeague.class);
             season.setPremierLeague(premierLeague);
             premierLeague.setSeason(season);
 
-            final D11League d11League = d11EasyRandom.nextObject(D11League.class);
+            final D11League d11League = generate(D11League.class);
             season.setD11League(d11League);
             d11League.setSeason(season);
         }
@@ -128,7 +129,7 @@ public abstract class AbstractApiTests extends MappingProvider {
     /**
      * Gets a mono from an URI.
      *
-     * @param uri The uri we want to get a mono for, based on the webclient basepath.
+     * @param uri The uri we want to get a mono for, based on the webclient base path.
      * @return A mono for the request URI.
      */
     protected Mono<?> getMono(final String uri) {
@@ -184,6 +185,32 @@ public abstract class AbstractApiTests extends MappingProvider {
         assertEquals(HttpStatus.BAD_REQUEST,
                 webClientResponseException.getStatusCode(),
                 "Response should have status BAD_REQUEST.");
+    }
+
+    /**
+     * Generates a single object of a D11 entity class.
+     *
+     * @param clazz Generic class parameter.
+     * @param <T> The class of the object that will be generated.
+     * @return An object of the specified class.
+     */
+    protected <T extends D11Entity> T generate(final Class<T> clazz) {
+        return this.d11EasyRandom
+                .nextObject(clazz);
+    }
+
+    /**
+     * Generates a number of random objects of a D11 entity class.
+     *
+     * @param clazz Generic class parameter.
+     * @param count The number of objects that will be generated.
+     * @param <T> The class of objects that will be generated.
+     * @return A list of objects of the specified class with the specified length.
+     */
+    protected <T extends D11Entity> List<T> generate(final Class<T> clazz, final int count) {
+        return this.d11EasyRandom
+                .objects(clazz, count)
+                .collect(Collectors.toList());
     }
 
 }
