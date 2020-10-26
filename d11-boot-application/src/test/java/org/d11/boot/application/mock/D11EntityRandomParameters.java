@@ -1,6 +1,7 @@
 package org.d11.boot.application.mock;
 
 import org.d11.boot.application.model.Country;
+import org.d11.boot.application.model.Player;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Stadium;
 import org.d11.boot.application.model.Team;
@@ -43,6 +44,8 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
         randomize(FieldPredicates.named("iso"), new StringRandomizer(Country.ISO_CODE_LENGTH, Country.ISO_CODE_LENGTH, System.currentTimeMillis()));
 
         randomize(FieldPredicates.named("email").and(FieldPredicates.inClass(User.class)), new EmailRandomizer());
+
+        randomize(FieldPredicates.named("height").and(FieldPredicates.inClass(Player.class)), new IntegerRangeRandomizer(1, MAX_POSITIVE));
 
         randomize(FieldPredicates.named("capacity").and(FieldPredicates.inClass(Stadium.class)), new IntegerRangeRandomizer(1, MAX_POSITIVE));
         randomize(FieldPredicates.named("opened").and(FieldPredicates.inClass(Stadium.class)), new IntegerRangeRandomizer(MIN_YEAR, MAX_YEAR));

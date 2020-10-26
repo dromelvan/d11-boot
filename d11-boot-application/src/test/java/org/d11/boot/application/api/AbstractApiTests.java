@@ -5,6 +5,7 @@ import org.d11.boot.application.model.Country;
 import org.d11.boot.application.model.D11Entity;
 import org.d11.boot.application.model.D11League;
 import org.d11.boot.application.model.D11Team;
+import org.d11.boot.application.model.Player;
 import org.d11.boot.application.model.PremierLeague;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Stadium;
@@ -12,6 +13,7 @@ import org.d11.boot.application.model.Team;
 import org.d11.boot.application.model.User;
 import org.d11.boot.application.repository.CountryRepository;
 import org.d11.boot.application.repository.D11TeamRepository;
+import org.d11.boot.application.repository.PlayerRepository;
 import org.d11.boot.application.repository.SeasonRepository;
 import org.d11.boot.application.repository.StadiumRepository;
 import org.d11.boot.application.repository.TeamRepository;
@@ -68,6 +70,11 @@ public abstract class AbstractApiTests extends MappingProvider {
     @Autowired
     private CountryRepository countryRepository;
     /**
+     * Country repository.
+     */
+    @Autowired
+    private PlayerRepository playerRepository;
+    /**
      * Stadium repository.
      */
     @Autowired
@@ -103,8 +110,14 @@ public abstract class AbstractApiTests extends MappingProvider {
             this.d11TeamRepository.save(d11Team);
         }
 
-        final List<Country> countries = generate(Country.class, 2);
-        this.countryRepository.saveAll(countries);
+        List<Country> countries = generate(Country.class, 2);
+        countries = this.countryRepository.saveAll(countries);
+
+        for(final Country country : countries) {
+            final Player player = generate(Player.class);
+            player.setCountry(country);
+            this.playerRepository.save(player);
+        }
 
         List<Stadium> stadia = generate(Stadium.class, 2);
         stadia.forEach(stadium -> stadium.setTeams(new HashSet<>()));
