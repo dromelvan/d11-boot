@@ -1,6 +1,7 @@
 package org.d11.boot.application.api;
 
 import org.d11.boot.application.mock.D11EasyRandom;
+import org.d11.boot.application.model.Country;
 import org.d11.boot.application.model.D11Entity;
 import org.d11.boot.application.model.D11League;
 import org.d11.boot.application.model.D11Team;
@@ -9,6 +10,7 @@ import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Stadium;
 import org.d11.boot.application.model.Team;
 import org.d11.boot.application.model.User;
+import org.d11.boot.application.repository.CountryRepository;
 import org.d11.boot.application.repository.D11TeamRepository;
 import org.d11.boot.application.repository.SeasonRepository;
 import org.d11.boot.application.repository.StadiumRepository;
@@ -61,6 +63,11 @@ public abstract class AbstractApiTests extends MappingProvider {
     @Autowired
     private UserRepository userRepository;
     /**
+     * Country repository.
+     */
+    @Autowired
+    private CountryRepository countryRepository;
+    /**
      * Stadium repository.
      */
     @Autowired
@@ -95,6 +102,9 @@ public abstract class AbstractApiTests extends MappingProvider {
             d11Team.setCoOwner(user);
             this.d11TeamRepository.save(d11Team);
         }
+
+        final List<Country> countries = generate(Country.class, 2);
+        this.countryRepository.saveAll(countries);
 
         List<Stadium> stadia = generate(Stadium.class, 2);
         stadia.forEach(stadium -> stadium.setTeams(new HashSet<>()));

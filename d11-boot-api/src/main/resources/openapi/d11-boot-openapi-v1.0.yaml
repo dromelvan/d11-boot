@@ -36,6 +36,33 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /countries/{countryId}:
+    get:
+      summary: Find a country by id.
+      operationId: findCountryById
+      tags:
+        - country
+      parameters:
+        - name: countryId
+          in: path
+          required: true
+          description: The id of the country to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Country"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /stadia/{stadiumId}:
     get:
       summary: Find a stadium by id.
@@ -296,6 +323,21 @@ components:
         - 'Active'
         - 'Finished'
         - 'Full Time'
+
+    Country:
+      type: object
+      required:
+        - id
+        - name
+        - iso
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        iso:
+          type: string
 
     Stadium:
       type: object
