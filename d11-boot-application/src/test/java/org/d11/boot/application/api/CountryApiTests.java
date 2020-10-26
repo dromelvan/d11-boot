@@ -56,13 +56,13 @@ public class CountryApiTests extends AbstractApiTests {
     }
 
     /**
-     * Correct resource string for 'stadium'.
+     * Correct resource string for 'country'.
      *
-     * @return "stadia".
+     * @return "countries".
      */
     @Override
     protected String getResourceString() {
-        return "stadia";
+        return "countries";
     }
 
 }
