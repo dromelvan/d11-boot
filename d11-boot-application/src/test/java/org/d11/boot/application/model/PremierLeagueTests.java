@@ -2,7 +2,6 @@ package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.PremierLeagueDTO;
 import org.d11.boot.application.util.D11BootModelMapper;
-import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
@@ -13,19 +12,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Premier League tests.
  */
-public class PremierLeagueTests {
-
-    /**
-     * Random Premier League generator.
-     */
-    private final EasyRandom easyRandom = new EasyRandom();
+public class PremierLeagueTests extends D11EasyRandomTests {
 
     /**
      * Tests Premier League validity.
      */
     @Test
     public void isValid() {
-        final PremierLeague premierLeague = this.easyRandom.nextObject(PremierLeague.class);
+        final PremierLeague premierLeague = generate(PremierLeague.class);
         premierLeague.setSeason(new Season());
 
         assertTrue(premierLeague.isValid(), "New Premier League should be valid.");
@@ -48,7 +42,7 @@ public class PremierLeagueTests {
      */
     @Test
     public void map() {
-        final PremierLeague premierLeague = this.easyRandom.nextObject(PremierLeague.class);
+        final PremierLeague premierLeague = generate(PremierLeague.class);
 
         final ModelMapper modelMapper = new D11BootModelMapper();
 

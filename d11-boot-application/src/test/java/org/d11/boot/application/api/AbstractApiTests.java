@@ -1,5 +1,6 @@
 package org.d11.boot.application.api;
 
+import lombok.Getter;
 import org.d11.boot.application.mock.D11EasyRandom;
 import org.d11.boot.application.model.Country;
 import org.d11.boot.application.model.D11Entity;
@@ -32,6 +33,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -42,13 +44,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Base class for API tests.
+ *
+ * @param <T> The entity class this tests is based on.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext
 @SuppressWarnings({ "checkstyle:ClassFanOutComplexity", "PMD.ExcessiveImports" })
-public abstract class AbstractApiTests extends MappingProvider {
+public abstract class AbstractApiTests<T extends D11Entity> extends MappingProvider {
 
     /**
      * Random object generator.
@@ -60,39 +64,51 @@ public abstract class AbstractApiTests extends MappingProvider {
     @LocalServerPort
     private int localServerPort;
     /**
+     * List of entities.
+     */
+    @Getter
+    private final List<T> entities = new ArrayList<>();
+    /**
      * User repository.
      */
     @Autowired
+    @Getter
     private UserRepository userRepository;
     /**
      * Country repository.
      */
     @Autowired
+    @Getter
     private CountryRepository countryRepository;
     /**
      * Country repository.
      */
     @Autowired
+    @Getter
     private PlayerRepository playerRepository;
     /**
      * Stadium repository.
      */
     @Autowired
+    @Getter
     private StadiumRepository stadiumRepository;
     /**
      * Team repository.
      */
     @Autowired
+    @Getter
     private TeamRepository teamRepository;
     /**
      * D11 team repository.
      */
     @Autowired
+    @Getter
     private D11TeamRepository d11TeamRepository;
     /**
      * Season repository.
      */
     @Autowired
+    @Getter
     private SeasonRepository seasonRepository;
 
     /**
@@ -228,10 +244,10 @@ public abstract class AbstractApiTests extends MappingProvider {
      * Generates a single object of a D11 entity class.
      *
      * @param clazz Generic class parameter.
-     * @param <T> The class of the object that will be generated.
+     * @param <U> The class of the object that will be generated.
      * @return An object of the specified class.
      */
-    protected <T extends D11Entity> T generate(final Class<T> clazz) {
+    protected <U extends D11Entity> U generate(final Class<U> clazz) {
         return this.d11EasyRandom
                 .nextObject(clazz);
     }
@@ -241,10 +257,10 @@ public abstract class AbstractApiTests extends MappingProvider {
      *
      * @param clazz Generic class parameter.
      * @param count The number of objects that will be generated.
-     * @param <T> The class of objects that will be generated.
+     * @param <U> The class of objects that will be generated.
      * @return A list of objects of the specified class with the specified length.
      */
-    protected <T extends D11Entity> List<T> generate(final Class<T> clazz, final int count) {
+    protected <U extends D11Entity> List<U> generate(final Class<U> clazz, final int count) {
         return this.d11EasyRandom
                 .objects(clazz, count)
                 .collect(Collectors.toList());

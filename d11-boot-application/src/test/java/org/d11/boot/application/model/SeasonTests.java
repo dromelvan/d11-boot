@@ -1,7 +1,6 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.SeasonDTO;
-import org.d11.boot.application.mock.D11EasyRandom;
 import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -16,19 +15,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Season tests.
  */
-public class SeasonTests {
-
-    /**
-     * Random season generator.
-     */
-    private final D11EasyRandom d11EasyRandom = new D11EasyRandom();
+public class SeasonTests extends D11EasyRandomTests {
 
     /**
      * Tests season validity.
      */
     @Test
     public void isValid() {
-        final Season season = this.d11EasyRandom.nextObject(Season.class);
+        final Season season = generate(Season.class);
 
         assertTrue(season.isValid(), "New season should be valid.");
 
@@ -68,7 +62,7 @@ public class SeasonTests {
      */
     @Test
     public void map() {
-        final Season season = this.d11EasyRandom.nextObject(Season.class);
+        final Season season = generate(Season.class);
 
         final ModelMapper modelMapper = new D11BootModelMapper();
 

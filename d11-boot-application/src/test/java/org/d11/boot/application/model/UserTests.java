@@ -1,7 +1,6 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.UserDTO;
-import org.d11.boot.application.mock.D11EasyRandom;
 import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -13,19 +12,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * User tests.
  */
-public class UserTests {
-
-    /**
-     * Random user generator.
-     */
-    private final D11EasyRandom d11EasyRandom = new D11EasyRandom();
+public class UserTests extends D11EasyRandomTests {
 
     /**
      * Tests user validity.
      */
     @Test
     public void isValid() {
-        final User user = this.d11EasyRandom.nextObject(User.class);
+        final User user = generate(User.class);
 
         assertTrue(user.isValid(), "New user should be valid.");
 
@@ -57,7 +51,7 @@ public class UserTests {
      */
     @Test
     public void map() {
-        final User user = this.d11EasyRandom.nextObject(User.class);
+        final User user = generate(User.class);
 
         final ModelMapper modelMapper = new D11BootModelMapper();
 

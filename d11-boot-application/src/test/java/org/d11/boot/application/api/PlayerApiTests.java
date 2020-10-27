@@ -2,38 +2,25 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.PlayerDTO;
 import org.d11.boot.application.model.Player;
-import org.d11.boot.application.repository.PlayerRepository;
 import org.d11.boot.client.api.PlayerApi;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Player API tests.
  */
-public class PlayerApiTests extends AbstractApiTests {
-
-    /**
-     * Player repository.
-     */
-    @Autowired
-    private PlayerRepository playerRepository;
-    /**
-     * List of players.
-     */
-    private List<Player> players;
+public class PlayerApiTests extends AbstractApiTests<Player> {
 
     /**
      * Sets up mocked players for the tests to use.
      */
     @BeforeAll
     public void beforeAll() {
-        this.players = this.playerRepository.findAll();
+        getEntities().addAll(getPlayerRepository().findAll());
     }
 
     /**
@@ -43,7 +30,9 @@ public class PlayerApiTests extends AbstractApiTests {
     public void findPlayerById() {
         final PlayerApi playerApi = new PlayerApi(getApiClient());
 
-        for(final Player player : this.players) {
+        assertFalse(getEntities().isEmpty(), "Players should not be empty.");
+
+        for(final Player player : getEntities()) {
             final PlayerDTO result = playerApi.findPlayerById(player.getId()).block();
             final PlayerDTO playerDTO = map(player, PlayerDTO.class);
 

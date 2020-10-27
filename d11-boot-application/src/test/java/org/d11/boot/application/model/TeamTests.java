@@ -1,7 +1,6 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.TeamDTO;
-import org.d11.boot.application.mock.D11EasyRandom;
 import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -14,19 +13,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Team tests.
  */
 @SuppressWarnings("checkstyle:ExecutableStatementCount")
-public class TeamTests {
-
-    /**
-     * Random team generator.
-     */
-    private final D11EasyRandom d11EasyRandom = new D11EasyRandom();
+public class TeamTests extends D11EasyRandomTests {
 
     /**
      * Tests team validity.
      */
     @Test
     public void isValid() {
-        final Team team = this.d11EasyRandom.nextObject(Team.class);
+        final Team team = generate(Team.class);
 
         assertTrue(team.isValid(), "New team should be valid.");
 
@@ -86,7 +80,7 @@ public class TeamTests {
      */
     @Test
     public void map() {
-        final Team team = this.d11EasyRandom.nextObject(Team.class);
+        final Team team = generate(Team.class);
 
         final ModelMapper modelMapper = new D11BootModelMapper();
 

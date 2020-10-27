@@ -1,32 +1,26 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.StadiumDTO;
-import org.d11.boot.application.mock.D11EasyRandom;
 import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Stadium tests.
  */
-public class StadiumTests {
-
-    /**
-     * Random stadium generator.
-     */
-    private final D11EasyRandom d11EasyRandom = new D11EasyRandom();
+public class StadiumTests extends D11EasyRandomTests {
 
     /**
      * Tests stadium validity.
      */
     @Test
     public void isValid() {
-        final Stadium stadium = this.d11EasyRandom.nextObject(Stadium.class);
+        final Stadium stadium = generate(Stadium.class);
 
         assertTrue(stadium.isValid(), "New stadium should be valid.");
         assertNotNull(stadium.getTeams(), "100% test coverage or go home.");
@@ -61,7 +55,7 @@ public class StadiumTests {
      */
     @Test
     public void map() {
-        final Stadium stadium = this.d11EasyRandom.nextObject(Stadium.class);
+        final Stadium stadium = generate(Stadium.class);
 
         final ModelMapper modelMapper = new D11BootModelMapper();
 

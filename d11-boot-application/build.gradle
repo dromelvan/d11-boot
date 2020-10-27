@@ -32,13 +32,17 @@ dependencies {
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.2'
 	implementation 'org.flywaydb:flyway-core'
 
-	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'org.postgresql:postgresql'
+
+	testCompileOnly 'org.projectlombok:lombok:1.18.12'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 
 	testImplementation project(':d11-boot-api-client')
 	testImplementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.4.RELEASE'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.jeasy:easy-random-core:4.2.0'
+
+	testRuntimeOnly 'com.h2database:h2'
 }
 
 checkstyle {

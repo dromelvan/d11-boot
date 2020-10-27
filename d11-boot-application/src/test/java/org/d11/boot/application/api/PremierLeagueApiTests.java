@@ -9,32 +9,27 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Premier League API tests.
  */
-public class PremierLeagueApiTests extends AbstractApiTests {
+public class PremierLeagueApiTests extends AbstractApiTests<PremierLeague> {
 
     /**
      * Premier League repository.
      */
     @Autowired
     private PremierLeagueRepository premierLeagueRepository;
-    /**
-     * List of Premier Leagues.
-     */
-    private List<PremierLeague> premierLeagues;
 
     /**
      * Sets up mocked premier leagues for the tests to use.
      */
     @BeforeAll
     public void beforeAll() {
-        this.premierLeagues = this.premierLeagueRepository.findAll();
+        getEntities().addAll(this.premierLeagueRepository.findAll());
     }
 
     /**
@@ -44,7 +39,9 @@ public class PremierLeagueApiTests extends AbstractApiTests {
     public void findPremierLeagueById() {
         final PremierLeagueApi premierLeagueApi = new PremierLeagueApi(getApiClient());
 
-        for(final PremierLeague premierLeague : this.premierLeagues) {
+        assertFalse(getEntities().isEmpty(), "Premier Leagues should not be empty.");
+
+        for(final PremierLeague premierLeague : getEntities()) {
             final PremierLeagueDTO result = premierLeagueApi.findPremierLeagueById(premierLeague.getId()).block();
             final PremierLeagueDTO premierLeagueDTO = map(premierLeague, PremierLeagueDTO.class);
 

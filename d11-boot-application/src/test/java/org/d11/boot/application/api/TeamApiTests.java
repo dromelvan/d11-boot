@@ -2,38 +2,25 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.TeamDTO;
 import org.d11.boot.application.model.Team;
-import org.d11.boot.application.repository.TeamRepository;
 import org.d11.boot.client.api.TeamApi;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Team API tests.
  */
-public class TeamApiTests extends AbstractApiTests {
-
-    /**
-     * Team repository.
-     */
-    @Autowired
-    private TeamRepository teamRepository;
-    /**
-     * List of teams.
-     */
-    private List<Team> teams;
+public class TeamApiTests extends AbstractApiTests<Team> {
 
     /**
      * Sets up mocked teams for the tests to use.
      */
     @BeforeAll
     public void beforeAll() {
-        this.teams = this.teamRepository.findAll();
+        getEntities().addAll(getTeamRepository().findAll());
     }
 
     /**
@@ -43,7 +30,9 @@ public class TeamApiTests extends AbstractApiTests {
     public void findTeamsById() {
         final TeamApi teamApi = new TeamApi(getApiClient());
 
-        for(final Team team : this.teams) {
+        assertFalse(getEntities().isEmpty(), "Teams should not be empty.");
+
+        for(final Team team : getEntities()) {
             final TeamDTO result = teamApi.findTeamById(team.getId()).block();
             final TeamDTO teamDTO = map(team, TeamDTO.class);
 

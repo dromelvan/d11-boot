@@ -2,38 +2,25 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.StadiumDTO;
 import org.d11.boot.application.model.Stadium;
-import org.d11.boot.application.repository.StadiumRepository;
 import org.d11.boot.client.api.StadiumApi;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Stadium API tests.
  */
-public class StadiumApiTests extends AbstractApiTests {
-
-    /**
-     * Stadium repository.
-     */
-    @Autowired
-    private StadiumRepository stadiumRepository;
-    /**
-     * List of stadia.
-     */
-    private List<Stadium> stadia;
+public class StadiumApiTests extends AbstractApiTests<Stadium> {
 
     /**
      * Sets up mocked stadia for the tests to use.
      */
     @BeforeAll
     public void beforeAll() {
-        this.stadia = this.stadiumRepository.findAll();
+        getEntities().addAll(getStadiumRepository().findAll());
     }
 
     /**
@@ -43,7 +30,9 @@ public class StadiumApiTests extends AbstractApiTests {
     public void findStadiumById() {
         final StadiumApi stadiumApi = new StadiumApi(getApiClient());
 
-        for(final Stadium stadium : this.stadia) {
+        assertFalse(getEntities().isEmpty(), "Stadia should not be empty.");
+
+        for(final Stadium stadium : getEntities()) {
             final StadiumDTO result = stadiumApi.findStadiumById(stadium.getId()).block();
             final StadiumDTO stadiumDTO = map(stadium, StadiumDTO.class);
 

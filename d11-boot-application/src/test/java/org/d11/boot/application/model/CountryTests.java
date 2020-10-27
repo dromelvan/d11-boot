@@ -1,7 +1,6 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.CountryDTO;
-import org.d11.boot.application.mock.D11EasyRandom;
 import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -13,19 +12,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Country tests.
  */
-public class CountryTests {
-
-    /**
-     * Random stadium generator.
-     */
-    private final D11EasyRandom d11EasyRandom = new D11EasyRandom();
+public class CountryTests extends D11EasyRandomTests {
 
     /**
      * Tests stadium validity.
      */
     @Test
     public void isValid() {
-        final Country country = this.d11EasyRandom.nextObject(Country.class);
+        final Country country = generate(Country.class);
 
         assertTrue(country.isValid(), "New country should be valid.");
 
@@ -53,7 +47,7 @@ public class CountryTests {
      */
     @Test
     public void map() {
-        final Country country = this.d11EasyRandom.nextObject(Country.class);
+        final Country country = generate(Country.class);
 
         final ModelMapper modelMapper = new D11BootModelMapper();
 

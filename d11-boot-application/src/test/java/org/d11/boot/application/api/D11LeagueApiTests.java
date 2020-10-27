@@ -9,32 +9,27 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * D11 league API tests.
  */
-public class D11LeagueApiTests extends AbstractApiTests {
+public class D11LeagueApiTests extends AbstractApiTests<D11League> {
 
     /**
      * D11 league repository.
      */
     @Autowired
     private D11LeagueRepository d11LeagueRepository;
-    /**
-     * List of D11 leagues.
-     */
-    private List<D11League> d11Leagues;
 
     /**
      * Sets up mocked D11 leagues for the tests to use.
      */
     @BeforeAll
     public void beforeAll() {
-        this.d11Leagues = this.d11LeagueRepository.findAll();
+        getEntities().addAll(this.d11LeagueRepository.findAll());
     }
 
     /**
@@ -44,7 +39,9 @@ public class D11LeagueApiTests extends AbstractApiTests {
     public void findD11LeagueById() {
         final D11LeagueApi d11LeagueApi = new D11LeagueApi(getApiClient());
 
-        for(final D11League d11League : this.d11Leagues) {
+        assertFalse(getEntities().isEmpty(), "D11 leagues should not be empty.");
+
+        for(final D11League d11League : getEntities()) {
             final D11LeagueDTO result = d11LeagueApi.findD11LeagueById(d11League.getId()).block();
             final D11LeagueDTO d11LeagueDTO = map(d11League, D11LeagueDTO.class);
 

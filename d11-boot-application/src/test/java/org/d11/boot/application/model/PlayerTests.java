@@ -1,7 +1,6 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.PlayerDTO;
-import org.d11.boot.application.mock.D11EasyRandom;
 import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -15,12 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Player tests.
  */
-public class PlayerTests {
-
-    /**
-     * Random player generator.
-     */
-    private final D11EasyRandom d11EasyRandom = new D11EasyRandom();
+public class PlayerTests extends D11EasyRandomTests {
 
     /**
      * Tests player validity.
@@ -28,7 +22,7 @@ public class PlayerTests {
     @Test
     @SuppressWarnings({ "checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS" })
     public void isValid() {
-        final Player player = this.d11EasyRandom.nextObject(Player.class);
+        final Player player = generate(Player.class);
 
         player.prePersist();
 
@@ -110,7 +104,7 @@ public class PlayerTests {
      */
     @Test
     public void map() {
-        final Player player = this.d11EasyRandom.nextObject(Player.class);
+        final Player player = generate(Player.class);
 
         player.prePersist();
 
