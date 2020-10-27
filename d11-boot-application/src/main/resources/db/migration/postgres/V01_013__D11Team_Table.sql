@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS d11_team (
     id SERIAL PRIMARY KEY,
-    owner_id INTEGER NOT NULL,
-    co_owner_id INTEGER,
+    owner_id INTEGER NOT NULL REFERENCES "user",
+    co_owner_id INTEGER REFERENCES "user",
     name VARCHAR(255) NOT NULL,
     short_name VARCHAR(255) NOT NULL,
     code VARCHAR(3) NOT NULL,

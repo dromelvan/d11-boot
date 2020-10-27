@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS team (
     id SERIAL PRIMARY KEY,
-    stadium_id INTEGER NOT NULL,
+    stadium_id INTEGER NOT NULL REFERENCES stadium,
     whoscored_id INTEGER NOT NULL,
     name VARCHAR(255) NOT NULL,
     short_name VARCHAR(255) NOT NULL,
