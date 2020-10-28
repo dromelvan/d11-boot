@@ -7,6 +7,7 @@ import org.d11.boot.application.model.D11Entity;
 import org.d11.boot.application.model.D11League;
 import org.d11.boot.application.model.D11Team;
 import org.d11.boot.application.model.Player;
+import org.d11.boot.application.model.Position;
 import org.d11.boot.application.model.PremierLeague;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Stadium;
@@ -15,6 +16,7 @@ import org.d11.boot.application.model.User;
 import org.d11.boot.application.repository.CountryRepository;
 import org.d11.boot.application.repository.D11TeamRepository;
 import org.d11.boot.application.repository.PlayerRepository;
+import org.d11.boot.application.repository.PositionRepository;
 import org.d11.boot.application.repository.SeasonRepository;
 import org.d11.boot.application.repository.StadiumRepository;
 import org.d11.boot.application.repository.TeamRepository;
@@ -85,6 +87,12 @@ public abstract class AbstractApiTests<T extends D11Entity> extends MappingProvi
      */
     @Autowired
     @Getter
+    private PositionRepository positionRepository;
+    /**
+     * Player repository.
+     */
+    @Autowired
+    @Getter
     private PlayerRepository playerRepository;
     /**
      * Stadium repository.
@@ -128,6 +136,9 @@ public abstract class AbstractApiTests<T extends D11Entity> extends MappingProvi
 
         List<Country> countries = generate(Country.class, 2);
         countries = this.countryRepository.saveAll(countries);
+
+        final List<Position> positions = generate(Position.class, 2);
+        this.positionRepository.saveAll(positions);
 
         for(final Country country : countries) {
             final Player player = generate(Player.class);
