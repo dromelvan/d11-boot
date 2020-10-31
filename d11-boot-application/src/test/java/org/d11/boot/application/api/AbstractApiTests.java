@@ -1,11 +1,12 @@
 package org.d11.boot.application.api;
 
 import lombok.Getter;
-import org.d11.boot.application.mock.D11EasyRandom;
 import org.d11.boot.application.model.Country;
+import org.d11.boot.application.model.D11EasyRandomTests;
 import org.d11.boot.application.model.D11Entity;
 import org.d11.boot.application.model.D11League;
 import org.d11.boot.application.model.D11Team;
+import org.d11.boot.application.model.MatchWeek;
 import org.d11.boot.application.model.Player;
 import org.d11.boot.application.model.Position;
 import org.d11.boot.application.model.PremierLeague;
@@ -21,7 +22,6 @@ import org.d11.boot.application.repository.SeasonRepository;
 import org.d11.boot.application.repository.StadiumRepository;
 import org.d11.boot.application.repository.TeamRepository;
 import org.d11.boot.application.repository.UserRepository;
-import org.d11.boot.application.util.MappingProvider;
 import org.d11.boot.client.ApiClient;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -53,13 +52,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext
-@SuppressWarnings({ "checkstyle:ClassFanOutComplexity", "PMD.ExcessiveImports" })
-public abstract class AbstractApiTests<T extends D11Entity> extends MappingProvider {
+@SuppressWarnings({ "checkstyle:ClassFanOutComplexity", "checkstyle:ExecutableStatementCount", "PMD.ExcessiveImports" })
+public abstract class AbstractApiTests<T extends D11Entity> extends D11EasyRandomTests {
 
-    /**
-     * Random object generator.
-     */
-    private final D11EasyRandom d11EasyRandom = new D11EasyRandom();
     /**
      * Server port used when running tests with SpringBootTest.WebEnvironment.RANDOM_PORT.
      */
@@ -163,6 +158,12 @@ public abstract class AbstractApiTests<T extends D11Entity> extends MappingProvi
             season.setPremierLeague(premierLeague);
             premierLeague.setSeason(season);
 
+            final List<MatchWeek> matchWeeks = generate(MatchWeek.class, 2);
+            for(final MatchWeek matchWeek : matchWeeks) {
+                matchWeek.setPremierLeague(premierLeague);
+                premierLeague.getMatchWeeks().add(matchWeek);
+            }
+
             final D11League d11League = generate(D11League.class);
             season.setD11League(d11League);
             d11League.setSeason(season);
@@ -207,9 +208,7 @@ public abstract class AbstractApiTests<T extends D11Entity> extends MappingProvi
      */
     protected WebClient getWebClient() {
         return WebClient.builder()
-                .baseUrl(String.format("%s/%s/",
-                                       getApiClient().getBasePath(),
-                                       getResourceString()))
+                .baseUrl(String.format("%s/%s/", getApiClient().getBasePath(), getResourceString()))
                 .build();
     }
 
@@ -249,32 +248,6 @@ public abstract class AbstractApiTests<T extends D11Entity> extends MappingProvi
         assertEquals(HttpStatus.BAD_REQUEST,
                 webClientResponseException.getStatusCode(),
                 "Response should have status BAD_REQUEST.");
-    }
-
-    /**
-     * Generates a single object of a D11 entity class.
-     *
-     * @param clazz Generic class parameter.
-     * @param <U> The class of the object that will be generated.
-     * @return An object of the specified class.
-     */
-    protected <U extends D11Entity> U generate(final Class<U> clazz) {
-        return this.d11EasyRandom
-                .nextObject(clazz);
-    }
-
-    /**
-     * Generates a number of random objects of a D11 entity class.
-     *
-     * @param clazz Generic class parameter.
-     * @param count The number of objects that will be generated.
-     * @param <U> The class of objects that will be generated.
-     * @return A list of objects of the specified class with the specified length.
-     */
-    protected <U extends D11Entity> List<U> generate(final Class<U> clazz, final int count) {
-        return this.d11EasyRandom
-                .objects(clazz, count)
-                .collect(Collectors.toList());
     }
 
 }

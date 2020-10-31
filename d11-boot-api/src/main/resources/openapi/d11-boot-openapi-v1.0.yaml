@@ -307,6 +307,50 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /match-weeks/{matchWeekId}:
+    get:
+      summary: Find a match week by id.
+      operationId: findMatchWeekById
+      tags:
+        - matchWeek
+      parameters:
+        - name: matchWeekId
+          in: path
+          required: true
+          description: The id of the match week to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchWeek"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /match-weeks/current:
+    get:
+      summary: Find the current match week.
+      operationId: findCurrentMatchWeek
+      tags:
+        - matchWeek
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchWeek"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /d11-leagues/{d11LeagueId}:
     get:
       summary: Find a D11 league by id.
@@ -767,6 +811,48 @@ components:
           type: string
         season:
           $ref: '#/components/schemas/SeasonBase'
+
+    MatchWeekBase:
+      type: object
+      required:
+        - id
+        - matchWeekNumber
+        - status
+        - date
+      properties:
+        id:
+          type: integer
+          format: int64
+        matchWeekNumber:
+          type: integer
+          format: int32
+        status:
+          $ref: '#/components/schemas/Status'
+        date:
+          type: string
+          format: date
+    MatchWeek:
+      type: object
+      required:
+        - id
+        - matchWeekNumber
+        - status
+        - date
+        - premierLeague
+      properties:
+        id:
+          type: integer
+          format: int64
+        matchWeekNumber:
+          type: integer
+          format: int32
+        status:
+          $ref: '#/components/schemas/Status'
+        date:
+          type: string
+          format: date
+        premierLeague:
+          $ref: '#/components/schemas/PremierLeagueBase'
 
     D11LeagueBase:
       type: object

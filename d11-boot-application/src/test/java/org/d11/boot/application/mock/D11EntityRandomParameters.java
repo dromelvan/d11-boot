@@ -1,6 +1,7 @@
 package org.d11.boot.application.mock;
 
 import org.d11.boot.application.model.Country;
+import org.d11.boot.application.model.MatchWeek;
 import org.d11.boot.application.model.Player;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Stadium;
@@ -43,6 +44,7 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
         randomize(FieldPredicates.named("code"), new StringRandomizer(Team.CODE_LENGTH, Team.CODE_LENGTH, System.currentTimeMillis()));
         randomize(FieldPredicates.named("iso"), new StringRandomizer(Country.ISO_CODE_LENGTH, Country.ISO_CODE_LENGTH, System.currentTimeMillis()));
         randomize(FieldPredicates.named("sortOrder"), new IntegerRangeRandomizer(1, MAX_POSITIVE));
+        randomize(FieldPredicates.named("matchWeekNumber"), new IntegerRangeRandomizer(1, MatchWeek.MAX_MATCH_WEEK_NUMBER));
 
         randomize(FieldPredicates.named("email").and(FieldPredicates.inClass(User.class)), new EmailRandomizer());
 
