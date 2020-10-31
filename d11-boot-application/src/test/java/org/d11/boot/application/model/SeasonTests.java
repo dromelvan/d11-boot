@@ -1,9 +1,7 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.SeasonDTO;
-import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 
@@ -64,10 +62,8 @@ public class SeasonTests extends D11EasyRandomTests {
     public void map() {
         final Season season = generate(Season.class);
 
-        final ModelMapper modelMapper = new D11BootModelMapper();
-
-        final SeasonDTO seasonDTO = modelMapper.map(season, SeasonDTO.class);
-        final Season mappedSeason = modelMapper.map(seasonDTO, Season.class);
+        final SeasonDTO seasonDTO = map(season, SeasonDTO.class);
+        final Season mappedSeason = map(seasonDTO, Season.class);
 
         assertEquals(season, mappedSeason, "Season should equal mapped season.");
     }

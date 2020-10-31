@@ -1,9 +1,7 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.D11TeamDTO;
-import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -66,10 +64,8 @@ public class D11TeamTests extends D11EasyRandomTests {
     public void map() {
         final D11Team d11Team = generate(D11Team.class);
 
-        final ModelMapper modelMapper = new D11BootModelMapper();
-
-        final D11TeamDTO d11TeamDTO = modelMapper.map(d11Team, D11TeamDTO.class);
-        final D11Team mappedD11Team = modelMapper.map(d11TeamDTO, D11Team.class);
+        final D11TeamDTO d11TeamDTO = map(d11Team, D11TeamDTO.class);
+        final D11Team mappedD11Team = map(d11TeamDTO, D11Team.class);
 
         assertEquals(d11Team, mappedD11Team, "D11 team should equal mapped D11 team.");
     }

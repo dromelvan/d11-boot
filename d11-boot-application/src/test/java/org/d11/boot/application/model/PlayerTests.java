@@ -1,9 +1,7 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.PlayerDTO;
-import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 
@@ -106,12 +104,8 @@ public class PlayerTests extends D11EasyRandomTests {
     public void map() {
         final Player player = generate(Player.class);
 
-        player.prePersist();
-
-        final ModelMapper modelMapper = new D11BootModelMapper();
-
-        final PlayerDTO playerDTO = modelMapper.map(player, PlayerDTO.class);
-        final Player mappedPlayer = modelMapper.map(playerDTO, Player.class);
+        final PlayerDTO playerDTO = map(player, PlayerDTO.class);
+        final Player mappedPlayer = map(playerDTO, Player.class);
 
         assertEquals(player, mappedPlayer, "Player should equal mapped player.");
     }

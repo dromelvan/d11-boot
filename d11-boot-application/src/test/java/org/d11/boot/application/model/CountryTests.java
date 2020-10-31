@@ -1,9 +1,7 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.CountryDTO;
-import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -49,10 +47,8 @@ public class CountryTests extends D11EasyRandomTests {
     public void map() {
         final Country country = generate(Country.class);
 
-        final ModelMapper modelMapper = new D11BootModelMapper();
-
-        final CountryDTO countryDTO = modelMapper.map(country, CountryDTO.class);
-        final Country mappedCountry = modelMapper.map(countryDTO, Country.class);
+        final CountryDTO countryDTO = map(country, CountryDTO.class);
+        final Country mappedCountry = map(countryDTO, Country.class);
 
         assertEquals(country, mappedCountry, "Country should equal mapped country.");
     }

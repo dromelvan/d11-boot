@@ -1,9 +1,7 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.PositionDTO;
-import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -51,10 +49,8 @@ public class PositionTests extends D11EasyRandomTests {
     public void map() {
         final Position position = generate(Position.class);
 
-        final ModelMapper modelMapper = new D11BootModelMapper();
-
-        final PositionDTO positionDTO = modelMapper.map(position, PositionDTO.class);
-        final Position mappedPosition = modelMapper.map(positionDTO, Position.class);
+        final PositionDTO positionDTO = map(position, PositionDTO.class);
+        final Position mappedPosition = map(positionDTO, Position.class);
 
         assertEquals(position, mappedPosition, "Position  should equal mapped position.");
     }

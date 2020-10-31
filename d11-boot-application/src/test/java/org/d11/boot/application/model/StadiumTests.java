@@ -1,9 +1,7 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.StadiumDTO;
-import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -57,10 +55,8 @@ public class StadiumTests extends D11EasyRandomTests {
     public void map() {
         final Stadium stadium = generate(Stadium.class);
 
-        final ModelMapper modelMapper = new D11BootModelMapper();
-
-        final StadiumDTO stadiumDTO = modelMapper.map(stadium, StadiumDTO.class);
-        final Stadium mappedStadium = modelMapper.map(stadiumDTO, Stadium.class);
+        final StadiumDTO stadiumDTO = map(stadium, StadiumDTO.class);
+        final Stadium mappedStadium = map(stadiumDTO, Stadium.class);
 
         assertEquals(stadium, mappedStadium, "Stadium should equal mapped stadium.");
     }

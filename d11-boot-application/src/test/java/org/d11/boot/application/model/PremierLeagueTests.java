@@ -1,9 +1,7 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.PremierLeagueDTO;
-import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -44,10 +42,8 @@ public class PremierLeagueTests extends D11EasyRandomTests {
     public void map() {
         final PremierLeague premierLeague = generate(PremierLeague.class);
 
-        final ModelMapper modelMapper = new D11BootModelMapper();
-
-        final PremierLeagueDTO premierLeagueDTO = modelMapper.map(premierLeague, PremierLeagueDTO.class);
-        final PremierLeague mappedPremierLeague = modelMapper.map(premierLeagueDTO, PremierLeague.class);
+        final PremierLeagueDTO premierLeagueDTO = map(premierLeague, PremierLeagueDTO.class);
+        final PremierLeague mappedPremierLeague = map(premierLeagueDTO, PremierLeague.class);
 
         assertEquals(premierLeague, mappedPremierLeague, "Premier league should equal mapped premier league.");
     }

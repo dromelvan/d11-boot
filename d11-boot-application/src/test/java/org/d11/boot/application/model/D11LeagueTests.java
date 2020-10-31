@@ -1,9 +1,7 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.D11LeagueDTO;
-import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -44,10 +42,8 @@ public class D11LeagueTests extends D11EasyRandomTests {
     public void map() {
         final D11League d11League = generate(D11League.class);
 
-        final ModelMapper modelMapper = new D11BootModelMapper();
-
-        final D11LeagueDTO d11LeagueDTO = modelMapper.map(d11League, D11LeagueDTO.class);
-        final D11League mappedD11League = modelMapper.map(d11LeagueDTO, D11League.class);
+        final D11LeagueDTO d11LeagueDTO = map(d11League, D11LeagueDTO.class);
+        final D11League mappedD11League = map(d11LeagueDTO, D11League.class);
 
         assertEquals(d11League, mappedD11League, "D11 league should equal mapped D11 league.");
     }

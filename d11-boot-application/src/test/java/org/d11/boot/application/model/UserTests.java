@@ -1,9 +1,7 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.UserDTO;
-import org.d11.boot.application.util.D11BootModelMapper;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -53,10 +51,8 @@ public class UserTests extends D11EasyRandomTests {
     public void map() {
         final User user = generate(User.class);
 
-        final ModelMapper modelMapper = new D11BootModelMapper();
-
-        final UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-        final User mappedUser = modelMapper.map(userDTO, User.class);
+        final UserDTO userDTO = map(user, UserDTO.class);
+        final User mappedUser = map(userDTO, User.class);
         // Email is not stored in the DTO
         mappedUser.setEmail(user.getEmail());
 
