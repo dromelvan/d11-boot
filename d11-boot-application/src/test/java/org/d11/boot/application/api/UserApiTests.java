@@ -2,8 +2,8 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.UserDTO;
 import org.d11.boot.application.model.User;
+import org.d11.boot.application.repository.UserRepository;
 import org.d11.boot.client.api.UserApi;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,15 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * User API tests.
  */
-public class UserApiTests extends AbstractApiTests<User> {
-
-    /**
-     * Sets up mocked users for the tests to use.
-     */
-    @BeforeAll
-    public void beforeAll() {
-        getEntities().addAll(getUserRepository().findAll());
-    }
+public class UserApiTests extends AbstractApiTests<User, UserRepository> {
 
     /**
      * Tests the findUserById API operation.

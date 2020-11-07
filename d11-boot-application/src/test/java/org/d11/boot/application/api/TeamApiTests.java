@@ -2,8 +2,8 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.TeamDTO;
 import org.d11.boot.application.model.Team;
+import org.d11.boot.application.repository.TeamRepository;
 import org.d11.boot.client.api.TeamApi;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,15 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Team API tests.
  */
-public class TeamApiTests extends AbstractApiTests<Team> {
-
-    /**
-     * Sets up mocked teams for the tests to use.
-     */
-    @BeforeAll
-    public void beforeAll() {
-        getEntities().addAll(getTeamRepository().findAll());
-    }
+public class TeamApiTests extends AbstractApiTests<Team, TeamRepository> {
 
     /**
      * Tests the findTeamById API operation.

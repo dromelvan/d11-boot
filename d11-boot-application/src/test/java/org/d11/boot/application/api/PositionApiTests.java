@@ -2,11 +2,11 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.PositionDTO;
 import org.d11.boot.application.model.Position;
+import org.d11.boot.application.repository.PositionRepository;
 import org.d11.boot.client.api.PositionApi;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,15 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Position API tests.
  */
-public class PositionApiTests extends AbstractApiTests<Position> {
+public class PositionApiTests extends AbstractApiTests<Position, PositionRepository> {
 
     /**
-     * Sets up mocked positions for the tests to use.
+     * Sets up positions for the tests to use.
      */
+    @Override
     @BeforeAll
     public void beforeAll() {
-        getEntities().addAll(getPositionRepository().findAll());
-        Collections.sort(getEntities());
+        getEntities().addAll(getRepository().findByOrderBySortOrder());
     }
 
     /**

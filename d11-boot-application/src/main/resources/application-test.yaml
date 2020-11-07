@@ -1,21 +1,23 @@
 spring:
   flyway:
-    enabled: false
+    # enabled: false
+    schemas:
+    locations: classpath:db/migration/table,classpath:db/migration/test-data
   datasource:
     username: sa
-    password: 
-    url: jdbc:h2:mem:testdb    
+    password:
+    url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
         default_schema:
-    hibernate:
+    # hibernate:
       # Get some error at the end of tests without this setting.
-      ddl-auto: update
+    #  ddl-auto: update
 
-hibernate:
-  hbm2ddl:
-    auto: create        
+#hibernate:
+#  hbm2ddl:
+#    auto: create
 

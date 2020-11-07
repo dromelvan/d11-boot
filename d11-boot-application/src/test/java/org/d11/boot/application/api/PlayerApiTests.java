@@ -2,8 +2,8 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.PlayerDTO;
 import org.d11.boot.application.model.Player;
+import org.d11.boot.application.repository.PlayerRepository;
 import org.d11.boot.client.api.PlayerApi;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,15 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Player API tests.
  */
-public class PlayerApiTests extends AbstractApiTests<Player> {
-
-    /**
-     * Sets up mocked players for the tests to use.
-     */
-    @BeforeAll
-    public void beforeAll() {
-        getEntities().addAll(getPlayerRepository().findAll());
-    }
+public class PlayerApiTests extends AbstractApiTests<Player, PlayerRepository> {
 
     /**
      * Tests the findPlayerById API operation.

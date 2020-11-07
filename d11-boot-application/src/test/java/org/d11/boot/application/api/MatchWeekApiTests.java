@@ -6,7 +6,6 @@ import org.d11.boot.application.repository.MatchWeekRepository;
 import org.d11.boot.client.api.MatchWeekApi;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -20,20 +19,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Match week API tests.
  */
-public class MatchWeekApiTests extends AbstractApiTests<MatchWeek> {
+public class MatchWeekApiTests extends AbstractApiTests<MatchWeek, MatchWeekRepository> {
 
     /**
-     * Match week repository.
+     * Sets up match weeks for the tests to use.
      */
-    @Autowired
-    private MatchWeekRepository matchWeekRepository;
-
-    /**
-     * Sets up mocked match weeks for the tests to use.
-     */
+    @Override
     @BeforeAll
     public void beforeAll() {
-        final List<MatchWeek> matchWeeks = this.matchWeekRepository.findAll();
+        final List<MatchWeek> matchWeeks = getRepository().findAll();
         // Start with yesterday and set the date of each match week one week forward from the previous.
         // This means the 'current' match week should be the second one.
         LocalDate localDate = LocalDate.now().minus(1, ChronoUnit.DAYS);
@@ -41,7 +35,7 @@ public class MatchWeekApiTests extends AbstractApiTests<MatchWeek> {
             matchWeek.setDate(localDate);
             localDate = localDate.plus(1, ChronoUnit.DAYS);
         }
-        getEntities().addAll(this.matchWeekRepository.saveAll(matchWeeks));
+        getEntities().addAll(getRepository().saveAll(matchWeeks));
     }
 
     /**

@@ -2,8 +2,8 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.StadiumDTO;
 import org.d11.boot.application.model.Stadium;
+import org.d11.boot.application.repository.StadiumRepository;
 import org.d11.boot.client.api.StadiumApi;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,15 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Stadium API tests.
  */
-public class StadiumApiTests extends AbstractApiTests<Stadium> {
-
-    /**
-     * Sets up mocked stadia for the tests to use.
-     */
-    @BeforeAll
-    public void beforeAll() {
-        getEntities().addAll(getStadiumRepository().findAll());
-    }
+public class StadiumApiTests extends AbstractApiTests<Stadium, StadiumRepository> {
 
     /**
      * Tests the findStadiumById API operation.

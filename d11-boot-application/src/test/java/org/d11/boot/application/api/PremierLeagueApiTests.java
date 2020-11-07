@@ -5,9 +5,7 @@ import org.d11.boot.api.model.PremierLeagueDTO;
 import org.d11.boot.application.model.PremierLeague;
 import org.d11.boot.application.repository.PremierLeagueRepository;
 import org.d11.boot.client.api.PremierLeagueApi;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -16,21 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Premier League API tests.
  */
-public class PremierLeagueApiTests extends AbstractApiTests<PremierLeague> {
-
-    /**
-     * Premier League repository.
-     */
-    @Autowired
-    private PremierLeagueRepository premierLeagueRepository;
-
-    /**
-     * Sets up mocked premier leagues for the tests to use.
-     */
-    @BeforeAll
-    public void beforeAll() {
-        getEntities().addAll(this.premierLeagueRepository.findAll());
-    }
+public class PremierLeagueApiTests extends AbstractApiTests<PremierLeague, PremierLeagueRepository> {
 
     /**
      * Tests the findPremierLeagueById API operation.

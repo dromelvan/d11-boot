@@ -2,8 +2,8 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.CountryDTO;
 import org.d11.boot.application.model.Country;
+import org.d11.boot.application.repository.CountryRepository;
 import org.d11.boot.client.api.CountryApi;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,15 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Country API tests.
  */
-public class CountryApiTests extends AbstractApiTests<Country> {
-
-    /**
-     * Sets up mocked countries for the tests to use.
-     */
-    @BeforeAll
-    public void beforeAll() {
-        getEntities().addAll(getCountryRepository().findAll());
-    }
+public class CountryApiTests extends AbstractApiTests<Country, CountryRepository> {
 
     /**
      * Tests the findCountryById API operation.

@@ -2,11 +2,11 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.SeasonDTO;
 import org.d11.boot.application.model.Season;
+import org.d11.boot.application.repository.SeasonRepository;
 import org.d11.boot.client.api.SeasonApi;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,16 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Season API tests.
  */
-public class SeasonApiTests extends AbstractApiTests<Season> {
+public class SeasonApiTests extends AbstractApiTests<Season, SeasonRepository> {
 
     /**
-     * Sets up mocked seasons for the tests to use.
+     * Sets up seasons for the tests to use.
      */
+    @Override
     @BeforeAll
     public void beforeAll() {
-        getEntities().addAll(getSeasonRepository().findAll());
-        Collections.sort(getEntities());
-        Collections.reverse(getEntities());
+        getEntities().addAll(getRepository().findByOrderByDateDesc());
     }
 
     /**
