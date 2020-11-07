@@ -6,12 +6,12 @@ spring:
   flyway:
     baselineOnMigrate: true
     schemas: production
-    locations: classpath:db/migration/postgres    
+    locations: classpath:db/migration/table,classpath:db/migration/data
   datasource:
     # default connection pool
     hikari:
       connectionTimeout: 20000
-      maximumPoolSize: 5    
+      maximumPoolSize: 5
   jpa:
     properties:
       hibernate:
