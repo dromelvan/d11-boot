@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotEmpty;
  */
 @Data
 @Entity
+@Table(name = "application_user")
 public class User extends D11Entity {
 
     /**
