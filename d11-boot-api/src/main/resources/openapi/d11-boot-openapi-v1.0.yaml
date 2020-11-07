@@ -378,6 +378,50 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /d11-match-weeks/{d11MatchWeekId}:
+    get:
+      summary: Find a D11 match week by id.
+      operationId: findD11MatchWeekById
+      tags:
+        - d11MatchWeek
+      parameters:
+        - name: d11MatchWeekId
+          in: path
+          required: true
+          description: The id of the D11 match week to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/D11MatchWeek"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /d11-match-weeks/current:
+    get:
+      summary: Find the current D11 match week.
+      operationId: findCurrentD11MatchWeek
+      tags:
+        - d11MatchWeek
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/D11MatchWeek"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
 
 components:
   responses:
@@ -839,6 +883,7 @@ components:
         - status
         - date
         - premierLeague
+        - d11MatchWeek
       properties:
         id:
           type: integer
@@ -853,6 +898,8 @@ components:
           format: date
         premierLeague:
           $ref: '#/components/schemas/PremierLeagueBase'
+        d11MatchWeek:
+          $ref: '#/components/schemas/D11MatchWeekBase'
 
     D11LeagueBase:
       type: object
@@ -879,4 +926,43 @@ components:
           type: string
         season:
           $ref: '#/components/schemas/SeasonBase'
+
+    D11MatchWeekBase:
+      type: object
+      required:
+        - id
+        - matchWeekNumber
+        - date
+      properties:
+        id:
+          type: integer
+          format: int64
+        matchWeekNumber:
+          type: integer
+          format: int32
+        date:
+          type: string
+          format: date
+    D11MatchWeek:
+      type: object
+      required:
+        - id
+        - matchWeekNumber
+        - date
+        - d11League
+        - matchWeek
+      properties:
+        id:
+          type: integer
+          format: int64
+        matchWeekNumber:
+          type: integer
+          format: int32
+        date:
+          type: string
+          format: date
+        d11League:
+          $ref: '#/components/schemas/D11LeagueBase'
+        matchWeek:
+          $ref: '#/components/schemas/MatchWeekBase'
 
