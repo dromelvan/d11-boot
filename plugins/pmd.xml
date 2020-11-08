@@ -51,6 +51,12 @@
         </properties>
     </rule>
 
+    <rule ref="category/java/codestyle.xml/TooManyStaticImports">
+        <properties>
+            <property name="maximumStaticImports" value="5" />
+        </properties>
+    </rule>
+
     <rule ref="category/java/documentation.xml/CommentSize">
         <properties>
             <property name="maxLines" value="10" />
