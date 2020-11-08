@@ -1,9 +1,9 @@
 package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.MatchWeekDTO;
+import org.d11.boot.api.service.MatchWeekApiService;
 import org.d11.boot.application.model.MatchWeek;
 import org.d11.boot.application.repository.MatchWeekRepository;
-import org.d11.boot.client.api.MatchWeekApi;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -14,12 +14,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Match week API tests.
  */
-public class MatchWeekApiTests extends AbstractApiTests<MatchWeek, MatchWeekRepository> {
+public class MatchWeekApiTests extends AbstractApiTests<MatchWeek, MatchWeekRepository, MatchWeekApiService> {
 
     /**
      * Sets up match weeks for the tests to use.
@@ -36,6 +37,7 @@ public class MatchWeekApiTests extends AbstractApiTests<MatchWeek, MatchWeekRepo
             localDate = localDate.plus(1, ChronoUnit.DAYS);
         }
         getEntities().addAll(getRepository().saveAll(matchWeeks));
+        assertFalse(getEntities().isEmpty(), "Match weeks should not be empty.");
     }
 
     /**
@@ -43,19 +45,15 @@ public class MatchWeekApiTests extends AbstractApiTests<MatchWeek, MatchWeekRepo
      */
     @Test
     public void findMatchWeekById() {
-        final MatchWeekApi matchWeekApi = new MatchWeekApi(getApiClient());
-
-        assertFalse(getEntities().isEmpty(), "Match weeks should not be empty.");
-
         for(final MatchWeek matchWeek : getEntities()) {
-            final MatchWeekDTO result = matchWeekApi.findMatchWeekById(matchWeek.getId()).block();
+            final MatchWeekDTO result = getApiService().findMatchWeekById(matchWeek.getId());
             final MatchWeekDTO matchWeekDTO = map(matchWeek, MatchWeekDTO.class);
             assertNotNull(result, "Match week by id should not be null.");
             assertEquals(matchWeekDTO, result, "Match week by id should equal MatchDay.");
         }
 
-        assertNotFound(matchWeekApi.findMatchWeekById(-1L));
-        assertBadRequest(getMono("BAD_REQUEST"));
+        assertNull(getApiService().findMatchWeekById(-1L), "Match week not found should return null.");
+        assertBadRequest(get("BAD_REQUEST"));
     }
 
     /**
@@ -63,8 +61,7 @@ public class MatchWeekApiTests extends AbstractApiTests<MatchWeek, MatchWeekRepo
      */
     @Test
     public void findCurrentMatchWeek() {
-        final MatchWeekApi matchWeekApi = new MatchWeekApi(getApiClient());
-        final MatchWeekDTO result = matchWeekApi.findCurrentMatchWeek().block();
+        final MatchWeekDTO result = getApiService().findCurrentMatchWeek();
 
         boolean currentMatchWeekFound = false;
 

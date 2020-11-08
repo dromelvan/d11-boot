@@ -1,10 +1,10 @@
 package org.d11.boot.application.api;
 
 import lombok.Getter;
+import org.d11.boot.api.service.D11ApiService;
 import org.d11.boot.application.model.D11EasyRandomTests;
 import org.d11.boot.application.model.D11Entity;
 import org.d11.boot.application.repository.D11EntityRepository;
-import org.d11.boot.client.ApiClient;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -28,17 +29,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @param <T> The entity class this tests is based on.
  * @param <U> The repository class for the entity class.
+ * @param <V> The API service class this test will use.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public abstract class AbstractApiTests<T extends D11Entity, U extends D11EntityRepository<T>> extends D11EasyRandomTests {
+public abstract class AbstractApiTests<T extends D11Entity, U extends D11EntityRepository<T>, V extends D11ApiService> extends D11EasyRandomTests {
 
     /**
      * Server port used when running tests with SpringBootTest.WebEnvironment.RANDOM_PORT.
      */
     @LocalServerPort
     private int localServerPort;
+    /**
+     * API service for the tests to use.
+     */
+    @Getter
+    @Autowired
+    private V apiService;
     /**
      * Repository for the entity class the test is going to test.
      */
@@ -52,31 +60,20 @@ public abstract class AbstractApiTests<T extends D11Entity, U extends D11EntityR
     private final List<T> entities = new ArrayList<>();
 
     /**
-     * Sets up entities for the tests to use.
+     * Sets up the base path port for the API service to use.
+     */
+    @BeforeAll
+    public void setBasePathPort() {
+        this.apiService.setBasePathPort(this.localServerPort);
+    }
+
+    /**
+     * Sets up the entities for the tests to use.
      */
     @BeforeAll
     public void beforeAll() {
         getEntities().addAll(this.repository.findAll());
-    }
-
-    /**
-     * Base path for test server.
-     *
-     * @return http://localhost:localServerPort.
-     */
-    protected String getBasePath() {
-        return String.format("http://localhost:%d", this.localServerPort);
-    }
-
-    /**
-     * Gets a configured API client.
-     *
-     * @return Configured API client.
-     */
-    protected ApiClient getApiClient() {
-        final ApiClient apiClient = new ApiClient();
-        apiClient.setBasePath(getBasePath());
-        return apiClient;
+        assertFalse(getEntities().isEmpty(), "Entities should not be empty.");
     }
 
     /**
@@ -85,18 +82,30 @@ public abstract class AbstractApiTests<T extends D11Entity, U extends D11EntityR
      * @param uri The uri we want to get a mono for, based on the webclient base path.
      * @return A mono for the request URI.
      */
-    protected Mono<?> getMono(final String uri) {
-        return getWebClient().get().uri(uri).retrieve().bodyToMono(Object.class);
+    protected Mono<?> get(final String uri) {
+        return get(getResourceString(), uri);
+    }
+
+    /**
+     * Gets a mono from an URI combined with a resource string.
+     *
+     * @param resourceString Resource string that will be added to the base path.
+     * @param uri The uri we want to get a mono for, based on the webclient base path.
+     * @return A mono for the request URI combined with the resource string.
+     */
+    protected Mono<?> get(final String resourceString, final String uri) {
+        return getWebClient(resourceString).get().uri(uri).retrieve().bodyToMono(Object.class);
     }
 
     /**
      * Gets a configured WebClient.
      *
+     * @param resourceString Resource string that will be added to the base path.
      * @return A configured WebClient.
      */
-    protected WebClient getWebClient() {
+    protected WebClient getWebClient(final String resourceString) {
         return WebClient.builder()
-                .baseUrl(String.format("%s/%s/", getApiClient().getBasePath(), getResourceString()))
+                .baseUrl(String.format("%s/%s/", this.apiService.getApiClient().getBasePath(), resourceString))
                 .build();
     }
 
@@ -115,27 +124,13 @@ public abstract class AbstractApiTests<T extends D11Entity, U extends D11EntityR
     }
 
     /**
-     * Blocks the mono and assert that it throws a 404 NOT_FOUND exception.
-     *
-     * @param mono The mono performing thw web request we want to test.
-     */
-    protected void assertNotFound(final Mono<?> mono) {
-        final WebClientResponseException webClientResponseException = assertThrows(WebClientResponseException.class, mono::block);
-        assertEquals(HttpStatus.NOT_FOUND,
-                webClientResponseException.getStatusCode(),
-                "Response should have status NOT_FOUND.");
-    }
-
-    /**
      * Blocks the mono and assert that it throws a 400 BAD_REQUEST exception.
      *
      * @param mono The mono performing thw web request we want to test.
      */
     protected void assertBadRequest(final Mono<?> mono) {
         final WebClientResponseException webClientResponseException = assertThrows(WebClientResponseException.class, mono::block);
-        assertEquals(HttpStatus.BAD_REQUEST,
-                webClientResponseException.getStatusCode(),
-                "Response should have status BAD_REQUEST.");
+        assertEquals(HttpStatus.BAD_REQUEST, webClientResponseException.getStatusCode(), "Response should have status BAD_REQUEST.");
     }
 
 }

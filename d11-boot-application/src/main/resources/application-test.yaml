@@ -1,3 +1,7 @@
+d11:
+  api:
+    basePath: http://localhost:%d
+
 spring:
   flyway:
     # enabled: false
