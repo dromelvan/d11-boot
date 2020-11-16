@@ -192,7 +192,9 @@
     <module name="TypeName"/>
 
     <module name="AnonInnerLength"/>
-    <module name="ExecutableStatementCount"/>
+    <module name="ExecutableStatementCount">
+      <property name="max" value="35"/>
+    </module>
     <module name="MethodCount">
       <property name="maxTotal" value="30"/>
     </module>
