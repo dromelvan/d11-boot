@@ -351,6 +351,33 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /matches/{matchId}:
+    get:
+      summary: Find a match by id.
+      operationId: findMatchById
+      tags:
+        - match
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          description: The id of the match to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /d11-leagues/{d11LeagueId}:
     get:
       summary: Find a D11 league by id.
@@ -884,6 +911,7 @@ components:
         - date
         - premierLeague
         - d11MatchWeek
+        - matches
       properties:
         id:
           type: integer
@@ -900,6 +928,102 @@ components:
           $ref: '#/components/schemas/PremierLeagueBase'
         d11MatchWeek:
           $ref: '#/components/schemas/D11MatchWeekBase'
+        matches:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: integer
+              format: int64
+
+    MatchBase:
+      type: object
+      required:
+        - id
+        - whoscoredId
+        - datetime
+        - home_team_goals
+        - away_team_goals
+        - previous_home_team_goals
+        - previous_away_team_goals
+        - elapsed
+        - status
+      properties:
+        id:
+          type: integer
+          format: int64
+        whoscoredId:
+          type: integer
+          format: int64
+        datetime:
+          type: string
+          format: date-time
+        homeTeamGoals:
+          type: integer
+          format: int32
+        awayTeamGoals:
+          type: integer
+          format: int32
+        previousHomeTeamGoals:
+          type: integer
+          format: int32
+        previousAwayTeamGoals:
+          type: integer
+          format: int32
+        elapsed:
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
+    Match:
+      type: object
+      required:
+        - id
+        - whoscoredId
+        - datetime
+        - home_team_goals
+        - away_team_goals
+        - previous_home_team_goals
+        - previous_away_team_goals
+        - elapsed
+        - status
+        - homeTeam
+        - awayTeam
+        - matchWeek
+        - stadium
+      properties:
+        id:
+          type: integer
+          format: int64
+        whoscoredId:
+          type: integer
+          format: int64
+        datetime:
+          type: string
+          format: date-time
+        homeTeamGoals:
+          type: integer
+          format: int32
+        awayTeamGoals:
+          type: integer
+          format: int32
+        previousHomeTeamGoals:
+          type: integer
+          format: int32
+        previousAwayTeamGoals:
+          type: integer
+          format: int32
+        elapsed:
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
+        homeTeam:
+          $ref: '#/components/schemas/TeamBase'
+        awayTeam:
+          $ref: '#/components/schemas/TeamBase'
+        matchWeek:
+          $ref: '#/components/schemas/MatchWeekBase'
+        stadium:
+          $ref: '#/components/schemas/Stadium'
 
     D11LeagueBase:
       type: object

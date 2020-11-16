@@ -50,6 +50,12 @@ openApiGenerate {
         interfaceOnly: "true",
         booleanGetterPrefix: "is"
     ]
+    typeMappings = [
+        "OffsetDateTime": "LocalDateTime"
+    ]
+    importMappings = [
+        "java.time.OffsetDateTime": "java.time.LocalDateTime"
+    ]
 }
 
 task openApiClean(type: Delete) {
