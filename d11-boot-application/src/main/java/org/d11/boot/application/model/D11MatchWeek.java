@@ -40,6 +40,8 @@ public class D11MatchWeek extends D11Entity {
     @ManyToOne
     @JoinColumn(name = "d11_league_id")
     @NotNull
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private D11League d11League;
     /**
      * The Premier League match week this D11 match week is played in.
