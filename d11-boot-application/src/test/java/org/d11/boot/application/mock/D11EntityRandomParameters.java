@@ -1,6 +1,7 @@
 package org.d11.boot.application.mock;
 
 import org.d11.boot.application.model.Country;
+import org.d11.boot.application.model.Match;
 import org.d11.boot.application.model.MatchWeek;
 import org.d11.boot.application.model.Player;
 import org.d11.boot.application.model.Season;
@@ -56,6 +57,12 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
         randomize(FieldPredicates.named("established").and(FieldPredicates.inClass(Team.class)), new IntegerRangeRandomizer(MIN_YEAR, MAX_YEAR));
 
         randomize(FieldPredicates.named("name").and(FieldPredicates.inClass(Season.class)), new YearIntervalRandomizer());
+
+        randomize(FieldPredicates.named("homeTeamGoals").and(FieldPredicates.inClass(Match.class)), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("awayTeamGoals").and(FieldPredicates.inClass(Match.class)), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("previousHomeTeamGoals").and(FieldPredicates.inClass(Match.class)), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("previousAwayTeamGoals").and(FieldPredicates.inClass(Match.class)), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("elapsed").and(FieldPredicates.inClass(Match.class)), new StringRandomizer(1, Match.ELAPSED_TIME_MAX_LENGTH));
     }
 
 }

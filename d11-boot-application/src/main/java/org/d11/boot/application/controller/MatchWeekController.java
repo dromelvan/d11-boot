@@ -30,8 +30,8 @@ public class MatchWeekController extends AbstractRepositoryServiceController<Mat
 
     @Override
     public ResponseEntity<MatchWeekDTO> findCurrentMatchWeek() {
-        final MatchWeekDTO matchDayDTO = getRepositoryService().findCurrentMatchWeek();
-        return ResponseEntity.ok(matchDayDTO);
+        final MatchWeekDTO matchWeekDTO = getRepositoryService().findCurrentMatchWeek();
+        return ResponseEntity.ok(matchWeekDTO);
     }
 
 }

@@ -21,9 +21,9 @@ public interface MatchWeekRepository extends D11EntityRepository<MatchWeek> {
      */
     Optional<MatchWeek> findFirstByDateLessThanEqualOrderByDateDesc(LocalDate date);
 
-
-    //  @Override
-    //  //@EntityGraph(attributePaths = { "matches" })
-    //  Optional<MatchWeek> findById(Long id);
+    // @Override
+    // @Nonnull
+    // @EntityGraph(attributePaths = { "matches" })
+    // Optional<MatchWeek> findById(@Nonnull Long id);
 
 }

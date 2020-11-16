@@ -2,13 +2,17 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.MatchWeekDTO;
 import org.d11.boot.api.service.MatchWeekApiService;
+import org.d11.boot.application.model.Match;
 import org.d11.boot.application.model.MatchWeek;
 import org.d11.boot.application.repository.MatchWeekRepository;
+import org.d11.boot.application.util.MatchesByDateConverter;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,7 +53,9 @@ public class MatchWeekApiTests extends AbstractApiTests<MatchWeek, MatchWeekRepo
             final MatchWeekDTO result = getApiService().findMatchWeekById(matchWeek.getId());
             final MatchWeekDTO matchWeekDTO = map(matchWeek, MatchWeekDTO.class);
             assertNotNull(result, "Match week by id should not be null.");
-            assertEquals(matchWeekDTO, result, "Match week by id should equal MatchDay.");
+            assertEquals(matchWeekDTO, result, "Match week by id should equal MatchWeek.");
+            assertEquals(new MatchesByDateConverter().convert(matchWeek.getMatches()), result.getMatches(),
+                         "Match week by id matches should equal converted MatchWeek matches.");
         }
 
         assertNull(getApiService().findMatchWeekById(-1L), "Match week not found should return null.");
@@ -72,11 +78,28 @@ public class MatchWeekApiTests extends AbstractApiTests<MatchWeek, MatchWeekRepo
 
                 assertNotNull(result, "Current match week should not be null.");
                 assertEquals(matchWeekDTO, result, "Current match week result should equal current match week.");
+                assertEquals(new MatchesByDateConverter().convert(matchWeek.getMatches()), result.getMatches(),
+                             "Current match week matches should equal converted MatchWeek matches.");
                 break;
             }
         }
 
         assertTrue(currentMatchWeekFound, "The test did not complete correctly as no current match week was found.");
+    }
+
+    /**
+     * Tests match week match order.
+     */
+    @Test
+    public void matchOrder() {
+        for(final MatchWeek matchWeek : getEntities()) {
+            assertFalse(matchWeek.getMatches().isEmpty(), "Match week matches should not be empty.");
+
+            final List<Match> matches = new ArrayList<>(matchWeek.getMatches());
+            matches.sort(Comparator.comparing(Match::getDatetime));
+
+            assertEquals(matches, matchWeek.getMatches(), "Match order should be by datetime, ascending.");
+        }
     }
 
 }

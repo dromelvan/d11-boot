@@ -10,11 +10,15 @@ import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A match week in the premier league.
@@ -52,15 +56,25 @@ public class MatchWeek extends D11Entity {
     @ManyToOne
     @JoinColumn(name = "premier_league_id")
     @NotNull
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private PremierLeague premierLeague;
 
     /**
-     * The D11 match week this match week is played in..
+     * The D11 match week this match week is played in.
      */
     @OneToOne(mappedBy = "matchWeek", cascade = CascadeType.ALL)
     @NotNull
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private D11MatchWeek d11MatchWeek;
+
+    /**
+     * List of matches that are played in this match week, ordered by datetime.
+     */
+    @OneToMany(mappedBy = "matchWeek", cascade = CascadeType.ALL)
+    @OrderBy("datetime ASC")
+    @EqualsAndHashCode.Exclude
+    private List<Match> matches = new ArrayList<>();
 
 }

@@ -7,4 +7,11 @@ import org.modelmapper.ModelMapper;
  */
 public class D11BootModelMapper extends ModelMapper {
 
+    /**
+     * Creates a new mapper.
+     */
+    public D11BootModelMapper() {
+        addConverter(new MatchesByDateConverter());
+    }
+
 }
