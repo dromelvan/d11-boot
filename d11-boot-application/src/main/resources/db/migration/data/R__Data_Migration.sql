@@ -119,3 +119,9 @@ INSERT INTO match
 select id, home_team_id, away_team_id, match_day_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
        previous_home_team_goals, previous_away_team_goals, elapsed, status, created_at, updated_at from data.matches;
 SELECT setval('match_id_seq', (SELECT last_value FROM data.matches_id_seq));
+
+-- D11 Matches
+INSERT INTO d11_match
+select id, home_d11_team_id, away_d11_team_id, d11_match_day_id, date, home_team_goals, away_team_goals, home_team_points, away_team_points,
+       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status, created_at, updated_at from data.d11_matches;
+SELECT setval('d11_match_id_seq', (SELECT last_value FROM data.d11_matches_id_seq));

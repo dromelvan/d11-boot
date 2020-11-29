@@ -4,15 +4,20 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A match week in a D11 league.
@@ -52,5 +57,13 @@ public class D11MatchWeek extends D11Entity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private MatchWeek matchWeek;
+
+    /**
+     * List of D11 matches that are played in this D11 match week, ordered by date.
+     */
+    @OneToMany(mappedBy = "d11MatchWeek", cascade = CascadeType.ALL)
+    @OrderBy("date ASC")
+    @EqualsAndHashCode.Exclude
+    private List<D11Match> d11Matches = new ArrayList<>();
 
 }

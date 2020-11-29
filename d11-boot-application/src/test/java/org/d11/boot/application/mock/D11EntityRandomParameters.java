@@ -58,11 +58,11 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
 
         randomize(FieldPredicates.named("name").and(FieldPredicates.inClass(Season.class)), new YearIntervalRandomizer());
 
-        randomize(FieldPredicates.named("homeTeamGoals").and(FieldPredicates.inClass(Match.class)), new IntegerRangeRandomizer(0, MAX_POSITIVE));
-        randomize(FieldPredicates.named("awayTeamGoals").and(FieldPredicates.inClass(Match.class)), new IntegerRangeRandomizer(0, MAX_POSITIVE));
-        randomize(FieldPredicates.named("previousHomeTeamGoals").and(FieldPredicates.inClass(Match.class)), new IntegerRangeRandomizer(0, MAX_POSITIVE));
-        randomize(FieldPredicates.named("previousAwayTeamGoals").and(FieldPredicates.inClass(Match.class)), new IntegerRangeRandomizer(0, MAX_POSITIVE));
-        randomize(FieldPredicates.named("elapsed").and(FieldPredicates.inClass(Match.class)), new StringRandomizer(1, Match.ELAPSED_TIME_MAX_LENGTH));
+        randomize(FieldPredicates.named("homeTeamGoals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("awayTeamGoals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("previousHomeTeamGoals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("previousAwayTeamGoals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("elapsed"), new StringRandomizer(1, Match.ELAPSED_TIME_MAX_LENGTH));
     }
 
 }

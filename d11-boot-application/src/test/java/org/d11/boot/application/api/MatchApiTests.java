@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
- * Match week API tests.
+ * Match API tests.
  */
 public class MatchApiTests extends AbstractApiTests<Match, MatchRepository, MatchApiService> {
 

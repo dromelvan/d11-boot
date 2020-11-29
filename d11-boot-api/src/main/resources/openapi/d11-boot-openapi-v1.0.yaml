@@ -449,6 +449,33 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /d11-matches/{d11MatchId}:
+    get:
+      summary: Find a D11 match by id.
+      operationId: findD11MatchById
+      tags:
+        - d11Match
+      parameters:
+        - name: d11MatchId
+          in: path
+          required: true
+          description: The id of the D11 match to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/D11Match"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
 
 components:
   responses:
@@ -1075,6 +1102,7 @@ components:
         - date
         - d11League
         - matchWeek
+        - d11Matches
       properties:
         id:
           type: integer
@@ -1089,4 +1117,120 @@ components:
           $ref: '#/components/schemas/D11LeagueBase'
         matchWeek:
           $ref: '#/components/schemas/MatchWeekBase'
+        d11Matches:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: integer
+              format: int64
 
+    D11MatchBase:
+      type: object
+      required:
+        - id
+        - date
+        - home_team_goals
+        - away_team_goals
+        - home_team_points
+        - away_team_points
+        - previous_home_team_goals
+        - previous_away_team_goals
+        - previous_home_team_points
+        - previous_away_team_points
+        - elapsed
+        - status
+      properties:
+        id:
+          type: integer
+          format: int64
+        date:
+          type: string
+          format: date
+        homeTeamGoals:
+          type: integer
+          format: int32
+        awayTeamGoals:
+          type: integer
+          format: int32
+        homeTeamPoints:
+          type: integer
+          format: int32
+        awayTeamPoints:
+          type: integer
+          format: int32
+        previousHomeTeamGoals:
+          type: integer
+          format: int32
+        previousAwayTeamGoals:
+          type: integer
+          format: int32
+        previousHomeTeamPoints:
+          type: integer
+          format: int32
+        previousAwayTeamPoints:
+          type: integer
+          format: int32
+        elapsed:
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
+    D11Match:
+      type: object
+      required:
+        - id
+        - date
+        - home_team_goals
+        - away_team_goals
+        - home_team_points
+        - away_team_points
+        - previous_home_team_goals
+        - previous_away_team_goals
+        - previous_home_team_points
+        - previous_away_team_points
+        - elapsed
+        - status
+        - homeD11Team
+        - awayD11Team
+        - d11MatchWeek
+      properties:
+        id:
+          type: integer
+          format: int64
+        date:
+          type: string
+          format: date
+        homeTeamGoals:
+          type: integer
+          format: int32
+        awayTeamGoals:
+          type: integer
+          format: int32
+        homeTeamPoints:
+          type: integer
+          format: int32
+        awayTeamPoints:
+          type: integer
+          format: int32
+        previousHomeTeamGoals:
+          type: integer
+          format: int32
+        previousAwayTeamGoals:
+          type: integer
+          format: int32
+        previousHomeTeamPoints:
+          type: integer
+          format: int32
+        previousAwayTeamPoints:
+          type: integer
+          format: int32
+        elapsed:
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
+        homeD11Team:
+          $ref: '#/components/schemas/D11TeamBase'
+        awayD11Team:
+          $ref: '#/components/schemas/D11TeamBase'
+        d11matchWeek:
+          $ref: '#/components/schemas/D11MatchWeekBase'
