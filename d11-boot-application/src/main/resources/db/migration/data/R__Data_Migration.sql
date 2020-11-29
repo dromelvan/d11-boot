@@ -1,4 +1,16 @@
 -- Delete existing data
+DELETE FROM substitution WHERE id > 0;
+SELECT setval('substitution_id_seq', 1);
+
+DELETE FROM card WHERE id > 0;
+SELECT setval('card_id_seq', 1);
+
+DELETE FROM goal WHERE id > 0;
+SELECT setval('goal_id_seq', 1);
+
+DELETE FROM d11_match WHERE id > 0;
+SELECT setval('d11_match_id_seq', 1);
+
 DELETE FROM match WHERE id > 0;
 SELECT setval('match_id_seq', 1);
 
@@ -116,12 +128,28 @@ SELECT setval('d11_match_week_id_seq', (SELECT last_value FROM data.d11_match_da
 
 -- Matches
 INSERT INTO match
-select id, home_team_id, away_team_id, match_day_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
+SELECT id, home_team_id, away_team_id, match_day_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
        previous_home_team_goals, previous_away_team_goals, elapsed, status, created_at, updated_at from data.matches;
 SELECT setval('match_id_seq', (SELECT last_value FROM data.matches_id_seq));
 
 -- D11 Matches
 INSERT INTO d11_match
-select id, home_d11_team_id, away_d11_team_id, d11_match_day_id, date, home_team_goals, away_team_goals, home_team_points, away_team_points,
+SELECT id, home_d11_team_id, away_d11_team_id, d11_match_day_id, date, home_team_goals, away_team_goals, home_team_points, away_team_points,
        previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status, created_at, updated_at from data.d11_matches;
 SELECT setval('d11_match_id_seq', (SELECT last_value FROM data.d11_matches_id_seq));
+
+-- Goals
+INSERT INTO goal
+-- Apparently match events aren't deleted in v3 when re-uploading match stats, they just have their match id set to null.
+SELECT * FROM data.goals where match_id is not null;
+SELECT setval('goal_id_seq', (SELECT last_value FROM data.goals_id_seq));
+
+-- Cards
+INSERT INTO card
+SELECT * FROM data.cards where match_id is not null;
+SELECT setval('card_id_seq', (SELECT last_value FROM data.cards_id_seq));
+
+-- Substitutions
+INSERT INTO substitution
+SELECT * FROM data.substitutions where match_id is not null;
+SELECT setval('substitution_id_seq', (SELECT last_value FROM data.substitutions_id_seq));

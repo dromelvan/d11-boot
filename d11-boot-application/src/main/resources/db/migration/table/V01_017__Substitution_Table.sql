@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS substitution (
+    id SERIAL PRIMARY KEY,
+    match_id INTEGER NOT NULL REFERENCES match,
+    team_id INTEGER NOT NULL REFERENCES team,
+    player_id INTEGER NOT NULL REFERENCES player,
+    player_in_id INTEGER NOT NULL REFERENCES player,
+    time INTEGER NOT NULL,
+    added_time INTEGER NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);

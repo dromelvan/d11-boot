@@ -5,14 +5,19 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.d11.boot.application.model.converter.StatusConverter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A Premier League match.
@@ -108,5 +113,21 @@ public class Match extends D11Entity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Stadium stadium;
+
+    /**
+     * List of goals that were scored in this match.
+     */
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
+    @OrderBy("time, addedTime ASC")
+    @EqualsAndHashCode.Exclude
+    private List<Goal> goals = new ArrayList<>();
+
+    /**
+     * List of cards that were shown in this match.
+     */
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
+    @OrderBy("time, addedTime ASC")
+    @EqualsAndHashCode.Exclude
+    private List<Card> cards = new ArrayList<>();
 
 }
