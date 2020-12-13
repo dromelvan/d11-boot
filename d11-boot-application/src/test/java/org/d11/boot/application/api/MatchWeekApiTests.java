@@ -5,7 +5,7 @@ import org.d11.boot.api.service.MatchWeekApiService;
 import org.d11.boot.application.model.Match;
 import org.d11.boot.application.model.MatchWeek;
 import org.d11.boot.application.repository.MatchWeekRepository;
-import org.d11.boot.application.util.MatchesByDateConverter;
+import org.d11.boot.application.util.MatchesByDateMapperConverter;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -37,7 +37,7 @@ public class MatchWeekApiTests extends AbstractApiTests<MatchWeek, MatchWeekRepo
             assertNotNull(result, "Match week by id should not be null.");
             assertEquals(matchWeekDTO, result, "Match week by id should equal MatchWeek.");
             assertFalse(result.getMatches().isEmpty(), "Match week by id should have matches.");
-            assertEquals(new MatchesByDateConverter().convert(matchWeek.getMatches()), result.getMatches(),
+            assertEquals(new MatchesByDateMapperConverter().convert(matchWeek.getMatches()), result.getMatches(),
                          "Match week by id matches should equal converted MatchWeek matches.");
         }
 
@@ -62,7 +62,7 @@ public class MatchWeekApiTests extends AbstractApiTests<MatchWeek, MatchWeekRepo
                 assertNotNull(result, "Current match week should not be null.");
                 assertEquals(matchWeekDTO, result, "Current match week result should equal current match week.");
                 assertFalse(result.getMatches().isEmpty(), "Current match week should have matches.");
-                assertEquals(new MatchesByDateConverter().convert(matchWeek.getMatches()), result.getMatches(),
+                assertEquals(new MatchesByDateMapperConverter().convert(matchWeek.getMatches()), result.getMatches(),
                              "Current match week matches should equal converted MatchWeek matches.");
                 break;
             }

@@ -5,7 +5,7 @@ import org.d11.boot.api.service.D11MatchWeekApiService;
 import org.d11.boot.application.model.D11Match;
 import org.d11.boot.application.model.D11MatchWeek;
 import org.d11.boot.application.repository.D11MatchWeekRepository;
-import org.d11.boot.application.util.D11MatchesByDateConverter;
+import org.d11.boot.application.util.D11MatchesByDateMapperConverter;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -37,7 +37,7 @@ public class D11MatchWeekApiTests extends AbstractApiTests<D11MatchWeek, D11Matc
             assertNotNull(result, "D11 match week by id should not be null.");
             assertEquals(d11MatchWeekDTO, result, "D11 match week by id should equal D11MatchDay.");
             assertFalse(result.getD11Matches().isEmpty(), "D11 match week by id should have D11 matches.");
-            assertEquals(new D11MatchesByDateConverter().convert(d11MatchWeek.getD11Matches()), result.getD11Matches(),
+            assertEquals(new D11MatchesByDateMapperConverter().convert(d11MatchWeek.getD11Matches()), result.getD11Matches(),
                     "D11 match week by id D11 matches should equal converted D11MatchWeek matches.");
         }
 
@@ -62,7 +62,7 @@ public class D11MatchWeekApiTests extends AbstractApiTests<D11MatchWeek, D11Matc
                 assertNotNull(result, "Current D11 match week should not be null.");
                 assertEquals(d11MatchWeekDTO, result, "Current D11 match week result should equal current D11 match week.");
                 assertFalse(result.getD11Matches().isEmpty(), "Current D11 match week should have D11 matches.");
-                assertEquals(new D11MatchesByDateConverter().convert(d11MatchWeek.getD11Matches()), result.getD11Matches(),
+                assertEquals(new D11MatchesByDateMapperConverter().convert(d11MatchWeek.getD11Matches()), result.getD11Matches(),
                         "Current D11 match week D11 matches should equal converted D11MatchWeek matches.");
                 break;
             }

@@ -13,7 +13,7 @@ import java.util.Map;
  * Converts a list of matches to a map with match dates as key and a list of matches for each
  * date as values.
  */
-public class MatchesByDateConverter extends AbstractConverter<List<Match>, Map<String, List<Long>>> {
+public class MatchesByDateMapperConverter extends AbstractConverter<List<Match>, Map<String, List<Long>>> {
 
     /**
      * DateTimeFormatter used to convert match datetime to string key in the map.

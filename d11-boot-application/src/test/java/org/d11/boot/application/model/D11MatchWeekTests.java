@@ -1,7 +1,7 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.D11MatchWeekDTO;
-import org.d11.boot.application.util.D11MatchesByDateConverter;
+import org.d11.boot.application.util.D11MatchesByDateMapperConverter;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -67,7 +67,7 @@ public class D11MatchWeekTests extends D11EasyRandomTests {
                     "D11 match week DTO D11 match map entry for match date should contain match id.");
         }
 
-        assertEquals(new D11MatchesByDateConverter().convert(d11MatchWeek.getD11Matches()), d11MatchWeekDTO.getD11Matches(),
+        assertEquals(new D11MatchesByDateMapperConverter().convert(d11MatchWeek.getD11Matches()), d11MatchWeekDTO.getD11Matches(),
                 "D11 match week DTO D11 matches should equal converted D11MatchWeek matches.");
     }
 

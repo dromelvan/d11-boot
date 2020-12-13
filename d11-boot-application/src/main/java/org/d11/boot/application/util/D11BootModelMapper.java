@@ -25,14 +25,14 @@ public class D11BootModelMapper extends ModelMapper {
                 // See https://github.com/modelmapper/modelmapper/issues/414.
                 // Run with -Djdk.module.illegalAccess=deny to suppress warnings until
                 // ModelMapper hopefully fixes it.
-                using(new MatchesByDateConverter()).map(source.getMatches()).setMatches(null);
+                using(new MatchesByDateMapperConverter()).map(source.getMatches()).setMatches(null);
             }
         });
 
         addMappings(new PropertyMap<D11MatchWeek, D11MatchWeekDTO>() {
             @Override
             protected void configure() {
-                using(new D11MatchesByDateConverter()).map(source.getD11Matches()).setD11Matches(null);
+                using(new D11MatchesByDateMapperConverter()).map(source.getD11Matches()).setD11Matches(null);
             }
         });
 

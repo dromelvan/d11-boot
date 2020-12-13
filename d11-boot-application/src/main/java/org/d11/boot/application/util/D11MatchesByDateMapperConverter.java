@@ -13,7 +13,7 @@ import java.util.Map;
  * Converts a list of D11 matches to a map with match dates as key and a list of D11 matches for each
  * date as values.
  */
-public class D11MatchesByDateConverter extends AbstractConverter<List<D11Match>, Map<String, List<Long>>> {
+public class D11MatchesByDateMapperConverter extends AbstractConverter<List<D11Match>, Map<String, List<Long>>> {
 
     /**
      * DateTimeFormatter used to convert D11 match date to string key in the map.

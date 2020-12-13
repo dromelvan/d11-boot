@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Tests for the MatchesByDateConverter.
  */
-public class MatchesByDateConverterTests extends D11EasyRandomTests {
+public class MatchesByDateMapperConverterTests extends D11EasyRandomTests {
 
     /**
      * Tests the convert function.
@@ -34,14 +34,14 @@ public class MatchesByDateConverterTests extends D11EasyRandomTests {
 
         for(final Match match : matches) {
             match.setDatetime(localDateTime.plus(matches.indexOf(match) / 2, ChronoUnit.DAYS));
-            final String date = MatchesByDateConverter.DATE_TIME_FORMATTER.format(match.getDatetime());
+            final String date = MatchesByDateMapperConverter.DATE_TIME_FORMATTER.format(match.getDatetime());
             if(!dates.contains(date)) {
                 dates.add(date);
             }
             matchIdByDate.computeIfAbsent(date, d -> new ArrayList<>()).add(match.getId());
         }
 
-        final Map<String, List<Long>> result = new MatchesByDateConverter().convert(matches);
+        final Map<String, List<Long>> result = new MatchesByDateMapperConverter().convert(matches);
         int count = 0;
         for(final Entry<String, List<Long>> entry : result.entrySet()) {
             assertEquals(dates.get(count), entry.getKey(), "Match date should equal result map date at index " + count + ".");
