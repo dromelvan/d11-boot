@@ -476,6 +476,127 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /player-match-stats/{playerMatchStatId}:
+    get:
+      summary: Find a player match stat by id.
+      operationId: findPlayerMatchStatById
+      tags:
+        - playerMatchStat
+      parameters:
+        - name: playerMatchStatId
+          in: path
+          required: true
+          description: The id of the player match stat to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerMatchStat"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /player-match-stats/match/{matchId}:
+    get:
+      summary: Find player match stats for a match.
+      operationId: findPlayerMatchStatByMatchId
+      tags:
+        - playerMatchStat
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          description: Id for the match that player match stats will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlayerMatchStat"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /player-match-stats/d11-match/{d11MatchId}:
+    get:
+      summary: Find player match stats for a D11 match.
+      operationId: findPlayerMatchStatByD11MatchId
+      tags:
+        - playerMatchStat
+      parameters:
+        - name: d11MatchId
+          in: path
+          required: true
+          description: Id for the match that player match stats will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlayerMatchStat"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /player-match-stats/player/{playerId}/season/{seasonId}:
+    get:
+      summary: Find player match stats for a player and season.
+      operationId: findPlayerMatchStatByPlayerIdAndSeasonId
+      tags:
+        - playerMatchStat
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          description: Id for the player that player match stats will be found for.
+          schema:
+            type: integer
+            format: int64
+        - name: seasonId
+          in: path
+          required: true
+          description: Id for the season that player match stats will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlayerMatchStat"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
 
 components:
   responses:
@@ -1337,3 +1458,145 @@ components:
           $ref: '#/components/schemas/TeamBase'
         player:
           $ref: '#/components/schemas/PlayerBase'
+
+    PlayerMatchStatBase:
+      type: object
+      required:
+        - id
+        - playedPosition
+        - lineup
+        - substitutionOnTime
+        - substitutionOffTime
+        - goals
+        - goalAssists
+        - ownGoals
+        - goalsConceded
+        - yellowCardTime
+        - redCardTime
+        - manOfTheMatch
+        - sharedManOfTheMatch
+        - rating
+        - points
+      properties:
+        id:
+          type: integer
+          format: int64
+        playedPosition:
+          type: string
+        lineup:
+          type: integer
+          format: int32
+        substitutionOnTime:
+          type: integer
+          format: int32
+        substitutionOffTime:
+          type: integer
+          format: int32
+        goals:
+          type: integer
+          format: int32
+        goalAssists:
+          type: integer
+          format: int32
+        ownGoals:
+          type: integer
+          format: int32
+        goalsConceded:
+          type: integer
+          format: int32
+        yellowCardTime:
+          type: integer
+          format: int32
+        redCardTime:
+          type: integer
+          format: int32
+        manOfTheMatch:
+          type: integer
+          format: int32
+        sharedManOfTheMatch:
+          type: integer
+          format: int32
+        rating:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+    PlayerMatchStat:
+      type: object
+      required:
+        - id
+        - playedPosition
+        - lineup
+        - substitutionOnTime
+        - substitutionOffTime
+        - goals
+        - goalAssists
+        - ownGoals
+        - goalsConceded
+        - yellowCardTime
+        - redCardTime
+        - manOfTheMatch
+        - sharedManOfTheMatch
+        - rating
+        - points
+        - player
+        - match
+        - team
+        - d11Team
+        - position
+      properties:
+        id:
+          type: integer
+          format: int64
+        playedPosition:
+          type: string
+        lineup:
+          type: integer
+          format: int32
+        substitutionOnTime:
+          type: integer
+          format: int32
+        substitutionOffTime:
+          type: integer
+          format: int32
+        goals:
+          type: integer
+          format: int32
+        goalAssists:
+          type: integer
+          format: int32
+        ownGoals:
+          type: integer
+          format: int32
+        goalsConceded:
+          type: integer
+          format: int32
+        yellowCardTime:
+          type: integer
+          format: int32
+        redCardTime:
+          type: integer
+          format: int32
+        manOfTheMatch:
+          type: integer
+          format: int32
+        sharedManOfTheMatch:
+          type: integer
+          format: int32
+        rating:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        player:
+          $ref: '#/components/schemas/PlayerBase'
+        match:
+          $ref: '#/components/schemas/MatchBase'
+        team:
+          $ref: '#/components/schemas/TeamBase'
+        d11Team:
+          $ref: '#/components/schemas/D11TeamBase'
+        position:
+          $ref: '#/components/schemas/Position'

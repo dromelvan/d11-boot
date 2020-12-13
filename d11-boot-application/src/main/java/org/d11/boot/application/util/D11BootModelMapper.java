@@ -2,8 +2,10 @@ package org.d11.boot.application.util;
 
 import org.d11.boot.api.model.D11MatchWeekDTO;
 import org.d11.boot.api.model.MatchWeekDTO;
+import org.d11.boot.api.model.PlayerMatchStatDTO;
 import org.d11.boot.application.model.D11MatchWeek;
 import org.d11.boot.application.model.MatchWeek;
+import org.d11.boot.application.model.PlayerMatchStat;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 
@@ -34,6 +36,12 @@ public class D11BootModelMapper extends ModelMapper {
             }
         });
 
+        addMappings(new PropertyMap<PlayerMatchStat, PlayerMatchStatDTO>() {
+            @Override
+            protected void configure() {
+                using(new LineupMapperConverter()).map(source.getLineup()).setLineup(null);
+            }
+        });
     }
 
 }

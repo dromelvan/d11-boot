@@ -59,6 +59,17 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
 
         randomize(FieldPredicates.named("name").and(FieldPredicates.inClass(Season.class)), new YearIntervalRandomizer());
 
+        randomize(FieldPredicates.named("goals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("goalAssists"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("ownGoals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("goalsConceded"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("rating"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+
+        randomize(FieldPredicates.named("substitutionOnTime"), new IntegerRangeRandomizer(0, MatchEvent.MAX_MATCH_EVENT_TIME));
+        randomize(FieldPredicates.named("substitutionOffTime"), new IntegerRangeRandomizer(0, MatchEvent.MAX_MATCH_EVENT_TIME));
+        randomize(FieldPredicates.named("yellowCardTime"), new IntegerRangeRandomizer(0, MatchEvent.MAX_MATCH_EVENT_TIME));
+        randomize(FieldPredicates.named("redCardTime"), new IntegerRangeRandomizer(0, MatchEvent.MAX_MATCH_EVENT_TIME));
+
         randomize(FieldPredicates.named("homeTeamGoals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
         randomize(FieldPredicates.named("awayTeamGoals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
         randomize(FieldPredicates.named("previousHomeTeamGoals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));

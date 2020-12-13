@@ -5,15 +5,19 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.d11.boot.application.model.converter.StatusConverter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A D11 match.
@@ -114,5 +118,12 @@ public class D11Match extends D11Entity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private D11MatchWeek d11MatchWeek;
+    /**
+     * List of player match stats for this D11 match.
+     */
+    @OneToMany(mappedBy = "d11Match", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<PlayerMatchStat> playerMatchStats = new ArrayList<>();
 
 }

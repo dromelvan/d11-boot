@@ -119,6 +119,7 @@ public class Match extends D11Entity {
      */
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
     @OrderBy("time, addedTime ASC")
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Goal> goals = new ArrayList<>();
 
@@ -127,7 +128,16 @@ public class Match extends D11Entity {
      */
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
     @OrderBy("time, addedTime ASC")
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Card> cards = new ArrayList<>();
+
+    /**
+     * List of player match stats for this match.
+     */
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<PlayerMatchStat> playerMatchStats = new ArrayList<>();
 
 }

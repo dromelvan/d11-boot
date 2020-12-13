@@ -1,4 +1,7 @@
 -- Delete existing data
+DELETE FROM player_match_stat WHERE id > 0;
+SELECT setval('player_match_stat_id_seq', 1);
+
 DELETE FROM substitution WHERE id > 0;
 SELECT setval('substitution_id_seq', 1);
 
@@ -153,3 +156,13 @@ SELECT setval('card_id_seq', (SELECT last_value FROM data.cards_id_seq));
 INSERT INTO substitution
 SELECT * FROM data.substitutions where match_id is not null;
 SELECT setval('substitution_id_seq', (SELECT last_value FROM data.substitutions_id_seq));
+
+-- Player match stats
+INSERT INTO player_match_stat
+SELECT pms.id, player_id, match_id, d11m.id as d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time, goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points, pms.created_at, pms.updated_at
+FROM data.player_match_stats pms
+     JOIN data.matches m ON pms.match_id = m.id
+     JOIN data.d11_match_days d11md ON m.match_day_id = d11md.match_day_id
+     LEFT JOIN data.d11_matches d11m ON d11m.d11_match_day_id = d11md.id AND (d11m.home_d11_team_id = pms.d11_team_id OR d11m.away_d11_team_id = pms.d11_team_id);
+SELECT setval('player_match_stat_id_seq', (SELECT last_value FROM data.player_match_stats_id_seq));
+
