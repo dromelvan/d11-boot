@@ -1,4 +1,10 @@
 -- Delete existing data
+DELETE FROM d11_team_table_stat WHERE id > 0;
+SELECT setval('d11_team_table_stat_id_seq', 1);
+
+DELETE FROM team_table_stat WHERE id > 0;
+SELECT setval('team_table_stat_id_seq', 1);
+
 DELETE FROM player_match_stat WHERE id > 0;
 SELECT setval('player_match_stat_id_seq', 1);
 
@@ -126,19 +132,19 @@ SELECT setval('match_week_id_seq', (SELECT last_value FROM data.match_days_id_se
 
 -- D11 match weeks
 INSERT INTO d11_match_week
-SELECT id, d11_league_id, match_day_id, match_day_number, date, created_at, updated_at from data.d11_match_days;
+SELECT id, d11_league_id, match_day_id, match_day_number, date, created_at, updated_at FROM data.d11_match_days;
 SELECT setval('d11_match_week_id_seq', (SELECT last_value FROM data.d11_match_days_id_seq));
 
 -- Matches
 INSERT INTO match
 SELECT id, home_team_id, away_team_id, match_day_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
-       previous_home_team_goals, previous_away_team_goals, elapsed, status, created_at, updated_at from data.matches;
+       previous_home_team_goals, previous_away_team_goals, elapsed, status, created_at, updated_at FROM data.matches;
 SELECT setval('match_id_seq', (SELECT last_value FROM data.matches_id_seq));
 
 -- D11 Matches
 INSERT INTO d11_match
 SELECT id, home_d11_team_id, away_d11_team_id, d11_match_day_id, date, home_team_goals, away_team_goals, home_team_points, away_team_points,
-       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status, created_at, updated_at from data.d11_matches;
+       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status, created_at, updated_at FROM data.d11_matches;
 SELECT setval('d11_match_id_seq', (SELECT last_value FROM data.d11_matches_id_seq));
 
 -- Goals
@@ -166,3 +172,18 @@ FROM data.player_match_stats pms
      LEFT JOIN data.d11_matches d11m ON d11m.d11_match_day_id = d11md.id AND (d11m.home_d11_team_id = pms.d11_team_id OR d11m.away_d11_team_id = pms.d11_team_id);
 SELECT setval('player_match_stat_id_seq', (SELECT last_value FROM data.player_match_stats_id_seq));
 
+-- Team table stats
+INSERT INTO team_table_stat
+SELECT id, team_id, premier_league_id, match_day_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, ranking, previous_ranking,
+       home_matches_played, home_matches_won, home_matches_drawn, home_matches_lost, home_goals_for, home_goals_against, home_goal_difference, home_points, home_ranking,
+       away_matches_played, away_matches_won, away_matches_drawn, away_matches_lost, away_goals_for, away_goals_against, away_goal_difference, away_points, away_ranking,
+       created_at, updated_at FROM data.team_table_stats;
+SELECT setval('team_table_stat_id_seq', (SELECT last_value FROM data.team_table_stats_id_seq));
+
+-- D11 team table stats
+INSERT INTO d11_team_table_stat
+SELECT id, d11_team_id, d11_league_id, d11_match_day_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, ranking, previous_ranking,
+       home_matches_played, home_matches_won, home_matches_drawn, home_matches_lost, home_goals_for, home_goals_against, home_goal_difference, home_points, home_ranking,
+       away_matches_played, away_matches_won, away_matches_drawn, away_matches_lost, away_goals_for, away_goals_against, away_goal_difference, away_points, away_ranking,
+       created_at, updated_at FROM data.d11_team_table_stats;
+SELECT setval('d11_team_table_stat_id_seq', (SELECT last_value FROM data.d11_team_table_stats_id_seq));

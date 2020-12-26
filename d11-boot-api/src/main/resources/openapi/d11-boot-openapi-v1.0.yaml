@@ -597,6 +597,60 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /team-table-stats/{teamTableStatId}:
+    get:
+      summary: Find a team table stat by id.
+      operationId: findTeamTableStatById
+      tags:
+        - teamTableStat
+      parameters:
+        - name: teamTableStatId
+          in: path
+          required: true
+          description: The id of the team table stat to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamTableStat"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /d11-team-table-stats/{d11TeamTableStatId}:
+    get:
+      summary: Find a D11 team table stat by id.
+      operationId: findD11TeamTableStatById
+      tags:
+        - d11TeamTableStat
+      parameters:
+        - name: d11TeamTableStatId
+          in: path
+          required: true
+          description: The id of the D11 team table stat to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/D11TeamTableStat"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
 
 components:
   responses:
@@ -1600,3 +1654,519 @@ components:
           $ref: '#/components/schemas/D11TeamBase'
         position:
           $ref: '#/components/schemas/Position'
+
+    TeamTableStatBase:
+      type: object
+      required:
+        - id
+        - matchesPlayed
+        - matchesWon
+        - matchesDrawn
+        - matchesLost
+        - goalsFor
+        - goalsAgainst
+        - goalDifference
+        - points
+        - formPoints
+        - ranking
+        - previousRanking
+        - homeMatchesPlayed
+        - homeMatchesWon
+        - homeMatchesDrawn
+        - homeMatchesLost
+        - homeGoalsFor
+        - homeGoalsAgainst
+        - homeGoalDifference
+        - homePoints
+        - homeRanking
+        - awayMatchesPlayed
+        - awayMatchesWon
+        - awayMatchesDrawn
+        - awayMatchesLost
+        - awayGoalsFor
+        - awayGoalsAgainst
+        - awayGoalDifference
+        - awayPoints
+        - awayRanking
+      properties:
+        id:
+          type: integer
+          format: int64
+        matchesPlayed:
+          type: integer
+          format: int32
+        matchesWon:
+          type: integer
+          format: int32
+        matchesDrawn:
+          type: integer
+          format: int32
+        matchesLost:
+          type: integer
+          format: int32
+        goalsFor:
+          type: integer
+          format: int32
+        goalsAgainst:
+          type: integer
+          format: int32
+        goalDifference:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        formPoints:
+          type: integer
+          format: int32
+        ranking:
+          type: integer
+          format: int32
+        previousRanking:
+          type: integer
+          format: int32
+        homeMatchesPlayed:
+          type: integer
+          format: int32
+        homeMatchesWon:
+          type: integer
+          format: int32
+        homeMatchesDrawn:
+          type: integer
+          format: int32
+        homeMatchesLost:
+          type: integer
+          format: int32
+        homeGoalsFor:
+          type: integer
+          format: int32
+        homeGoalsAgainst:
+          type: integer
+          format: int32
+        homeGoalDifference:
+          type: integer
+          format: int32
+        homePoints:
+          type: integer
+          format: int32
+        homeRanking:
+          type: integer
+          format: int32
+        awayMatchesPlayed:
+          type: integer
+          format: int32
+        awayMatchesWon:
+          type: integer
+          format: int32
+        awayMatchesDrawn:
+          type: integer
+          format: int32
+        awayMatchesLost:
+          type: integer
+          format: int32
+        awayGoalsFor:
+          type: integer
+          format: int32
+        awayGoalsAgainst:
+          type: integer
+          format: int32
+        awayGoalDifference:
+          type: integer
+          format: int32
+        awayPoints:
+          type: integer
+          format: int32
+        awayRanking:
+          type: integer
+          format: int32
+    TeamTableStat:
+      type: object
+      required:
+        - id
+        - matchesPlayed
+        - matchesWon
+        - matchesDrawn
+        - matchesLost
+        - goalsFor
+        - goalsAgainst
+        - goalDifference
+        - points
+        - formPoints
+        - ranking
+        - previousRanking
+        - homeMatchesPlayed
+        - homeMatchesWon
+        - homeMatchesDrawn
+        - homeMatchesLost
+        - homeGoalsFor
+        - homeGoalsAgainst
+        - homeGoalDifference
+        - homePoints
+        - homeRanking
+        - awayMatchesPlayed
+        - awayMatchesWon
+        - awayMatchesDrawn
+        - awayMatchesLost
+        - awayGoalsFor
+        - awayGoalsAgainst
+        - awayGoalDifference
+        - awayPoints
+        - awayRanking
+        - team
+        - premierLeague
+        - matchWeek
+      properties:
+        id:
+          type: integer
+          format: int64
+        matchesPlayed:
+          type: integer
+          format: int32
+        matchesWon:
+          type: integer
+          format: int32
+        matchesDrawn:
+          type: integer
+          format: int32
+        matchesLost:
+          type: integer
+          format: int32
+        goalsFor:
+          type: integer
+          format: int32
+        goalsAgainst:
+          type: integer
+          format: int32
+        goalDifference:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        formPoints:
+          type: integer
+          format: int32
+        ranking:
+          type: integer
+          format: int32
+        previousRanking:
+          type: integer
+          format: int32
+        homeMatchesPlayed:
+          type: integer
+          format: int32
+        homeMatchesWon:
+          type: integer
+          format: int32
+        homeMatchesDrawn:
+          type: integer
+          format: int32
+        homeMatchesLost:
+          type: integer
+          format: int32
+        homeGoalsFor:
+          type: integer
+          format: int32
+        homeGoalsAgainst:
+          type: integer
+          format: int32
+        homeGoalDifference:
+          type: integer
+          format: int32
+        homePoints:
+          type: integer
+          format: int32
+        homeRanking:
+          type: integer
+          format: int32
+        awayMatchesPlayed:
+          type: integer
+          format: int32
+        awayMatchesWon:
+          type: integer
+          format: int32
+        awayMatchesDrawn:
+          type: integer
+          format: int32
+        awayMatchesLost:
+          type: integer
+          format: int32
+        awayGoalsFor:
+          type: integer
+          format: int32
+        awayGoalsAgainst:
+          type: integer
+          format: int32
+        awayGoalDifference:
+          type: integer
+          format: int32
+        awayPoints:
+          type: integer
+          format: int32
+        awayRanking:
+          type: integer
+          format: int32
+        team:
+          $ref: '#/components/schemas/TeamBase'
+        premierLeague:
+          $ref: '#/components/schemas/PremierLeagueBase'
+        matchWeek:
+          $ref: '#/components/schemas/MatchWeekBase'
+
+    D11TeamTableStatBase:
+      type: object
+      required:
+        - id
+        - matchesPlayed
+        - matchesWon
+        - matchesDrawn
+        - matchesLost
+        - goalsFor
+        - goalsAgainst
+        - goalDifference
+        - points
+        - formPoints
+        - ranking
+        - previousRanking
+        - homeMatchesPlayed
+        - homeMatchesWon
+        - homeMatchesDrawn
+        - homeMatchesLost
+        - homeGoalsFor
+        - homeGoalsAgainst
+        - homeGoalDifference
+        - homePoints
+        - homeRanking
+        - awayMatchesPlayed
+        - awayMatchesWon
+        - awayMatchesDrawn
+        - awayMatchesLost
+        - awayGoalsFor
+        - awayGoalsAgainst
+        - awayGoalDifference
+        - awayPoints
+        - awayRanking
+      properties:
+        id:
+          type: integer
+          format: int64
+        matchesPlayed:
+          type: integer
+          format: int32
+        matchesWon:
+          type: integer
+          format: int32
+        matchesDrawn:
+          type: integer
+          format: int32
+        matchesLost:
+          type: integer
+          format: int32
+        goalsFor:
+          type: integer
+          format: int32
+        goalsAgainst:
+          type: integer
+          format: int32
+        goalDifference:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        formPoints:
+          type: integer
+          format: int32
+        ranking:
+          type: integer
+          format: int32
+        previousRanking:
+          type: integer
+          format: int32
+        homeMatchesPlayed:
+          type: integer
+          format: int32
+        homeMatchesWon:
+          type: integer
+          format: int32
+        homeMatchesDrawn:
+          type: integer
+          format: int32
+        homeMatchesLost:
+          type: integer
+          format: int32
+        homeGoalsFor:
+          type: integer
+          format: int32
+        homeGoalsAgainst:
+          type: integer
+          format: int32
+        homeGoalDifference:
+          type: integer
+          format: int32
+        homePoints:
+          type: integer
+          format: int32
+        homeRanking:
+          type: integer
+          format: int32
+        awayMatchesPlayed:
+          type: integer
+          format: int32
+        awayMatchesWon:
+          type: integer
+          format: int32
+        awayMatchesDrawn:
+          type: integer
+          format: int32
+        awayMatchesLost:
+          type: integer
+          format: int32
+        awayGoalsFor:
+          type: integer
+          format: int32
+        awayGoalsAgainst:
+          type: integer
+          format: int32
+        awayGoalDifference:
+          type: integer
+          format: int32
+        awayPoints:
+          type: integer
+          format: int32
+        awayRanking:
+          type: integer
+          format: int32
+    D11TeamTableStat:
+      type: object
+      required:
+        - id
+        - matchesPlayed
+        - matchesWon
+        - matchesDrawn
+        - matchesLost
+        - goalsFor
+        - goalsAgainst
+        - goalDifference
+        - points
+        - formPoints
+        - ranking
+        - previousRanking
+        - homeMatchesPlayed
+        - homeMatchesWon
+        - homeMatchesDrawn
+        - homeMatchesLost
+        - homeGoalsFor
+        - homeGoalsAgainst
+        - homeGoalDifference
+        - homePoints
+        - homeRanking
+        - awayMatchesPlayed
+        - awayMatchesWon
+        - awayMatchesDrawn
+        - awayMatchesLost
+        - awayGoalsFor
+        - awayGoalsAgainst
+        - awayGoalDifference
+        - awayPoints
+        - awayRanking
+        - d11Team
+        - d11League
+        - d11MatchWeek
+      properties:
+        id:
+          type: integer
+          format: int64
+        matchesPlayed:
+          type: integer
+          format: int32
+        matchesWon:
+          type: integer
+          format: int32
+        matchesDrawn:
+          type: integer
+          format: int32
+        matchesLost:
+          type: integer
+          format: int32
+        goalsFor:
+          type: integer
+          format: int32
+        goalsAgainst:
+          type: integer
+          format: int32
+        goalDifference:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        formPoints:
+          type: integer
+          format: int32
+        ranking:
+          type: integer
+          format: int32
+        previousRanking:
+          type: integer
+          format: int32
+        homeMatchesPlayed:
+          type: integer
+          format: int32
+        homeMatchesWon:
+          type: integer
+          format: int32
+        homeMatchesDrawn:
+          type: integer
+          format: int32
+        homeMatchesLost:
+          type: integer
+          format: int32
+        homeGoalsFor:
+          type: integer
+          format: int32
+        homeGoalsAgainst:
+          type: integer
+          format: int32
+        homeGoalDifference:
+          type: integer
+          format: int32
+        homePoints:
+          type: integer
+          format: int32
+        homeRanking:
+          type: integer
+          format: int32
+        awayMatchesPlayed:
+          type: integer
+          format: int32
+        awayMatchesWon:
+          type: integer
+          format: int32
+        awayMatchesDrawn:
+          type: integer
+          format: int32
+        awayMatchesLost:
+          type: integer
+          format: int32
+        awayGoalsFor:
+          type: integer
+          format: int32
+        awayGoalsAgainst:
+          type: integer
+          format: int32
+        awayGoalDifference:
+          type: integer
+          format: int32
+        awayPoints:
+          type: integer
+          format: int32
+        awayRanking:
+          type: integer
+          format: int32
+        d11Team:
+          $ref: '#/components/schemas/D11TeamBase'
+        d11League:
+          $ref: '#/components/schemas/D11LeagueBase'
+        d11MatchWeek:
+          $ref: '#/components/schemas/D11MatchWeekBase'

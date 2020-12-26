@@ -40,6 +40,7 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
     /**
      * Creates new random parameters.
      */
+    @SuppressWarnings({ "checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS" })
     public D11EntityRandomParameters() {
         randomize(FieldPredicates.named("id"), new LongRangeRandomizer(1L, MAX_ID));
         randomize(FieldPredicates.named("whoscoredId"), new IntegerRangeRandomizer(1, (int) MAX_ID));
@@ -78,6 +79,33 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
 
         randomize(FieldPredicates.named("time"), new IntegerRangeRandomizer(0, MatchEvent.MAX_MATCH_EVENT_TIME));
         randomize(FieldPredicates.named("addedTime"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+
+        randomize(FieldPredicates.named("matchesPlayed"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("matchesWon"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("matchesDrawn"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("matchesLost"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("goalsFor"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("goalsAgainst"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("points"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("formPoints"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("ranking"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("previousRanking"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("homeMatchesPlayed"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("homeMatchesWon"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("homeMatchesDrawn"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("homeMatchesLost"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("homeGoalsFor"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("homeGoalsAgainst"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("homePoints"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("homeRanking"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("awayMatchesPlayed"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("awayMatchesWon"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("awayMatchesDrawn"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("awayMatchesLost"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("awayGoalsFor"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("awayGoalsAgainst"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("awayPoints"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("awayRanking"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
     }
 
 }
