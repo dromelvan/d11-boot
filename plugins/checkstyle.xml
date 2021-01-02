@@ -20,6 +20,7 @@
   <module name="FileLength"/>
   <module name="LineLength">
     <property name="max" value="160"/>
+    <property name="ignorePattern" value="public class .*"/>
   </module>
 
   <module name="FileTabCharacter"/>
