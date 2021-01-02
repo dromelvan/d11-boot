@@ -34,10 +34,10 @@ public class PlayerMatchStatApiTests extends AbstractApiTests<PlayerMatchStat, P
     public void findPlayerMatchStatById() {
         for(final PlayerMatchStat playerMatchStat : getEntities()) {
             final PlayerMatchStatDTO result = getApiService().findPlayerMatchStatById(playerMatchStat.getId());
-            final PlayerMatchStatDTO playerDTO = map(playerMatchStat, PlayerMatchStatDTO.class);
+            final PlayerMatchStatDTO playerMatchStatDTO = map(playerMatchStat, PlayerMatchStatDTO.class);
 
             assertNotNull(result, "Player match stat by id should not be null.");
-            assertEquals(playerDTO, result, "Player match stat by id should equal PlayerMatchStat.");
+            assertEquals(playerMatchStatDTO, result, "Player match stat by id should equal PlayerMatchStat.");
         }
 
         assertNull(getApiService().findPlayerMatchStatById(-1L), "Player match stat not found should return null.");

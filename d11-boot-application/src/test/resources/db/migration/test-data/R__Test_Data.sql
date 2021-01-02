@@ -178,6 +178,14 @@ INSERT INTO player_match_stat VALUES (14, 2, 7, 7, 2, 2, 1, 'D', 2, 0, 80, 1, 1,
 INSERT INTO player_match_stat VALUES (15, 1, 8, 8, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 700, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO player_match_stat VALUES (16, 2, 8, 8, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 865, 12, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
+-- INSERT INTO player_season_stat(
+--     id, player_id, season_id, team_id, d11_team_id, position_id, value, ranking, points, form_points, points_per_appearance, goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, created_at, updated_at)
+--     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO player_season_stat VALUES (1, 1, 1, 1, 1, 1, 50, 1, 100, 50, 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player_season_stat VALUES (2, 2, 1, 2, 2, 2, 50, 2, 50, 25, 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 732, 1, 1, 0, 90, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player_season_stat VALUES (3, 1, 2, 1, 1, 1, 50, 2, 50, 50, 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 632, 1, 1, 0, 90, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player_season_stat VALUES (4, 2, 2, 2, 2, 2, 50, 1, 55, 25, 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+
 -- INSERT INTO team_table_stat(
 --     id, team_id, premier_league_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, ranking, previous_ranking, home_matches_played, home_matches_won, home_matches_drawn, home_matches_lost, home_goals_for, home_goals_against, home_goal_difference, home_points, home_ranking, away_matches_played, away_matches_won, away_matches_drawn, away_matches_lost, away_goals_for, away_goals_against, away_goal_difference, away_points, away_ranking, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);

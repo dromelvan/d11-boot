@@ -1,4 +1,7 @@
 -- Delete existing data
+DELETE FROM player_season_stat WHERE id > 0;
+SELECT setval('player_season_stat_id_seq', 1);
+
 DELETE FROM d11_team_table_stat WHERE id > 0;
 SELECT setval('d11_team_table_stat_id_seq', 1);
 
@@ -187,3 +190,10 @@ SELECT id, d11_team_id, d11_league_id, d11_match_day_id, matches_played, matches
        away_matches_played, away_matches_won, away_matches_drawn, away_matches_lost, away_goals_for, away_goals_against, away_goal_difference, away_points, away_ranking,
        created_at, updated_at FROM data.d11_team_table_stats;
 SELECT setval('d11_team_table_stat_id_seq', (SELECT last_value FROM data.d11_team_table_stats_id_seq));
+
+-- Player season stats
+INSERT INTO player_season_stat
+SELECT psi.id, psi.player_id, psi.season_id, team_id, d11_team_id, position_id, value, ranking, points, form_points, points_per_appearance, goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards,
+       substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, psi.created_at, psi.updated_at
+       FROM data.player_season_infos psi JOIN data.player_season_stats pss ON psi.player_id = pss.player_id AND psi.season_id = pss.season_id;
+SELECT setval('player_season_stat_id_seq', (SELECT last_value FROM data.player_season_stats_id_seq));

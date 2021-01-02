@@ -5,6 +5,7 @@ import org.d11.boot.application.model.Match;
 import org.d11.boot.application.model.MatchEvent;
 import org.d11.boot.application.model.MatchWeek;
 import org.d11.boot.application.model.Player;
+import org.d11.boot.application.model.PlayerStatSummary;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Stadium;
 import org.d11.boot.application.model.Team;
@@ -40,7 +41,7 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
     /**
      * Creates new random parameters.
      */
-    @SuppressWarnings({ "checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS" })
+    @SuppressWarnings({ "checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS", "PMD.NcssCount" })
     public D11EntityRandomParameters() {
         randomize(FieldPredicates.named("id"), new LongRangeRandomizer(1L, MAX_ID));
         randomize(FieldPredicates.named("whoscoredId"), new IntegerRangeRandomizer(1, (int) MAX_ID));
@@ -65,6 +66,21 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
         randomize(FieldPredicates.named("ownGoals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
         randomize(FieldPredicates.named("goalsConceded"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
         randomize(FieldPredicates.named("rating"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("value"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("ranking"), new IntegerRangeRandomizer(1, MAX_POSITIVE));
+        randomize(FieldPredicates.named("cleanSheets"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("yellowCards"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("redCards"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("substitutionsOn"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("substitutionsOff"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("manOfTheMatch").and(FieldPredicates.inClass(PlayerStatSummary.class)),
+                new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("sharedManOfTheMatch").and(FieldPredicates.inClass(PlayerStatSummary.class)),
+                new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("gamesStarted"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("gamesSubstitute"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("gamesDidNotParticipate"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("minutesPlayed"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
 
         randomize(FieldPredicates.named("substitutionOnTime"), new IntegerRangeRandomizer(0, MatchEvent.MAX_MATCH_EVENT_TIME));
         randomize(FieldPredicates.named("substitutionOffTime"), new IntegerRangeRandomizer(0, MatchEvent.MAX_MATCH_EVENT_TIME));
@@ -88,7 +104,6 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
         randomize(FieldPredicates.named("goalsAgainst"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
         randomize(FieldPredicates.named("points"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
         randomize(FieldPredicates.named("formPoints"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
-        randomize(FieldPredicates.named("ranking"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
         randomize(FieldPredicates.named("previousRanking"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
         randomize(FieldPredicates.named("homeMatchesPlayed"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
         randomize(FieldPredicates.named("homeMatchesWon"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
