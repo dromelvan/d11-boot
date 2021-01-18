@@ -39,6 +39,10 @@ INSERT INTO position VALUES(2, 'Non Defender', 'ND', false, 2, '2020-01-01 00:00
 --     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 INSERT INTO player VALUES(1, 1, 111111, 'FirstA', 'LastA', 'FullA', 'firsta-lasta', '2020-01-01', 111, '1.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO player VALUES(2, 2, 222222, 'FirstB', 'LastB', 'FullB', 'firstb-lastb', '2020-01-01', 222, '2.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+-- Players used for search tests.
+INSERT INTO player VALUES(3, 1, 333333, 'Foo', 'Bar', null, 'foo-bar', '2020-01-01', 111, '3.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(4, 1, 444444, 'Bar', 'Foo', null, 'bar-foo', '2020-01-01', 111, '4.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(5, 1, 555555, 'Foo', '', null, 'foo', '2020-01-01', 111, '5.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO season(
 --     id, name, status, date, legacy, created_at, updated_at)

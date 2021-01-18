@@ -678,6 +678,30 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /search:
+    get:
+      summary: Search players, teams and D11 teams by name.
+      operationId: search
+      tags:
+        - search
+      parameters:
+        - in: query
+          required: true
+          name: name
+          schema:
+            type: string
+          description: The name to search on. If enclosed in quotes, only exact matches will be returned.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResult"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/Unexpected'
 
 components:
   responses:
@@ -2397,3 +2421,34 @@ components:
           $ref: '#/components/schemas/D11LeagueBase'
         d11MatchWeek:
           $ref: '#/components/schemas/D11MatchWeekBase'
+
+    PlayerSearchResult:
+      type: object
+      required:
+        - id
+        - name
+        - photoFileName
+        - teamId
+        - teamName
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        photoFileName:
+          type: string
+        teamId:
+          type: integer
+          format: int64
+        teamName:
+          type: string
+    SearchResult:
+      type: object
+      required:
+        - players
+      properties:
+        players:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlayerSearchResult"
