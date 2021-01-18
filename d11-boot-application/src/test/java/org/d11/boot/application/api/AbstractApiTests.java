@@ -3,8 +3,6 @@ package org.d11.boot.application.api;
 import lombok.Getter;
 import org.d11.boot.api.service.D11ApiService;
 import org.d11.boot.application.model.D11EasyRandomTests;
-import org.d11.boot.application.model.D11Entity;
-import org.d11.boot.application.repository.D11EntityRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,26 +15,21 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Base class for API tests.
  *
- * @param <T> The entity class this tests is based on.
- * @param <U> The repository class for the entity class.
  * @param <V> The API service class this test will use.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
-public abstract class AbstractApiTests<T extends D11Entity, U extends D11EntityRepository<T>, V extends D11ApiService> extends D11EasyRandomTests {
+public abstract class AbstractApiTests<V extends D11ApiService> extends D11EasyRandomTests {
 
     /**
      * Server port used when running tests with SpringBootTest.WebEnvironment.RANDOM_PORT.
@@ -49,17 +42,6 @@ public abstract class AbstractApiTests<T extends D11Entity, U extends D11EntityR
     @Getter
     @Autowired
     private V apiService;
-    /**
-     * Repository for the entity class the test is going to test.
-     */
-    @Getter
-    @Autowired
-    private U repository;
-    /**
-     * List of entities.
-     */
-    @Getter
-    private final List<T> entities = new ArrayList<>();
 
     /**
      * Sets up the base path port for the API service to use.
@@ -67,15 +49,6 @@ public abstract class AbstractApiTests<T extends D11Entity, U extends D11EntityR
     @BeforeAll
     public void setBasePathPort() {
         this.apiService.setBasePathPort(this.localServerPort);
-    }
-
-    /**
-     * Sets up the entities for the tests to use.
-     */
-    @BeforeAll
-    public void beforeAll() {
-        getEntities().addAll(this.repository.findAll());
-        assertFalse(getEntities().isEmpty(), "Entities should not be empty.");
     }
 
     /**
