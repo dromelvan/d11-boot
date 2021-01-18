@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Match week API tests.
  */
-public class MatchWeekApiTests extends AbstractApiTests<MatchWeek, MatchWeekRepository, MatchWeekApiService> {
+public class MatchWeekApiTests extends AbstractRepositoryApiTests<MatchWeek, MatchWeekRepository, MatchWeekApiService> {
 
     /**
      * Tests the findMatchWeekById API operation.

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * D11 league API tests.
  */
-public class D11LeagueApiTests extends AbstractApiTests<D11League, D11LeagueRepository, D11LeagueApiService> {
+public class D11LeagueApiTests extends AbstractRepositoryApiTests<D11League, D11LeagueRepository, D11LeagueApiService> {
 
     /**
      * Tests the findD11LeagueById API operation.

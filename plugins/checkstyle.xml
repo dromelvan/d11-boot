@@ -157,7 +157,7 @@
     <module name="Indentation"/>
     <module name="NoCodeInFile"/>
     <module name="OuterTypeFilename"/>
-    <module name="TodoComment"/>
+    <!-- <module name="TodoComment"/> -->
     <module name="TrailingComment"/>
     <!-- <module name="Translation"/> -->
     <module name="UncommentedMain">

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * Premier League API tests.
  */
-public class PremierLeagueApiTests extends AbstractApiTests<PremierLeague, PremierLeagueRepository, PremierLeagueApiService> {
+public class PremierLeagueApiTests extends AbstractRepositoryApiTests<PremierLeague, PremierLeagueRepository, PremierLeagueApiService> {
 
     /**
      * Tests the findPremierLeagueById API operation.

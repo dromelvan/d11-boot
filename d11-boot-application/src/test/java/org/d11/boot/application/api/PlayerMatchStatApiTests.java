@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * Player match stat API tests.
  */
-public class PlayerMatchStatApiTests extends AbstractApiTests<PlayerMatchStat, PlayerMatchStatRepository, PlayerMatchStatApiService> {
+public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMatchStat, PlayerMatchStatRepository, PlayerMatchStatApiService> {
 
     /**
      * Tests the findPlayerMatchStatById API operation.

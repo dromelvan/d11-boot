@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * Match API tests.
  */
-public class MatchApiTests extends AbstractApiTests<Match, MatchRepository, MatchApiService> {
+public class MatchApiTests extends AbstractRepositoryApiTests<Match, MatchRepository, MatchApiService> {
 
     /**
      * Tests the findMatchById API operation.

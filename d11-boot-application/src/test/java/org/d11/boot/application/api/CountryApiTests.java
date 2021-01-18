@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * Country API tests.
  */
-public class CountryApiTests extends AbstractApiTests<Country, CountryRepository, CountryApiService> {
+public class CountryApiTests extends AbstractRepositoryApiTests<Country, CountryRepository, CountryApiService> {
 
     /**
      * Tests the findCountryById API operation.

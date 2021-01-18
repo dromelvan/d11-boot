@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * Position API tests.
  */
-public class PositionApiTests extends AbstractApiTests<Position, PositionRepository, PositionApiService> {
+public class PositionApiTests extends AbstractRepositoryApiTests<Position, PositionRepository, PositionApiService> {
 
     /**
      * Sets up positions for the tests to use.

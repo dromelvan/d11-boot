@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * Player API tests.
  */
-public class PlayerApiTests extends AbstractApiTests<Player, PlayerRepository, PlayerApiService> {
+public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRepository, PlayerApiService> {
 
     /**
      * Tests the findPlayerById API operation.

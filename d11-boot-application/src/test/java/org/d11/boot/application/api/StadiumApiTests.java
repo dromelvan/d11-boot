@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * Stadium API tests.
  */
-public class StadiumApiTests extends AbstractApiTests<Stadium, StadiumRepository, StadiumApiService> {
+public class StadiumApiTests extends AbstractRepositoryApiTests<Stadium, StadiumRepository, StadiumApiService> {
 
     /**
      * Tests the findStadiumById API operation.

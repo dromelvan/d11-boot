@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * D11 team table stat API tests.
  */
-public class D11TeamTableStatApiTests extends AbstractApiTests<D11TeamTableStat, D11TeamTableStatRepository, D11TeamTableStatApiService> {
+public class D11TeamTableStatApiTests extends AbstractRepositoryApiTests<D11TeamTableStat, D11TeamTableStatRepository, D11TeamTableStatApiService> {
 
     /**
      * Tests the findD11TeamTableStatById API operation.

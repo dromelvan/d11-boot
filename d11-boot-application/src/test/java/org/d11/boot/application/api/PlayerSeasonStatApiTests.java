@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * Player season stat API tests.
  */
-public class PlayerSeasonStatApiTests extends AbstractApiTests<PlayerSeasonStat, PlayerSeasonStatRepository, PlayerSeasonStatApiService> {
+public class PlayerSeasonStatApiTests extends AbstractRepositoryApiTests<PlayerSeasonStat, PlayerSeasonStatRepository, PlayerSeasonStatApiService> {
 
     /**
      * Tests the findPlayerSeasonStatById API operation.

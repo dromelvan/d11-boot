@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * Season API tests.
  */
-public class SeasonApiTests extends AbstractApiTests<Season, SeasonRepository, SeasonApiService> {
+public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRepository, SeasonApiService> {
 
     /**
      * Sets up seasons for the tests to use.

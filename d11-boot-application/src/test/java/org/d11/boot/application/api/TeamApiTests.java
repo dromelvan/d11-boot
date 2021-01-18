@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * Team API tests.
  */
-public class TeamApiTests extends AbstractApiTests<Team, TeamRepository, TeamApiService> {
+public class TeamApiTests extends AbstractRepositoryApiTests<Team, TeamRepository, TeamApiService> {
 
     /**
      * Tests the findTeamById API operation.

@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 /**
  * User API tests.
  */
-public class UserApiTests extends AbstractApiTests<User, UserRepository, UserApiService> {
+public class UserApiTests extends AbstractRepositoryApiTests<User, UserRepository, UserApiService> {
 
     /**
      * Tests the findUserById API operation.
