@@ -123,6 +123,10 @@ SELECT setval('player_id_seq', (SELECT last_value FROM data.players_id_seq));
 UPDATE player
 SET whoscored_id = 0 WHERE whoscored_id = 1 and id != 142;
 
+UPDATE player
+SET photo_file_name = CONCAT(parameterized_name, '-', id, '.png')
+WHERE photo_file_name IS NOT NULL;
+
 -- Positions
 INSERT INTO "position"
 SELECT * FROM data.positions;
