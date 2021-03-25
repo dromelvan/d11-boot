@@ -1,10 +1,12 @@
 package org.d11.boot.application.repository;
 
+import org.d11.boot.application.model.Lineup;
 import org.d11.boot.application.model.PlayerMatchStat;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Repository for player match stat entities.
@@ -19,6 +21,21 @@ public interface PlayerMatchStatRepository extends D11EntityRepository<PlayerMat
      * @return Player match stats for the match.
      */
     List<PlayerMatchStat> findByMatchIdOrderByPositionSortOrder(@Param("matchId") Long matchId);
+
+    /**
+     * Gets player match stats for a specific match and team and lineup options ordered by player position sort order
+     * and lineup descending.
+     *
+     * @param matchId Id for the match for which player match stats will be looked up.
+     * @param teamId Id for the team for which player match stats will be looked up.
+     * @param lineups Only player match stats with lineups contained in this set will be included.
+     * @return Player match stats for the match, team and lineups.
+     */
+    List<PlayerMatchStat> findByMatchIdAndTeamIdAndLineupInOrderByPositionSortOrderAscLineupDesc(
+            @Param("matchId") Long matchId,
+            @Param("teamId") Long teamId,
+            @Param("lineup") Set<Lineup> lineups
+    );
 
     /**
      * Gets player match stats for a specific D11 match ordered by player position sort order.

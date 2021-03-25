@@ -532,6 +532,42 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /player-match-stats/match/{matchId}/team/{teamId}:
+    get:
+      summary: Find player match stats for a match and a team. Only active (starting lineup or substitutes) players will be returned.
+      operationId: findActivePlayerMatchStatByMatchIdAndTeamId
+      tags:
+        - playerMatchStat
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          description: Id for the match that player match stats will be found for.
+          schema:
+            type: integer
+            format: int64
+        - name: teamId
+          in: path
+          required: true
+          description: Id for the team that player match stats will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlayerMatchStat"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /player-match-stats/d11-match/{d11MatchId}:
     get:
       summary: Find player match stats for a D11 match.

@@ -39,10 +39,11 @@ INSERT INTO position VALUES(2, 'Non Defender', 'ND', false, 2, '2020-01-01 00:00
 --     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 INSERT INTO player VALUES(1, 1, 111111, 'FirstA', 'LastA', 'FullA', 'firsta-lasta', '2020-01-01', 111, '1.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO player VALUES(2, 2, 222222, 'FirstB', 'LastB', 'FullB', 'firstb-lastb', '2020-01-01', 222, '2.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(3, 1, 333333, 'FirstC', 'LastC', 'FullC', 'firstc-lastc', '2020-01-01', 333, '3.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 -- Players used for search tests.
-INSERT INTO player VALUES(3, 1, 333333, 'Foo', 'Bar', null, 'foo-bar', '2020-01-01', 111, '3.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO player VALUES(4, 1, 444444, 'Bar', 'Foo', null, 'bar-foo', '2020-01-01', 111, '4.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO player VALUES(5, 1, 555555, 'Foo', '', null, 'foo', '2020-01-01', 111, '5.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(4, 1, 444444, 'Foo', 'Bar', null, 'foo-bar', '2020-01-01', 111, '4.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(5, 1, 555555, 'Bar', 'Foo', null, 'bar-foo', '2020-01-01', 111, '5.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(6, 1, 666666, 'Foo', '', null, 'foo', '2020-01-01', 111, '6.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO season(
 --     id, name, status, date, legacy, created_at, updated_at)
@@ -181,6 +182,14 @@ INSERT INTO player_match_stat VALUES (13, 1, 7, 7, 1, 1, 2, 'ND', 2, 0, 0, 0, 0,
 INSERT INTO player_match_stat VALUES (14, 2, 7, 7, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 865, 12, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO player_match_stat VALUES (15, 1, 8, 8, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 700, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO player_match_stat VALUES (16, 2, 8, 8, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 865, 12, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player_match_stat VALUES (17, 3, 1, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player_match_stat VALUES (18, 3, 2, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player_match_stat VALUES (19, 3, 3, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player_match_stat VALUES (20, 3, 4, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player_match_stat VALUES (21, 3, 5, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player_match_stat VALUES (22, 3, 6, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player_match_stat VALUES (23, 3, 7, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player_match_stat VALUES (24, 3, 8, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO player_season_stat(
 --     id, player_id, season_id, team_id, d11_team_id, position_id, value, ranking, points, form_points, points_per_appearance, goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, created_at, updated_at)

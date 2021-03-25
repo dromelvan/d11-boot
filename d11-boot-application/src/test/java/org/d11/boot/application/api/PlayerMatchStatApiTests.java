@@ -3,6 +3,7 @@ package org.d11.boot.application.api;
 import org.d11.boot.api.model.PlayerMatchStatDTO;
 import org.d11.boot.api.service.PlayerMatchStatApiService;
 import org.d11.boot.application.model.D11Match;
+import org.d11.boot.application.model.Lineup;
 import org.d11.boot.application.model.Match;
 import org.d11.boot.application.model.Player;
 import org.d11.boot.application.model.PlayerMatchStat;
@@ -60,6 +61,39 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
 
             assertEquals(map(matchPlayerMatchStats, PlayerMatchStatDTO.class), playerMatchStats,
                          "Player match stats by match id should equal match player match stats.");
+        }
+    }
+
+    /**
+     * Tests the findActivePlayerMatchStatByMatchIdAndTeamId API operation.
+     */
+    @Test
+    public void findActivePlayerMatchStatByMatchIdAndTeamId() {
+        for(final Match match : getRepository().findAll().stream().map(PlayerMatchStat::getMatch).collect(Collectors.toSet())) {
+            final List<PlayerMatchStat> matchPlayerMatchStats = match.getPlayerMatchStats();
+            final List<PlayerMatchStat> homeTeamPlayerMatchStats = matchPlayerMatchStats
+                    .stream()
+                    .filter(playerMatchStat ->
+                            playerMatchStat.getTeam().equals(match.getHomeTeam()) && !playerMatchStat.getLineup().equals(Lineup.DID_NOT_PARTICIPATE))
+                    .collect(Collectors.toList());
+
+            final List<PlayerMatchStat> awayTeamPlayerMatchStats = matchPlayerMatchStats
+                    .stream()
+                    .filter(playerMatchStat ->
+                            playerMatchStat.getTeam().equals(match.getAwayTeam()) && !playerMatchStat.getLineup().equals(Lineup.DID_NOT_PARTICIPATE))
+                    .collect(Collectors.toList());
+
+            final List<PlayerMatchStatDTO> homeTeamPlayerMatchStatDTOs
+                    = getApiService().findActivePlayerMatchStatByMatchIdAndTeamId(match.getId(), match.getHomeTeam().getId());
+            assertFalse(homeTeamPlayerMatchStatDTOs.isEmpty(), "Home team player match stats is empty.");
+            assertEquals(map(homeTeamPlayerMatchStats, PlayerMatchStatDTO.class), homeTeamPlayerMatchStatDTOs,
+                    "Active player match stats by match id and team id should equal active home team player match stats.");
+
+            final List<PlayerMatchStatDTO> awayTeamPlayerMatchStatDTOs
+                    = getApiService().findActivePlayerMatchStatByMatchIdAndTeamId(match.getId(), match.getAwayTeam().getId());
+            assertFalse(awayTeamPlayerMatchStatDTOs.isEmpty(), "Away team player match stats is empty.");
+            assertEquals(map(awayTeamPlayerMatchStats, PlayerMatchStatDTO.class), awayTeamPlayerMatchStatDTOs,
+                    "Active player match stats by match id and team id should equal active away team player match stats.");
         }
     }
 

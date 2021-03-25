@@ -51,6 +51,25 @@ public class PlayerMatchStatApiService extends D11ApiService {
     }
 
     /**
+     * Finds active player match stats for a specific match and team.
+     *
+     * @param matchId The id of the match for which player match stats will be looked up.
+     * @param teamId The id of the team for which player match stats will be looked up.
+     * @return Active player match stat DTOs for the specified match and team.
+     */
+    public List<PlayerMatchStatDTO> findActivePlayerMatchStatByMatchIdAndTeamId(Long matchId, Long teamId) {
+        try {
+            final PlayerMatchStatApi playerMatchStatApi = new PlayerMatchStatApi(getApiClient());
+            return playerMatchStatApi.findActivePlayerMatchStatByMatchIdAndTeamId(matchId, teamId).collectList().block();
+        } catch(WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw translate(e);
+        }
+    }
+
+    /**
      * Finds player match stats for a specific D11 match.
      *
      * @param d11MatchId The id of the D11 match for which player match stats will be looked up.

@@ -1,18 +1,25 @@
 package org.d11.boot.application.service;
 
 import org.d11.boot.api.model.PlayerMatchStatDTO;
+import org.d11.boot.application.model.Lineup;
 import org.d11.boot.application.model.PlayerMatchStat;
 import org.d11.boot.application.repository.PlayerMatchStatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Provides player match stat services.
  */
 @Service
 public class PlayerMatchStatService extends AbstractRepositoryService<PlayerMatchStat, PlayerMatchStatDTO, PlayerMatchStatRepository> {
+
+    /**
+     * A set of active lineups to use when finding active players for a match.
+     */
+    private final Set<Lineup> activeLineups = Set.of(Lineup.STARTING_LINEUP, Lineup.SUBSTITUTE);
 
     /**
      * Creates a new service.
@@ -32,6 +39,20 @@ public class PlayerMatchStatService extends AbstractRepositoryService<PlayerMatc
      */
     public List<PlayerMatchStatDTO> findPlayerMatchStatByMatchId(final long matchId) {
         final List<PlayerMatchStat> playerMatchStats = getJpaRepository().findByMatchIdOrderByPositionSortOrder(matchId);
+        return map(playerMatchStats);
+    }
+
+    /**
+     * Gets active (starting lineup or substitute) player match stats for a specific match and team ordered by player
+     * position sort order and descending lineup.
+     *
+     * @param matchId Id for the match for which player match stats will be looked up.
+     * @param teamId Id for the team for which player match stats will be looked up.
+     * @return Active player match stat DTOs for the match and team.
+     */
+    public List<PlayerMatchStatDTO> findActivePlayerMatchStatByMatchIdAndTeamId(final long matchId, final long teamId) {
+        final List<PlayerMatchStat> playerMatchStats =
+                getJpaRepository().findByMatchIdAndTeamIdAndLineupInOrderByPositionSortOrderAscLineupDesc(matchId, teamId, this.activeLineups);
         return map(playerMatchStats);
     }
 
