@@ -1236,6 +1236,7 @@ components:
         - status
         - date
         - premierLeague
+        - season
         - d11MatchWeek
         - matches
       properties:
@@ -1252,6 +1253,8 @@ components:
           format: date
         premierLeague:
           $ref: '#/components/schemas/PremierLeagueBase'
+        season:
+          $ref: '#/components/schemas/SeasonBase'
         d11MatchWeek:
           $ref: '#/components/schemas/D11MatchWeekBase'
         matches:
@@ -1274,6 +1277,8 @@ components:
         - previous_away_team_goals
         - elapsed
         - status
+        - homeTeam
+        - awayTeam
       properties:
         id:
           type: integer
@@ -1300,6 +1305,12 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/Status'
+        # Matches are a special case where we want to include team name, code and id in the base DTO.
+        homeTeam:
+          $ref: '#/components/schemas/TeamName'
+        awayTeam:
+          $ref: '#/components/schemas/TeamName'
+
     Match:
       type: object
       required:
@@ -1761,7 +1772,7 @@ components:
         - substitutionsOn
         - substitutionsOff
         - manOfTheMatch
-        - sharedM_anOfTheMatch
+        - sharedManOfTheMatch
         - rating
         - gamesStarted
         - gamesSubstitute
@@ -1816,7 +1827,7 @@ components:
         manOfTheMatch:
           type: integer
           format: int32
-        sharedM_anOfTheMatch:
+        sharedManOfTheMatch:
           type: integer
           format: int32
         rating:
@@ -1853,7 +1864,7 @@ components:
         - substitutionsOn
         - substitutionsOff
         - manOfTheMatch
-        - sharedM_anOfTheMatch
+        - sharedManOfTheMatch
         - rating
         - gamesStarted
         - gamesSubstitute
@@ -1913,7 +1924,7 @@ components:
         manOfTheMatch:
           type: integer
           format: int32
-        sharedM_anOfTheMatch:
+        sharedManOfTheMatch:
           type: integer
           format: int32
         rating:

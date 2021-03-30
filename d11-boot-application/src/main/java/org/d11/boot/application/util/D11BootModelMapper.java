@@ -26,6 +26,7 @@ public class D11BootModelMapper extends ModelMapper {
                 // Run with -Djdk.module.illegalAccess=deny to suppress warnings until
                 // ModelMapper hopefully fixes it.
                 using(new MatchesByDateMapperConverter()).map(source.getMatches()).setMatches(null);
+                map(source.getPremierLeague().getSeason()).setSeason(null);
             }
         });
 
