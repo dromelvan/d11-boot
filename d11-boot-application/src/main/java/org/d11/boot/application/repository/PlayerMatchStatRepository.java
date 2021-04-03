@@ -57,4 +57,29 @@ public interface PlayerMatchStatRepository extends D11EntityRepository<PlayerMat
             @Param("seasonId") Long seasonId
     );
 
+    /**
+     * Finds the top 5 player match stats for a match week ordered by points and rating, descending.
+     *
+     * @param matchWeekId Id for the match week for which player match stats will be looked up.
+     * @param lineups Only player match stats with lineups contained in this set will be included.
+     * @return The top 5 player match stats for the match week.
+     */
+    List<PlayerMatchStat> findTop5ByMatchMatchWeekIdAndLineupInOrderByPointsDescRatingDesc(
+            @Param("matchWeekId") Long matchWeekId,
+            @Param("lineup") Set<Lineup> lineups
+    );
+
+    /**
+     * Finds the top 5 player match stats for a match week ordered by points and rating. This will be the actual
+     * bottom 5 player match stats.
+     *
+     * @param matchWeekId Id for the match week for which player match stats will be looked up.
+     * @param lineups Only player match stats with lineups contained in this set will be included.
+     * @return The bottom 5 player match stats for the match week.
+     */
+    List<PlayerMatchStat> findTop5ByMatchMatchWeekIdAndLineupInOrderByPointsAscRatingAsc(
+            @Param("matchWeekId") Long matchWeekId,
+            @Param("lineup") Set<Lineup> lineups
+    );
+
 }

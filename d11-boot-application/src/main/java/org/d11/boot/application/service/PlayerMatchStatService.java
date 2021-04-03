@@ -80,4 +80,28 @@ public class PlayerMatchStatService extends AbstractRepositoryService<PlayerMatc
         return map(playerMatchStats);
     }
 
+    /**
+     * Gets the top 5 player match stats for a match week ordered by points and rating.
+     *
+     * @param matchWeekId Id for the match week for which player match stats will be looked up.
+     * @return The top 5 player match stats for the match week.
+     */
+    public List<PlayerMatchStatDTO> findTop5PlayerMatchStatByMatchWeek(final long matchWeekId) {
+        final List<PlayerMatchStat> playerMatchStats = getJpaRepository()
+                .findTop5ByMatchMatchWeekIdAndLineupInOrderByPointsDescRatingDesc(matchWeekId, this.activeLineups);
+        return map(playerMatchStats);
+    }
+
+    /**
+     * Gets the bottom 5 player match stats for a match week ordered by points and rating.
+     *
+     * @param matchWeekId Id for the match week for which player match stats will be looked up.
+     * @return The bottom 5 player match stats for the match week.
+     */
+    public List<PlayerMatchStatDTO> findBottom5PlayerMatchStatByMatchWeek(final long matchWeekId) {
+        final List<PlayerMatchStat> playerMatchStats = getJpaRepository()
+                .findTop5ByMatchMatchWeekIdAndLineupInOrderByPointsAscRatingAsc(matchWeekId, this.activeLineups);
+        return map(playerMatchStats);
+    }
+
 }

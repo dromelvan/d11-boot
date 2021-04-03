@@ -52,4 +52,16 @@ public class PlayerMatchStatController extends AbstractRepositoryServiceControll
         return ResponseEntity.ok(playerMatchStats);
     }
 
+    @Override
+    public ResponseEntity<List<PlayerMatchStatDTO>> findTop5PlayerMatchStatByMatchWeek(final Long matchWeekId) {
+        final List<PlayerMatchStatDTO> playerMatchStats = getRepositoryService().findTop5PlayerMatchStatByMatchWeek(matchWeekId);
+        return ResponseEntity.ok(playerMatchStats);
+    }
+
+    @Override
+    public ResponseEntity<List<PlayerMatchStatDTO>> findBottom5PlayerMatchStatByMatchWeek(final Long matchWeekId) {
+        final List<PlayerMatchStatDTO> playerMatchStats = getRepositoryService().findBottom5PlayerMatchStatByMatchWeek(matchWeekId);
+        return ResponseEntity.ok(playerMatchStats);
+    }
+
 }

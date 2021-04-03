@@ -1,5 +1,6 @@
 package org.d11.boot.application.model;
 
+import com.google.common.collect.ComparisonChain;
 import lombok.Data;
 
 import javax.persistence.MappedSuperclass;
@@ -10,7 +11,7 @@ import javax.validation.constraints.PositiveOrZero;
  */
 @Data
 @MappedSuperclass
-public class PlayerStat extends D11Entity {
+public class PlayerStat extends D11Entity implements Comparable<PlayerStat> {
 
     /**
      * Number of goals scored.
@@ -42,4 +43,11 @@ public class PlayerStat extends D11Entity {
      */
     private int points;
 
+    @Override
+    public int compareTo(final PlayerStat playerStat) {
+        return ComparisonChain.start()
+                .compare(playerStat.getPoints(), getPoints())
+                .compare(playerStat.getRating(), getRating())
+                .result();
+    }
 }

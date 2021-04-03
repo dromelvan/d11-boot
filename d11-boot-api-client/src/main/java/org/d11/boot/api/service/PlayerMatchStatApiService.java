@@ -106,4 +106,40 @@ public class PlayerMatchStatApiService extends D11ApiService {
         }
     }
 
+    /**
+     * Finds the top 5 player match stats for a match week ordered by points and rating.
+     *
+     * @param matchWeekId Id for the match week for which player match stats will be looked up.
+     * @return The top 5 player match stat DTOs for the specified match week.
+     */
+    public List<PlayerMatchStatDTO> findTop5PlayerMatchStatByMatchWeek(Long matchWeekId) {
+        try {
+            final PlayerMatchStatApi playerMatchStatApi = new PlayerMatchStatApi(getApiClient());
+            return playerMatchStatApi.findTop5PlayerMatchStatByMatchWeek(matchWeekId).collectList().block();
+        } catch(WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw translate(e);
+        }
+    }
+
+    /**
+     * Finds the bottom 5 player match stats for a match week ordered by points and rating.
+     *
+     * @param matchWeekId Id for the match week for which player match stats will be looked up.
+     * @return The bottome 5 player match stat DTOs for the specified match week.
+     */
+    public List<PlayerMatchStatDTO> findBottom5PlayerMatchStatByMatchWeek(Long matchWeekId) {
+        try {
+            final PlayerMatchStatApi playerMatchStatApi = new PlayerMatchStatApi(getApiClient());
+            return playerMatchStatApi.findBottom5PlayerMatchStatByMatchWeek(matchWeekId).collectList().block();
+        } catch(WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw translate(e);
+        }
+    }
+
 }

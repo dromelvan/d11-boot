@@ -5,6 +5,7 @@ import org.d11.boot.api.service.PlayerMatchStatApiService;
 import org.d11.boot.application.model.D11Match;
 import org.d11.boot.application.model.Lineup;
 import org.d11.boot.application.model.Match;
+import org.d11.boot.application.model.MatchWeek;
 import org.d11.boot.application.model.Player;
 import org.d11.boot.application.model.PlayerMatchStat;
 import org.d11.boot.application.model.Season;
@@ -12,6 +13,7 @@ import org.d11.boot.application.repository.PlayerMatchStatRepository;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -54,13 +56,13 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
             final List<PlayerMatchStat> matchPlayerMatchStats = match.getPlayerMatchStats();
             matchPlayerMatchStats.sort(Comparator.comparing(playerMatchStat -> playerMatchStat.getPosition().getSortOrder()));
             assertFalse(matchPlayerMatchStats.isEmpty(), "Match player match stats is empty. " +
-                                                         "This means the match player match stat test data is not set up properly.");
+                    "This means the match player match stat test data is not set up properly.");
 
             final List<PlayerMatchStatDTO> playerMatchStats = getApiService().findPlayerMatchStatByMatchId(match.getId());
             assertFalse(playerMatchStats.isEmpty(), "Match player match stats is empty.");
 
             assertEquals(map(matchPlayerMatchStats, PlayerMatchStatDTO.class), playerMatchStats,
-                         "Player match stats by match id should equal match player match stats.");
+                    "Player match stats by match id should equal match player match stats.");
         }
     }
 
@@ -106,13 +108,13 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
             final List<PlayerMatchStat> d11MatchPlayerMatchStats = d11Match.getPlayerMatchStats();
             d11MatchPlayerMatchStats.sort(Comparator.comparing(playerMatchStat -> playerMatchStat.getPosition().getSortOrder()));
             assertFalse(d11MatchPlayerMatchStats.isEmpty(), "D11 match player match stats is empty. " +
-                                                            "This means the D11 match player match stat test data is not set up properly.");
+                    "This means the D11 match player match stat test data is not set up properly.");
 
             final List<PlayerMatchStatDTO> playerMatchStats = getApiService().findPlayerMatchStatByD11MatchId(d11Match.getId());
             assertFalse(playerMatchStats.isEmpty(), "D11 match player match stats is empty.");
 
             assertEquals(map(d11MatchPlayerMatchStats, PlayerMatchStatDTO.class), playerMatchStats,
-                         "Player match stats by D11 match id should equal D11 match player match stats.");
+                    "Player match stats by D11 match id should equal D11 match player match stats.");
         }
     }
 
@@ -130,7 +132,7 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
         }
 
         assertFalse(playerMatchStatMap.isEmpty(), "Player match stat map is empty. " +
-                                                  "This means the player match stat test data is not set up properly.");
+                "This means the player match stat test data is not set up properly.");
 
         for(final Map.Entry<Player, Map<Season, List<PlayerMatchStat>>> playerEntry : playerMatchStatMap.entrySet()) {
             final Player player = playerEntry.getKey();
@@ -140,14 +142,71 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
                 final List<PlayerMatchStat> playerSeasonPlayerMatchStats = seasonEntry.getValue();
                 playerSeasonPlayerMatchStats.sort(Comparator.comparing(playerMatchStat -> playerMatchStat.getMatch().getDatetime()));
                 assertFalse(playerSeasonPlayerMatchStats.isEmpty(), "Player season player match stats is empty. " +
-                                                                    "This means the player season player match stat test data is not set up properly.");
+                        "This means the player season player match stat test data is not set up properly.");
 
                 final List<PlayerMatchStatDTO> playerMatchStats = getApiService().findPlayerMatchStatByPlayerIdAndSeasonId(player.getId(), season.getId());
                 assertFalse(playerMatchStats.isEmpty(), "Player and season player match stats is empty.");
 
                 assertEquals(map(playerSeasonPlayerMatchStats, PlayerMatchStatDTO.class), playerMatchStats,
-                             "Player match stats by player id and season id should equal player season player match stats.");
+                        "Player match stats by player id and season id should equal player season player match stats.");
             }
+        }
+    }
+
+    /**
+     * Tests the findTop5PlayerMatchStatByMatchWeek API operation.
+     */
+    @Test
+    public void findTop5PlayerMatchStatByMatchWeek() {
+        final Map<MatchWeek, List<PlayerMatchStat>> playerMatchStatMap = new HashMap<>();
+        for(final PlayerMatchStat playerMatchStat : getEntities()) {
+            if(playerMatchStat.getLineup() != Lineup.DID_NOT_PARTICIPATE) {
+                final List<PlayerMatchStat> matchWeekList =
+                        playerMatchStatMap.computeIfAbsent(playerMatchStat.getMatch().getMatchWeek(), matchWeek -> new ArrayList<>());
+                matchWeekList.add(playerMatchStat);
+            }
+        }
+        for(final Map.Entry<MatchWeek, List<PlayerMatchStat>> entry : playerMatchStatMap.entrySet()) {
+            final List<PlayerMatchStat> matchWeekPlayerMatchStats = entry.getValue();
+            Collections.sort(matchWeekPlayerMatchStats);
+
+            final List<PlayerMatchStatDTO> playerMatchStats = getApiService().findTop5PlayerMatchStatByMatchWeek(entry.getKey().getId());
+
+            assertEquals(matchWeekPlayerMatchStats.size(), playerMatchStats.size(),
+                    "Top 5 match week player match stats and player match stats sizes are not equal. " +
+                    "This means the top 5 match week player match stat test data is not set up properly.");
+
+            assertEquals(map(matchWeekPlayerMatchStats, PlayerMatchStatDTO.class), playerMatchStats,
+                    "Bottom 5 player match stats by match week should equal match week player match stats.");
+        }
+    }
+
+    /**
+     * Tests the findBottom5PlayerMatchStatByMatchWeek API operation.
+     */
+    @Test
+    public void findBottom5PlayerMatchStatByMatchWeek() {
+        final Map<MatchWeek, List<PlayerMatchStat>> playerMatchStatMap = new HashMap<>();
+        for(final PlayerMatchStat playerMatchStat : getEntities()) {
+            if(playerMatchStat.getLineup() != Lineup.DID_NOT_PARTICIPATE) {
+                final List<PlayerMatchStat> matchWeekList =
+                        playerMatchStatMap.computeIfAbsent(playerMatchStat.getMatch().getMatchWeek(), matchWeek -> new ArrayList<>());
+                matchWeekList.add(playerMatchStat);
+            }
+        }
+        for(final Map.Entry<MatchWeek, List<PlayerMatchStat>> entry : playerMatchStatMap.entrySet()) {
+            final List<PlayerMatchStat> matchWeekPlayerMatchStats = entry.getValue();
+            Collections.sort(matchWeekPlayerMatchStats);
+            Collections.reverse(matchWeekPlayerMatchStats);
+
+            final List<PlayerMatchStatDTO> playerMatchStats = getApiService().findBottom5PlayerMatchStatByMatchWeek(entry.getKey().getId());
+
+            assertEquals(matchWeekPlayerMatchStats.size(), playerMatchStats.size(),
+                    "Bottom 5 match week player match stats and player match stats sizes are not equal. " +
+                    "This means the bottom 5 match week player match stat test data is not set up properly.");
+
+            assertEquals(map(matchWeekPlayerMatchStats, PlayerMatchStatDTO.class), playerMatchStats,
+                    "Top 5 player match stats by match week should equal match week player match stats.");
         }
     }
 
