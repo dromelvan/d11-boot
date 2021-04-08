@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.util.List;
+
 /**
  * Provides D11 team table stat API services.
  */
@@ -22,6 +24,25 @@ public class D11TeamTableStatApiService extends D11ApiService {
         try {
             final D11TeamTableStatApi d11TeamTableStatApi = new D11TeamTableStatApi(getApiClient());
             return d11TeamTableStatApi.findD11TeamTableStatById(d11TeamTableStatId).block();
+        } catch(WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw translate(e);
+        }
+    }
+
+    /**
+     * Gets D11 team table stats for a D11 league ordered by D11 match week id, descending, and ranking.
+     * This will be the current league table standings.
+     *
+     * @param d11LeagueId Id for the D11 league for which D11 team table stats will be looked up.
+     * @return The current league table standings for the D11 league.
+     */
+    public List<D11TeamTableStatDTO> findD11TeamTableStatByD11LeagueId(final Long d11LeagueId) {
+        try {
+            final D11TeamTableStatApi d11TeamTableStatApi = new D11TeamTableStatApi(getApiClient());
+            return d11TeamTableStatApi.findD11TeamTableStatByD11LeagueId(d11LeagueId).collectList().block();
         } catch(WebClientResponseException e) {
             if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 return null;

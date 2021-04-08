@@ -745,6 +745,35 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /team-table-stats/premier-league/{premierLeagueId}:
+    get:
+      summary: Find team table stats by Premier League id.
+      operationId: findTeamTableStatByPremierLeagueId
+      tags:
+        - teamTableStat
+      parameters:
+        - name: premierLeagueId
+          in: path
+          required: true
+          description: Id for the Premier League that team table stats will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamTableStat"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /d11-team-table-stats/{d11TeamTableStatId}:
     get:
       summary: Find a D11 team table stat by id.
@@ -766,6 +795,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/D11TeamTableStat"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /d11-team-table-stats/d11-league/{d11LeagueId}:
+    get:
+      summary: Find team table stats by D11 league id.
+      operationId: findD11TeamTableStatByD11LeagueId
+      tags:
+        - d11TeamTableStat
+      parameters:
+        - name: d11LeagueId
+          in: path
+          required: true
+          description: Id for the D11 league that D11 team table stats will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/D11TeamTableStat"
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':

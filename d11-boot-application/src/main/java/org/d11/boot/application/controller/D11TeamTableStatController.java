@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Controller that implements the D11TeamTableStatsApi and provides D11 team table stat endpoints.
  */
@@ -27,6 +29,13 @@ public class D11TeamTableStatController extends AbstractRepositoryServiceControl
     @Override
     public ResponseEntity<D11TeamTableStatDTO> findD11TeamTableStatById(final Long d11TeamTableStatId) {
         return findById(d11TeamTableStatId);
+    }
+
+    @Override
+    public ResponseEntity<List<D11TeamTableStatDTO>> findD11TeamTableStatByD11LeagueId(final Long d11LeagueId) {
+        final List<D11TeamTableStatDTO> d11TeamTableStats = getRepositoryService().findD11TeamTableStatByD11LeagueId(d11LeagueId);
+        return ResponseEntity.ok(d11TeamTableStats);
+
     }
 
 }
