@@ -21,10 +21,6 @@ public class D11BootModelMapper extends ModelMapper {
         addMappings(new PropertyMap<MatchWeek, MatchWeekDTO>() {
             @Override
             protected void configure() {
-                // This causes Illegal Reflective Access warnings on Java 9+.
-                // See https://github.com/modelmapper/modelmapper/issues/414.
-                // Run with -Djdk.module.illegalAccess=deny to suppress warnings until
-                // ModelMapper hopefully fixes it.
                 using(new MatchesByDateMapperConverter()).map(source.getMatches()).setMatches(null);
                 map(source.getPremierLeague().getSeason()).setSeason(null);
             }
