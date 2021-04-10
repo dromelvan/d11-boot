@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS d11_team_table_stat(
     goal_difference INTEGER NOT NULL DEFAULT 0,
     points INTEGER NOT NULL DEFAULT 0,
     form_points INTEGER NOT NULL DEFAULT 0,
+    form_match_points VARCHAR(255) NOT NULL,
     ranking INTEGER NOT NULL DEFAULT 0,
     previous_ranking INTEGER NOT NULL DEFAULT 0,
     home_matches_played INTEGER NOT NULL DEFAULT 0,

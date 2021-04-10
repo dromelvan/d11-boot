@@ -181,7 +181,7 @@ SELECT setval('player_match_stat_id_seq', (SELECT last_value FROM data.player_ma
 
 -- Team table stats
 INSERT INTO team_table_stat
-SELECT id, team_id, premier_league_id, match_day_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, ranking, previous_ranking,
+SELECT id, team_id, premier_league_id, match_day_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, form_match_points, ranking, previous_ranking,
        home_matches_played, home_matches_won, home_matches_drawn, home_matches_lost, home_goals_for, home_goals_against, home_goal_difference, home_points, home_ranking,
        away_matches_played, away_matches_won, away_matches_drawn, away_matches_lost, away_goals_for, away_goals_against, away_goal_difference, away_points, away_ranking,
        created_at, updated_at FROM data.team_table_stats;
@@ -189,7 +189,7 @@ SELECT setval('team_table_stat_id_seq', (SELECT last_value FROM data.team_table_
 
 -- D11 team table stats
 INSERT INTO d11_team_table_stat
-SELECT id, d11_team_id, d11_league_id, d11_match_day_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, ranking, previous_ranking,
+SELECT id, d11_team_id, d11_league_id, d11_match_day_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, form_match_points, ranking, previous_ranking,
        home_matches_played, home_matches_won, home_matches_drawn, home_matches_lost, home_goals_for, home_goals_against, home_goal_difference, home_points, home_ranking,
        away_matches_played, away_matches_won, away_matches_drawn, away_matches_lost, away_goals_for, away_goals_against, away_goal_difference, away_points, away_ranking,
        created_at, updated_at FROM data.d11_team_table_stats;

@@ -2,6 +2,8 @@ package org.d11.boot.application.model;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -54,6 +56,10 @@ public class TableStatTests extends D11EasyRandomTests {
         tableStat.setFormPoints(-1);
         assertFalse(tableStat.isValid(), "Negative form points should not be valid.");
         tableStat.setFormPoints(1);
+
+        tableStat.setFormMatchPoints(null);
+        assertFalse(tableStat.isValid(), "Form match points should not be null.");
+        tableStat.setFormMatchPoints(new ArrayList<>());
 
         tableStat.setRanking(0);
         assertFalse(tableStat.isValid(), "Non positive ranking should not be valid.");

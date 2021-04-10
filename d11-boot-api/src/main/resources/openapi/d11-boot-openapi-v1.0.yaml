@@ -2082,6 +2082,7 @@ components:
         - goalDifference
         - points
         - formPoints
+        - formMatchPoints
         - ranking
         - previousRanking
         - homeMatchesPlayed
@@ -2133,6 +2134,11 @@ components:
         formPoints:
           type: integer
           format: int32
+        formMatchPoints:
+          type: array
+          items:
+            type: integer
+            format: int32
         ranking:
           type: integer
           format: int32
@@ -2206,6 +2212,7 @@ components:
         - goalDifference
         - points
         - formPoints
+        - formMatchPoints
         - ranking
         - previousRanking
         - homeMatchesPlayed
@@ -2260,6 +2267,11 @@ components:
         formPoints:
           type: integer
           format: int32
+        formMatchPoints:
+          type: array
+          items:
+            type: integer
+            format: int32
         ranking:
           type: integer
           format: int32
@@ -2340,6 +2352,7 @@ components:
         - goalDifference
         - points
         - formPoints
+        - formMatchPoints
         - ranking
         - previousRanking
         - homeMatchesPlayed
@@ -2391,6 +2404,11 @@ components:
         formPoints:
           type: integer
           format: int32
+        formMatchPoints:
+          type: array
+          items:
+            type: integer
+            format: int32
         ranking:
           type: integer
           format: int32
@@ -2464,6 +2482,7 @@ components:
         - goalDifference
         - points
         - formPoints
+        - formMatchPoints
         - ranking
         - previousRanking
         - homeMatchesPlayed
@@ -2518,6 +2537,11 @@ components:
         formPoints:
           type: integer
           format: int32
+        formMatchPoints:
+          type: array
+          items:
+            type: integer
+            format: int32
         ranking:
           type: integer
           format: int32

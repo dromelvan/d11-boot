@@ -1,10 +1,14 @@
 package org.d11.boot.application.model;
 
 import lombok.Data;
+import org.d11.boot.application.model.converter.FormMatchPointsConverter;
 
+import javax.persistence.Convert;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.List;
 
 /**
  * Base class for entities that contain table stats.
@@ -58,6 +62,12 @@ public class TableStat extends D11Entity {
      */
     @PositiveOrZero
     private int formPoints;
+    /**
+     * List of points won the last five individual matches.
+     */
+    @NotNull
+    @Convert(converter = FormMatchPointsConverter.class)
+    private List<Integer> formMatchPoints;
     /**
      * Table ranking.
      */
