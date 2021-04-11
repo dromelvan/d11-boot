@@ -14,7 +14,9 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -72,6 +74,29 @@ public class MatchWeekApiTests extends AbstractRepositoryApiTests<MatchWeek, Mat
         }
 
         assertTrue(currentMatchWeekFound, "The test did not complete correctly as no current match week was found.");
+    }
+
+    /**
+     * Tests the findMatchWeekByPremierLeagueId API operation.
+     */
+    @Test
+    public void findMatchWeekByPremierLeagueId() {
+        final Map<PremierLeague, List<MatchWeek>> map = new HashMap<>();
+        for(final MatchWeek matchWeek : getRepository().findAll()) {
+            final List<MatchWeek> matchWeeks = map.computeIfAbsent(matchWeek.getPremierLeague(), premierLeague -> new ArrayList<>());
+            matchWeeks.add(matchWeek);
+        }
+
+        for(final Map.Entry<PremierLeague, List<MatchWeek>> entry : map.entrySet()) {
+            final List<MatchWeekDTO> matchWeekDTOs = map(entry.getValue(), MatchWeekDTO.class);
+            matchWeekDTOs.sort(Comparator.comparing(MatchWeekDTO::getDate));
+
+            final List<MatchWeekDTO> result = getApiService().findMatchWeekByPremierLeagueId(entry.getKey().getId());
+
+            assertNotNull(result, "Premier League match weeks should not be null.");
+            assertFalse(result.isEmpty(), "Premier League match weeks should not be empty.");
+            assertEquals(matchWeekDTOs, result, "Premier League match weeks should equal match weeks.");
+        }
     }
 
     /**

@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.util.List;
+
 /**
  * Provides match week API services.
  */
@@ -39,6 +41,24 @@ public class MatchWeekApiService extends D11ApiService {
         try {
             final MatchWeekApi matchWeekApi = new MatchWeekApi(getApiClient());
             return matchWeekApi.findCurrentMatchWeek().block();
+        } catch(WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw translate(e);
+        }
+    }
+
+    /**
+     * Finds the match weeks for a specific Premier League.
+     *
+     * @param premierLeagueId Id for the Premier League for which match weeks will be looked up.
+     * @return Match week DTOs for the Premier League.
+     */
+    public List<MatchWeekDTO> findMatchWeekByPremierLeagueId(final Long premierLeagueId) {
+        try {
+            final MatchWeekApi matchWeekApi = new MatchWeekApi(getApiClient());
+            return matchWeekApi.findMatchWeekByPremierLeagueId(premierLeagueId).collectList().block();
         } catch(WebClientResponseException e) {
             if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 return null;

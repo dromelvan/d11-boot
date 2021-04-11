@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.util.List;
+
 /**
  * Provides D11 match week API services.
  */
@@ -39,6 +41,24 @@ public class D11MatchWeekApiService extends D11ApiService {
         try {
             final D11MatchWeekApi d11MatchWeekApi = new D11MatchWeekApi(getApiClient());
             return d11MatchWeekApi.findCurrentD11MatchWeek().block();
+        } catch(WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw translate(e);
+        }
+    }
+
+    /**
+     * Finds the D11 match weeks for a specific D11 league.
+     *
+     * @param d11LeagueId Id for the D11 league for which D11 match weeks will be looked up.
+     * @return D11 match week DTOs for the D11 league.
+     */
+    public List<D11MatchWeekDTO> findD11MatchWeekByD11LeagueId(final Long d11LeagueId) {
+        try {
+            final D11MatchWeekApi d11MatchWeekApi = new D11MatchWeekApi(getApiClient());
+            return d11MatchWeekApi.findD11MatchWeekByD11LeagueId(d11LeagueId).collectList().block();
         } catch(WebClientResponseException e) {
             if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 return null;

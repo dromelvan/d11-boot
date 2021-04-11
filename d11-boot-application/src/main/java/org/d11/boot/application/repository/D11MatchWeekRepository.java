@@ -1,9 +1,11 @@
 package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.D11MatchWeek;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -21,8 +23,12 @@ public interface D11MatchWeekRepository extends D11EntityRepository<D11MatchWeek
      */
     Optional<D11MatchWeek> findFirstByDateLessThanEqualOrderByDateDesc(LocalDate date);
 
-    //  @Override
-    //  //@EntityGraph(attributePaths = { "d11Matches" })
-    //  Optional<D11MatchWeek> findById(Long id);
+    /**
+     * Gets D11 match weeks for a specific D11 league ordered by date.
+     *
+     * @param d11LeagueId Id for the D11 league for which D11 match weeks will be looked up.
+     * @return D11 match weeks for the D11 league.
+     */
+    List<D11MatchWeek> findByD11LeagueIdOrderByDate(@Param("d11LeagueId") Long d11LeagueId);
 
 }

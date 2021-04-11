@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Controller that implements the D11MatchWeeksApi and provides match week endpoints.
  */
@@ -32,6 +34,12 @@ public class D11MatchWeekController extends AbstractRepositoryServiceController<
     public ResponseEntity<D11MatchWeekDTO> findCurrentD11MatchWeek() {
         final D11MatchWeekDTO d11MatchWeek = getRepositoryService().findCurrentD11MatchWeek();
         return ResponseEntity.ok(d11MatchWeek);
+    }
+
+    @Override
+    public ResponseEntity<List<D11MatchWeekDTO>> findD11MatchWeekByD11LeagueId(final Long d11LeagueId) {
+        final List<D11MatchWeekDTO> d11MatchWeeks = getRepositoryService().findD11MatchWeekByD11LeagueId(d11LeagueId);
+        return ResponseEntity.ok(d11MatchWeeks);
     }
 
 }

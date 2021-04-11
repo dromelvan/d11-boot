@@ -14,7 +14,9 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -73,6 +75,30 @@ public class D11MatchWeekApiTests extends AbstractRepositoryApiTests<D11MatchWee
 
         assertTrue(currentD11MatchWeekFound, "The test did not complete correctly as no current D11 match week was found.");
     }
+
+    /**
+     * Tests the findD11MatchWeekByD11LeagueId API operation.
+     */
+    @Test
+    public void findD11MatchWeekByD11LeagueId() {
+        final Map<D11League, List<D11MatchWeek>> map = new HashMap<>();
+        for(final D11MatchWeek d11MatchWeek : getRepository().findAll()) {
+            final List<D11MatchWeek> d11MatchWeeks = map.computeIfAbsent(d11MatchWeek.getD11League(), d11League -> new ArrayList<>());
+            d11MatchWeeks.add(d11MatchWeek);
+        }
+
+        for(final Map.Entry<D11League, List<D11MatchWeek>> entry : map.entrySet()) {
+            final List<D11MatchWeekDTO> d11MatchWeekDTOs = map(entry.getValue(), D11MatchWeekDTO.class);
+            d11MatchWeekDTOs.sort(Comparator.comparing(D11MatchWeekDTO::getDate));
+
+            final List<D11MatchWeekDTO> result = getApiService().findD11MatchWeekByD11LeagueId(entry.getKey().getId());
+
+            assertNotNull(result, "D11 league D11 match weeks should not be null.");
+            assertFalse(result.isEmpty(), "D11 league D11 match weeks should not be empty.");
+            assertEquals(d11MatchWeekDTOs, result, "D11 league D11 match weeks should equal D11 match weeks.");
+        }
+    }
+
 
     /**
      * Tests D11 match week D11 match order.

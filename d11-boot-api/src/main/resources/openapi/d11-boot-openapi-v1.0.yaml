@@ -351,6 +351,35 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /match-weeks/premier-league/{premierLeagueId}:
+    get:
+      summary: Find match weeks by Premier League id.
+      operationId: findMatchWeekByPremierLeagueId
+      tags:
+        - matchWeek
+      parameters:
+        - name: premierLeagueId
+          in: path
+          required: true
+          description: Id for the Premier League that match weeks will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatchWeek"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /matches/{matchId}:
     get:
       summary: Find a match by id.
@@ -445,6 +474,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/D11MatchWeek"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /d11-match-weeks/d11-league/{d11LeagueId}:
+    get:
+      summary: Find D11 match weeks by D11 league id.
+      operationId: findD11MatchWeekByD11LeagueId
+      tags:
+        - d11MatchWeek
+      parameters:
+        - name: d11LeagueId
+          in: path
+          required: true
+          description: Id for the D11 league that D11 match weeks will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/D11MatchWeek"
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
