@@ -59,11 +59,46 @@ public class D11MatchWeek extends D11Entity {
     private MatchWeek matchWeek;
 
     /**
+     * List of D11 team table stats for this D11 match week, ordered by ranking.
+     */
+    @OneToMany(mappedBy = "d11MatchWeek", cascade = CascadeType.ALL)
+    @OrderBy("ranking ASC")
+    @EqualsAndHashCode.Exclude
+    private List<D11TeamTableStat> d11TeamTableStats = new ArrayList<>();
+
+    /**
      * List of D11 matches that are played in this D11 match week, ordered by date.
      */
     @OneToMany(mappedBy = "d11MatchWeek", cascade = CascadeType.ALL)
     @OrderBy("date ASC")
     @EqualsAndHashCode.Exclude
     private List<D11Match> d11Matches = new ArrayList<>();
+
+    /**
+     * The team that was at the top of the league table at the time of this match week.
+     *
+     * @return The leading team at the time of this match week or null if no leader could be found.
+     */
+    public D11Team getLeader() {
+        if(this.d11TeamTableStats != null && !this.d11TeamTableStats.isEmpty()) {
+            return this.d11TeamTableStats.get(0).getD11Team();
+        }
+        return null;
+    }
+
+    /**
+     * The number of finished D11 matches in this D11 match week, representing the elapsed time of the D11 match week.
+     *
+     * @return The number, between 0 and 10, of finished D11 matches this D11 match week, representing the elapsed time.
+     */
+    public int getElapsed() {
+        int elapsed = 0;
+        for(final D11Match d11Match : this.d11Matches) {
+            if(d11Match.getStatus() == Status.FINISHED) {
+                ++elapsed;
+            }
+        }
+        return elapsed;
+    }
 
 }

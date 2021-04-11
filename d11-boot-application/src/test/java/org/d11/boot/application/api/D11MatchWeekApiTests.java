@@ -2,8 +2,11 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.D11MatchWeekDTO;
 import org.d11.boot.api.service.D11MatchWeekApiService;
+import org.d11.boot.application.model.D11League;
 import org.d11.boot.application.model.D11Match;
 import org.d11.boot.application.model.D11MatchWeek;
+import org.d11.boot.application.model.D11Team;
+import org.d11.boot.application.model.Status;
 import org.d11.boot.application.repository.D11MatchWeekRepository;
 import org.d11.boot.application.util.D11MatchesByDateMapperConverter;
 import org.junit.jupiter.api.Test;
@@ -83,6 +86,41 @@ public class D11MatchWeekApiTests extends AbstractRepositoryApiTests<D11MatchWee
             d11Matches.sort(Comparator.comparing(D11Match::getDate));
 
             assertEquals(d11Matches, d11MatchWeek.getD11Matches(), "D11 match order should be by date, ascending.");
+        }
+    }
+
+    /**
+     * Tests D11 match week elapsed.
+     */
+    @Test
+    public void elapsed() {
+        for(final D11MatchWeek d11MatchWeek : getRepository().findAll()) {
+            assertFalse(d11MatchWeek.getD11Matches().isEmpty(), "Elapsed D11 matches should not be empty.");
+
+            int finishedD11Matches = 0;
+            for(final D11Match d11Match : d11MatchWeek.getD11Matches()) {
+                if(d11Match.getStatus() == Status.FINISHED) {
+                    ++finishedD11Matches;
+                }
+            }
+
+            assertEquals(finishedD11Matches, d11MatchWeek.getElapsed(),
+                    "D11 match week elapsed should equal number of finished D11 matches.");
+        }
+    }
+
+    /**
+     * Tests D11 match week leader.
+     */
+    @Test
+    public void leader() {
+        for(final D11MatchWeek d11MatchWeek : getRepository().findAll()) {
+            assertFalse(d11MatchWeek.getD11TeamTableStats().isEmpty(), "D11 match week D11 team table stats should not be empty.");
+
+            final D11Team d11Team = d11MatchWeek.getD11TeamTableStats().get(0).getD11Team();
+
+            assertEquals(d11Team, d11MatchWeek.getLeader(),
+                    "D11 match week leader should equal D11 team of the first D11 match week D11 team table stat.");
         }
     }
 

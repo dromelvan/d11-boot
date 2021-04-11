@@ -1093,6 +1093,7 @@ components:
         - name
         - shortName
         - code
+        - photoFileName
       properties:
         id:
           type: integer
@@ -1102,6 +1103,8 @@ components:
         shortName:
           type: string
         code:
+          type: string
+        photoFileName:
           type: string
     TeamBase:
       type: object
@@ -1187,6 +1190,26 @@ components:
         stadium:
           $ref: '#/components/schemas/Stadium'
 
+    D11TeamName:
+      type: object
+      required:
+        - id
+        - name
+        - shortName
+        - code
+        - photoFileName
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        shortName:
+          type: string
+        code:
+          type: string
+        photoFileName:
+          type: string
     D11TeamBase:
       type: object
       required:
@@ -1350,10 +1373,12 @@ components:
         - id
         - matchWeekNumber
         - status
+        - elapsed
         - date
         - premierLeague
         - season
         - d11MatchWeek
+        - leader
         - matches
       properties:
         id:
@@ -1364,6 +1389,9 @@ components:
           format: int32
         status:
           $ref: '#/components/schemas/Status'
+        elapsed:
+          type: integer
+          format: int32
         date:
           type: string
           format: date
@@ -1373,6 +1401,8 @@ components:
           $ref: '#/components/schemas/SeasonBase'
         d11MatchWeek:
           $ref: '#/components/schemas/D11MatchWeekBase'
+        leader:
+          $ref: '#/components/schemas/TeamName'
         matches:
           type: object
           additionalProperties:
@@ -1530,15 +1560,20 @@ components:
       required:
         - id
         - matchWeekNumber
+        - elapsed
         - date
         - d11League
         - matchWeek
+        - leader
         - d11Matches
       properties:
         id:
           type: integer
           format: int64
         matchWeekNumber:
+          type: integer
+          format: int32
+        elapsed:
           type: integer
           format: int32
         date:
@@ -1548,6 +1583,8 @@ components:
           $ref: '#/components/schemas/D11LeagueBase'
         matchWeek:
           $ref: '#/components/schemas/MatchWeekBase'
+        leader:
+          $ref: '#/components/schemas/D11TeamName'
         d11Matches:
           type: object
           additionalProperties:

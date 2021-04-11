@@ -4,6 +4,9 @@ import org.d11.boot.api.model.MatchWeekDTO;
 import org.d11.boot.api.service.MatchWeekApiService;
 import org.d11.boot.application.model.Match;
 import org.d11.boot.application.model.MatchWeek;
+import org.d11.boot.application.model.PremierLeague;
+import org.d11.boot.application.model.Status;
+import org.d11.boot.application.model.Team;
 import org.d11.boot.application.repository.MatchWeekRepository;
 import org.d11.boot.application.util.MatchesByDateMapperConverter;
 import org.junit.jupiter.api.Test;
@@ -83,6 +86,41 @@ public class MatchWeekApiTests extends AbstractRepositoryApiTests<MatchWeek, Mat
             matches.sort(Comparator.comparing(Match::getDatetime));
 
             assertEquals(matches, matchWeek.getMatches(), "Match order should be by datetime, ascending.");
+        }
+    }
+
+    /**
+     * Tests match week elapsed.
+     */
+    @Test
+    public void elapsed() {
+        for(final MatchWeek matchWeek : getRepository().findAll()) {
+            assertFalse(matchWeek.getMatches().isEmpty(), "Elapsed matches should not be empty.");
+
+            int finishedMatches = 0;
+            for(final Match match : matchWeek.getMatches()) {
+                if(match.getStatus() == Status.FINISHED) {
+                    ++finishedMatches;
+                }
+            }
+
+            assertEquals(finishedMatches, matchWeek.getElapsed(),
+                    "Match week elapsed should equal number of finished matches.");
+        }
+    }
+
+    /**
+     * Tests match week leader.
+     */
+    @Test
+    public void leader() {
+        for(final MatchWeek matchWeek : getRepository().findAll()) {
+            assertFalse(matchWeek.getTeamTableStats().isEmpty(), "Match week team table stats should not be empty.");
+
+            final Team team = matchWeek.getTeamTableStats().get(0).getTeam();
+
+            assertEquals(team, matchWeek.getLeader(),
+                    "Match week leader should equal team of the first match week team table stat.");
         }
     }
 

@@ -12,6 +12,11 @@ import java.util.stream.Collectors;
 public class D11EasyRandomTests extends MappingProvider {
 
     /**
+     * Default number of generated objects that can be used for calls to generate(Class, count).
+     */
+    public static final int DEFAULT_GENERATED_LIST_SIZE = 10;
+
+    /**
      * Random object generator.
      */
     private final D11EasyRandom d11EasyRandom = new D11EasyRandom();

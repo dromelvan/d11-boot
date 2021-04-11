@@ -71,4 +71,35 @@ public class D11MatchWeekTests extends D11EasyRandomTests {
                 "D11 match week DTO D11 matches should equal converted D11MatchWeek matches.");
     }
 
+    /**
+     * Tests the getElapsed() method.
+     */
+    @Test
+    public void elapsed() {
+        final D11MatchWeek d11MatchWeek = generate(D11MatchWeek.class);
+        d11MatchWeek.setD11Matches(generate(D11Match.class, DEFAULT_GENERATED_LIST_SIZE));
+
+        int finishedD11Matches = 0;
+        for(final D11Match d11Match : d11MatchWeek.getD11Matches()) {
+            if(d11Match.getStatus() == Status.FINISHED) {
+                ++finishedD11Matches;
+            }
+        }
+
+        assertEquals(finishedD11Matches, d11MatchWeek.getElapsed(),
+                "D11 match week elapsed should equal number of finished D11 matches.");
+    }
+
+    /**
+     * Tests the getLeader() method.
+     */
+    @Test
+    public void leader() {
+        final D11MatchWeek d11MatchWeek = generate(D11MatchWeek.class);
+        d11MatchWeek.setD11TeamTableStats(generate(D11TeamTableStat.class, DEFAULT_GENERATED_LIST_SIZE));
+
+        assertEquals(d11MatchWeek.getLeader(), d11MatchWeek.getD11TeamTableStats().get(0).getD11Team(),
+                "D11 match week leader should equal D11 team of the first D11  match week D11 team table stat.");
+    }
+
 }
