@@ -28,6 +28,11 @@ import java.util.List;
 public class D11MatchWeek extends D11Entity {
 
     /**
+     * Max value for elapsed.
+     */
+    public static final int MAX_ELAPSED = 220;
+
+    /**
      * Match week number for this match week.
      */
     @Min(1)
@@ -38,6 +43,12 @@ public class D11MatchWeek extends D11Entity {
      */
     @NotNull
     private LocalDate date;
+    /**
+     * The number of finished matches in this match week, representing the elapsed time of the match week.
+     */
+    @Min(0)
+    @Max(MAX_ELAPSED)
+    private int elapsed;
 
     /**
      * The D11 league this D11 match week belongs to.
@@ -75,30 +86,13 @@ public class D11MatchWeek extends D11Entity {
     private List<D11Match> d11Matches = new ArrayList<>();
 
     /**
-     * The team that was at the top of the league table at the time of this match week.
-     *
-     * @return The leading team at the time of this match week or null if no leader could be found.
+     * The D11 team that was at the top of the D11 league table at the time of this D11match week.
      */
-    public D11Team getLeader() {
-        if(this.d11TeamTableStats != null && !this.d11TeamTableStats.isEmpty()) {
-            return this.d11TeamTableStats.get(0).getD11Team();
-        }
-        return null;
-    }
-
-    /**
-     * The number of finished D11 matches in this D11 match week, representing the elapsed time of the D11 match week.
-     *
-     * @return The number, between 0 and 10, of finished D11 matches this D11 match week, representing the elapsed time.
-     */
-    public int getElapsed() {
-        int elapsed = 0;
-        for(final D11Match d11Match : this.d11Matches) {
-            if(d11Match.getStatus() == Status.FINISHED) {
-                ++elapsed;
-            }
-        }
-        return elapsed;
-    }
+    @ManyToOne
+    @JoinColumn(name = "league_leader_id")
+    @NotNull
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private D11Team leagueLeader;
 
 }

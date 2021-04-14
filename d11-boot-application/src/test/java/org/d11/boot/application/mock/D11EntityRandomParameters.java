@@ -1,6 +1,8 @@
 package org.d11.boot.application.mock;
 
 import org.d11.boot.application.model.Country;
+import org.d11.boot.application.model.D11Match;
+import org.d11.boot.application.model.D11MatchWeek;
 import org.d11.boot.application.model.Match;
 import org.d11.boot.application.model.MatchEvent;
 import org.d11.boot.application.model.MatchWeek;
@@ -41,7 +43,7 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
     /**
      * Creates new random parameters.
      */
-    @SuppressWarnings({ "checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS", "PMD.NcssCount" })
+    @SuppressWarnings({"checkstyle:ExecutableStatementCount", "checkstyle:MultipleStringLiterals", "checkstyle:JavaNCSS", "PMD.NcssCount"})
     public D11EntityRandomParameters() {
         randomize(FieldPredicates.named("id"), new LongRangeRandomizer(1L, MAX_ID));
         randomize(FieldPredicates.named("whoscoredId"), new IntegerRangeRandomizer(1, (int) MAX_ID));
@@ -49,6 +51,9 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
         randomize(FieldPredicates.named("iso"), new StringRandomizer(Country.ISO_CODE_LENGTH, Country.ISO_CODE_LENGTH, System.currentTimeMillis()));
         randomize(FieldPredicates.named("sortOrder"), new IntegerRangeRandomizer(1, MAX_POSITIVE));
         randomize(FieldPredicates.named("matchWeekNumber"), new IntegerRangeRandomizer(1, MatchWeek.MAX_MATCH_WEEK_NUMBER));
+        randomize(FieldPredicates.named("elapsed").and(FieldPredicates.inClass(MatchWeek.class).or(FieldPredicates.inClass(D11MatchWeek.class))),
+                new IntegerRangeRandomizer(0, MatchWeek.MAX_ELAPSED));
+
 
         randomize(FieldPredicates.named("email").and(FieldPredicates.inClass(User.class)), new EmailRandomizer());
 
@@ -91,7 +96,8 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
         randomize(FieldPredicates.named("awayTeamGoals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
         randomize(FieldPredicates.named("previousHomeTeamGoals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
         randomize(FieldPredicates.named("previousAwayTeamGoals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
-        randomize(FieldPredicates.named("elapsed"), new StringRandomizer(1, Match.ELAPSED_TIME_MAX_LENGTH));
+        randomize(FieldPredicates.named("elapsed").and(FieldPredicates.inClass(Match.class).or(FieldPredicates.inClass(D11Match.class))),
+                new StringRandomizer(1, Match.ELAPSED_TIME_MAX_LENGTH));
 
         randomize(FieldPredicates.named("time"), new IntegerRangeRandomizer(0, MatchEvent.MAX_MATCH_EVENT_TIME));
         randomize(FieldPredicates.named("addedTime"), new IntegerRangeRandomizer(0, MAX_POSITIVE));

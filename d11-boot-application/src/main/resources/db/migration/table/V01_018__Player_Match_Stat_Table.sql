@@ -23,3 +23,7 @@ CREATE TABLE IF NOT EXISTS player_match_stat(
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
+
+ALTER TABLE match_week
+ADD CONSTRAINT match_week_most_valuable_player_id_fkey
+FOREIGN KEY (most_valuable_player_id) REFERENCES player_match_stat(id);

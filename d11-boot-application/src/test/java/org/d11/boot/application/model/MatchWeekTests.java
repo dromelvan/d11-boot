@@ -72,34 +72,4 @@ public class MatchWeekTests extends D11EasyRandomTests {
                 "Match week DTO matches should equal converted MatchWeek matches.");
     }
 
-    /**
-     * Tests the getElapsed() method.
-     */
-    @Test
-    public void elapsed() {
-        final MatchWeek matchWeek = generate(MatchWeek.class);
-        matchWeek.setMatches(generate(Match.class, DEFAULT_GENERATED_LIST_SIZE));
-
-        int finishedMatches = 0;
-        for(final Match match : matchWeek.getMatches()) {
-            if(match.getStatus() == Status.FINISHED) {
-                ++finishedMatches;
-            }
-        }
-
-        assertEquals(finishedMatches, matchWeek.getElapsed(), "Match week elapsed should equal number of finished matches.");
-    }
-
-    /**
-     * Tests the getLeader() method.
-     */
-    @Test
-    public void leader() {
-        final MatchWeek matchWeek = generate(MatchWeek.class);
-        matchWeek.setTeamTableStats(generate(TeamTableStat.class, DEFAULT_GENERATED_LIST_SIZE));
-
-        assertEquals(matchWeek.getLeader(), matchWeek.getTeamTableStats().get(0).getTeam(),
-                "Match week leader should equal team of the first match week team table stat.");
-    }
-
 }

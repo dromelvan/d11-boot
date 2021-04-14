@@ -1436,7 +1436,8 @@ components:
         - premierLeague
         - season
         - d11MatchWeek
-        - leader
+        - leagueLeader
+        - mostValuablePlayer
         - matches
       properties:
         id:
@@ -1459,8 +1460,10 @@ components:
           $ref: '#/components/schemas/SeasonBase'
         d11MatchWeek:
           $ref: '#/components/schemas/D11MatchWeekBase'
-        leader:
+        leagueLeader:
           $ref: '#/components/schemas/TeamName'
+        mostValuablePlayer:
+          $ref: '#/components/schemas/PlayerMatchStatBase'
         matches:
           type: object
           additionalProperties:
@@ -1622,7 +1625,8 @@ components:
         - date
         - d11League
         - matchWeek
-        - leader
+        - leagueLeader
+        - mostValuablePlayer
         - d11Matches
       properties:
         id:
@@ -1641,8 +1645,10 @@ components:
           $ref: '#/components/schemas/D11LeagueBase'
         matchWeek:
           $ref: '#/components/schemas/MatchWeekBase'
-        leader:
+        leagueLeader:
           $ref: '#/components/schemas/D11TeamName'
+        mostValuablePlayer:
+          $ref: '#/components/schemas/PlayerMatchStatBase'
         d11Matches:
           type: object
           additionalProperties:
@@ -1840,6 +1846,7 @@ components:
         - sharedManOfTheMatch
         - rating
         - points
+        - player
       properties:
         id:
           type: integer
@@ -1885,6 +1892,8 @@ components:
         points:
           type: integer
           format: int32
+        player:
+          $ref: '#/components/schemas/PlayerName'
     PlayerMatchStat:
       type: object
       required:

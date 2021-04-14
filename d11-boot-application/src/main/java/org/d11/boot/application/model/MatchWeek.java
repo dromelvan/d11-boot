@@ -31,6 +31,10 @@ public class MatchWeek extends D11Entity {
      * Max match week number.
      */
     public static final int MAX_MATCH_WEEK_NUMBER = 38;
+    /**
+     * Max value for elapsed.
+     */
+    public static final int MAX_ELAPSED = 10;
 
     /**
      * Match week number for this match week.
@@ -43,6 +47,12 @@ public class MatchWeek extends D11Entity {
      */
     @NotNull
     private LocalDate date;
+    /**
+     * The number of finished matches in this match week, representing the elapsed time of the match week.
+     */
+    @Min(0)
+    @Max(MAX_ELAPSED)
+    private int elapsed;
     /**
      * Match week status.
      */
@@ -61,6 +71,25 @@ public class MatchWeek extends D11Entity {
     private PremierLeague premierLeague;
 
     /**
+     * The team that was at the top of the league table at the time of this match week.
+     */
+    @ManyToOne
+    @JoinColumn(name = "league_leader_id")
+    @NotNull
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Team leagueLeader;
+
+    /**
+     * The player that scored the most points for this match week.
+     */
+    @OneToOne
+    @JoinColumn(name = "most_valuable_player_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private PlayerMatchStat mostValuablePlayer;
+
+    /**
      * The D11 match week this match week is played in.
      */
     @OneToOne(mappedBy = "matchWeek", cascade = CascadeType.ALL)
@@ -70,46 +99,12 @@ public class MatchWeek extends D11Entity {
     private D11MatchWeek d11MatchWeek;
 
     /**
-     * List of team table stats for this match week, ordered by ranking.
-     */
-    @OneToMany(mappedBy = "matchWeek", cascade = CascadeType.ALL)
-    @OrderBy("ranking ASC")
-    @EqualsAndHashCode.Exclude
-    private List<TeamTableStat> teamTableStats = new ArrayList<>();
-
-    /**
      * List of matches that are played in this match week, ordered by datetime.
      */
     @OneToMany(mappedBy = "matchWeek", cascade = CascadeType.ALL)
     @OrderBy("datetime ASC")
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Match> matches = new ArrayList<>();
-
-    /**
-     * The team that was at the top of the league table at the time of this match week.
-     *
-     * @return The leading team at the time of this match week or null if no leader could be found.
-     */
-    public Team getLeader() {
-        if(this.teamTableStats != null && !this.teamTableStats.isEmpty()) {
-            return this.teamTableStats.get(0).getTeam();
-        }
-        return null;
-    }
-
-    /**
-     * The number of finished matches in this match week, representing the elapsed time of the match week.
-     *
-     * @return The number, between 0 and 10, of finished matches this match week, representing the elapsed time.
-     */
-    public int getElapsed() {
-        int elapsed = 0;
-        for(final Match match : this.matches) {
-            if(match.getStatus() == Status.FINISHED) {
-                ++elapsed;
-            }
-        }
-        return elapsed;
-    }
 
 }

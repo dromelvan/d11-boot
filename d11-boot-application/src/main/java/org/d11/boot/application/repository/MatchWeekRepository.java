@@ -1,6 +1,7 @@
 package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.MatchWeek;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -29,6 +30,7 @@ public interface MatchWeekRepository extends D11EntityRepository<MatchWeek> {
      * @param premierLeagueId Id for the Premier League for which match weeks will be looked up.
      * @return Match weeks for the Premier League.
      */
+    @EntityGraph(attributePaths = { "leagueLeader", "mostValuablePlayer", "mostValuablePlayer.player", "d11MatchWeek", "matches" })
     List<MatchWeek> findByPremierLeagueIdOrderByDate(@Param("premierLeagueId") Long premierLeagueId);
 
 }

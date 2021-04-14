@@ -58,12 +58,12 @@ INSERT INTO premier_league VALUES(1, 1, 'PremierLeagueA', '2020-01-01 00:00:00.0
 INSERT INTO premier_league VALUES(2, 2, 'PremierLeagueB', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO match_week(
---     id, premier_league_id, match_week_number, date, status, created_at, updated_at)
+--     id, premier_league_id, league_leader_id, most_valuable_player_id, match_week_number, date, elapsed, status, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?);
-INSERT INTO match_week VALUES(1, 1, 1, CURRENT_DATE - 2, 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO match_week VALUES(2, 1, 2, CURRENT_DATE - 1, 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO match_week VALUES(3, 2, 1, CURRENT_DATE, 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO match_week VALUES(4, 2, 2, CURRENT_DATE + 1, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO match_week VALUES(1, 1, 1, null, 1, CURRENT_DATE - 2, 10, 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO match_week VALUES(2, 1, 2, null, 2, CURRENT_DATE - 1, 10, 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO match_week VALUES(3, 2, 1, null, 1, CURRENT_DATE, 7, 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO match_week VALUES(4, 2, 2, null, 2, CURRENT_DATE + 1, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO match(
 --     id, home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals, previous_home_team_goals, previous_away_team_goals, elapsed, status, created_at, updated_at)
@@ -144,12 +144,12 @@ INSERT INTO d11_league VALUES(1, 1, 'D11LeagueA', '2020-01-01 00:00:00.000000', 
 INSERT INTO d11_league VALUES(2, 2, 'D11LeagueB', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO d11_match_week(
---     id, d11_league_id, match_week_id, match_week_number, date, created_at, updated_at)
+--     id, d11_league_id, match_week_id, league_leader_id,match_week_number, date, elapsed, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?);
-INSERT INTO d11_match_week VALUES(1, 1, 1, 1, CURRENT_DATE - 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO d11_match_week VALUES(2, 1, 2, 2, CURRENT_DATE - 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO d11_match_week VALUES(3, 2, 3, 1, CURRENT_DATE, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO d11_match_week VALUES(4, 2, 4, 2, CURRENT_DATE + 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO d11_match_week VALUES(1, 1, 1, 1, 1, CURRENT_DATE - 2, 10, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO d11_match_week VALUES(2, 1, 2, 2, 2, CURRENT_DATE - 1, 20, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO d11_match_week VALUES(3, 2, 3, 1, 1, CURRENT_DATE, 30, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO d11_match_week VALUES(4, 2, 4, 2, 2, CURRENT_DATE + 1, 40, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO d11_match(
 --     id, home_d11_team_id, away_d11_team_id, d11_match_week_id, date, home_team_goals, away_team_goals, home_team_points, away_team_points, previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status, created_at, updated_at)
@@ -190,6 +190,8 @@ INSERT INTO player_match_stat VALUES (21, 3, 5, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0,
 INSERT INTO player_match_stat VALUES (22, 3, 6, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO player_match_stat VALUES (23, 3, 7, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO player_match_stat VALUES (24, 3, 8, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+-- Update match_week and d11_match_week most_valuable_player_id after player_match_stats are inserted
+UPDATE match_week SET most_valuable_player_id = id;
 
 -- INSERT INTO player_season_stat(
 --     id, player_id, season_id, team_id, d11_team_id, position_id, value, ranking, points, form_points, points_per_appearance, goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, created_at, updated_at)
