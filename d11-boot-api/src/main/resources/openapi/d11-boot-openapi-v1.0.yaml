@@ -1847,6 +1847,8 @@ components:
         - rating
         - points
         - player
+        - team
+        - d11Team
       properties:
         id:
           type: integer
@@ -1894,6 +1896,10 @@ components:
           format: int32
         player:
           $ref: '#/components/schemas/PlayerName'
+        team:
+          $ref: '#/components/schemas/TeamName'
+        d11Team:
+          $ref: '#/components/schemas/D11TeamName'
     PlayerMatchStat:
       type: object
       required:

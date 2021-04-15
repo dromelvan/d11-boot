@@ -25,6 +25,12 @@ public class D11BootModelMapper extends ModelMapper {
                 map(source.getPremierLeague().getSeason()).setSeason(null);
             }
         });
+        addMappings(new PropertyMap<MatchWeekDTO, MatchWeek>() {
+            @Override
+            protected void configure() {
+                skip(destination.getMostValuablePlayer());
+            }
+        });
 
         addMappings(new PropertyMap<D11MatchWeek, D11MatchWeekDTO>() {
             @Override
