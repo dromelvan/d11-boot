@@ -32,6 +32,8 @@ dependencies {
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.2'
 	implementation 'org.flywaydb:flyway-core'
 
+	implementation 'org.springdoc:springdoc-openapi-ui:1.5.7'
+
 	runtimeOnly 'org.postgresql:postgresql'
 
 	testCompileOnly 'org.projectlombok:lombok:1.18.12'
