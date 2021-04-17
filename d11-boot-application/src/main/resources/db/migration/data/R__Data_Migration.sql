@@ -8,6 +8,7 @@ SELECT setval('d11_team_table_stat_id_seq', 1);
 DELETE FROM team_table_stat WHERE id > 0;
 SELECT setval('team_table_stat_id_seq', 1);
 
+UPDATE match_week SET most_valuable_player_id = null;
 DELETE FROM player_match_stat WHERE id > 0;
 SELECT setval('player_match_stat_id_seq', 1);
 
@@ -250,11 +251,11 @@ SET elapsed = (
     SELECT elapsed FROM (
         SELECT match_week_id, COUNT(*) AS elapsed
         FROM match
-        WHERE status = 2
+        WHERE status = 3
         GROUP BY match_week_id
     ) elapsed_query
     WHERE elapsed_query.match_week_id = match_week.id
-) WHERE EXISTS (SELECT * FROM match WHERE status = 2 and match.match_week_id = match_week.id);
+) WHERE EXISTS (SELECT * FROM match WHERE status = 3 and match.match_week_id = match_week.id);
 
 -- Update match week most valuable player
 UPDATE match_week
@@ -287,7 +288,7 @@ SET elapsed = (
         FROM player_match_stat
         JOIN match ON match.id = player_match_stat.match_id
         JOIN d11_match ON d11_match.id = player_match_stat.d11_match_id
-        WHERE player_match_stat.d11_match_id IS NOT NULL AND match.status = 2
+        WHERE player_match_stat.d11_match_id IS NOT NULL AND match.status = 3
         GROUP BY d11_match.d11_match_week_id
     ) elapsed_query
     WHERE elapsed_query.d11_match_week_id = d11_match_week.id
@@ -295,5 +296,5 @@ SET elapsed = (
                FROM player_match_stat
                JOIN match ON match.id = player_match_stat.match_id
                JOIN d11_match ON d11_match.id = player_match_stat.d11_match_id
-               WHERE player_match_stat.d11_match_id IS NOT NULL AND match.status = 2 AND d11_match.d11_match_week_id = d11_match_week.id);
+               WHERE player_match_stat.d11_match_id IS NOT NULL AND match.status = 3 AND d11_match.d11_match_week_id = d11_match_week.id);
 

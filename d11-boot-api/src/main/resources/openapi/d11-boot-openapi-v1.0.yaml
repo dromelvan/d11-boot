@@ -972,8 +972,9 @@ components:
       enum:
         - 'Pending'
         - 'Active'
-        - 'Finished'
         - 'Full Time'
+        - 'Finished'
+        - 'Postponed'
 
     Country:
       type: object
