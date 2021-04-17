@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.d11.boot.application.model.converter.StatusConverter;
 
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 @Data
 @Entity
-public class Match extends D11Entity {
+public class Match extends D11Entity implements Comparable<Match> {
 
     /**
      * Max length for elapsed time string.
@@ -140,4 +141,13 @@ public class Match extends D11Entity {
     @EqualsAndHashCode.Exclude
     private List<PlayerMatchStat> playerMatchStats = new ArrayList<>();
 
+    @Override
+    public int compareTo(@Nonnull final Match match) {
+        if(getStatus() == Status.POSTPONED && match.getStatus() != Status.POSTPONED) {
+            return 1;
+        } else if(getStatus() != Status.POSTPONED && match.getStatus() == Status.POSTPONED) {
+            return -1;
+        }
+        return getDatetime().compareTo(match.getDatetime());
+    }
 }

@@ -11,8 +11,9 @@ public enum Status {
 
     PENDING(0, "Pending"),
     ACTIVE(1, "Active"),
-    FINISHED(2, "Finished"),
-    FULL_TIME(3, "Full Time");
+    FULL_TIME(2, "Full Time"),
+    FINISHED(3, "Finished"),
+    POSTPONED(4, "Postponed");
 
     /**
      * The id of the status.

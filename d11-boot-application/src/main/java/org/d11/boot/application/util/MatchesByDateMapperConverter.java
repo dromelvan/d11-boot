@@ -1,10 +1,12 @@
 package org.d11.boot.application.util;
 
 import org.d11.boot.application.model.Match;
+import org.d11.boot.application.model.Status;
 import org.modelmapper.AbstractConverter;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +24,13 @@ public class MatchesByDateMapperConverter extends AbstractConverter<List<Match>,
 
     @Override
     public Map<String, List<Long>> convert(final List<Match> matches) {
+        // No natural ordering in Spring Data JPA apparently so sort matches here.
+        Collections.sort(matches);
         final Map<String, List<Long>> matchesByDate = new LinkedHashMap<>();
         for (final Match match : matches) {
-            final String key = match.getDatetime().toLocalDate().format(DATE_TIME_FORMATTER);
+            final String key = match.getStatus() == Status.POSTPONED
+                    ? Status.POSTPONED.getName()
+                    : match.getDatetime().toLocalDate().format(DATE_TIME_FORMATTER);
             final List<Long> matchIds = matchesByDate.computeIfAbsent(key, k -> new ArrayList<>());
             matchIds.add(match.getId());
         }

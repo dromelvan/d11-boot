@@ -12,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -102,7 +101,6 @@ public class MatchWeek extends D11Entity {
      * List of matches that are played in this match week, ordered by datetime.
      */
     @OneToMany(mappedBy = "matchWeek", cascade = CascadeType.ALL)
-    @OrderBy("datetime ASC")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Match> matches = new ArrayList<>();

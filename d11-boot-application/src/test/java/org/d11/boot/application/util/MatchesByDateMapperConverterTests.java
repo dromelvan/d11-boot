@@ -2,11 +2,13 @@ package org.d11.boot.application.util;
 
 import org.d11.boot.application.model.D11EasyRandomTests;
 import org.d11.boot.application.model.Match;
+import org.d11.boot.application.model.Status;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,9 @@ public class MatchesByDateMapperConverterTests extends D11EasyRandomTests {
     @Test
     public void convert() {
         final List<Match> matches = generate(Match.class, 10);
+        matches.get(0).setStatus(Status.POSTPONED);
+        Collections.sort(matches);
+
         final LocalDateTime localDateTime = LocalDateTime.now()
                                                 .truncatedTo(ChronoUnit.HOURS)
                                                 .plus(1, ChronoUnit.DAYS);
@@ -34,7 +39,9 @@ public class MatchesByDateMapperConverterTests extends D11EasyRandomTests {
 
         for(final Match match : matches) {
             match.setDatetime(localDateTime.plus(matches.indexOf(match) / 2, ChronoUnit.DAYS));
-            final String date = MatchesByDateMapperConverter.DATE_TIME_FORMATTER.format(match.getDatetime());
+            final String date = match.getStatus() == Status.POSTPONED
+                    ? Status.POSTPONED.getName()
+                    : MatchesByDateMapperConverter.DATE_TIME_FORMATTER.format(match.getDatetime());
             if(!dates.contains(date)) {
                 dates.add(date);
             }

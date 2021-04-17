@@ -2,7 +2,6 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.MatchWeekDTO;
 import org.d11.boot.api.service.MatchWeekApiService;
-import org.d11.boot.application.model.Match;
 import org.d11.boot.application.model.MatchWeek;
 import org.d11.boot.application.model.PremierLeague;
 import org.d11.boot.application.repository.MatchWeekRepository;
@@ -94,21 +93,6 @@ public class MatchWeekApiTests extends AbstractRepositoryApiTests<MatchWeek, Mat
             assertNotNull(result, "Premier League match weeks should not be null.");
             assertFalse(result.isEmpty(), "Premier League match weeks should not be empty.");
             assertEquals(matchWeekDTOs, result, "Premier League match weeks should equal match weeks.");
-        }
-    }
-
-    /**
-     * Tests match week match order.
-     */
-    @Test
-    public void matchOrder() {
-        for(final MatchWeek matchWeek : getRepository().findAll()) {
-            assertFalse(matchWeek.getMatches().isEmpty(), "Match week matches should not be empty.");
-
-            final List<Match> matches = new ArrayList<>(matchWeek.getMatches());
-            matches.sort(Comparator.comparing(Match::getDatetime));
-
-            assertEquals(matches, matchWeek.getMatches(), "Match order should be by datetime, ascending.");
         }
     }
 

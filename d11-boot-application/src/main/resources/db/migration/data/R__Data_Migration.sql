@@ -68,6 +68,10 @@ INSERT INTO season
 SELECT * FROM data.seasons;
 SELECT setval('season_id_seq', (SELECT last_value FROM data.seasons_id_seq));
 
+UPDATE season SET status = 99 WHERE status = 3;
+UPDATE season SET status = 3 WHERE status = 2;
+UPDATE season SET status = 2 WHERE status = 99;
+
 -- Premier Leagues
 INSERT INTO premier_league
 SELECT * FROM data.premier_leagues;
@@ -137,6 +141,10 @@ INSERT INTO match_week
 SELECT id, premier_league_id, null, null, match_day_number, date, 0, status, created_at, updated_at FROM data.match_days;
 SELECT setval('match_week_id_seq', (SELECT last_value FROM data.match_days_id_seq));
 
+UPDATE match_week SET status = 99 WHERE status = 3;
+UPDATE match_week SET status = 3 WHERE status = 2;
+UPDATE match_week SET status = 2 WHERE status = 99;
+
 -- D11 match weeks
 INSERT INTO d11_match_week
 SELECT id, d11_league_id, match_day_id, null, match_day_number, date, 0, created_at, updated_at FROM data.d11_match_days;
@@ -148,11 +156,30 @@ SELECT id, home_team_id, away_team_id, match_day_id, stadium_id, whoscored_id, d
        previous_home_team_goals, previous_away_team_goals, elapsed, status, created_at, updated_at FROM data.matches;
 SELECT setval('match_id_seq', (SELECT last_value FROM data.matches_id_seq));
 
+UPDATE match SET status = 99 WHERE status = 3;
+UPDATE match SET status = 3 WHERE status = 2;
+UPDATE match SET status = 2 WHERE status = 99;
+
+UPDATE match SET status = 4 WHERE datetime >= '3000-01-01';
+-- Set datetime of postponed matches to match week date at 17:00
+UPDATE match SET datetime = (
+    SELECT datetime FROM (
+        SELECT match.id, match_week.date + '17:00:00'::TIME AS datetime
+        FROM match
+        JOIN match_week ON match.match_week_id = match_week.id
+    ) AS match_date_time
+    WHERE match.id = match_date_time.id
+) WHERE match.status = 4;
+
 -- D11 Matches
 INSERT INTO d11_match
 SELECT id, home_d11_team_id, away_d11_team_id, d11_match_day_id, date, home_team_goals, away_team_goals, home_team_points, away_team_points,
        previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status, created_at, updated_at FROM data.d11_matches;
 SELECT setval('d11_match_id_seq', (SELECT last_value FROM data.d11_matches_id_seq));
+
+UPDATE d11_match SET status = 99 WHERE status = 3;
+UPDATE d11_match SET status = 3 WHERE status = 2;
+UPDATE d11_match SET status = 2 WHERE status = 99;
 
 -- Goals
 INSERT INTO goal
