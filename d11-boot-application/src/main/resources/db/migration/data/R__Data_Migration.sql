@@ -227,8 +227,10 @@ SELECT setval('d11_team_table_stat_id_seq', (SELECT last_value FROM data.d11_tea
 INSERT INTO player_season_stat
 SELECT psi.id, psi.player_id, psi.season_id, team_id, d11_team_id, position_id, value, ranking, points, form_points, points_per_appearance, goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards,
        substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, psi.created_at, psi.updated_at
-       FROM data.player_season_infos psi JOIN data.player_season_stats pss ON psi.player_id = pss.player_id AND psi.season_id = pss.season_id;
-SELECT setval('player_season_stat_id_seq', (SELECT last_value FROM data.player_season_stats_id_seq));
+       FROM data.player_season_infos psi JOIN data.player_season_stats pss ON psi.player_id = pss.player_id AND psi.season_id = pss.season_id
+       -- Not sure if it's a good idea to skip dummy rows. We'll see.
+       WHERE pss.ranking > 0;
+SELECT setval('player_season_stat_id_seq', (SELECT MAX(id) FROM player_season_stat));
 
 
 
