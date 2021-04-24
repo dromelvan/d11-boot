@@ -17,8 +17,11 @@ public interface D11TeamTableStatRepository extends D11EntityRepository<D11TeamT
      * This will be the current league table standings.
      *
      * @param d11LeagueId Id for the D11 league for which D11 team table stats will be looked up.
+     * @param main Value for main for the D11 team table stats that will be looked up,
      * @return The current league table standings for the D11 league.
      */
-    List<D11TeamTableStat> findTop20ByD11LeagueIdOrderByD11MatchWeekIdDescRanking(@Param("d11LeagueId") Long d11LeagueId);
+    List<D11TeamTableStat> findByD11LeagueIdAndMainOrderByD11MatchWeekIdDescRanking(
+            @Param("d11LeagueId") Long d11LeagueId,
+            @Param("main") boolean main);
 
 }

@@ -19,6 +19,10 @@ import java.util.List;
 public class TableStat extends D11Entity {
 
     /**
+     * True if this table stat is the main table stat for its league, i.e the one that shows the actual standings.
+     */
+    private boolean main;
+    /**
      * Number of matches played.
      */
     @PositiveOrZero

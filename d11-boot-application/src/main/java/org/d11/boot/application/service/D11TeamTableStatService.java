@@ -25,7 +25,7 @@ public class D11TeamTableStatService extends AbstractRepositoryService<D11TeamTa
     }
 
     /**
-     * Gets D11 team table stats for a D11 league ordered by D11 match week id, descending, and ranking.
+     * Gets the main D11 team table stats for a D11 league ordered by ranking.
      * This will be the current league table standings.
      *
      * @param d11LeagueId Id for the D11 league for which D11 team table stats will be looked up.
@@ -33,7 +33,7 @@ public class D11TeamTableStatService extends AbstractRepositoryService<D11TeamTa
      */
     public List<D11TeamTableStatDTO> findD11TeamTableStatByD11LeagueId(final Long d11LeagueId) {
         final List<D11TeamTableStat> d11TeamTableStats = getJpaRepository()
-                .findTop20ByD11LeagueIdOrderByD11MatchWeekIdDescRanking(d11LeagueId);
+                .findByD11LeagueIdAndMainOrderByD11MatchWeekIdDescRanking(d11LeagueId, true);
         return map(d11TeamTableStats);
     }
 

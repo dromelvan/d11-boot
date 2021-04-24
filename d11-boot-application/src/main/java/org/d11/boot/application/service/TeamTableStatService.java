@@ -25,14 +25,15 @@ public class TeamTableStatService extends AbstractRepositoryService<TeamTableSta
     }
 
     /**
-     * Gets team table stats for a Premier League ordered by match week id, descending, and ranking.
+     * Gets the main team table stats for a Premier League ordered by ranking.
      * This will be the current league table standings.
      *
      * @param premierLeagueId Id for the Premier League for which team table stats will be looked up.
      * @return The current league table standings for the Premier League.
      */
     public List<TeamTableStatDTO> findTeamTableStatByPremierLeagueId(final Long premierLeagueId) {
-        final List<TeamTableStat> teamTableStats = getJpaRepository().findTop20ByPremierLeagueIdOrderByMatchWeekIdDescRanking(premierLeagueId);
+        final List<TeamTableStat> teamTableStats =
+                getJpaRepository().findByPremierLeagueIdAndMainOrderByMatchWeekIdDescRanking(premierLeagueId, true);
         return map(teamTableStats);
     }
 

@@ -2184,6 +2184,7 @@ components:
       type: object
       required:
         - id
+        - main
         - matchesPlayed
         - matchesWon
         - matchesDrawn
@@ -2218,6 +2219,8 @@ components:
         id:
           type: integer
           format: int64
+        main:
+          type: boolean
         matchesPlayed:
           type: integer
           format: int32
@@ -2314,6 +2317,7 @@ components:
       type: object
       required:
         - id
+        - main
         - matchesPlayed
         - matchesWon
         - matchesDrawn
@@ -2351,6 +2355,8 @@ components:
         id:
           type: integer
           format: int64
+        main:
+          type: boolean
         matchesPlayed:
           type: integer
           format: int32
@@ -2454,6 +2460,7 @@ components:
       type: object
       required:
         - id
+        - main
         - matchesPlayed
         - matchesWon
         - matchesDrawn
@@ -2488,6 +2495,8 @@ components:
         id:
           type: integer
           format: int64
+        main:
+          type: boolean
         matchesPlayed:
           type: integer
           format: int32
@@ -2584,6 +2593,7 @@ components:
       type: object
       required:
         - id
+        - main
         - matchesPlayed
         - matchesWon
         - matchesDrawn
@@ -2621,6 +2631,8 @@ components:
         id:
           type: integer
           format: int64
+        main:
+          type: boolean
         matchesPlayed:
           type: integer
           format: int32

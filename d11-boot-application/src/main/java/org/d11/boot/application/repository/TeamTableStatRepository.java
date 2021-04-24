@@ -17,8 +17,11 @@ public interface TeamTableStatRepository extends D11EntityRepository<TeamTableSt
      * This will be the current league table standings.
      *
      * @param premierLeagueId Id for the Premier League for which team table stats will be looked up.
+     * @param main Value for main for the team table stats that will be looked up,
      * @return The current league table standings for the Premier League.
      */
-    List<TeamTableStat> findTop20ByPremierLeagueIdOrderByMatchWeekIdDescRanking(@Param("premierLeagueId") Long premierLeagueId);
+    List<TeamTableStat> findByPremierLeagueIdAndMainOrderByMatchWeekIdDescRanking(
+            @Param("premierLeagueId") Long premierLeagueId,
+            @Param("main") boolean main);
 
 }

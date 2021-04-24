@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS d11_team_table_stat(
     d11_team_id INTEGER NOT NULL REFERENCES d11_team,
     d11_league_id INTEGER NOT NULL REFERENCES d11_league,
     d11_match_week_id INTEGER NOT NULL REFERENCES d11_match_week,
+    main BOOLEAN NOT NULL DEFAULT FALSE,
     matches_played INTEGER NOT NULL DEFAULT 0,
     matches_won INTEGER NOT NULL DEFAULT 0,
     matches_drawn INTEGER NOT NULL DEFAULT 0,
