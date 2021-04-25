@@ -1,6 +1,7 @@
 package org.d11.boot.api.service;
 
 import org.d11.boot.api.model.SeasonDTO;
+import org.d11.boot.api.model.SeasonSummaryDTO;
 import org.d11.boot.client.api.SeasonApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class SeasonApiService extends D11ApiService {
      * Finds a season with a specific id.
      *
      * @param seasonId The id of the season that will be looked up.
-     * @return season DTO for the specified id or null if no season was found.
+     * @return Season DTO for the specified id or null if no season was found.
      */
     public SeasonDTO findSeasonById(final Long seasonId) {
         try {
@@ -33,11 +34,29 @@ public class SeasonApiService extends D11ApiService {
     }
 
     /**
-     * Gets a list of all seasons.
+     * Finds summary of a season with a specific id.
      *
-     * @return List of all seasons sorted by the sort order property.
+     * @param seasonId The id of the season that a summary will be looked up for.
+     * @return Season summary DTO for the specified id or null if no season summary was found.
      */
-    public List<SeasonDTO> findAllSeasons() {
+    public SeasonSummaryDTO findSeasonSummaryById(final Long seasonId) {
+        try {
+            final SeasonApi seasonApi = new SeasonApi(getApiClient());
+            return seasonApi.findSeasonSummaryById(seasonId).block();
+        } catch(WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw translate(e);
+        }
+    }
+
+    /**
+     * Gets a list of all season ids.
+     *
+     * @return List of all season ids sorted by the sort order property.
+     */
+    public List<Long> findAllSeasons() {
         final SeasonApi seasonApi = new SeasonApi(getApiClient());
         return seasonApi.findAllSeasons().collectList().block();
     }

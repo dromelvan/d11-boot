@@ -6,13 +6,17 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.d11.boot.application.model.converter.StatusConverter;
 import org.d11.boot.application.model.validation.YearInterval;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,6 +72,16 @@ public class Season extends D11Entity implements Comparable<Season> {
     private D11League d11League;
 
     /**
+     * Top 3 player season stats sorted by ranking for this season.
+     */
+    @OneToMany(mappedBy = "season", cascade = CascadeType.ALL)
+    @OrderBy("ranking")
+    @Where(clause = "ranking <= 3")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<PlayerSeasonStat> top3PlayerSeasonStats;
+
+    /**
      * Gets a shortened version of the season name with the two last digits of the start and end years.
      *
      * @return A shortened version of the season name.
@@ -85,7 +99,7 @@ public class Season extends D11Entity implements Comparable<Season> {
     @Override
     public int compareTo(final Season season) {
         return ComparisonChain.start()
-                .compare(this.getDate(), season.getDate())
+                .compare(season.getDate(), this.getDate())
                 .result();
     }
 }

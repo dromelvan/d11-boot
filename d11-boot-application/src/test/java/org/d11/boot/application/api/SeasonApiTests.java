@@ -1,12 +1,21 @@
 package org.d11.boot.application.api;
 
+import org.d11.boot.api.model.D11TeamTableStatStubDTO;
+import org.d11.boot.api.model.PlayerSeasonStatStubDTO;
 import org.d11.boot.api.model.SeasonDTO;
+import org.d11.boot.api.model.SeasonSummaryDTO;
+import org.d11.boot.api.model.TeamTableStatStubDTO;
 import org.d11.boot.api.service.SeasonApiService;
+import org.d11.boot.application.model.D11TeamTableStat;
+import org.d11.boot.application.model.PlayerSeasonStat;
 import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.TeamTableStat;
 import org.d11.boot.application.repository.SeasonRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,12 +34,13 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
     @Override
     @BeforeAll
     public void beforeAll() {
-        getEntities().addAll(getRepository().findByOrderByDateDesc());
+        getEntities().addAll(getRepository().findAll());
+        Collections.sort(getEntities());
         assertFalse(getEntities().isEmpty(), "Seasons should not be empty.");
     }
 
     /**
-     * Tests the findSeasonsById API operation.
+     * Tests the findSeasonById API operation.
      */
     @Test
     public void findSeasonById() {
@@ -42,7 +52,43 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
         }
 
         assertNull(getApiService().findSeasonById(-1L), "Season not found should return null.");
-        assertBadRequest(get("BAD_REQUEST"));
+        assertBadRequest(get("BAD_SEASON_REQUEST"));
+    }
+
+    /**
+     * Tests the findSeasonSummaryById API operation.
+     */
+    @Test
+    public void findSeasonSummaryById() {
+        for(final Season season : getRepository().findAll()) {
+            final SeasonSummaryDTO result = getApiService().findSeasonSummaryById(season.getId());
+            final SeasonSummaryDTO seasonSummaryDTO = map(season, SeasonSummaryDTO.class);
+            assertNotNull(result, "Season summary by id should not be null.");
+            assertEquals(seasonSummaryDTO, result, "Season summary by id should equal Season summary.");
+
+            assertNotNull(result.getTop3PlayerSeasonStats(), "Season summary player season stats should not be null.");
+            assertFalse(result.getTop3PlayerSeasonStats().isEmpty(),
+                    "Season summary player season stats should not be empty.");
+            final List<PlayerSeasonStat> playerSeasonStats = season.getTop3PlayerSeasonStats();
+            assertEquals(map(playerSeasonStats, PlayerSeasonStatStubDTO.class), result.getTop3PlayerSeasonStats(),
+                    "Season summary by id top 3 player season stats should equal season top 3 player season stats");
+
+            assertNotNull(result.getTop3TeamTableStats(), "Season summary team table stats should not be null.");
+            assertFalse(result.getTop3TeamTableStats().isEmpty(),
+                    "Season summary team table stats should not be empty.");
+            final List<TeamTableStat> teamTableStats = season.getPremierLeague().getTop3TeamTableStats();
+            assertEquals(map(teamTableStats, TeamTableStatStubDTO.class), result.getTop3TeamTableStats(),
+                    "Season summary by id top 3 team table stats should equal season top 3 team table stats");
+
+            assertNotNull(result.getTop3D11TeamTableStats(), "Season summary D11 team table stats should not be null.");
+            assertFalse(result.getTop3D11TeamTableStats().isEmpty(),
+                    "Season summary D11 team table stats should not be empty.");
+            final List<D11TeamTableStat> d11TeamTableStats = season.getD11League().getTop3D11TeamTableStats();
+            assertEquals(map(d11TeamTableStats, D11TeamTableStatStubDTO.class), result.getTop3D11TeamTableStats(),
+                    "Season summary by id top 3 D11 team table stats should equal season top 3 D11 team table stats");
+        }
+        assertNull(getApiService().findSeasonSummaryById(-1L), "Season summary not found should return null.");
+        assertBadRequest(get("BAD_SEASON_SUMMARY_REQUEST"));
     }
 
     /**
@@ -50,7 +96,10 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
      */
     @Test
     public void findAllSeasons() {
-        final List<SeasonDTO> result = getApiService().findAllSeasons();
+        final List<Long> ids = getApiService().findAllSeasons();
+        final List<SeasonDTO> result = new ArrayList<>();
+
+        ids.forEach(id -> result.add(getApiService().findSeasonById(id)));
 
         final List<SeasonDTO> seasonDTOs = map(getEntities(), SeasonDTO.class);
 

@@ -2,6 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.SeasonsApi;
 import org.d11.boot.api.model.SeasonDTO;
+import org.d11.boot.api.model.SeasonSummaryDTO;
 import org.d11.boot.application.service.SeasonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +27,20 @@ public class SeasonController extends AbstractRepositoryServiceController<Season
     }
 
     @Override
-    public ResponseEntity<List<SeasonDTO>> findAllSeasons() {
-        final List<SeasonDTO> seasonDTOs = getRepositoryService().findAllSeasons();
-        return ResponseEntity.ok(seasonDTOs);
+    public ResponseEntity<List<Long>> findAllSeasons() {
+        final List<Long> seasonIds = getRepositoryService().findAllSeasons();
+        return ResponseEntity.ok(seasonIds);
     }
 
     @Override
     public ResponseEntity<SeasonDTO> findSeasonById(final Long seasonId) {
         return findById(seasonId);
+    }
+
+    @Override
+    public ResponseEntity<SeasonSummaryDTO> findSeasonSummaryById(final Long seasonId) {
+        final SeasonSummaryDTO seasonSummaryDTO = getRepositoryService().findSeasonSummaryById(seasonId);
+        return ResponseEntity.ok(seasonSummaryDTO);
     }
 
     @Override

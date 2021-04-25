@@ -1,6 +1,7 @@
 package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.projection.EntityId;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,11 +14,11 @@ import java.util.Optional;
 public interface SeasonRepository extends D11EntityRepository<Season> {
 
     /**
-     * Finds all seasons and orders them by date, descending.
+     * Finds all season ids and orders them by date, descending.
      *
-     * @return List of all seasons ordered by date, descending.
+     * @return List of all season ids ordered by date, descending.
      */
-    List<Season> findByOrderByDateDesc();
+    List<EntityId> findByOrderByDateDesc();
 
     /**
      * Finds the season with the latest start date. This is the current season.

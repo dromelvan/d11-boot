@@ -219,7 +219,7 @@ paths:
           $ref: '#/components/responses/Unexpected'
   /seasons:
     get:
-      summary: Finds all seasons.
+      summary: Finds ids for all seasons.
       operationId: findAllSeasons
       tags:
         - season
@@ -231,7 +231,8 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Season"
+                  type: integer
+                  format: int64
         '500':
           $ref: '#/components/responses/Unexpected'
   /seasons/{seasonId}:
@@ -255,6 +256,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Season"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        #'401':
+        #  $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /seasons/{seasonId}/summary:
+    get:
+      summary: Find a season summary by id.
+      operationId: findSeasonSummaryById
+      tags:
+        - season
+      parameters:
+        - name: seasonId
+          in: path
+          required: true
+          description: The id of the season summary to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeasonSummary"
         '400':
           $ref: '#/components/responses/BadRequest'
         #'401':
@@ -1021,6 +1051,8 @@ components:
         - lastName
         - name
         - shortName
+        - parameterizedName
+        - photoFileName
       properties:
         id:
           type: integer
@@ -1032,6 +1064,10 @@ components:
         name:
           type: string
         shortName:
+          type: string
+        parameterizedName:
+          type: string
+        photoFileName:
           type: string
     PlayerBase:
       type: object
@@ -1380,6 +1416,53 @@ components:
           $ref: '#/components/schemas/PremierLeagueBase'
         d11League:
           $ref: '#/components/schemas/D11LeagueBase'
+    SeasonSummary:
+      type: object
+      required:
+        - id
+        - name
+        - shortName
+        - status
+        - date
+        - legacy
+        - premierLeague
+        - d11League
+        - top3PlayerSeasonStats
+        - top3TeamTableStats
+        - top3D11TeamTableStats
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          pattern: \d{4}-\d{4}
+        shortName:
+          type: string
+          pattern: \d{2}-\d{2}
+        status:
+          $ref: '#/components/schemas/Status'
+        date:
+          type: string
+          format: date
+        legacy:
+          type: boolean
+        premierLeague:
+          $ref: '#/components/schemas/PremierLeagueBase'
+        d11League:
+          $ref: '#/components/schemas/D11LeagueBase'
+        top3PlayerSeasonStats:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlayerSeasonStatStub"
+        top3TeamTableStats:
+          type: array
+          items:
+            $ref: "#/components/schemas/TeamTableStatStub"
+        top3D11TeamTableStats:
+          type: array
+          items:
+            $ref: "#/components/schemas/D11TeamTableStatStub"
 
     PremierLeagueBase:
       type: object
@@ -1980,6 +2063,25 @@ components:
         position:
           $ref: '#/components/schemas/Position'
 
+    PlayerSeasonStatStub:
+      type: object
+      required:
+        - id
+        - ranking
+        - points
+        - player
+      properties:
+        id:
+          type: integer
+          format: int64
+        ranking:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        player:
+          $ref: '#/components/schemas/PlayerName'
     PlayerSeasonStatBase:
       type: object
       required:
@@ -2180,6 +2282,25 @@ components:
         position:
           $ref: '#/components/schemas/Position'
 
+    TeamTableStatStub:
+      type: object
+      required:
+        - id
+        - points
+        - ranking
+        - team
+      properties:
+        id:
+          type: integer
+          format: int64
+        points:
+          type: integer
+          format: int32
+        ranking:
+          type: integer
+          format: int32
+        team:
+          $ref: '#/components/schemas/TeamName'
     TeamTableStatBase:
       type: object
       required:
@@ -2456,6 +2577,25 @@ components:
         matchWeek:
           $ref: '#/components/schemas/MatchWeekBase'
 
+    D11TeamTableStatStub:
+      type: object
+      required:
+        - id
+        - points
+        - ranking
+        - d11Team
+      properties:
+        id:
+          type: integer
+          format: int64
+        points:
+          type: integer
+          format: int32
+        ranking:
+          type: integer
+          format: int32
+        team:
+          $ref: '#/components/schemas/D11TeamName'
     D11TeamTableStatBase:
       type: object
       required:

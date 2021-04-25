@@ -45,9 +45,11 @@ public class TeamTableStatApiTests extends AbstractRepositoryApiTests<TeamTableS
     public void findTeamTableStatByPremierLeagueId() {
         final Map<PremierLeague, List<TeamTableStat>> teamTableStatMap = new HashMap<>();
         for(final TeamTableStat teamTableStat : getEntities()) {
-            final List<TeamTableStat> teamTableStats =
-                    teamTableStatMap.computeIfAbsent(teamTableStat.getPremierLeague(), premierLeague -> new ArrayList<>());
-            teamTableStats.add(teamTableStat);
+            if(teamTableStat.isMain()) {
+                final List<TeamTableStat> teamTableStats =
+                        teamTableStatMap.computeIfAbsent(teamTableStat.getPremierLeague(), premierLeague -> new ArrayList<>());
+                teamTableStats.add(teamTableStat);
+            }
         }
 
         for(final Map.Entry<PremierLeague, List<TeamTableStat>> entry : teamTableStatMap.entrySet()) {

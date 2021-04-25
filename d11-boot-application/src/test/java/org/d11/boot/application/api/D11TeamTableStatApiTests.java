@@ -45,9 +45,11 @@ public class D11TeamTableStatApiTests extends AbstractRepositoryApiTests<D11Team
     public void findD11TeamTableStatByD11LeagueId() {
         final Map<D11League, List<D11TeamTableStat>> d11TeamTableStatMap = new HashMap<>();
         for(final D11TeamTableStat d11TeamTableStat : getEntities()) {
-            final List<D11TeamTableStat> teamTableStats =
-                    d11TeamTableStatMap.computeIfAbsent(d11TeamTableStat.getD11League(), d11League -> new ArrayList<>());
-            teamTableStats.add(d11TeamTableStat);
+            if(d11TeamTableStat.isMain()) {
+                final List<D11TeamTableStat> teamTableStats =
+                        d11TeamTableStatMap.computeIfAbsent(d11TeamTableStat.getD11League(), d11League -> new ArrayList<>());
+                teamTableStats.add(d11TeamTableStat);
+            }
         }
 
         for(final Map.Entry<D11League, List<D11TeamTableStat>> entry : d11TeamTableStatMap.entrySet()) {

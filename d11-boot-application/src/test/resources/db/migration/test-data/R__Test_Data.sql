@@ -48,7 +48,7 @@ INSERT INTO player VALUES(6, 1, 666666, 'Foo', '', null, 'foo', '2020-01-01', 11
 -- INSERT INTO season(
 --     id, name, status, date, legacy, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?);
-INSERT INTO season VALUES(1, '2020-2021', 2, '2020-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO season VALUES(1, '2020-2021', 3, '2020-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO season VALUES(2, '2021-2022', 1, '2021-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO premier_league(
@@ -60,8 +60,8 @@ INSERT INTO premier_league VALUES(2, 2, 'PremierLeagueB', '2020-01-01 00:00:00.0
 -- INSERT INTO match_week(
 --     id, premier_league_id, league_leader_id, most_valuable_player_id, match_week_number, date, elapsed, status, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?);
-INSERT INTO match_week VALUES(1, 1, 1, null, 1, CURRENT_DATE - 2, 10, 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO match_week VALUES(2, 1, 2, null, 2, CURRENT_DATE - 1, 10, 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO match_week VALUES(1, 1, 1, null, 1, CURRENT_DATE - 2, 10, 3, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO match_week VALUES(2, 1, 2, null, 2, CURRENT_DATE - 1, 10, 3, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO match_week VALUES(3, 2, 1, null, 1, CURRENT_DATE, 7, 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO match_week VALUES(4, 2, 2, null, 2, CURRENT_DATE + 1, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 

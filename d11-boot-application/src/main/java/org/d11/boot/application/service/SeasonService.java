@@ -1,13 +1,17 @@
 package org.d11.boot.application.service;
 
 import org.d11.boot.api.model.SeasonDTO;
+import org.d11.boot.api.model.SeasonSummaryDTO;
 import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.projection.EntityId;
 import org.d11.boot.application.repository.SeasonRepository;
+import org.d11.boot.application.util.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Provides season services.
@@ -26,13 +30,28 @@ public class SeasonService extends AbstractRepositoryService<Season, SeasonDTO, 
     }
 
     /**
+     * Finds a season summary by id.
+     *
+     * @param seasonId The id of the season.
+     * @return Season summary DTO for the season with the specified.
+     * @throws NotFoundException If no season with provided id was found.
+     */
+    public SeasonSummaryDTO findSeasonSummaryById(final long seasonId) {
+        final Optional<Season> optional = getJpaRepository().findById(seasonId);
+        if(optional.isPresent()) {
+            return map(optional.get(), SeasonSummaryDTO.class);
+        }
+        throw new NotFoundException();
+    }
+
+    /**
      * Gets all seasons ordered by date, descending.
      *
      * @return List of season DTOs.
      */
-    public List<SeasonDTO> findAllSeasons() {
-        final List<Season> seasons = getJpaRepository().findByOrderByDateDesc();
-        return map(seasons);
+    public List<Long> findAllSeasons() {
+        final List<EntityId> seasonIds = getJpaRepository().findByOrderByDateDesc();
+        return seasonIds.stream().map(EntityId::getId).collect(Collectors.toList());
     }
 
     /**
