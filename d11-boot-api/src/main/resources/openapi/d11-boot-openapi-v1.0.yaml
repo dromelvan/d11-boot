@@ -2069,7 +2069,10 @@ components:
         - id
         - ranking
         - points
+        - goals
         - player
+        - team
+        - d11Team
       properties:
         id:
           type: integer
@@ -2080,8 +2083,15 @@ components:
         points:
           type: integer
           format: int32
+        goals:
+          type: integer
+          format: int32
         player:
           $ref: '#/components/schemas/PlayerName'
+        team:
+          $ref: '#/components/schemas/TeamName'
+        d11Team:
+          $ref: '#/components/schemas/D11TeamName'
     PlayerSeasonStatBase:
       type: object
       required:
@@ -2287,6 +2297,7 @@ components:
       required:
         - id
         - points
+        - goalDifference
         - ranking
         - team
       properties:
@@ -2294,6 +2305,9 @@ components:
           type: integer
           format: int64
         points:
+          type: integer
+          format: int32
+        goalDifference:
           type: integer
           format: int32
         ranking:
@@ -2582,6 +2596,7 @@ components:
       required:
         - id
         - points
+        - goalsFor
         - ranking
         - d11Team
       properties:
@@ -2591,10 +2606,13 @@ components:
         points:
           type: integer
           format: int32
+        goalsFor:
+          type: integer
+          format: int32
         ranking:
           type: integer
           format: int32
-        team:
+        d11Team:
           $ref: '#/components/schemas/D11TeamName'
     D11TeamTableStatBase:
       type: object
