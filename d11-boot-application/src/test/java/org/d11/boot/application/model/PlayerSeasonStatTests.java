@@ -21,6 +21,12 @@ public class PlayerSeasonStatTests extends D11EasyRandomTests {
 
         assertTrue(playerSeasonStat.isValid(), "New player season stat should be valid.");
 
+        playerSeasonStat.setWinCount(null);
+        assertTrue(playerSeasonStat.isValid(), "Null win count should be valid.");
+        playerSeasonStat.setWinCount(0);
+        assertFalse(playerSeasonStat.isValid(), "Non positive win count should be valid.");
+        playerSeasonStat.setWinCount(1);
+
         playerSeasonStat.setPlayer(null);
         assertFalse(playerSeasonStat.isValid(), "Null player should not be valid.");
         playerSeasonStat.setPlayer(new Player());

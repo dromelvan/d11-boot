@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 /**
  * Stats and information for one player and one season.
@@ -15,6 +16,12 @@ import javax.validation.constraints.NotNull;
 @Data
 @Entity
 public class PlayerSeasonStat extends PlayerStatSummary {
+
+    /**
+     * The nth most valuable player win for this player, if he won this season.
+     */
+    @Positive
+    private Integer winCount;
 
     /**
      * Total points the last five games.
