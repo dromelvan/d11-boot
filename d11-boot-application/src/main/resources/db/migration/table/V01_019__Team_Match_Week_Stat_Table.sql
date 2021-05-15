@@ -1,9 +1,7 @@
-CREATE TABLE IF NOT EXISTS team_table_stat(
+CREATE TABLE IF NOT EXISTS team_match_week_stat(
     id SERIAL PRIMARY KEY,
     team_id INTEGER NOT NULL REFERENCES team,
-    premier_league_id INTEGER NOT NULL REFERENCES premier_league,
     match_week_id INTEGER NOT NULL REFERENCES match_week,
-    main BOOLEAN NOT NULL DEFAULT FALSE,
     matches_played INTEGER NOT NULL DEFAULT 0,
     matches_won INTEGER NOT NULL DEFAULT 0,
     matches_drawn INTEGER NOT NULL DEFAULT 0,

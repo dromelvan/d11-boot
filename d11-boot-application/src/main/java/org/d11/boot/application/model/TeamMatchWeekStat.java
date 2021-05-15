@@ -10,14 +10,14 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 /**
- * Table stats for one team for one match week.
+ * Stats for one team for one match week.
  */
 @Data
 @Entity
-public class TeamTableStat extends TableStat {
+public class TeamMatchWeekStat extends TableStat {
 
     /**
-     * The team this team table stat belongs to.
+     * The team this team match week stat belongs to.
      */
     @ManyToOne
     @JoinColumn(name = "team_id")
@@ -27,17 +27,7 @@ public class TeamTableStat extends TableStat {
     private Team team;
 
     /**
-     * The Premier League this team table stat belongs to.
-     */
-    @ManyToOne
-    @JoinColumn(name = "premier_league_id")
-    @NotNull
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private PremierLeague premierLeague;
-
-    /**
-     * The match week this team table stat belongs to.
+     * The match week this team match week stat belongs to.
      */
     @ManyToOne
     @JoinColumn(name = "match_week_id")

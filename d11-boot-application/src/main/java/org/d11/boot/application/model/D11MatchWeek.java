@@ -70,12 +70,12 @@ public class D11MatchWeek extends D11Entity {
     private MatchWeek matchWeek;
 
     /**
-     * List of D11 team table stats for this D11 match week, ordered by ranking.
+     * List of D11 team D11 match week stats for this D11 match week, ordered by ranking.
      */
     @OneToMany(mappedBy = "d11MatchWeek", cascade = CascadeType.ALL)
     @OrderBy("ranking ASC")
     @EqualsAndHashCode.Exclude
-    private List<D11TeamTableStat> d11TeamTableStats = new ArrayList<>();
+    private List<D11TeamD11MatchWeekStat> d11TeamD11MatchWeekStats = new ArrayList<>();
 
     /**
      * List of D11 matches that are played in this D11 match week, ordered by date.

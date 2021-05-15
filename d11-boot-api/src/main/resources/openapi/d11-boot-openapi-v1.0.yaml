@@ -806,17 +806,17 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
-  /team-table-stats/{teamTableStatId}:
+  /team-match-week-stats/{teamMatchWeekStatId}:
     get:
-      summary: Find a team table stat by id.
-      operationId: findTeamTableStatById
+      summary: Find a team match week stat by id.
+      operationId: findTeamMatchWeekStatById
       tags:
-        - teamTableStat
+        - teamMatchWeekStat
       parameters:
-        - name: teamTableStatId
+        - name: teamMatchWeekStatId
           in: path
           required: true
-          description: The id of the team table stat to find.
+          description: The id of the team match week stat to find.
           schema:
             type: integer
             format: int64
@@ -826,24 +826,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TeamTableStat"
+                $ref: "#/components/schemas/TeamMatchWeekStat"
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
-  /team-table-stats/premier-league/{premierLeagueId}:
+  /d11-team-d11-match-week-stats/{d11TeamD11MatchWeekStatId}:
     get:
-      summary: Find team table stats by Premier League id.
-      operationId: findTeamTableStatByPremierLeagueId
+      summary: Find a D11 team D11 match week stat by id.
+      operationId: findD11TeamD11MatchWeekStatById
       tags:
-        - teamTableStat
+        - d11TeamD11MatchWeekStat
       parameters:
-        - name: premierLeagueId
+        - name: d11TeamD11MatchWeekStatId
           in: path
           required: true
-          description: Id for the Premier League that team table stats will be found for.
+          description: The id of the D11 team D11 match week stat to find.
           schema:
             type: integer
             format: int64
@@ -853,65 +853,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/TeamTableStat"
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/Unexpected'
-  /d11-team-table-stats/{d11TeamTableStatId}:
-    get:
-      summary: Find a D11 team table stat by id.
-      operationId: findD11TeamTableStatById
-      tags:
-        - d11TeamTableStat
-      parameters:
-        - name: d11TeamTableStatId
-          in: path
-          required: true
-          description: The id of the D11 team table stat to find.
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/D11TeamTableStat"
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/Unexpected'
-  /d11-team-table-stats/d11-league/{d11LeagueId}:
-    get:
-      summary: Find team table stats by D11 league id.
-      operationId: findD11TeamTableStatByD11LeagueId
-      tags:
-        - d11TeamTableStat
-      parameters:
-        - name: d11LeagueId
-          in: path
-          required: true
-          description: Id for the D11 league that D11 team table stats will be found for.
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/D11TeamTableStat"
+                $ref: "#/components/schemas/D11TeamD11MatchWeekStat"
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -2416,7 +2358,7 @@ components:
         position:
           $ref: '#/components/schemas/Position'
 
-    TeamTableStatStub:
+    TeamMatchWeekStatStub:
       type: object
       required:
         - id
@@ -2439,7 +2381,7 @@ components:
           format: int32
         team:
           $ref: '#/components/schemas/TeamName'
-    TeamTableStatBase:
+    TeamMatchWeekStatBase:
       type: object
       required:
         - id
@@ -2572,7 +2514,7 @@ components:
         awayRanking:
           type: integer
           format: int32
-    TeamTableStat:
+    TeamMatchWeekStat:
       type: object
       required:
         - id
@@ -2715,7 +2657,7 @@ components:
         matchWeek:
           $ref: '#/components/schemas/MatchWeekBase'
 
-    D11TeamTableStatStub:
+    D11TeamD11MatchWeekStatStub:
       type: object
       required:
         - id
@@ -2738,7 +2680,7 @@ components:
           format: int32
         d11Team:
           $ref: '#/components/schemas/D11TeamName'
-    D11TeamTableStatBase:
+    D11TeamD11MatchWeekStatBase:
       type: object
       required:
         - id
@@ -2871,7 +2813,7 @@ components:
         awayRanking:
           type: integer
           format: int32
-    D11TeamTableStat:
+    D11TeamD11MatchWeekStat:
       type: object
       required:
         - id
