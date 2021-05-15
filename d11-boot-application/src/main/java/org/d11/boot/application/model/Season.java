@@ -86,6 +86,16 @@ public class Season extends D11Entity implements Comparable<Season> {
     private List<TeamSeasonStat> top3TeamSeasonStats;
 
     /**
+     * Top 3 D11 team season stats sorted by ranking for this season.
+     */
+    @OneToMany(mappedBy = Season.MAPPED_BY, cascade = CascadeType.ALL)
+    @OrderBy("ranking")
+    @Where(clause = "ranking <= 3")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<D11TeamSeasonStat> top3D11TeamSeasonStats;
+
+    /**
      * Top 3 player season stats sorted by ranking for this season.
      */
     @OneToMany(mappedBy = Season.MAPPED_BY, cascade = CascadeType.ALL)

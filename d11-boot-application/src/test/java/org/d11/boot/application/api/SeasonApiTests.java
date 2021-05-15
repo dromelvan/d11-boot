@@ -1,12 +1,12 @@
 package org.d11.boot.application.api;
 
-import org.d11.boot.api.model.D11TeamTableStatStubDTO;
+import org.d11.boot.api.model.D11TeamSeasonStatStubDTO;
 import org.d11.boot.api.model.PlayerSeasonStatStubDTO;
 import org.d11.boot.api.model.SeasonDTO;
 import org.d11.boot.api.model.SeasonSummaryDTO;
 import org.d11.boot.api.model.TeamSeasonStatStubDTO;
 import org.d11.boot.api.service.SeasonApiService;
-import org.d11.boot.application.model.D11TeamTableStat;
+import org.d11.boot.application.model.D11TeamSeasonStat;
 import org.d11.boot.application.model.PlayerSeasonStat;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.TeamSeasonStat;
@@ -80,12 +80,12 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
             assertEquals(map(teamSeasonStats, TeamSeasonStatStubDTO.class), result.getTop3TeamSeasonStats(),
                     "Season summary by id top 3 team season stats should equal season top 3 team season stats");
 
-            assertNotNull(result.getTop3D11TeamTableStats(), "Season summary D11 team table stats should not be null.");
-            assertFalse(result.getTop3D11TeamTableStats().isEmpty(),
-                    "Season summary D11 team table stats should not be empty.");
-            final List<D11TeamTableStat> d11TeamTableStats = season.getD11League().getTop3D11TeamTableStats();
-            assertEquals(map(d11TeamTableStats, D11TeamTableStatStubDTO.class), result.getTop3D11TeamTableStats(),
-                    "Season summary by id top 3 D11 team table stats should equal season top 3 D11 team table stats");
+            assertNotNull(result.getTop3D11TeamSeasonStats(), "Season summary D11 team season stats should not be null.");
+            assertFalse(result.getTop3D11TeamSeasonStats().isEmpty(),
+                    "Season summary D11 team season stats should not be empty.");
+            final List<D11TeamSeasonStat> d11TeamSeasonStats = season.getTop3D11TeamSeasonStats();
+            assertEquals(map(d11TeamSeasonStats, D11TeamSeasonStatStubDTO.class), result.getTop3D11TeamSeasonStats(),
+                    "Season summary by id top 3 D11 team season stats should equal season top 3 D11 team season stats");
         }
         assertNull(getApiService().findSeasonSummaryById(-1L), "Season summary not found should return null.");
         assertBadRequest(get("BAD_SEASON_SUMMARY_REQUEST"));

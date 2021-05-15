@@ -223,6 +223,34 @@ SELECT id, d11_team_id, d11_league_id, d11_match_day_id, false, matches_played, 
        created_at, updated_at FROM data.d11_team_table_stats;
 SELECT setval('d11_team_table_stat_id_seq', (SELECT last_value FROM data.d11_team_table_stats_id_seq));
 
+-- Team season stats
+INSERT INTO team_season_stat
+SELECT NEXTVAL('team_season_stat_id_seq') id, subquery.* FROM(
+SELECT tts.team_id, season_id, CAST(null AS INTEGER) win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, form_match_points, ranking, previous_ranking,
+       home_matches_played, home_matches_won, home_matches_drawn, home_matches_lost, home_goals_for, home_goals_against, home_goal_difference, home_points, home_ranking,
+       away_matches_played, away_matches_won, away_matches_drawn, away_matches_lost, away_goals_for, away_goals_against, away_goal_difference, away_points, away_ranking,
+       now()::timestamp created_at, now()::timestamp updated_at
+FROM data.team_table_stats tts
+    JOIN data.match_days mds ON tts.match_day_id = mds.id
+    JOIN data.premier_leagues pls ON mds.premier_league_id = pls.id
+WHERE mds.match_day_number = 38
+ORDER BY season_id, ranking
+) subquery;
+
+-- D11 team season stats
+INSERT INTO d11_team_season_stat
+SELECT NEXTVAL('d11_team_season_stat_id_seq') id, subquery.* FROM(
+SELECT d11tts.d11_team_id, season_id, CAST(null AS INTEGER) win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, form_match_points, ranking, previous_ranking,
+       home_matches_played, home_matches_won, home_matches_drawn, home_matches_lost, home_goals_for, home_goals_against, home_goal_difference, home_points, home_ranking,
+       away_matches_played, away_matches_won, away_matches_drawn, away_matches_lost, away_goals_for, away_goals_against, away_goal_difference, away_points, away_ranking,
+       now()::timestamp created_at, now()::timestamp updated_at
+FROM data.d11_team_table_stats d11tts
+    JOIN data.d11_match_days d11mds ON d11tts.d11_match_day_id = d11mds.id
+    JOIN data.d11_leagues d11ls ON d11mds.d11_league_id = d11ls.id
+WHERE d11mds.match_day_number = 38
+ORDER BY season_id, ranking
+) subquery;
+
 -- Player season stats
 INSERT INTO player_season_stat
 SELECT psi.id, psi.player_id, psi.season_id, team_id, d11_team_id, position_id, CAST(null AS INTEGER) win_count, value, ranking, points, form_points, points_per_appearance, goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards,
@@ -308,3 +336,48 @@ WHERE match_week_id IN(SELECT id FROM match_week WHERE match_week_number = 38);
 UPDATE d11_team_table_stat
 SET main = true
 WHERE d11_match_week_id IN(SELECT id FROM d11_match_week WHERE match_week_number = 38);
+
+-- Update team season stat win count
+UPDATE team_season_stat update_table
+SET win_count = (
+SELECT win_count FROM(
+    SELECT tss.id,
+           (SELECT COUNT(*)
+            FROM team_season_stat
+            WHERE ranking = 1
+              AND team_id = tss.team_id
+              AND id <= tss.id) win_count
+    FROM team_season_stat tss
+    WHERE ranking = 1
+      AND id = update_table.id
+    ORDER BY season_id) subquery);
+
+-- Update D11 team season stat win count
+UPDATE d11_team_season_stat update_table
+SET win_count = (
+SELECT win_count FROM(
+    SELECT d11tss.id,
+           (SELECT COUNT(*)
+            FROM d11_team_season_stat
+            WHERE ranking = 1
+              AND d11_team_id = d11tss.d11_team_id
+              AND id <= d11tss.id) win_count
+    FROM d11_team_season_stat d11tss
+    WHERE ranking = 1
+      AND id = update_table.id
+    ORDER BY season_id) subquery);
+
+-- Update player season stat win count
+UPDATE player_season_stat update_table
+SET win_count = (
+SELECT win_count FROM(
+    SELECT pss.id,
+           (SELECT COUNT(*)
+            FROM player_season_stat
+            WHERE ranking = 1
+              AND player_id = pss.player_id
+              AND season_id <= pss.season_id) win_count
+    FROM player_season_stat pss
+    WHERE ranking = 1
+      AND id = update_table.id
+    ORDER BY season_id) subquery);
