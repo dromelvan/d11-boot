@@ -224,3 +224,11 @@ INSERT INTO d11_team_table_stat VALUES (5, 1, 2, 3, false, 1, 0, 1, 0, 1, 1, 0, 
 INSERT INTO d11_team_table_stat VALUES (6, 2, 2, 3, false, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 1,  1, 1, 0, 0, 2, 1, 1, 3, 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO d11_team_table_stat VALUES (7, 1, 2, 4, true, 2, 1, 1, 0, 2, 0, 2, 4, 4, '1,3', 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,  1, 1, 0, 0, 2, 1, 1, 3, 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO d11_team_table_stat VALUES (8, 2, 2, 4, true, 2, 0, 1, 1, 0, 2, -2, 1, 1, '1,0', 2, 1, 1, 1, 0, 0, 2, 1, 1, 3, 1,  1, 1, 0, 0, 2, 1, 1, 3, 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+
+-- INSERT INTO team_season_stat(
+--     id, team_id, season_id, win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, form_match_points, ranking, previous_ranking, home_matches_played, home_matches_won, home_matches_drawn, home_matches_lost, home_goals_for, home_goals_against, home_goal_difference, home_points, home_ranking, away_matches_played, away_matches_won, away_matches_drawn, away_matches_lost, away_goals_for, away_goals_against, away_goal_difference, away_points, away_ranking, created_at, updated_at)
+--     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO team_season_stat VALUES (1, 1, 1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 3, '3', 1, 2, 1, 1, 0, 0, 2, 1, 1, 3, 1,  0, 0, 0, 0, 0, 0, 0, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO team_season_stat VALUES (2, 2, 1, null, 1, 0, 0, 1, 1, 2, -1, 0, 0, '0', 2, 1, 1, 1, 0, 0, 2, 1, 1, 3, 1,  1, 1, 0, 0, 2, 1, 1, 3, 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO team_season_stat VALUES (3, 1, 2, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 2, 2, 1, 1, 0, 0, 2, 1, 1, 3, 1,  0, 0, 0, 0, 0, 0, 0, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO team_season_stat VALUES (4, 2, 2, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 1,  1, 1, 0, 0, 2, 1, 1, 3, 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');

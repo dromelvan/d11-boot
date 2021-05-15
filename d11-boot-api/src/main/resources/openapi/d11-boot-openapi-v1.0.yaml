@@ -918,6 +918,62 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /team-season-stats/{teamSeasonStatId}:
+    get:
+      summary: Find a team season stat by id.
+      operationId: findTeamSeasonStatById
+      tags:
+        - teamSeasonStat
+      parameters:
+        - name: teamSeasonStatId
+          in: path
+          required: true
+          description: The id of the team season stat to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamSeasonStat"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /team-season-stats/season/{seasonId}:
+    get:
+      summary: Find team season stats by season id.
+      operationId: findTeamSeasonStatBySeasonId
+      tags:
+        - teamSeasonStat
+      parameters:
+        - name: seasonId
+          in: path
+          required: true
+          description: Id for the season that team season stats will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamSeasonStat"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /search:
     get:
       summary: Search players, teams and D11 teams by name.
@@ -1428,7 +1484,7 @@ components:
         - premierLeague
         - d11League
         - top3PlayerSeasonStats
-        - top3TeamTableStats
+        - top3TeamSeasonStats
         - top3D11TeamTableStats
       properties:
         id:
@@ -1455,10 +1511,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PlayerSeasonStatStub"
-        top3TeamTableStats:
+        top3TeamSeasonStats:
           type: array
           items:
-            $ref: "#/components/schemas/TeamTableStatStub"
+            $ref: "#/components/schemas/TeamSeasonStatStub"
         top3D11TeamTableStats:
           type: array
           items:
@@ -2901,6 +2957,308 @@ components:
           $ref: '#/components/schemas/D11LeagueBase'
         d11MatchWeek:
           $ref: '#/components/schemas/D11MatchWeekBase'
+
+    TeamSeasonStatStub:
+      type: object
+      required:
+        - id
+        - winCount
+        - points
+        - goalDifference
+        - ranking
+        - team
+      properties:
+        id:
+          type: integer
+          format: int64
+        winCount:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        goalDifference:
+          type: integer
+          format: int32
+        ranking:
+          type: integer
+          format: int32
+        team:
+          $ref: '#/components/schemas/TeamName'
+    TeamSeasonStatBase:
+      type: object
+      required:
+        - id
+        - winCount
+        - matchesPlayed
+        - matchesWon
+        - matchesDrawn
+        - matchesLost
+        - goalsFor
+        - goalsAgainst
+        - goalDifference
+        - points
+        - formPoints
+        - formMatchPoints
+        - ranking
+        - previousRanking
+        - homeMatchesPlayed
+        - homeMatchesWon
+        - homeMatchesDrawn
+        - homeMatchesLost
+        - homeGoalsFor
+        - homeGoalsAgainst
+        - homeGoalDifference
+        - homePoints
+        - homeRanking
+        - awayMatchesPlayed
+        - awayMatchesWon
+        - awayMatchesDrawn
+        - awayMatchesLost
+        - awayGoalsFor
+        - awayGoalsAgainst
+        - awayGoalDifference
+        - awayPoints
+        - awayRanking
+      properties:
+        id:
+          type: integer
+          format: int64
+        winCount:
+          type: integer
+          format: int32
+        matchesPlayed:
+          type: integer
+          format: int32
+        matchesWon:
+          type: integer
+          format: int32
+        matchesDrawn:
+          type: integer
+          format: int32
+        matchesLost:
+          type: integer
+          format: int32
+        goalsFor:
+          type: integer
+          format: int32
+        goalsAgainst:
+          type: integer
+          format: int32
+        goalDifference:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        formPoints:
+          type: integer
+          format: int32
+        formMatchPoints:
+          type: array
+          items:
+            type: integer
+            format: int32
+        ranking:
+          type: integer
+          format: int32
+        previousRanking:
+          type: integer
+          format: int32
+        homeMatchesPlayed:
+          type: integer
+          format: int32
+        homeMatchesWon:
+          type: integer
+          format: int32
+        homeMatchesDrawn:
+          type: integer
+          format: int32
+        homeMatchesLost:
+          type: integer
+          format: int32
+        homeGoalsFor:
+          type: integer
+          format: int32
+        homeGoalsAgainst:
+          type: integer
+          format: int32
+        homeGoalDifference:
+          type: integer
+          format: int32
+        homePoints:
+          type: integer
+          format: int32
+        homeRanking:
+          type: integer
+          format: int32
+        awayMatchesPlayed:
+          type: integer
+          format: int32
+        awayMatchesWon:
+          type: integer
+          format: int32
+        awayMatchesDrawn:
+          type: integer
+          format: int32
+        awayMatchesLost:
+          type: integer
+          format: int32
+        awayGoalsFor:
+          type: integer
+          format: int32
+        awayGoalsAgainst:
+          type: integer
+          format: int32
+        awayGoalDifference:
+          type: integer
+          format: int32
+        awayPoints:
+          type: integer
+          format: int32
+        awayRanking:
+          type: integer
+          format: int32
+    TeamSeasonStat:
+      type: object
+      required:
+        - id
+        - winCount
+        - matchesPlayed
+        - matchesWon
+        - matchesDrawn
+        - matchesLost
+        - goalsFor
+        - goalsAgainst
+        - goalDifference
+        - points
+        - formPoints
+        - formMatchPoints
+        - ranking
+        - previousRanking
+        - homeMatchesPlayed
+        - homeMatchesWon
+        - homeMatchesDrawn
+        - homeMatchesLost
+        - homeGoalsFor
+        - homeGoalsAgainst
+        - homeGoalDifference
+        - homePoints
+        - homeRanking
+        - awayMatchesPlayed
+        - awayMatchesWon
+        - awayMatchesDrawn
+        - awayMatchesLost
+        - awayGoalsFor
+        - awayGoalsAgainst
+        - awayGoalDifference
+        - awayPoints
+        - awayRanking
+        - team
+        - season
+      properties:
+        id:
+          type: integer
+          format: int64
+        winCount:
+          type: integer
+          format: int32
+        matchesPlayed:
+          type: integer
+          format: int32
+        matchesWon:
+          type: integer
+          format: int32
+        matchesDrawn:
+          type: integer
+          format: int32
+        matchesLost:
+          type: integer
+          format: int32
+        goalsFor:
+          type: integer
+          format: int32
+        goalsAgainst:
+          type: integer
+          format: int32
+        goalDifference:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        formPoints:
+          type: integer
+          format: int32
+        formMatchPoints:
+          type: array
+          items:
+            type: integer
+            format: int32
+        ranking:
+          type: integer
+          format: int32
+        previousRanking:
+          type: integer
+          format: int32
+        homeMatchesPlayed:
+          type: integer
+          format: int32
+        homeMatchesWon:
+          type: integer
+          format: int32
+        homeMatchesDrawn:
+          type: integer
+          format: int32
+        homeMatchesLost:
+          type: integer
+          format: int32
+        homeGoalsFor:
+          type: integer
+          format: int32
+        homeGoalsAgainst:
+          type: integer
+          format: int32
+        homeGoalDifference:
+          type: integer
+          format: int32
+        homePoints:
+          type: integer
+          format: int32
+        homeRanking:
+          type: integer
+          format: int32
+        awayMatchesPlayed:
+          type: integer
+          format: int32
+        awayMatchesWon:
+          type: integer
+          format: int32
+        awayMatchesDrawn:
+          type: integer
+          format: int32
+        awayMatchesLost:
+          type: integer
+          format: int32
+        awayGoalsFor:
+          type: integer
+          format: int32
+        awayGoalsAgainst:
+          type: integer
+          format: int32
+        awayGoalDifference:
+          type: integer
+          format: int32
+        awayPoints:
+          type: integer
+          format: int32
+        awayRanking:
+          type: integer
+          format: int32
+        team:
+          $ref: '#/components/schemas/TeamName'
+        season:
+          $ref: '#/components/schemas/SeasonBase'
 
     PlayerSearchResult:
       type: object

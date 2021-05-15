@@ -45,7 +45,6 @@ public class D11BootModelMapper extends ModelMapper {
         addMappings(new PropertyMap<Season, SeasonSummaryDTO>() {
             @Override
             protected void configure() {
-                map(source.getPremierLeague().getTop3TeamTableStats()).setTop3TeamTableStats(null);
                 map(source.getD11League().getTop3D11TeamTableStats()).setTop3D11TeamTableStats(null);
             }
         });

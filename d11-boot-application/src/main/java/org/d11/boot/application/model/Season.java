@@ -28,6 +28,10 @@ import java.util.regex.Pattern;
 public class Season extends D11Entity implements Comparable<Season> {
 
     /**
+     * PMD doesn't like having "season" this many times in one class.
+     */
+    private static final String MAPPED_BY = "season";
+    /**
      * Pattern for extracting the short name from a season name.
      */
     private static final Pattern SHORT_NAME_PATTERN = Pattern.compile("\\d{2}(\\d{2})-\\d{2}(\\d{2})");
@@ -56,7 +60,7 @@ public class Season extends D11Entity implements Comparable<Season> {
     /**
      * The Premier League of this season.
      */
-    @OneToOne(mappedBy = "season", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = Season.MAPPED_BY, cascade = CascadeType.ALL)
     @NotNull
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -65,16 +69,26 @@ public class Season extends D11Entity implements Comparable<Season> {
     /**
      * The D11 league of this season.
      */
-    @OneToOne(mappedBy = "season", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = Season.MAPPED_BY, cascade = CascadeType.ALL)
     @NotNull
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private D11League d11League;
 
     /**
+     * Top 3 team season stats sorted by ranking for this season.
+     */
+    @OneToMany(mappedBy = Season.MAPPED_BY, cascade = CascadeType.ALL)
+    @OrderBy("ranking")
+    @Where(clause = "ranking <= 3")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<TeamSeasonStat> top3TeamSeasonStats;
+
+    /**
      * Top 3 player season stats sorted by ranking for this season.
      */
-    @OneToMany(mappedBy = "season", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = Season.MAPPED_BY, cascade = CascadeType.ALL)
     @OrderBy("ranking")
     @Where(clause = "ranking <= 3")
     @ToString.Exclude

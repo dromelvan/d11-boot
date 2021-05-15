@@ -16,6 +16,9 @@ public class SubstitutionTests extends D11EasyRandomTests {
     @Test
     public void isValid() {
         final Substitution substitution = generate(Substitution.class);
+
+        substitution.prePersist();
+
         // It's unlikely but possible the generated players have the same id.
         substitution.getPlayerIn().setId(substitution.getPlayer().getId() + 1);
 
