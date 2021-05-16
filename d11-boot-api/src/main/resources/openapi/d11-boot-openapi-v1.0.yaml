@@ -3264,7 +3264,7 @@ components:
         - id
         - winCount
         - points
-        - goalDifference
+        - goalsFor
         - ranking
         - d11Team
       properties:
@@ -3277,7 +3277,7 @@ components:
         points:
           type: integer
           format: int32
-        goalDifference:
+        goalsFor:
           type: integer
           format: int32
         ranking:
