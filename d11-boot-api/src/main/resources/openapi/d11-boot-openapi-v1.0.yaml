@@ -3451,7 +3451,7 @@ components:
         awayRanking:
           type: integer
           format: int32
-        team:
+        d11Team:
           $ref: '#/components/schemas/D11TeamName'
         season:
           $ref: '#/components/schemas/SeasonBase'
