@@ -35,3 +35,7 @@ CREATE TABLE IF NOT EXISTS team_match_week_stat(
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
+
+ALTER TABLE match_week
+ADD CONSTRAINT match_week_premier_league_leader_id_fkey
+FOREIGN KEY (premier_league_leader_id) REFERENCES team_match_week_stat(id);

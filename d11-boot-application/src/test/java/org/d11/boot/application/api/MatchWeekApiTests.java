@@ -3,7 +3,7 @@ package org.d11.boot.application.api;
 import org.d11.boot.api.model.MatchWeekDTO;
 import org.d11.boot.api.service.MatchWeekApiService;
 import org.d11.boot.application.model.MatchWeek;
-import org.d11.boot.application.model.PremierLeague;
+import org.d11.boot.application.model.Season;
 import org.d11.boot.application.repository.MatchWeekRepository;
 import org.d11.boot.application.util.MatchesByDateMapperConverter;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ public class MatchWeekApiTests extends AbstractRepositoryApiTests<MatchWeek, Mat
             assertEquals(matchWeekDTO, result, "Match week by id should equal MatchWeek.");
             assertFalse(result.getMatches().isEmpty(), "Match week by id should have matches.");
             assertEquals(new MatchesByDateMapperConverter().convert(matchWeek.getMatches()), result.getMatches(),
-                         "Match week by id matches should equal converted MatchWeek matches.");
+                    "Match week by id matches should equal converted MatchWeek matches.");
         }
 
         assertNull(getApiService().findMatchWeekById(-1L), "Match week not found should return null.");
@@ -65,7 +65,7 @@ public class MatchWeekApiTests extends AbstractRepositoryApiTests<MatchWeek, Mat
                 assertEquals(matchWeekDTO, result, "Current match week result should equal current match week.");
                 assertFalse(result.getMatches().isEmpty(), "Current match week should have matches.");
                 assertEquals(new MatchesByDateMapperConverter().convert(matchWeek.getMatches()), result.getMatches(),
-                             "Current match week matches should equal converted MatchWeek matches.");
+                        "Current match week matches should equal converted MatchWeek matches.");
                 break;
             }
         }
@@ -74,25 +74,30 @@ public class MatchWeekApiTests extends AbstractRepositoryApiTests<MatchWeek, Mat
     }
 
     /**
-     * Tests the findMatchWeekByPremierLeagueId API operation.
+     * Tests the findMatchWeekBySeasonId API operation.
      */
     @Test
-    public void findMatchWeekByPremierLeagueId() {
-        final Map<PremierLeague, List<MatchWeek>> map = new HashMap<>();
+    public void findMatchWeekBySeasonId() {
+        final Map<Season, List<MatchWeek>> matchWeekMap = new HashMap<>();
         for(final MatchWeek matchWeek : getRepository().findAll()) {
-            final List<MatchWeek> matchWeeks = map.computeIfAbsent(matchWeek.getPremierLeague(), premierLeague -> new ArrayList<>());
+            final List<MatchWeek> matchWeeks =
+                    matchWeekMap.computeIfAbsent(matchWeek.getSeason(), season -> new ArrayList<>());
             matchWeeks.add(matchWeek);
         }
 
-        for(final Map.Entry<PremierLeague, List<MatchWeek>> entry : map.entrySet()) {
-            final List<MatchWeekDTO> matchWeekDTOs = map(entry.getValue(), MatchWeekDTO.class);
-            matchWeekDTOs.sort(Comparator.comparing(MatchWeekDTO::getDate));
+        for(final Map.Entry<Season, List<MatchWeek>> entry : matchWeekMap.entrySet()) {
+            final List<MatchWeek> seasonMatchWeeks = entry.getValue();
 
-            final List<MatchWeekDTO> result = getApiService().findMatchWeekByPremierLeagueId(entry.getKey().getId());
+            seasonMatchWeeks.sort(Comparator.comparingInt(MatchWeek::getMatchWeekNumber));
 
-            assertNotNull(result, "Premier League match weeks should not be null.");
-            assertFalse(result.isEmpty(), "Premier League match weeks should not be empty.");
-            assertEquals(matchWeekDTOs, result, "Premier League match weeks should equal match weeks.");
+            final List<MatchWeekDTO> matchWeeks = getApiService().findMatchWeekBySeasonId(entry.getKey().getId());
+
+            assertEquals(seasonMatchWeeks.size(), matchWeeks.size(),
+                    "Season match week and match week sizes are not equal. " +
+                    "This means the team season stat test data is not set up properly.");
+
+            assertEquals(map(seasonMatchWeeks, MatchWeekDTO.class), matchWeeks,
+                    "Season match week should equal match week.");
         }
     }
 

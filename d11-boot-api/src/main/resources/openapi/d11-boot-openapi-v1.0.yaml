@@ -381,17 +381,17 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
-  /match-weeks/premier-league/{premierLeagueId}:
+  /match-weeks/season/{seasonId}:
     get:
-      summary: Find match weeks by Premier League id.
-      operationId: findMatchWeekByPremierLeagueId
+      summary: Find match weeks by season id.
+      operationId: findMatchWeekBySeasonId
       tags:
         - matchWeek
       parameters:
-        - name: premierLeagueId
+        - name: seasonId
           in: path
           required: true
-          description: Id for the Premier League that match weeks will be found for.
+          description: Id for the season that match weeks will be found for.
           schema:
             type: integer
             format: int64
@@ -458,79 +458,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/D11League"
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/Unexpected'
-  /d11-match-weeks/{d11MatchWeekId}:
-    get:
-      summary: Find a D11 match week by id.
-      operationId: findD11MatchWeekById
-      tags:
-        - d11MatchWeek
-      parameters:
-        - name: d11MatchWeekId
-          in: path
-          required: true
-          description: The id of the D11 match week to find.
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/D11MatchWeek"
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/Unexpected'
-  /d11-match-weeks/current:
-    get:
-      summary: Find the current D11 match week.
-      operationId: findCurrentD11MatchWeek
-      tags:
-        - d11MatchWeek
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/D11MatchWeek"
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/Unexpected'
-  /d11-match-weeks/d11-league/{d11LeagueId}:
-    get:
-      summary: Find D11 match weeks by D11 league id.
-      operationId: findD11MatchWeekByD11LeagueId
-      tags:
-        - d11MatchWeek
-      parameters:
-        - name: d11LeagueId
-          in: path
-          required: true
-          description: Id for the D11 league that D11 match weeks will be found for.
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/D11MatchWeek"
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -833,17 +760,17 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
-  /d11-team-d11-match-week-stats/{d11TeamD11MatchWeekStatId}:
+  /d11-team-match-week-stats/{d11TeamMatchWeekStatId}:
     get:
-      summary: Find a D11 team D11 match week stat by id.
-      operationId: findD11TeamD11MatchWeekStatById
+      summary: Find a D11 team match week stat by id.
+      operationId: findD11TeamMatchWeekStatById
       tags:
-        - d11TeamD11MatchWeekStat
+        - d11TeamMatchWeekStat
       parameters:
-        - name: d11TeamD11MatchWeekStatId
+        - name: d11TeamMatchWeekStatId
           in: path
           required: true
-          description: The id of the D11 team D11 match week stat to find.
+          description: The id of the D11 team match week stat to find.
           schema:
             type: integer
             format: int64
@@ -853,7 +780,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/D11TeamD11MatchWeekStat"
+                $ref: "#/components/schemas/D11TeamMatchWeekStat"
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -1449,6 +1376,7 @@ components:
         - legacy
         - premierLeague
         - d11League
+        - matchWeeks
       properties:
         id:
           type: integer
@@ -1470,6 +1398,11 @@ components:
           $ref: '#/components/schemas/PremierLeagueBase'
         d11League:
           $ref: '#/components/schemas/D11LeagueBase'
+        matchWeeks:
+          type: array
+          items:
+            type: integer
+            format: int64
     SeasonSummary:
       type: object
       required:
@@ -1571,12 +1504,12 @@ components:
         - status
         - elapsed
         - date
-        - premierLeague
         - season
-        - d11MatchWeek
-        - leagueLeader
+        - premierLeagueLeader
+        - d11LeagueLeader
         - mostValuablePlayer
         - matches
+        - d11Matches
       properties:
         id:
           type: integer
@@ -1592,17 +1525,22 @@ components:
         date:
           type: string
           format: date
-        premierLeague:
-          $ref: '#/components/schemas/PremierLeagueBase'
         season:
           $ref: '#/components/schemas/SeasonBase'
-        d11MatchWeek:
-          $ref: '#/components/schemas/D11MatchWeekBase'
-        leagueLeader:
-          $ref: '#/components/schemas/TeamName'
+        premierLeagueLeader:
+          $ref: '#/components/schemas/TeamMatchWeekStatStub'
+        d11LeagueLeader:
+          $ref: '#/components/schemas/D11TeamMatchWeekStatStub'
         mostValuablePlayer:
-          $ref: '#/components/schemas/PlayerMatchStatBase'
+          $ref: '#/components/schemas/PlayerMatchStatStub'
         matches:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: integer
+              format: int64
+        d11Matches:
           type: object
           additionalProperties:
             type: array
@@ -1738,63 +1676,6 @@ components:
         season:
           $ref: '#/components/schemas/SeasonBase'
 
-    D11MatchWeekBase:
-      type: object
-      required:
-        - id
-        - matchWeekNumber
-        - date
-      properties:
-        id:
-          type: integer
-          format: int64
-        matchWeekNumber:
-          type: integer
-          format: int32
-        date:
-          type: string
-          format: date
-    D11MatchWeek:
-      type: object
-      required:
-        - id
-        - matchWeekNumber
-        - elapsed
-        - date
-        - d11League
-        - matchWeek
-        - leagueLeader
-        - mostValuablePlayer
-        - d11Matches
-      properties:
-        id:
-          type: integer
-          format: int64
-        matchWeekNumber:
-          type: integer
-          format: int32
-        elapsed:
-          type: integer
-          format: int32
-        date:
-          type: string
-          format: date
-        d11League:
-          $ref: '#/components/schemas/D11LeagueBase'
-        matchWeek:
-          $ref: '#/components/schemas/MatchWeekBase'
-        leagueLeader:
-          $ref: '#/components/schemas/D11TeamName'
-        mostValuablePlayer:
-          $ref: '#/components/schemas/PlayerMatchStatBase'
-        d11Matches:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: integer
-              format: int64
-
     D11MatchBase:
       type: object
       required:
@@ -1862,7 +1743,7 @@ components:
         - status
         - homeD11Team
         - awayD11Team
-        - d11MatchWeek
+        - matchWeek
       properties:
         id:
           type: integer
@@ -1902,8 +1783,8 @@ components:
           $ref: '#/components/schemas/D11TeamBase'
         awayD11Team:
           $ref: '#/components/schemas/D11TeamBase'
-        d11matchWeek:
-          $ref: '#/components/schemas/D11MatchWeekBase'
+        matchWeek:
+          $ref: '#/components/schemas/MatchWeekBase'
 
     GoalBase:
       type: object
@@ -1966,6 +1847,31 @@ components:
         player:
           $ref: '#/components/schemas/PlayerBase'
 
+    PlayerMatchStatStub:
+      type: object
+      required:
+        - id
+        - rating
+        - points
+        - player
+        - team
+        - d11Team
+      properties:
+        id:
+          type: integer
+          format: int64
+        rating:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        player:
+          $ref: '#/components/schemas/PlayerName'
+        team:
+          $ref: '#/components/schemas/TeamName'
+        d11Team:
+          $ref: '#/components/schemas/D11TeamName'
     PlayerMatchStatBase:
       type: object
       required:
@@ -2385,7 +2291,6 @@ components:
       type: object
       required:
         - id
-        - main
         - matchesPlayed
         - matchesWon
         - matchesDrawn
@@ -2420,8 +2325,6 @@ components:
         id:
           type: integer
           format: int64
-        main:
-          type: boolean
         matchesPlayed:
           type: integer
           format: int32
@@ -2518,7 +2421,6 @@ components:
       type: object
       required:
         - id
-        - main
         - matchesPlayed
         - matchesWon
         - matchesDrawn
@@ -2556,8 +2458,6 @@ components:
         id:
           type: integer
           format: int64
-        main:
-          type: boolean
         matchesPlayed:
           type: integer
           format: int32
@@ -2657,7 +2557,7 @@ components:
         matchWeek:
           $ref: '#/components/schemas/MatchWeekBase'
 
-    D11TeamD11MatchWeekStatStub:
+    D11TeamMatchWeekStatStub:
       type: object
       required:
         - id
@@ -2680,11 +2580,10 @@ components:
           format: int32
         d11Team:
           $ref: '#/components/schemas/D11TeamName'
-    D11TeamD11MatchWeekStatBase:
+    D11TeamMatchWeekStatBase:
       type: object
       required:
         - id
-        - main
         - matchesPlayed
         - matchesWon
         - matchesDrawn
@@ -2719,8 +2618,6 @@ components:
         id:
           type: integer
           format: int64
-        main:
-          type: boolean
         matchesPlayed:
           type: integer
           format: int32
@@ -2813,11 +2710,10 @@ components:
         awayRanking:
           type: integer
           format: int32
-    D11TeamD11MatchWeekStat:
+    D11TeamMatchWeekStat:
       type: object
       required:
         - id
-        - main
         - matchesPlayed
         - matchesWon
         - matchesDrawn
@@ -2850,7 +2746,7 @@ components:
         - awayRanking
         - d11Team
         - d11League
-        - d11MatchWeek
+        - matchWeek
       properties:
         id:
           type: integer
@@ -2953,8 +2849,8 @@ components:
           $ref: '#/components/schemas/D11TeamBase'
         d11League:
           $ref: '#/components/schemas/D11LeagueBase'
-        d11MatchWeek:
-          $ref: '#/components/schemas/D11MatchWeekBase'
+        matchWeek:
+          $ref: '#/components/schemas/MatchWeekBase'
 
     TeamSeasonStatStub:
       type: object

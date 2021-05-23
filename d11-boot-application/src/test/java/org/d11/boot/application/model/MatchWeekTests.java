@@ -39,9 +39,9 @@ public class MatchWeekTests extends D11EasyRandomTests {
         assertFalse(matchWeek.isValid(), "Null status should not be valid.");
         matchWeek.setStatus(Status.PENDING);
 
-        matchWeek.setPremierLeague(null);
-        assertFalse(matchWeek.isValid(), "Null Premier League should not be valid.");
-        matchWeek.setPremierLeague(new PremierLeague());
+        matchWeek.setSeason(null);
+        assertFalse(matchWeek.isValid(), "Null season should not be valid.");
+        matchWeek.setSeason(new Season());
 
         assertTrue(matchWeek.isValid(), "Match week should be valid.");
     }

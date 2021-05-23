@@ -110,14 +110,14 @@ public class D11Match extends D11Entity {
     @EqualsAndHashCode.Exclude
     private D11Team awayD11Team;
     /**
-     * The D11 match week the D11 match is played in.
+     * The match week the D11 match is played in.
      */
     @ManyToOne
-    @JoinColumn(name = "d11_match_week_id")
+    @JoinColumn(name = "match_week_id")
     @NotNull
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private D11MatchWeek d11MatchWeek;
+    private MatchWeek matchWeek;
     /**
      * List of player match stats for this D11 match.
      */

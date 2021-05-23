@@ -11,15 +11,15 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
- * Stats for one D11 team for one D11 match week.
+ * Stats for one D11 team for one match week.
  */
 @Data
 @Entity
-@Table(name = "d11_team_d11_match_week_stat")
-public class D11TeamD11MatchWeekStat extends TableStat {
+@Table(name = "d11_team_match_week_stat")
+public class D11TeamMatchWeekStat extends TableStat {
 
     /**
-     * The D11 team this D11 team D11 match week stat belongs to.
+     * The D11 team this D11 team match week stat belongs to.
      */
     @ManyToOne
     @JoinColumn(name = "d11_team_id")
@@ -29,13 +29,13 @@ public class D11TeamD11MatchWeekStat extends TableStat {
     private D11Team d11Team;
 
     /**
-     * The D11 match week this D11 team D11 match week stat belongs to.
+     * The match week this D11 team match week stat belongs to.
      */
     @ManyToOne
-    @JoinColumn(name = "d11_match_week_id")
+    @JoinColumn(name = "match_week_id")
     @NotNull
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private D11MatchWeek d11MatchWeek;
+    private MatchWeek matchWeek;
 
 }

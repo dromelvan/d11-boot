@@ -37,8 +37,8 @@ public class MatchWeekController extends AbstractRepositoryServiceController<Mat
     }
 
     @Override
-    public ResponseEntity<List<MatchWeekDTO>> findMatchWeekByPremierLeagueId(final Long premierLeagueId) {
-        final List<MatchWeekDTO> matchWeeks = getRepositoryService().findMatchWeekByPremierLeagueId(premierLeagueId);
+    public ResponseEntity<List<MatchWeekDTO>> findMatchWeekBySeasonId(final Long seasonId) {
+        final List<MatchWeekDTO> matchWeeks = getRepositoryService().findMatchWeekBySeasonId(seasonId);
         return ResponseEntity.ok(matchWeeks);
     }
 

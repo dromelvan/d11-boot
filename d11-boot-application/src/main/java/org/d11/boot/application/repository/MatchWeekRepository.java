@@ -25,12 +25,11 @@ public interface MatchWeekRepository extends D11EntityRepository<MatchWeek> {
     Optional<MatchWeek> findFirstByDateLessThanEqualOrderByDateDesc(LocalDate date);
 
     /**
-     * Gets match weeks for a specific Premier League ordered by date.
+     * Gets match weeks for a specific season ordered by date.
      *
-     * @param premierLeagueId Id for the Premier League for which match weeks will be looked up.
-     * @return Match weeks for the Premier League.
+     * @param seasonId Id for the season for which match weeks will be looked up.
+     * @return Match weeks for the season.
      */
-    @EntityGraph(attributePaths = { "leagueLeader", "mostValuablePlayer", "mostValuablePlayer.player", "d11MatchWeek", "matches" })
-    List<MatchWeek> findByPremierLeagueIdOrderByDate(@Param("premierLeagueId") Long premierLeagueId);
-
+    @EntityGraph(attributePaths = { "premierLeagueLeader", "d11LeagueLeader", "mostValuablePlayer", "mostValuablePlayer.player", "matches" })
+    List<MatchWeek> findBySeasonIdOrderByDate(@Param("seasonId") Long seasonId);
 }

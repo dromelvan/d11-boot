@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS d11_match (
     id SERIAL PRIMARY KEY,
     home_d11_team_id INTEGER NOT NULL REFERENCES d11_team,
     away_d11_team_id INTEGER NOT NULL REFERENCES d11_team,
-    d11_match_week_id INTEGER NOT NULL REFERENCES d11_match_week,
+    match_week_id INTEGER NOT NULL REFERENCES match_week,
     date DATE NOT NULL,
     home_team_goals INTEGER NOT NULL,
     away_team_goals INTEGER NOT NULL,

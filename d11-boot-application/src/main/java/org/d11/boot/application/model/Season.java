@@ -16,6 +16,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -74,6 +75,13 @@ public class Season extends D11Entity implements Comparable<Season> {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private D11League d11League;
+
+    /**
+     * List of match weeks belonging to this season, ordered by match week number.
+     */
+    @OneToMany(mappedBy = Season.MAPPED_BY, cascade = CascadeType.ALL)
+    @OrderBy("matchWeekNumber ASC")
+    private List<MatchWeek> matchWeeks = new ArrayList<>();
 
     /**
      * Top 3 team season stats sorted by ranking for this season.

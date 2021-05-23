@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -60,24 +61,34 @@ public class MatchWeek extends D11Entity {
     private Status status = Status.PENDING;
 
     /**
-     * The Premier League this match week belongs to.
+     * The season this match week belongs to.
      */
     @ManyToOne
-    @JoinColumn(name = "premier_league_id")
+    @JoinColumn(name = "season_id")
     @NotNull
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private PremierLeague premierLeague;
+    private Season season;
 
     /**
      * The team that was at the top of the league table at the time of this match week.
      */
     @ManyToOne
-    @JoinColumn(name = "league_leader_id")
+    @JoinColumn(name = "premier_league_leader_id")
     @NotNull
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Team leagueLeader;
+    private TeamMatchWeekStat premierLeagueLeader;
+
+    /**
+     * The D11 team that was at the top of the D11 league table at the time of this match week.
+     */
+    @ManyToOne
+    @JoinColumn(name = "d11_league_leader_id")
+    @NotNull
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private D11TeamMatchWeekStat d11LeagueLeader;
 
     /**
      * The player that scored the most points for this match week.
@@ -89,20 +100,19 @@ public class MatchWeek extends D11Entity {
     private PlayerMatchStat mostValuablePlayer;
 
     /**
-     * The D11 match week this match week is played in.
-     */
-    @OneToOne(mappedBy = "matchWeek", cascade = CascadeType.ALL)
-    @NotNull
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private D11MatchWeek d11MatchWeek;
-
-    /**
      * List of matches that are played in this match week, ordered by datetime.
      */
     @OneToMany(mappedBy = "matchWeek", cascade = CascadeType.ALL)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Match> matches = new ArrayList<>();
+
+    /**
+     * List of D11 matches that are played in this match week, ordered by date.
+     */
+    @OneToMany(mappedBy = "matchWeek", cascade = CascadeType.ALL)
+    @OrderBy("date ASC")
+    @EqualsAndHashCode.Exclude
+    private List<D11Match> d11Matches = new ArrayList<>();
 
 }

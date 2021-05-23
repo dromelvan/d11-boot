@@ -38,13 +38,13 @@ public class MatchWeekService extends AbstractRepositoryService<MatchWeek, Match
     }
 
     /**
-     * Gets match weeks for a specific Premier League ordered by date.
+     * Gets match weeks for a specific season ordered by date.
      *
-     * @param premierLeagueId Id for the Premier League for which match weeks will be looked up.
-     * @return Match week DTOs for the Premier League.
+     * @param seasonId Id for the season for which match weeks will be looked up.
+     * @return Match week DTOs for the season.
      */
-    public List<MatchWeekDTO> findMatchWeekByPremierLeagueId(final long premierLeagueId) {
-        final List<MatchWeek> matchWeeks = getJpaRepository().findByPremierLeagueIdOrderByDate(premierLeagueId);
+    public List<MatchWeekDTO> findMatchWeekBySeasonId(final long seasonId) {
+        final List<MatchWeek> matchWeeks = getJpaRepository().findBySeasonIdOrderByDate(seasonId);
         return map(matchWeeks);
     }
 

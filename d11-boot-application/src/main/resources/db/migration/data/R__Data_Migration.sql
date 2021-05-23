@@ -8,8 +8,8 @@ SELECT setval('team_season_stat_id_seq', 1);
 DELETE FROM player_season_stat WHERE id > 0;
 SELECT setval('player_season_stat_id_seq', 1);
 
-DELETE FROM d11_team_d11_match_week_stat WHERE id > 0;
-SELECT setval('d11_team_d11_match_week_stat_id_seq', 1);
+DELETE FROM d11_team_match_week_stat WHERE id > 0;
+SELECT setval('d11_team_match_week_stat_id_seq', 1);
 
 DELETE FROM team_match_week_stat WHERE id > 0;
 SELECT setval('team_match_week_stat_id_seq', 1);
@@ -32,9 +32,6 @@ SELECT setval('d11_match_id_seq', 1);
 
 DELETE FROM match WHERE id > 0;
 SELECT setval('match_id_seq', 1);
-
-DELETE FROM d11_match_week WHERE id > 0;
-SELECT setval('d11_match_week_id_seq', 1);
 
 DELETE FROM match_week WHERE id > 0;
 SELECT setval('match_week_id_seq', 1);
@@ -145,17 +142,12 @@ SELECT setval('position_id_seq', (SELECT last_value FROM data.positions_id_seq))
 
 -- Match weeks
 INSERT INTO match_week
-SELECT id, premier_league_id, null, null, match_day_number, date, 0, status, created_at, updated_at FROM data.match_days;
+SELECT id, premier_league_id + 1, null, null, null, match_day_number, date, 0, status, created_at, updated_at FROM data.match_days;
 SELECT setval('match_week_id_seq', (SELECT last_value FROM data.match_days_id_seq));
 
 UPDATE match_week SET status = 99 WHERE status = 3;
 UPDATE match_week SET status = 3 WHERE status = 2;
 UPDATE match_week SET status = 2 WHERE status = 99;
-
--- D11 match weeks
-INSERT INTO d11_match_week
-SELECT id, d11_league_id, match_day_id, null, match_day_number, date, 0, created_at, updated_at FROM data.d11_match_days;
-SELECT setval('d11_match_week_id_seq', (SELECT last_value FROM data.d11_match_days_id_seq));
 
 -- Matches
 INSERT INTO match
@@ -221,13 +213,13 @@ SELECT id, team_id, match_day_id, matches_played, matches_won, matches_drawn, ma
        created_at, updated_at FROM data.team_table_stats;
 SELECT setval('team_match_week_stat_id_seq', (SELECT last_value FROM data.team_table_stats_id_seq));
 
--- D11 team D11 match week stats
-INSERT INTO d11_team_d11_match_week_stat
+-- D11 team match week stats
+INSERT INTO d11_team_match_week_stat
 SELECT id, d11_team_id, d11_match_day_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, form_match_points, ranking, previous_ranking,
        home_matches_played, home_matches_won, home_matches_drawn, home_matches_lost, home_goals_for, home_goals_against, home_goal_difference, home_points, home_ranking,
        away_matches_played, away_matches_won, away_matches_drawn, away_matches_lost, away_goals_for, away_goals_against, away_goal_difference, away_points, away_ranking,
        created_at, updated_at FROM data.d11_team_table_stats;
-SELECT setval('d11_team_d11_match_week_stat_id_seq', (SELECT last_value FROM data.d11_team_table_stats_id_seq));
+SELECT setval('d11_team_match_week_stat_id_seq', (SELECT last_value FROM data.d11_team_table_stats_id_seq));
 
 -- Team season stats
 INSERT INTO team_season_stat
@@ -269,16 +261,28 @@ SELECT setval('player_season_stat_id_seq', (SELECT MAX(id) FROM player_season_st
 
 
 
--- Update match week league leader
+-- Update match week premier league leader
 UPDATE match_week
-SET league_leader_id = (
-    SELECT team_id FROM (
-        SELECT match_week.id AS match_week_id, team_match_week_stat.team_id
+SET premier_league_leader_id = (
+    SELECT team_match_week_stat_id FROM (
+        SELECT match_week.id AS match_week_id, team_match_week_stat.id AS team_match_week_stat_id
         FROM match_week
         JOIN team_match_week_stat ON match_week.id = team_match_week_stat.match_week_id
         WHERE team_match_week_stat.ranking = 1
-    ) league_leader_query
-    WHERE league_leader_query.match_week_id = match_week.id
+    ) premier_league_leader_query
+    WHERE premier_league_leader_query.match_week_id = match_week.id
+);
+
+-- Update match week D11 league leader
+UPDATE match_week
+SET d11_league_leader_id = (
+    SELECT d11_team_match_week_stat_id FROM (
+        SELECT match_week.id AS match_week_id, d11_team_match_week_stat.id AS d11_team_match_week_stat_id
+        FROM match_week
+        JOIN d11_team_match_week_stat ON match_week.id = d11_team_match_week_stat.match_week_id
+        WHERE d11_team_match_week_stat.ranking = 1
+        ) d11_league_leader_query
+    WHERE d11_league_leader_query.match_week_id = match_week.id
 );
 
 -- Update match week elapsed
@@ -303,36 +307,6 @@ SET most_valuable_player_id = (
     ORDER BY points DESC, rating DESC
     LIMIT 1
 );
-
--- Update D11 match week league leader
-UPDATE d11_match_week
-SET league_leader_id = (
-    SELECT d11_team_id FROM (
-        SELECT d11_match_week.id AS d11_match_week_id, d11_team_d11_match_week_stat.d11_team_id
-        FROM d11_match_week
-        JOIN d11_team_d11_match_week_stat ON d11_match_week.id = d11_team_d11_match_week_stat.d11_match_week_id
-        WHERE d11_team_d11_match_week_stat.ranking = 1
-    ) league_leader_query
-    WHERE league_leader_query.d11_match_week_id = d11_match_week.id
-);
-
--- Update D11 match week elapsed
-UPDATE d11_match_week
-SET elapsed = (
-    SELECT elapsed FROM (
-        SELECT d11_match.d11_match_week_id, count(*) AS elapsed
-        FROM player_match_stat
-        JOIN match ON match.id = player_match_stat.match_id
-        JOIN d11_match ON d11_match.id = player_match_stat.d11_match_id
-        WHERE player_match_stat.d11_match_id IS NOT NULL AND match.status = 3
-        GROUP BY d11_match.d11_match_week_id
-    ) elapsed_query
-    WHERE elapsed_query.d11_match_week_id = d11_match_week.id
-) WHERE EXISTS(SELECT *
-               FROM player_match_stat
-               JOIN match ON match.id = player_match_stat.match_id
-               JOIN d11_match ON d11_match.id = player_match_stat.d11_match_id
-               WHERE player_match_stat.d11_match_id IS NOT NULL AND match.status = 3 AND d11_match.d11_match_week_id = d11_match_week.id);
 
 -- Update team season stat win count
 UPDATE team_season_stat update_table

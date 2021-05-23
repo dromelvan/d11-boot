@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS match_week (
     id SERIAL PRIMARY KEY,
-    premier_league_id INTEGER NOT NULL REFERENCES premier_league,
-    league_leader_id INTEGER REFERENCES team,
+    season_id INTEGER NOT NULL REFERENCES season,
+    premier_league_leader_id INTEGER,
+    d11_league_leader_id INTEGER,
     most_valuable_player_id INTEGER,
     match_week_number INTEGER NOT NULL,
     date DATE NOT NULL,

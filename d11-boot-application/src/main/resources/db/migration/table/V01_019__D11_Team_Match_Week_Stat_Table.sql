@@ -1,7 +1,7 @@
-CREATE TABLE IF NOT EXISTS d11_team_d11_match_week_stat(
+CREATE TABLE IF NOT EXISTS d11_team_match_week_stat(
     id SERIAL PRIMARY KEY,
     d11_team_id INTEGER NOT NULL REFERENCES d11_team,
-    d11_match_week_id INTEGER NOT NULL REFERENCES d11_match_week,
+    match_week_id INTEGER NOT NULL REFERENCES match_week,
     matches_played INTEGER NOT NULL DEFAULT 0,
     matches_won INTEGER NOT NULL DEFAULT 0,
     matches_drawn INTEGER NOT NULL DEFAULT 0,
@@ -35,3 +35,7 @@ CREATE TABLE IF NOT EXISTS d11_team_d11_match_week_stat(
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
+
+ALTER TABLE match_week
+ADD CONSTRAINT match_week_d11_league_leader_id_fkey
+FOREIGN KEY (d11_league_leader_id) REFERENCES d11_team_match_week_stat(id);

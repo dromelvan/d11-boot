@@ -76,7 +76,7 @@ public class PlayerMatchStatService extends AbstractRepositoryService<PlayerMatc
      */
     public List<PlayerMatchStatDTO> findPlayerMatchStatByPlayerIdAndSeasonId(final long playerId, final long seasonId) {
         final List<PlayerMatchStat> playerMatchStats = getJpaRepository()
-                .findByPlayerIdAndMatchMatchWeekPremierLeagueSeasonIdOrderByMatchDatetime(playerId, seasonId);
+                .findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime(playerId, seasonId);
         return map(playerMatchStats);
     }
 

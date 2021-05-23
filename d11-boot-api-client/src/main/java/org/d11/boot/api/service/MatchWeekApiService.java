@@ -50,15 +50,15 @@ public class MatchWeekApiService extends D11ApiService {
     }
 
     /**
-     * Finds the match weeks for a specific Premier League.
+     * Gets match weeks for a season ordered by match day number.
      *
-     * @param premierLeagueId Id for the Premier League for which match weeks will be looked up.
-     * @return Match week DTOs for the Premier League.
+     * @param seasonId Id for the season for which match weeks will be looked up.
+     * @return Match weeks for the season ordered by match day number.
      */
-    public List<MatchWeekDTO> findMatchWeekByPremierLeagueId(final Long premierLeagueId) {
+    public List<MatchWeekDTO> findMatchWeekBySeasonId(final Long seasonId) {
         try {
             final MatchWeekApi matchWeekApi = new MatchWeekApi(getApiClient());
-            return matchWeekApi.findMatchWeekByPremierLeagueId(premierLeagueId).collectList().block();
+            return matchWeekApi.findMatchWeekBySeasonId(seasonId).collectList().block();
         } catch(WebClientResponseException e) {
             if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 return null;

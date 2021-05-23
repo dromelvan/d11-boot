@@ -52,7 +52,7 @@ public interface PlayerMatchStatRepository extends D11EntityRepository<PlayerMat
      * @param seasonId Id for the season for which player match stats will be looked up.
      * @return Player match stats for the player and season.
      */
-    List<PlayerMatchStat> findByPlayerIdAndMatchMatchWeekPremierLeagueSeasonIdOrderByMatchDatetime(
+    List<PlayerMatchStat> findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime(
             @Param("playerId") Long playerId,
             @Param("seasonId") Long seasonId
     );

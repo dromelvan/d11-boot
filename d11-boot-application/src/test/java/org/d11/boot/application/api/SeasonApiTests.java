@@ -10,6 +10,7 @@ import org.d11.boot.application.model.D11TeamSeasonStat;
 import org.d11.boot.application.model.PlayerSeasonStat;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.TeamSeasonStat;
+import org.d11.boot.application.model.projection.EntityId;
 import org.d11.boot.application.repository.SeasonRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,11 +18,13 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Season API tests.
@@ -44,7 +47,7 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
      */
     @Test
     public void findSeasonById() {
-        for(final Season season : getEntities()) {
+        for(final Season season : getRepository().findAll()) {
             final SeasonDTO result = getApiService().findSeasonById(season.getId());
             final SeasonDTO seasonDTO = map(season, SeasonDTO.class);
             assertNotNull(result, "Season by id should not be null.");
@@ -101,7 +104,12 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
 
         ids.forEach(id -> result.add(getApiService().findSeasonById(id)));
 
-        final List<SeasonDTO> seasonDTOs = map(getEntities(), SeasonDTO.class);
+        final List<Season> seasons = new ArrayList<>();
+        for(final EntityId entityId : getRepository().findByOrderByDateDesc()) {
+            final Optional<Season> optional = getRepository().findById(entityId.getId());
+            optional.ifPresent(seasons::add);
+        }
+        final List<SeasonDTO> seasonDTOs = map(seasons, SeasonDTO.class);
 
         assertNotNull(result, "All seasons should not be null.");
         assertEquals(seasonDTOs, result, "All seasons should equal seasons.");
@@ -114,8 +122,11 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
     public void findCurrentSeason() {
         final SeasonDTO result = getApiService().findCurrentSeason();
 
-        final Season season = getEntities().get(0);
-        final SeasonDTO seasonDTO = map(season, SeasonDTO.class);
+        final EntityId entityId = getRepository().findByOrderByDateDesc().get(0);
+        final Optional<Season> optional = getRepository().findById(entityId.getId());
+
+        assertTrue(optional.isPresent(), "Season from entity id should be present.");
+        final SeasonDTO seasonDTO = map(optional.get(), SeasonDTO.class);
 
         assertNotNull(result, "Current season should not be null.");
         assertEquals(seasonDTO, result, "Current season result should equal current season.");

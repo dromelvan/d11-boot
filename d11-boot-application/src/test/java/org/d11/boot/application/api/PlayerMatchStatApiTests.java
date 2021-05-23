@@ -126,7 +126,7 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
         final Map<Player, Map<Season, List<PlayerMatchStat>>> playerMatchStatMap = new HashMap<>();
         for(final PlayerMatchStat playerMatchStat : getEntities()) {
             final Map<Season, List<PlayerMatchStat>> seasonMap = playerMatchStatMap.computeIfAbsent(playerMatchStat.getPlayer(), player -> new HashMap<>());
-            final Season season = playerMatchStat.getMatch().getMatchWeek().getPremierLeague().getSeason();
+            final Season season = playerMatchStat.getMatch().getMatchWeek().getSeason();
             final List<PlayerMatchStat> playerMatchStats = seasonMap.computeIfAbsent(season, s -> new ArrayList<>());
             playerMatchStats.add(playerMatchStat);
         }
