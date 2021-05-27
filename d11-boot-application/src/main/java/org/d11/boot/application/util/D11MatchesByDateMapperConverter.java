@@ -5,6 +5,7 @@ import org.modelmapper.AbstractConverter;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +23,10 @@ public class D11MatchesByDateMapperConverter extends AbstractConverter<List<D11M
 
     @Override
     public Map<String, List<Long>> convert(final List<D11Match> d11Matches) {
+        Collections.sort(d11Matches);
         final Map<String, List<Long>> d11MatchesByDate = new LinkedHashMap<>();
         for (final D11Match d11Match : d11Matches) {
-            final String key = d11Match.getDate().format(DATE_TIME_FORMATTER);
+            final String key = d11Match.getDatetime().toLocalDate().format(DATE_TIME_FORMATTER);
             final List<Long> d11MatchIds = d11MatchesByDate.computeIfAbsent(key, k -> new ArrayList<>());
             d11MatchIds.add(d11Match.getId());
         }

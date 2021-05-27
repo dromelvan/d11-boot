@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.d11.boot.application.model.converter.StatusConverter;
 
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -15,7 +16,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "d11_match")
-public class D11Match extends D11Entity {
+public class D11Match extends D11Entity implements Comparable<D11Match> {
 
     /**
      * Max length for elapsed time string.
@@ -33,10 +34,10 @@ public class D11Match extends D11Entity {
     public static final int ELAPSED_TIME_MAX_LENGTH = 10;
 
     /**
-     * D11 Match date This is the date the match finished.
+     * D11 match kickoff time.
      */
     @NotNull
-    private LocalDate date;
+    private LocalDateTime datetime;
     /**
      * Number of goals scored by the home team.
      */
@@ -125,5 +126,10 @@ public class D11Match extends D11Entity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<PlayerMatchStat> playerMatchStats = new ArrayList<>();
+
+    @Override
+    public int compareTo(@Nonnull final D11Match d11Match) {
+        return getDatetime().compareTo(d11Match.getDatetime());
+    }
 
 }

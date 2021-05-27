@@ -111,7 +111,7 @@ public class MatchWeek extends D11Entity {
      * List of D11 matches that are played in this match week, ordered by date.
      */
     @OneToMany(mappedBy = "matchWeek", cascade = CascadeType.ALL)
-    @OrderBy("date ASC")
+    @OrderBy("datetime ASC")
     @EqualsAndHashCode.Exclude
     private List<D11Match> d11Matches = new ArrayList<>();
 

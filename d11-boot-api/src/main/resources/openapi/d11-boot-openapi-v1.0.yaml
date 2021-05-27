@@ -1680,7 +1680,7 @@ components:
       type: object
       required:
         - id
-        - date
+        - datetime
         - home_team_goals
         - away_team_goals
         - home_team_points
@@ -1695,9 +1695,9 @@ components:
         id:
           type: integer
           format: int64
-        date:
+        datetime:
           type: string
-          format: date
+          format: date-time
         homeTeamGoals:
           type: integer
           format: int32
@@ -1730,7 +1730,7 @@ components:
       type: object
       required:
         - id
-        - date
+        - datetime
         - home_team_goals
         - away_team_goals
         - home_team_points
@@ -1748,9 +1748,9 @@ components:
         id:
           type: integer
           format: int64
-        date:
+        datetime:
           type: string
-          format: date
+          format: date-time
         homeTeamGoals:
           type: integer
           format: int32

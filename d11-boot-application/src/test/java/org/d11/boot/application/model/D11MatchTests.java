@@ -3,7 +3,7 @@ package org.d11.boot.application.model;
 import org.d11.boot.api.model.D11MatchDTO;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -23,9 +23,9 @@ public class D11MatchTests extends D11EasyRandomTests {
 
         assertTrue(d11Match.isValid(), "New D11 match should be valid.");
 
-        d11Match.setDate(null);
-        assertFalse(d11Match.isValid(), "Null date should not be valid.");
-        d11Match.setDate(LocalDate.now());
+        d11Match.setDatetime(null);
+        assertFalse(d11Match.isValid(), "Null datetime should not be valid.");
+        d11Match.setDatetime(LocalDateTime.now());
 
         d11Match.setHomeTeamGoals(-1);
         assertFalse(d11Match.isValid(), "Negative home team goals should not be valid.");

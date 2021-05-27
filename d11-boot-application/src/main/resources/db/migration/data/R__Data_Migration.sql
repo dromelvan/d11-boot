@@ -172,13 +172,22 @@ UPDATE match SET datetime = (
 
 -- D11 Matches
 INSERT INTO d11_match
-SELECT id, home_d11_team_id, away_d11_team_id, d11_match_day_id, date, home_team_goals, away_team_goals, home_team_points, away_team_points,
+SELECT id, home_d11_team_id, away_d11_team_id, d11_match_day_id, date + '17:00:00'::TIME, home_team_goals, away_team_goals, home_team_points, away_team_points,
        previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status, created_at, updated_at FROM data.d11_matches;
 SELECT setval('d11_match_id_seq', (SELECT last_value FROM data.d11_matches_id_seq));
 
 UPDATE d11_match SET status = 99 WHERE status = 3;
 UPDATE d11_match SET status = 3 WHERE status = 2;
 UPDATE d11_match SET status = 2 WHERE status = 99;
+-- Update datetimes. Set all to match week at 17:00 to begin with.
+UPDATE d11_match SET datetime = (
+    SELECT datetime FROM (
+        SELECT d11_match.id, match_week.date + '17:00:00'::TIME AS datetime
+        FROM d11_match
+        JOIN match_week ON d11_match.match_week_id = match_week.id
+    ) AS match_date_time
+    WHERE d11_match.id = match_date_time.id
+);
 
 -- Goals
 INSERT INTO goal
@@ -352,3 +361,17 @@ SELECT win_count FROM(
     WHERE ranking = 1
       AND id = update_table.id
     ORDER BY season_id) subquery);
+
+-- Get the datetime of the first Premier League match that affects each D11 match an set that as datetimes. A bit convoluted.
+SELECT d11_match.id, match.datetime
+INTO TEMPORARY TABLE d11_match_datetimes
+FROM match
+JOIN player_match_stat ON match.id = player_match_stat.match_id
+JOIN d11_match ON d11_match.id = player_match_stat.d11_match_id
+GROUP BY d11_match.id, match.datetime
+ORDER BY d11_match.id, match.datetime;
+
+UPDATE d11_match
+SET datetime = (
+    SELECT MIN(datetime) FROM d11_match_datetimes WHERE id = d11_match.id
+) WHERE EXISTS (SELECT * FROM player_match_stat WHERE d11_match_id = d11_match.id);
