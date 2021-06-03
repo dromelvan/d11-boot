@@ -38,10 +38,9 @@ public class SeasonService extends AbstractRepositoryService<Season, SeasonDTO, 
      */
     public SeasonSummaryDTO findSeasonSummaryById(final long seasonId) {
         final Optional<Season> optional = getJpaRepository().findById(seasonId);
-        if(optional.isPresent()) {
-            return map(optional.get(), SeasonSummaryDTO.class);
-        }
-        throw new NotFoundException();
+        return optional
+                .map(season -> map(season, SeasonSummaryDTO.class))
+                .orElseThrow(NotFoundException::new);
     }
 
     /**

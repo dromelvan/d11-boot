@@ -126,7 +126,7 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
         final Optional<Season> optional = getRepository().findById(entityId.getId());
 
         assertTrue(optional.isPresent(), "Season from entity id should be present.");
-        final SeasonDTO seasonDTO = map(optional.get(), SeasonDTO.class);
+        final SeasonDTO seasonDTO = map(optional.orElse(new Season()), SeasonDTO.class);
 
         assertNotNull(result, "Current season should not be null.");
         assertEquals(seasonDTO, result, "Current season result should equal current season.");
