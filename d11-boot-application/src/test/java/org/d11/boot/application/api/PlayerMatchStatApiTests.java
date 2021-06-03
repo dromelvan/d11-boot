@@ -119,6 +119,35 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
     }
 
     /**
+     * Tests the findActivePlayerMatchStatByMatchIdAndTeamId API operation.
+     */
+    @Test
+    public void findActivePlayerMatchStatByD11MatchIdAndD11TeamId() {
+        for(final D11Match d11Match : getRepository().findAll().stream().map(PlayerMatchStat::getD11Match).collect(Collectors.toSet())) {
+            final List<PlayerMatchStat> d11MatchPlayerMatchStats = d11Match.getPlayerMatchStats();
+            final List<PlayerMatchStat> homeD11TeamPlayerMatchStats = d11MatchPlayerMatchStats.stream()
+                    .filter(playerMatchStat -> playerMatchStat.getD11Team().equals(d11Match.getHomeD11Team()))
+                    .collect(Collectors.toList());
+
+            final List<PlayerMatchStat> awayTeamPlayerMatchStats = d11MatchPlayerMatchStats.stream()
+                    .filter(playerMatchStat -> playerMatchStat.getD11Team().equals(d11Match.getAwayD11Team()))
+                    .collect(Collectors.toList());
+
+            final List<PlayerMatchStatDTO> homeD11TeamPlayerMatchStatDTOs
+                    = getApiService().findPlayerMatchStatByD11MatchIdAndD11TeamId(d11Match.getId(), d11Match.getHomeD11Team().getId());
+            assertFalse(homeD11TeamPlayerMatchStatDTOs.isEmpty(), "Home D11 team player match stats is empty.");
+            assertEquals(map(homeD11TeamPlayerMatchStats, PlayerMatchStatDTO.class), homeD11TeamPlayerMatchStatDTOs,
+                    "Player match stats by D11 match id and D11 team id should equal home D11 team player match stats.");
+
+            final List<PlayerMatchStatDTO> awayD11TeamPlayerMatchStatDTOs
+                    = getApiService().findPlayerMatchStatByD11MatchIdAndD11TeamId(d11Match.getId(), d11Match.getAwayD11Team().getId());
+            assertFalse(awayD11TeamPlayerMatchStatDTOs.isEmpty(), "Away D11 team player match stats is empty.");
+            assertEquals(map(awayTeamPlayerMatchStats, PlayerMatchStatDTO.class), awayD11TeamPlayerMatchStatDTOs,
+                    "Player match stats by D11 match id and D11 team id should equal away D11 team player match stats.");
+        }
+    }
+
+    /**
      * Tests the findPlayerMatchStatByPlayerIdAndSeasonId API operation.
      */
     @Test
