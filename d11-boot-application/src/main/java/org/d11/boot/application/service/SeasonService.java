@@ -61,7 +61,7 @@ public class SeasonService extends AbstractRepositoryService<Season, SeasonDTO, 
      */
     public SeasonDTO findCurrentSeason() {
         final Optional<Season> optional = getJpaRepository().findFirstByOrderByDateDesc();
-        return find(optional);
+        return mapIfFound(optional.orElse(null));
     }
 
 }

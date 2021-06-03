@@ -66,18 +66,18 @@ public abstract class AbstractRepositoryService<T extends D11Entity, U, V extend
      */
     public U findById(final long id) {
         final Optional<T> optional = this.jpaRepository.findById(id);
-        return find(optional);
+        return mapIfFound(optional.orElse(null));
     }
 
     /**
-     * Converts an optional into a DTO.
+     * Converts an entity into a DTO.
      *
-     * @param optional With an entity.
-     * @return A DTO representing the entity in the optional. Throws NotFoundException if the optional is empty.
+     * @param entity With an entity.
+     * @return A DTO representing the entity in the entity. Throws NotFoundException if the entity is empty.
      */
-    protected U find(final Optional<T> optional) {
-        if(optional.isPresent()) {
-            return map(optional.get());
+    protected U mapIfFound(final T entity) {
+        if(entity != null) {
+            return map(entity);
         }
         throw new NotFoundException();
     }

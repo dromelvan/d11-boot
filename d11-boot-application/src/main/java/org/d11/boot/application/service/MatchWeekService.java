@@ -34,7 +34,7 @@ public class MatchWeekService extends AbstractRepositoryService<MatchWeek, Match
     public MatchWeekDTO findCurrentMatchWeek() {
         final LocalDate localDate = LocalDate.now();
         final Optional<MatchWeek> optional = getJpaRepository().findFirstByDateLessThanEqualOrderByDateDesc(localDate);
-        return find(optional);
+        return mapIfFound(optional.orElse(null));
     }
 
     /**
