@@ -68,4 +68,20 @@ public class TeamSeasonStatApiTests extends AbstractRepositoryApiTests<TeamSeaso
         }
     }
 
+    /**
+     * Tests the findTeamSeasonStatByTeamIdAndSeasonId API operation.
+     */
+    @Test
+    public void findTeamSeasonStatByTeamIdAndSeasonId() {
+        for(final TeamSeasonStat teamSeasonStat : getEntities()) {
+            final TeamSeasonStatDTO teamSeasonStatDTO = getApiService().findTeamSeasonStatByTeamIdAndSeasonId(
+                    teamSeasonStat.getTeam().getId(),
+                    teamSeasonStat.getSeason().getId()
+            );
+
+            assertNotNull(teamSeasonStatDTO, "Team season stat DTO should not be null.");
+            assertEquals(map(teamSeasonStat, TeamSeasonStatDTO.class), teamSeasonStatDTO,
+                    "Team season stat DTO should equal team season stat.");
+        }
+    }
 }

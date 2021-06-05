@@ -6,6 +6,7 @@ import org.d11.boot.application.repository.TeamSeasonStatRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Provides team season stat services.
@@ -34,4 +35,15 @@ public class TeamSeasonStatService extends AbstractRepositoryService<TeamSeasonS
         return map(teamSeasonStats);
     }
 
+    /**
+     * Gets team season stats for a specific team and a specific season.
+     *
+     * @param teamId If for the team for which team season stats will be looked up.
+     * @param seasonId Id for the season for which team season stats will be looked up.
+     * @return Team season stats for the team and the season.
+     */
+    public TeamSeasonStatDTO findTeamSeasonStatByTeamIdAndSeasonId(final Long teamId, final Long seasonId) {
+        final Optional<TeamSeasonStat> optional = getJpaRepository().findByTeamIdAndSeasonId(teamId, seasonId);
+        return mapIfFound(optional.orElse(null));
+    }
 }

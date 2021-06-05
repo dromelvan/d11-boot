@@ -51,4 +51,23 @@ public class TeamSeasonStatApiService extends D11ApiService {
         }
     }
 
+    /**
+     * Gets team season stats for a specific team and a specific season.
+     *
+     * @param teamId If for the team for which team season stats will be looked up.
+     * @param seasonId Id for the season for which team season stats will be looked up.
+     * @return Team season stats for the team and the season.
+     */
+    public TeamSeasonStatDTO findTeamSeasonStatByTeamIdAndSeasonId(final Long teamId, final Long seasonId) {
+        try {
+            final TeamSeasonStatApi teamSeasonStatApi = new TeamSeasonStatApi(getApiClient());
+            return teamSeasonStatApi.findTeamSeasonStatByTeamIdAndSeasonId(teamId, seasonId).block();
+        } catch(WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw translate(e);
+        }
+    }
+
 }
