@@ -2,11 +2,21 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.service.PlayerSeasonStatApiService;
+import org.d11.boot.application.model.D11Team;
 import org.d11.boot.application.model.PlayerSeasonStat;
+import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.Team;
 import org.d11.boot.application.repository.PlayerSeasonStatRepository;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -30,6 +40,72 @@ public class PlayerSeasonStatApiTests extends AbstractRepositoryApiTests<PlayerS
 
         assertNull(getApiService().findPlayerSeasonStatById(-1L), "Player season stat not found should return null.");
         assertBadRequest(get("BAD_REQUEST"));
+    }
+
+    /**
+     * Tests the findPlayerSeasonStatByTeamIdAndSeasonId API operation.
+     */
+    @Test
+    public void findPlayerSeasonStatByTeamIdAndSeasonId() {
+        final Map<Team, Map<Season, List<PlayerSeasonStat>>> playerSeasonStatMap = new HashMap<>();
+        for(final PlayerSeasonStat playerSeasonStat : getEntities()) {
+            final Map<Season, List<PlayerSeasonStat>> seasonMap = playerSeasonStatMap.computeIfAbsent(playerSeasonStat.getTeam(), t -> new HashMap<>());
+            final List<PlayerSeasonStat> playerSeasonStats = seasonMap.computeIfAbsent(playerSeasonStat.getSeason(), s -> new ArrayList<>());
+            playerSeasonStats.add(playerSeasonStat);
+        }
+
+        final Comparator<PlayerSeasonStat> comparator = Comparator.comparing(PlayerSeasonStat::getPosition)
+                .thenComparing(Comparator.comparing(PlayerSeasonStat::getFormPoints).reversed());
+
+        for(final Map.Entry<Team, Map<Season, List<PlayerSeasonStat>>> teamEntry : playerSeasonStatMap.entrySet()) {
+            final Team team = teamEntry.getKey();
+            for(final Map.Entry<Season, List<PlayerSeasonStat>> seasonEntry : teamEntry.getValue().entrySet()) {
+                final Season season = seasonEntry.getKey();
+                final List<PlayerSeasonStat> playerSeasonStats = seasonEntry.getValue();
+                playerSeasonStats.sort(comparator);
+
+                final List<PlayerSeasonStatDTO> result = getApiService().findPlayerSeasonStatByTeamIdAndSeasonId(team.getId(), season.getId());
+
+                assertNotNull(result, "Player season stats by team id and season id should not be null.");
+                assertFalse(result.isEmpty(), "Player season stats by team id and season id should not be empty.");
+
+                assertEquals(map(playerSeasonStats, PlayerSeasonStatDTO.class), result,
+                        "Player season stats by team id and season id should equal player season stats.");
+            }
+        }
+    }
+
+    /**
+     * Tests the findPlayerSeasonStatByD11TeamIdAndSeasonId API operation.
+     */
+    @Test
+    public void findPlayerSeasonStatByD11TeamIdAndSeasonId() {
+        final Map<D11Team, Map<Season, List<PlayerSeasonStat>>> playerSeasonStatMap = new HashMap<>();
+        for(final PlayerSeasonStat playerSeasonStat : getEntities()) {
+            final Map<Season, List<PlayerSeasonStat>> seasonMap = playerSeasonStatMap.computeIfAbsent(playerSeasonStat.getD11Team(), d -> new HashMap<>());
+            final List<PlayerSeasonStat> playerSeasonStats = seasonMap.computeIfAbsent(playerSeasonStat.getSeason(), s -> new ArrayList<>());
+            playerSeasonStats.add(playerSeasonStat);
+        }
+
+        final Comparator<PlayerSeasonStat> comparator = Comparator.comparing(PlayerSeasonStat::getPosition)
+                .thenComparing(Comparator.comparing(PlayerSeasonStat::getFormPoints).reversed());
+
+        for(final Map.Entry<D11Team, Map<Season, List<PlayerSeasonStat>>> d11TeamEntry : playerSeasonStatMap.entrySet()) {
+            final D11Team d11Team = d11TeamEntry.getKey();
+            for(final Map.Entry<Season, List<PlayerSeasonStat>> seasonEntry : d11TeamEntry.getValue().entrySet()) {
+                final Season season = seasonEntry.getKey();
+                final List<PlayerSeasonStat> playerSeasonStats = seasonEntry.getValue();
+                playerSeasonStats.sort(comparator);
+
+                final List<PlayerSeasonStatDTO> result = getApiService().findPlayerSeasonStatByD11TeamIdAndSeasonId(d11Team.getId(), season.getId());
+
+                assertNotNull(result, "Player season stats by D11 team id and season id should not be null.");
+                assertFalse(result.isEmpty(), "Player season stats by D11 team id and season id should not be empty.");
+
+                assertEquals(map(playerSeasonStats, PlayerSeasonStatDTO.class), result,
+                        "Player season stats by D11 team id and season id should equal player season stats.");
+            }
+        }
     }
 
 }
