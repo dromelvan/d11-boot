@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS team (
     colour VARCHAR(255) NOT NULL,
     dummy BOOLEAN NOT NULL,
     photo_file_name VARCHAR(64),
+    url VARCHAR(64) NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );

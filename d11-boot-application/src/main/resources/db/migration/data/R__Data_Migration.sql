@@ -95,14 +95,74 @@ UPDATE stadium
 SET photo_file_name = concat(id, '.png')
 WHERE photo_file_name IS NOT NULL;
 
+INSERT INTO stadium (name, city, capacity, opened, photo_file_name, created_at, updated_at)
+VALUES ('Brentford Community Stadium', 'Brentford', 17250, 2020, '45.png', now()::timestamp, now()::timestamp);
+
 -- Teams
 INSERT INTO team
-SELECT id, stadium_id, whoscored_id, name, short_name, code, nickname, established, motto, colour, dummy, club_crest_file_name, created_at, updated_at FROM data.teams;
+SELECT id, stadium_id, whoscored_id, name, short_name, code, nickname, established, motto, colour, dummy, club_crest_file_name, '' as url, created_at, updated_at FROM data.teams;
 SELECT setval('team_id_seq', (SELECT last_value FROM data.teams_id_seq));
 
 UPDATE team
 SET photo_file_name = concat(id, '.png')
 WHERE photo_file_name IS NOT NULL;
+
+-- We have a team that's a deleted team. Use that for newly promoted Brentford.
+UPDATE team
+SET stadium_id = 46,
+    whoscored_id = 189,
+    name = 'Brentford FC',
+    short_name = 'Brentford',
+    code = 'BRE',
+    nickname = 'The Bees',
+    established = 1889,
+    photo_file_name = '29.png',
+    created_at = now()::timestamp,
+    updated_at = now()::timestamp
+WHERE id = 29;
+
+UPDATE team SET url = 'https://www.arsenal.com/' WHERE id = 2;
+UPDATE team SET url = 'https://www.avfc.co.uk/' WHERE id = 3;
+UPDATE team SET url = 'https://www.rovers.co.uk/' WHERE id = 4;
+UPDATE team SET url = 'https://www.bwfc.co.uk/' WHERE id = 5;
+UPDATE team SET url = 'https://www.cafc.co.uk/' WHERE id = 6;
+UPDATE team SET url = 'https://www.chelseafc.com/' WHERE id = 7;
+UPDATE team SET url = 'https://www.dcfc.co.uk/' WHERE id = 8;
+UPDATE team SET url = 'https://www.evertonfc.com/' WHERE id = 9;
+UPDATE team SET url = 'https://www.fulhamfc.com/' WHERE id = 10;
+UPDATE team SET url = 'https://www.itfc.co.uk/' WHERE id = 11;
+UPDATE team SET url = 'https://www.leedsunited.com/' WHERE id = 12;
+UPDATE team SET url = 'https://www.lcfc.com/' WHERE id = 13;
+UPDATE team SET url = 'https://www.liverpoolfc.com/' WHERE id = 14;
+UPDATE team SET url = 'https://www.manutd.com/' WHERE id = 15;
+UPDATE team SET url = 'https://www.mfc.co.uk/' WHERE id = 16;
+UPDATE team SET url = 'https://www.nufc.co.uk/' WHERE id = 17;
+UPDATE team SET url = 'https://www.southamptonfc.com/' WHERE id = 18;
+UPDATE team SET url = 'https://www.safc.com/' WHERE id = 19;
+UPDATE team SET url = 'https://www.tottenhamhotspur.com/' WHERE id = 20;
+UPDATE team SET url = 'https://www.whufc.com/' WHERE id = 21;
+UPDATE team SET url = 'https://www.bcfc.com/' WHERE id = 22;
+UPDATE team SET url = 'https://www.wba.co.uk/' WHERE id = 23;
+UPDATE team SET url = 'https://www.mancity.com/' WHERE id = 24;
+UPDATE team SET url = 'https://www.portsmouthfc.co.uk/' WHERE id = 25;
+UPDATE team SET url = 'https://www.wolves.co.uk/' WHERE id = 26;
+UPDATE team SET url = 'https://www.canaries.co.uk/' WHERE id = 27;
+UPDATE team SET url = 'https://www.cpfc.co.uk/' WHERE id = 28;
+UPDATE team SET url = 'https://www.brentfordfc.com/' WHERE id = 29;
+UPDATE team SET url = 'https://www.wiganathletic.com/' WHERE id = 30;
+UPDATE team SET url = 'https://www.sufc.co.uk/' WHERE id = 31;
+UPDATE team SET url = 'https://www.readingfc.co.uk/' WHERE id = 32;
+UPDATE team SET url = 'https://www.watfordfc.com/' WHERE id = 33;
+UPDATE team SET url = 'https://www.hullcitytigers.com/' WHERE id = 34;
+UPDATE team SET url = 'https://www.stokecityfc.com/' WHERE id = 35;
+UPDATE team SET url = 'https://www.burnleyfootballclub.com/' WHERE id = 36;
+UPDATE team SET url = 'https://www.blackpoolfc.co.uk/' WHERE id = 37;
+UPDATE team SET url = 'https://www.qpr.co.uk/' WHERE id = 38;
+UPDATE team SET url = 'https://www.swanseacity.com/' WHERE id = 39;
+UPDATE team SET url = 'https://www.cardiffcityfc.co.uk/' WHERE id = 40;
+UPDATE team SET url = 'https://www.afcb.co.uk/' WHERE id = 41;
+UPDATE team SET url = 'https://www.htafc.com/' WHERE id = 42;
+UPDATE team SET url = 'https://www.brightonandhovealbion.com/' WHERE id = 43;
 
 -- Users
 INSERT INTO application_user

@@ -83,6 +83,11 @@ public class Team extends D11Entity {
      * Name of the file with the team club crest, if there is one.
      */
     private String photoFileName;
+    /**
+     * Official team website url.
+     */
+    @NotEmpty
+    private String url;
 
     /**
      * The stadium the team plays in.

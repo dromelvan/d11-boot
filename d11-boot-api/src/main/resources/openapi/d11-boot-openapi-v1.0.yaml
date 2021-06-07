@@ -1266,6 +1266,7 @@ components:
         - colour
         - dummy
         - photoFileName
+        - url
       properties:
         id:
           type: integer
@@ -1292,6 +1293,8 @@ components:
           type: boolean
         photoFileName:
           type: string
+        url:
+          type: string
     Team:
       type: object
       required:
@@ -1306,6 +1309,7 @@ components:
         - colour
         - dummy
         - photoFileName
+        - url
         - stadium
       properties:
         id:
@@ -1332,6 +1336,8 @@ components:
         dummy:
           type: boolean
         photoFileName:
+          type: string
+        url:
           type: string
         stadium:
           $ref: '#/components/schemas/Stadium'

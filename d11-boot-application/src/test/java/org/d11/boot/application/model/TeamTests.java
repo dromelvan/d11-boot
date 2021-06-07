@@ -70,6 +70,12 @@ public class TeamTests extends D11EasyRandomTests {
         assertFalse(team.isValid(), "Null stadium should not be valid.");
         team.setStadium(new Stadium());
 
+        team.setUrl(null);
+        assertFalse(team.isValid(), "Null url should not be valid.");
+        team.setUrl("");
+        assertFalse(team.isValid(), "Empty url should not be valid.");
+        team.setUrl("http");
+
         assertTrue(team.isValid(), "Team should be valid.");
     }
 
