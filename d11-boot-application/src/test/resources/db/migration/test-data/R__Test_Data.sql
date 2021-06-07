@@ -19,8 +19,8 @@ INSERT INTO stadium VALUES(2, 'StadiumB', 'CityB', 22222, 2020, '2.png', '2020-0
 -- INSERT INTO team(
 --     id, stadium_id, whoscored_id, name, short_name, code, nickname, established, motto, colour, dummy, photo_file_name, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-INSERT INTO team VALUES(1, 1, 11111, 'TeamA', 'ShortA', 'TMA', 'NicknameA', 2020, 'MottoA', 'ColourA', false, '1.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO team VALUES(2, 2, 22222, 'TeamB', 'ShortB', 'TMB', 'NicknameB', 2020, 'MottoB', 'ColourB', false, '2.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO team VALUES(1, 1, 11111, 'TeamA', 'ShortA', 'TMA', 'NicknameA', 2020, 'MottoA', 'ColourA', false, '1.png', 'http://test.com', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO team VALUES(2, 2, 22222, 'TeamB', 'ShortB', 'TMB', 'NicknameB', 2020, 'MottoB', 'ColourB', false, '2.png', 'http://test.com', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO d11_team(
 --     id, owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name, created_at, updated_at)
