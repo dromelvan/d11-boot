@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Controller that implements the MatchesApi and provides match endpoints.
  */
@@ -26,6 +28,12 @@ public class MatchController extends AbstractRepositoryServiceController<MatchDT
     @Override
     public ResponseEntity<MatchDTO> findMatchById(final Long matchId) {
         return findById(matchId);
+    }
+
+    @Override
+    public ResponseEntity<List<Long>> findMatchByTeamIdAndSeasonId(final Long teamId, final Long seasonId) {
+        final List<Long> matchIds = getRepositoryService().findMatchByTeamIdAndSeasonId(teamId, seasonId);
+        return ResponseEntity.ok(matchIds);
     }
 
 }

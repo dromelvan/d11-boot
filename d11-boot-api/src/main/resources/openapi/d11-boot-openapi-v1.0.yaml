@@ -437,6 +437,43 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /matches/team/{teamId}/season/{seasonId}:
+    get:
+      summary: Find match ids for a team and a season.
+      operationId: findMatchByTeamIdAndSeasonId
+      tags:
+        - match
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          description: The id of the team that match ids will be found for.
+          schema:
+            type: integer
+            format: int64
+        - name: seasonId
+          in: path
+          required: true
+          description: The id of the season that match ids will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  format: int64
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /d11-leagues/{d11LeagueId}:
     get:
       summary: Find a D11 league by id.

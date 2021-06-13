@@ -4,12 +4,17 @@ import org.d11.boot.api.model.MatchDTO;
 import org.d11.boot.api.service.MatchApiService;
 import org.d11.boot.application.model.Goal;
 import org.d11.boot.application.model.Match;
+import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.Team;
 import org.d11.boot.application.repository.MatchRepository;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -57,6 +62,41 @@ public class MatchApiTests extends AbstractRepositoryApiTests<Match, MatchReposi
             goals.sort(Comparator.comparing(Goal::getTime).thenComparing(Goal::getAddedTime));
 
             assertEquals(goals, match.getGoals(), "Goal order should be by time and added time, ascending.");
+        }
+    }
+
+    /**
+     * Tests the findMatchByTeamIdAndSeasonId API operation.
+     */
+    @Test
+    public void findMatchByTeamIdAndSeasonId() {
+        final Map<Team, Map<Season, List<Match>>> matchMap = new HashMap<>();
+        for(final Match match : getEntities()) {
+            Map<Season, List<Match>> seasonMap = matchMap.computeIfAbsent(match.getHomeTeam(), t -> new HashMap<>());
+            List<Match> matches = seasonMap.computeIfAbsent(match.getMatchWeek().getSeason(), s -> new ArrayList<>());
+            matches.add(match);
+            seasonMap = matchMap.computeIfAbsent(match.getAwayTeam(), t -> new HashMap<>());
+            matches = seasonMap.computeIfAbsent(match.getMatchWeek().getSeason(), s -> new ArrayList<>());
+            matches.add(match);
+        }
+
+        for(final Map.Entry<Team, Map<Season, List<Match>>> teamEntry : matchMap.entrySet()) {
+            final Team team = teamEntry.getKey();
+            for(final Map.Entry<Season, List<Match>> seasonEntry : teamEntry.getValue().entrySet()) {
+                final Season season = seasonEntry.getKey();
+                final List<Long> matchIds = seasonEntry.getValue().stream()
+                        .sorted(Comparator.comparing(Match::getDatetime))
+                        .map(Match::getId)
+                        .collect(Collectors.toList());
+
+                final List<Long> result = getApiService().findMatchByTeamIdAndSeasonId(team.getId(), season.getId());
+
+                assertNotNull(result, "Result should not be null.");
+                assertEquals(matchIds.size(), result.size(),
+                        "Matches by team id and season id should have the same size as team matches by season.");
+                assertEquals(matchIds, result,
+                        "Matches by team id and season id should equal team matches by season.");
+            }
         }
     }
 
