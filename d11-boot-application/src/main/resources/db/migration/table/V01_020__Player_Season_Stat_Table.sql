@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS player_season_stat(
     ranking INTEGER NOT NULL DEFAULT 0,
     points INTEGER NOT NULL DEFAULT 0,
     form_points INTEGER NOT NULL DEFAULT 0,
+    form_match_points VARCHAR(255) NOT NULL,
     points_per_appearance INTEGER NOT NULL DEFAULT 0,
     goals INTEGER NOT NULL DEFAULT 0,
     goal_assists INTEGER NOT NULL DEFAULT 0,

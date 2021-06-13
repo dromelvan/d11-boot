@@ -3,12 +3,15 @@ package org.d11.boot.application.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.d11.boot.application.model.converter.FormMatchPointsConverter;
 
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.util.List;
 
 /**
  * Stats and information for one player and one season.
@@ -27,6 +30,12 @@ public class PlayerSeasonStat extends PlayerStatSummary {
      * Total points the last five games.
      */
     private int formPoints;
+    /**
+     * List of points won the last five individual matches.
+     */
+    @NotNull
+    @Convert(converter = FormMatchPointsConverter.class)
+    private List<Integer> formMatchPoints;
 
     /**
      * The player the stats are for.

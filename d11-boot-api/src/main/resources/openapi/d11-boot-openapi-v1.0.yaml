@@ -2213,6 +2213,7 @@ components:
         - ranking
         - points
         - formPoints
+        - formMatchPoints
         - pointsPerAppearance
         - goals
         - goalAssists
@@ -2249,6 +2250,11 @@ components:
         formPoints:
           type: integer
           format: int32
+        formMatchPoints:
+          type: array
+          items:
+            type: integer
+            format: int32
         pointsPerAppearance:
           type: integer
           format: int32
@@ -2309,6 +2315,7 @@ components:
         - ranking
         - points
         - formPoints
+        - formMatchPoints
         - pointsPerAppearance
         - goals
         - goalAssists
@@ -2350,6 +2357,11 @@ components:
         formPoints:
           type: integer
           format: int32
+        formMatchPoints:
+          type: array
+          items:
+            type: integer
+            format: int32
         pointsPerAppearance:
           type: integer
           format: int32
