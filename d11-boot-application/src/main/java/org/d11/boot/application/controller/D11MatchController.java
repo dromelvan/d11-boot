@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Controller that implements the D11MatchesApi and provides D11 match endpoints.
  */
@@ -26,6 +28,12 @@ public class D11MatchController extends AbstractRepositoryServiceController<D11M
     @Override
     public ResponseEntity<D11MatchDTO> findD11MatchById(final Long d11MatchId) {
         return findById(d11MatchId);
+    }
+
+    @Override
+    public ResponseEntity<List<Long>> findD11MatchByD11TeamIdAndSeasonId(final Long d11TeamId, final Long seasonId) {
+        final List<Long> d11MatchIds = getRepositoryService().findD11MatchByD11TeamIdAndSeasonId(d11TeamId, seasonId);
+        return ResponseEntity.ok(d11MatchIds);
     }
 
 }

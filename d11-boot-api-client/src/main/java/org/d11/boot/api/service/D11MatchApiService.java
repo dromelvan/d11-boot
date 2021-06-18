@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.util.List;
+
 /**
  * Provides D11 match API services.
  */
@@ -22,6 +24,25 @@ public class D11MatchApiService extends D11ApiService {
         try {
             final D11MatchApi d11MatchApi = new D11MatchApi(getApiClient());
             return d11MatchApi.findD11MatchById(d11MatchId).block();
+        } catch(WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw translate(e);
+        }
+    }
+
+    /**
+     * Finds D11 match ids for a specific D11team and season.
+     *
+     * @param d11TeamId The id of the D11 team for which D11 match ids will be looked up.
+     * @param seasonId The id of the season for which D11 match ids will be looked up.
+     * @return D11 match ids for the specified D11 team and season.
+     */
+    public List<Long> findD11MatchByD11TeamIdAndSeasonId(final Long d11TeamId, final Long seasonId) {
+        try {
+            final D11MatchApi d11MatchApi = new D11MatchApi(getApiClient());
+            return d11MatchApi.findD11MatchByD11TeamIdAndSeasonId(d11TeamId, seasonId).collectList().block();
         } catch(WebClientResponseException e) {
             if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 return null;

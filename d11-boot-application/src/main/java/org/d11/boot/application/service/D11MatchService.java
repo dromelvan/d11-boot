@@ -6,6 +6,8 @@ import org.d11.boot.application.repository.D11MatchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Provides D11 match services.
  */
@@ -20,6 +22,17 @@ public class D11MatchService extends AbstractRepositoryService<D11Match, D11Matc
     @Autowired
     public D11MatchService(final D11MatchRepository d11MatchRepository) {
         super(d11MatchRepository);
+    }
+
+    /**
+     * Gets D11 match ids for a specific D11team and a specific season.
+     *
+     * @param d11TeamId Id for the D11 team for which D11 match ids will be looked up.
+     * @param seasonId Id for the season for which D11 match ids will be looked up.
+     * @return D11 match ids for the D11team and season.
+     */
+    public List<Long> findD11MatchByD11TeamIdAndSeasonId(final long d11TeamId, final long seasonId) {
+        return getJpaRepository().findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime(d11TeamId, seasonId);
     }
 
 }
