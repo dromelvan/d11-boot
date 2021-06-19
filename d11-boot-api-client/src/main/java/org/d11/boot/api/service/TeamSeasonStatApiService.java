@@ -54,7 +54,7 @@ public class TeamSeasonStatApiService extends D11ApiService {
     /**
      * Gets team season stats for a specific team and a specific season.
      *
-     * @param teamId If for the team for which team season stats will be looked up.
+     * @param teamId Id for the team for which team season stats will be looked up.
      * @param seasonId Id for the season for which team season stats will be looked up.
      * @return Team season stats for the team and the season.
      */

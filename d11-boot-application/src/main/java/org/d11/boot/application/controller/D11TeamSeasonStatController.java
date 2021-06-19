@@ -36,4 +36,10 @@ public class D11TeamSeasonStatController extends AbstractRepositoryServiceContro
         return ResponseEntity.ok(d11TeamSeasonStats);
     }
 
+    @Override
+    public ResponseEntity<D11TeamSeasonStatDTO> findD11TeamSeasonStatByD11TeamIdAndSeasonId(final Long d11TeamId, final Long seasonId) {
+        final D11TeamSeasonStatDTO d11TeamSeasonStatDTO = getRepositoryService().findD11TeamSeasonStatByD11TeamIdAndSeasonId(d11TeamId, seasonId);
+        return ResponseEntity.ok(d11TeamSeasonStatDTO);
+    }
+
 }

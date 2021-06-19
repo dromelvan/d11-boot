@@ -68,4 +68,21 @@ public class D11TeamSeasonStatApiTests extends AbstractRepositoryApiTests<D11Tea
         }
     }
 
+    /**
+     * Tests the findD11TeamSeasonStatByD11TeamIdAndSeasonId API operation.
+     */
+    @Test
+    public void findD11TeamSeasonStatByD11TeamIdAndSeasonId() {
+        for(final D11TeamSeasonStat d11TeamSeasonStat : getEntities()) {
+            final D11TeamSeasonStatDTO d11TeamSeasonStatDTO = getApiService().findD11TeamSeasonStatByD11TeamIdAndSeasonId(
+                    d11TeamSeasonStat.getD11Team().getId(),
+                    d11TeamSeasonStat.getSeason().getId()
+            );
+
+            assertNotNull(d11TeamSeasonStatDTO, "D11 team season stat DTO should not be null.");
+            assertEquals(map(d11TeamSeasonStat, D11TeamSeasonStatDTO.class), d11TeamSeasonStatDTO,
+                    "D11 team season stat DTO should equal D11 team season stat.");
+        }
+    }
+
 }

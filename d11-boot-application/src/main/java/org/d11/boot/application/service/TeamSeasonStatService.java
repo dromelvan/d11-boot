@@ -40,7 +40,7 @@ public class TeamSeasonStatService extends AbstractRepositoryService<TeamSeasonS
      *
      * @param teamId If for the team for which team season stats will be looked up.
      * @param seasonId Id for the season for which team season stats will be looked up.
-     * @return Team season stats for the team and the season.
+     * @return Team season stat for the team and the season.
      */
     public TeamSeasonStatDTO findTeamSeasonStatByTeamIdAndSeasonId(final Long teamId, final Long seasonId) {
         final Optional<TeamSeasonStat> optional = getJpaRepository().findByTeamIdAndSeasonId(teamId, seasonId);

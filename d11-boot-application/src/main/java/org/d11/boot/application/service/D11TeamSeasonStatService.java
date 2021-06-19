@@ -6,6 +6,7 @@ import org.d11.boot.application.repository.D11TeamSeasonStatRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Provides D11 team season stat services.
@@ -32,6 +33,18 @@ public class D11TeamSeasonStatService extends AbstractRepositoryService<D11TeamS
     public List<D11TeamSeasonStatDTO> findD11TeamSeasonStatBySeasonId(final Long seasonId) {
         final List<D11TeamSeasonStat> d11TeamSeasonStats = getJpaRepository().findBySeasonIdOrderByRanking(seasonId);
         return map(d11TeamSeasonStats);
+    }
+
+    /**
+     * Gets D11 team season stats for a specific D11 team and a specific season.
+     *
+     * @param d11TeamId If for the D11 team for which D11 team season stats will be looked up.
+     * @param seasonId Id for the season for which D11 team season stats will be looked up.
+     * @return D11 team season stat for the team and the season.
+     */
+    public D11TeamSeasonStatDTO findD11TeamSeasonStatByD11TeamIdAndSeasonId(final Long d11TeamId, final Long seasonId) {
+        final Optional<D11TeamSeasonStat> optional = getJpaRepository().findByD11TeamIdAndSeasonId(d11TeamId, seasonId);
+        return mapIfFound(optional.orElse(null));
     }
 
 }
