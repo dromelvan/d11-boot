@@ -27,10 +27,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
 	implementation 'org.springframework.session:spring-session-core'
 
 	implementation 'com.auth0:java-jwt:3.11.0'
 	implementation 'com.google.guava:guava:29.0-jre'
+	// Java 8 requires Caffeine 2.x instead of 3.x
+	implementation 'com.github.ben-manes.caffeine:caffeine:2.9.1'
 	implementation 'org.modelmapper:modelmapper:2.4.0'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.2'
 	implementation 'org.flywaydb:flyway-core'
