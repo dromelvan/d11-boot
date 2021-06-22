@@ -22,7 +22,7 @@ public class SearchService extends D11BootService {
     /**
      * Patter for matching exact search strings, i.e ones that are enclosed in quotes.
      */
-    private static final Pattern EXACT_SEARCH_PATTERN = Pattern.compile("\"(.*)\"");
+    private static final Pattern EXACT_SEARCH_PATTERN = Pattern.compile("(\"|%2522)(.*)(\"|%2522)");
     /**
      * Repository used for player searches.
      */
@@ -49,7 +49,7 @@ public class SearchService extends D11BootService {
 
         final Matcher exactPatternMatcher = EXACT_SEARCH_PATTERN.matcher(name);
         if(exactPatternMatcher.matches()) {
-            final String parameterizedName = Parameterizer.parameterize(name);
+            final String parameterizedName = Parameterizer.parameterize(exactPatternMatcher.group(2));
             playerSearchResults = this.playerRepository.findByParameterizedName(parameterizedName);
         } else {
             final String sqlLike = "%";
