@@ -4,7 +4,9 @@
 
 plugins {
     id 'java-library'
-    id "org.openapi.generator" version "4.3.1"
+    // We need to use 4.2.3 until this is put into a release:
+    // https://github.com/OpenAPITools/openapi-generator/issues/7794
+    id "org.openapi.generator" version "4.2.3"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_10
