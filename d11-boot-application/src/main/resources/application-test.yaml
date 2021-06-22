@@ -1,6 +1,13 @@
 d11:
   api:
     basePath: http://localhost:%d
+  security:
+    keystore:
+      # Create keystore with: keytool -genkey -alias <alias> -keyalg RSA -keystore <profile>-keystore.jks -keysize 2048
+      location: keys/test-keystore.jks
+      password: password
+      keyAlias: test
+      privateKeyPassphrase: password
 
 spring:
   flyway:

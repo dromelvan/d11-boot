@@ -1,3 +1,12 @@
+d11:
+  security:
+    keystore:
+      # Create keystore with: keytool -genkey -alias <alias> -keyalg RSA -keystore <profile>-keystore.jks -keysize 2048
+      location: keys/development-keystore.jks
+      password: password
+      keyAlias: development
+      privateKeyPassphrase: password
+
 spring:
   flyway:
     schemas: development

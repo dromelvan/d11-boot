@@ -9,6 +9,29 @@ servers:
   - url: http://localhost:8080
 
 paths:
+  /authentication:
+    post:
+      summary: Authenticate a user.
+      operationId: authenticate
+      tags:
+        - authentication
+      requestBody:
+        description: User authentication properties.
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Authentication'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationResult"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
   /users/{userId}:
     get:
       summary: Find a user by id.
@@ -1211,6 +1234,25 @@ components:
           type: integer
           format: int32
         message:
+          type: string
+
+    Authentication:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    AuthenticationResult:
+      type: object
+      required:
+        - jwt
+      properties:
+        jwt:
           type: string
 
     User:
