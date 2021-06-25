@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Provides player season stat services.
@@ -22,6 +23,18 @@ public class PlayerSeasonStatService extends AbstractRepositoryService<PlayerSea
     @Autowired
     public PlayerSeasonStatService(final PlayerSeasonStatRepository playerSeasonStatRepository) {
         super(playerSeasonStatRepository);
+    }
+
+    /**
+     * Gets a player season stat for a specific player and a specific season.
+     *
+     * @param playerId Id for the player for which a player season stat will be looked up.
+     * @param seasonId Id for the season for which a player season stat will be looked up.
+     * @return Player season stat for the player and the season.
+     */
+    public PlayerSeasonStatDTO findPlayerSeasonStatByPlayerIdAndSeasonId(final long playerId, final long seasonId) {
+        final Optional<PlayerSeasonStat> optional = getJpaRepository().findByPlayerIdAndSeasonId(playerId, seasonId);
+        return mapIfFound(optional.orElse(null));
     }
 
     /**
