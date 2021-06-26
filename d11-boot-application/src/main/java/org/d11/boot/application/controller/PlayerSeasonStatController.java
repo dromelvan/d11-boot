@@ -29,6 +29,12 @@ public class PlayerSeasonStatController extends AbstractRepositoryServiceControl
     }
 
     @Override
+    public ResponseEntity<List<PlayerSeasonStatDTO>> findPlayerSeasonStatByPlayerId(final Long playerId) {
+        final List<PlayerSeasonStatDTO> playerSeasonStats = getRepositoryService().findPlayerSeasonStatByPlayerId(playerId);
+        return ResponseEntity.ok(playerSeasonStats);
+    }
+
+    @Override
     public ResponseEntity<PlayerSeasonStatDTO> findPlayerSeasonStatByPlayerIdAndSeasonId(final Long playerId, final Long seasonId) {
         final PlayerSeasonStatDTO playerSeasonStatDTO = getRepositoryService().findPlayerSeasonStatByPlayerIdAndSeasonId(playerId, seasonId);
         return ResponseEntity.ok(playerSeasonStatDTO);

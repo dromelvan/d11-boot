@@ -14,6 +14,14 @@ import java.util.Optional;
 public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSeasonStat> {
 
     /**
+     * Gets player season stats for a player ordered by season id, descending.
+     *
+     * @param playerId Id for the player for which a player season stats will be looked up.
+     * @return Player season stats for the player ordered by season id, descending.
+     */
+    List<PlayerSeasonStat> findByPlayerIdOrderBySeasonIdDesc(@Param("playerId") Long playerId);
+
+    /**
      * Gets a player season stat for a specific player and a specific season.
      *
      * @param playerId Id for the player for which a player season stat will be looked up.

@@ -33,6 +33,24 @@ public class PlayerSeasonStatApiService extends D11ApiService {
     }
 
     /**
+     * Finds player season stats for a specific player.
+     *
+     * @param playerId The id of the player for which player season stats will be looked up.
+     * @return Player season stat DTOs for the specified player.
+     */
+    public List<PlayerSeasonStatDTO> findPlayerSeasonStatByPlayerId(final Long playerId) {
+        try {
+            final PlayerSeasonStatApi playerSeasonStatApi = new PlayerSeasonStatApi(getApiClient());
+            return playerSeasonStatApi.findPlayerSeasonStatByPlayerId(playerId).collectList().block();
+        } catch(WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw translate(e);
+        }
+    }
+
+    /**
      * Finds a player season stat for a specific player and a specific season.
      *
      * @param playerId Id of the player for which a player season stat will be looked up.

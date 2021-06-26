@@ -3,6 +3,7 @@ package org.d11.boot.application.api;
 import org.d11.boot.api.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.service.PlayerSeasonStatApiService;
 import org.d11.boot.application.model.D11Team;
+import org.d11.boot.application.model.Player;
 import org.d11.boot.application.model.PlayerSeasonStat;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Team;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Player season stat API tests.
@@ -43,6 +45,35 @@ public class PlayerSeasonStatApiTests extends AbstractRepositoryApiTests<PlayerS
     }
 
     /**
+     * Tests the findPlayerSeasonStatByPlayerId API operation.
+     */
+    @Test
+    public void findPlayerSeasonStatByPlayerId() {
+        final Map<Player, List<PlayerSeasonStat>> playerMap = new HashMap<>();
+        for(final PlayerSeasonStat playerSeasonStat : getEntities()) {
+            final List<PlayerSeasonStat> playerSeasonStats = playerMap.computeIfAbsent(playerSeasonStat.getPlayer(), p -> new ArrayList<>());
+            playerSeasonStats.add(playerSeasonStat);
+        }
+
+        for(final Map.Entry<Player, List<PlayerSeasonStat>> entry : playerMap.entrySet()) {
+            final Player player = entry.getKey();
+            final List<PlayerSeasonStat> playerSeasonStats = entry.getValue();
+
+            playerSeasonStats.sort(Comparator.comparing(PlayerSeasonStat::getSeason,
+                    (season1, season2) -> (int) (season2.getId() - season1.getId())));
+
+            final List<PlayerSeasonStatDTO> result = getApiService().findPlayerSeasonStatByPlayerId(player.getId());
+
+            assertNotNull(result, "Player season stat by player id should not be null.");
+            assertEquals(map(playerSeasonStats, PlayerSeasonStatDTO.class), result,
+                    "Player season stats by player id should equal player season stat.");
+        }
+
+        assertTrue(getApiService().findPlayerSeasonStatByPlayerId(-1L).isEmpty(),
+                "Player season stat by player id not found should be empty.");
+    }
+
+    /**
      * Tests the findPlayerSeasonStatByPlayerIdAndSeasonId API operation.
      */
     @Test
@@ -54,7 +85,7 @@ public class PlayerSeasonStatApiTests extends AbstractRepositoryApiTests<PlayerS
             );
             assertNotNull(result, "Player season stat by player id and season id should not be null.");
             assertEquals(map(playerSeasonStat, PlayerSeasonStatDTO.class), result,
-                    "Player season stat by player id and season id should equals player season stat.");
+                    "Player season stat by player id and season id should equalsplayer season stat.");
         }
 
         assertNull(getApiService().findPlayerSeasonStatByPlayerIdAndSeasonId(-1L, -1L),

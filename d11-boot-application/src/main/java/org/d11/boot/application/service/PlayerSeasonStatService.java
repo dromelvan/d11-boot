@@ -26,6 +26,17 @@ public class PlayerSeasonStatService extends AbstractRepositoryService<PlayerSea
     }
 
     /**
+     * Gets player season stats for a player.
+     *
+     * @param playerId Id for the player for which player season stats will be looked up.
+     * @return Player season stats for the player.
+     */
+    public List<PlayerSeasonStatDTO> findPlayerSeasonStatByPlayerId(final long playerId) {
+        final List<PlayerSeasonStat> playerSeasonStats = getJpaRepository().findByPlayerIdOrderBySeasonIdDesc(playerId);
+        return map(playerSeasonStats);
+    }
+
+    /**
      * Gets a player season stat for a specific player and a specific season.
      *
      * @param playerId Id for the player for which a player season stat will be looked up.
