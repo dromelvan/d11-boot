@@ -74,6 +74,33 @@ public class PlayerSeasonStatApiTests extends AbstractRepositoryApiTests<PlayerS
     }
 
     /**
+     * Tests the findPlayerSeasonStatBySeasonId API operation.
+     */
+    @Test
+    public void findPlayerSeasonStatBySeasonId() {
+        final Map<Season, List<PlayerSeasonStat>> seasonMap = new HashMap<>();
+        for(final PlayerSeasonStat playerSeasonStat : getEntities()) {
+            final List<PlayerSeasonStat> playerSeasonStats = seasonMap.computeIfAbsent(playerSeasonStat.getSeason(), s -> new ArrayList<>());
+            playerSeasonStats.add(playerSeasonStat);
+        }
+
+        for(final Map.Entry<Season, List<PlayerSeasonStat>> entry : seasonMap.entrySet()) {
+            final Season season = entry.getKey();
+            final List<PlayerSeasonStat> playerSeasonStats = entry.getValue();
+
+            playerSeasonStats.sort(Comparator.comparingInt(PlayerSeasonStat::getRanking));
+
+            final List<PlayerSeasonStatDTO> result = getApiService().findPlayerSeasonStatBySeasonId(season.getId(), 0);
+
+            assertNotNull(result, "Player season stat by season id should not be null.");
+            assertEquals(map(playerSeasonStats, PlayerSeasonStatDTO.class), result,
+                    "Player season stats by season id should equal player season stat.");
+            assertTrue(getApiService().findPlayerSeasonStatBySeasonId(season.getId(), 1).isEmpty(),
+                    "Player season stat by season id and too high page number should be empty.");
+        }
+    }
+
+    /**
      * Tests the findPlayerSeasonStatByPlayerIdAndSeasonId API operation.
      */
     @Test
@@ -85,7 +112,7 @@ public class PlayerSeasonStatApiTests extends AbstractRepositoryApiTests<PlayerS
             );
             assertNotNull(result, "Player season stat by player id and season id should not be null.");
             assertEquals(map(playerSeasonStat, PlayerSeasonStatDTO.class), result,
-                    "Player season stat by player id and season id should equalsplayer season stat.");
+                    "Player season stat by player id and season id should equal player season stat.");
         }
 
         assertNull(getApiService().findPlayerSeasonStatByPlayerIdAndSeasonId(-1L, -1L),

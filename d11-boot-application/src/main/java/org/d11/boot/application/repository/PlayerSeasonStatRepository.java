@@ -1,6 +1,7 @@
 package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.PlayerSeasonStat;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,7 @@ import java.util.Optional;
  * Repository for player season stat entities.
  */
 @Repository
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSeasonStat> {
 
     /**
@@ -20,6 +22,15 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
      * @return Player season stats for the player ordered by season id, descending.
      */
     List<PlayerSeasonStat> findByPlayerIdOrderBySeasonIdDesc(@Param("playerId") Long playerId);
+
+    /**
+     * Gets player season stats for a season.
+     *
+     * @param seasonId Id for the season for which player season stats will be looked up.
+     * @param pageable Pageable that defines page number, page size and sorting of the result.
+     * @return Player season stats for the season ordered and paged by the pageable.
+     */
+    List<PlayerSeasonStat> findBySeasonId(@Param("seasonId") Long seasonId, Pageable pageable);
 
     /**
      * Gets a player season stat for a specific player and a specific season.

@@ -4,6 +4,9 @@ import org.d11.boot.api.model.PlayerSeasonStatDTO;
 import org.d11.boot.application.model.PlayerSeasonStat;
 import org.d11.boot.application.repository.PlayerSeasonStatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +17,11 @@ import java.util.Optional;
  */
 @Service
 public class PlayerSeasonStatService extends AbstractRepositoryService<PlayerSeasonStat, PlayerSeasonStatDTO, PlayerSeasonStatRepository> {
+
+    /**
+     * Page size for when getting player season stats for a season.
+     */
+    public static final int PAGE_SIZE = 25;
 
     /**
      * Creates a new service.
@@ -33,6 +41,19 @@ public class PlayerSeasonStatService extends AbstractRepositoryService<PlayerSea
      */
     public List<PlayerSeasonStatDTO> findPlayerSeasonStatByPlayerId(final long playerId) {
         final List<PlayerSeasonStat> playerSeasonStats = getJpaRepository().findByPlayerIdOrderBySeasonIdDesc(playerId);
+        return map(playerSeasonStats);
+    }
+
+    /**
+     * Gets player season stats for a season.
+     *
+     * @param seasonId Id for the season for which player season stats will be looked up.
+     * @param page Page number (25 per page) for the
+     * @return Player season stats for the season, in pages of size 25.
+     */
+    public List<PlayerSeasonStatDTO> findPlayerSeasonStatBySeasonId(final long seasonId, final int page) {
+        final Pageable pageable = PageRequest.of(page, PlayerSeasonStatService.PAGE_SIZE, Sort.by("ranking"));
+        final List<PlayerSeasonStat> playerSeasonStats = getJpaRepository().findBySeasonId(seasonId, pageable);
         return map(playerSeasonStats);
     }
 

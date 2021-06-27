@@ -895,6 +895,42 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /player-season-stats/season/{seasonId}/page/{page}:
+    get:
+      summary: Find player season stats by season id and page (25 per page).
+      operationId: findPlayerSeasonStatBySeasonId
+      tags:
+        - playerSeasonStat
+      parameters:
+        - name: seasonId
+          in: path
+          required: true
+          description: Id for the season that player season stats will be found for.
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: path
+          required: true
+          description: The page (25 per page) of player season stats for the season that will be returned.
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlayerSeasonStat"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /player-season-stats/player/{playerId}/season/{seasonId}:
     get:
       summary: Find a player season stat by player id and season id.
