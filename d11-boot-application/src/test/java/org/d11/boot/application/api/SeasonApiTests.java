@@ -52,6 +52,8 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
             final SeasonDTO seasonDTO = map(season, SeasonDTO.class);
             assertNotNull(result, "Season by id should not be null.");
             assertEquals(seasonDTO, result, "Season by id should equal Season.");
+            assertEquals(season.getPlayerSeasonStats().size(), seasonDTO.getPlayerSeasonStatCount(),
+                    "Season by id player season stat count should equal season player season stat count.");
         }
 
         assertNull(getApiService().findSeasonById(-1L), "Season not found should return null.");

@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.d11.boot.application.model.converter.StatusConverter;
 import org.d11.boot.application.model.validation.YearInterval;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.CascadeType;
@@ -32,6 +34,10 @@ public class Season extends D11Entity implements Comparable<Season> {
      * PMD doesn't like having "season" this many times in one class.
      */
     private static final String MAPPED_BY = "season";
+    /**
+     * PMD doesn't like having "ranking" this many times in one class.
+     */
+    private static final String RANKING = "ranking";
     /**
      * Pattern for extracting the short name from a season name.
      */
@@ -84,10 +90,20 @@ public class Season extends D11Entity implements Comparable<Season> {
     private List<MatchWeek> matchWeeks = new ArrayList<>();
 
     /**
+     * Player season stats sorted by ranking for this season.
+     */
+    @OneToMany(mappedBy = Season.MAPPED_BY, cascade = CascadeType.ALL)
+    @OrderBy(Season.RANKING)
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<PlayerSeasonStat> playerSeasonStats;
+
+    /**
      * Top 3 team season stats sorted by ranking for this season.
      */
     @OneToMany(mappedBy = Season.MAPPED_BY, cascade = CascadeType.ALL)
-    @OrderBy("ranking")
+    @OrderBy(Season.RANKING)
     @Where(clause = "ranking <= 3")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -97,7 +113,7 @@ public class Season extends D11Entity implements Comparable<Season> {
      * Top 3 D11 team season stats sorted by ranking for this season.
      */
     @OneToMany(mappedBy = Season.MAPPED_BY, cascade = CascadeType.ALL)
-    @OrderBy("ranking")
+    @OrderBy(Season.RANKING)
     @Where(clause = "ranking <= 3")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -107,7 +123,7 @@ public class Season extends D11Entity implements Comparable<Season> {
      * Top 3 player season stats sorted by ranking for this season.
      */
     @OneToMany(mappedBy = Season.MAPPED_BY, cascade = CascadeType.ALL)
-    @OrderBy("ranking")
+    @OrderBy(Season.RANKING)
     @Where(clause = "ranking <= 3")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

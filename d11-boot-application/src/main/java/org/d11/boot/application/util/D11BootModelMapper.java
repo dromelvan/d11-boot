@@ -22,6 +22,7 @@ public class D11BootModelMapper extends ModelMapper {
             @Override
             protected void configure() {
                 using(new D11EntityListMapperConverter()).map(source.getMatchWeeks()).setMatchWeeks(null);
+                using(new D11EntityListSizeMapperConverter()).map(source.getPlayerSeasonStats()).setPlayerSeasonStatCount(null);
             }
         });
         addMappings(new PropertyMap<MatchWeek, MatchWeekDTO>() {
