@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.util.List;
+
 /**
  * Provides D11 team API services.
  */
@@ -22,6 +24,24 @@ public class D11TeamApiService extends D11ApiService {
         try {
             final D11TeamApi d11TeamApi = new D11TeamApi(getApiClient());
             return d11TeamApi.findD11TeamById(d11TeamId).block();
+        } catch(WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw translate(e);
+        }
+    }
+
+    /**
+     * Finds D11 teams for a specific season.
+     *
+     * @param seasonId The id of the season for which D11 teams will be looked up.
+     * @return D11 team DTOs for the specified season.
+     */
+    public List<D11TeamDTO> findD11TeamBySeasonId(final Long seasonId) {
+        try {
+            final D11TeamApi d11TeamApi = new D11TeamApi(getApiClient());
+            return d11TeamApi.findD11TeamBySeasonId(seasonId).collectList().block();
         } catch(WebClientResponseException e) {
             if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 return null;

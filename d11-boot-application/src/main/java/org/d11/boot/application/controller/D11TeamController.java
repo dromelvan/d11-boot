@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Controller that implements the D11TeamsApi and provides D11 team endpoints.
  */
@@ -26,6 +28,12 @@ public class D11TeamController extends AbstractRepositoryServiceController<D11Te
     @Override
     public ResponseEntity<D11TeamDTO> findD11TeamById(final Long d11TeamId) {
         return findById(d11TeamId);
+    }
+
+    @Override
+    public ResponseEntity<List<D11TeamDTO>> findD11TeamBySeasonId(final Long seasonId) {
+        final List<D11TeamDTO> d11Teams = getRepositoryService().findD11TeamBySeasonId(seasonId);
+        return ResponseEntity.ok(d11Teams);
     }
 
 }
