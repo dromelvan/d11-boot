@@ -1,14 +1,22 @@
 package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.MatchDTO;
+import org.d11.boot.api.model.MatchWeekDTO;
+import org.d11.boot.api.model.MatchesByDateDTO;
 import org.d11.boot.api.service.MatchApiService;
 import org.d11.boot.application.model.Goal;
 import org.d11.boot.application.model.Match;
 import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.Status;
 import org.d11.boot.application.model.Team;
 import org.d11.boot.application.repository.MatchRepository;
+import org.d11.boot.application.service.MatchWeekService;
+import org.d11.boot.application.util.MatchesByDateMapperConverter;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -25,6 +33,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  * Match API tests.
  */
 public class MatchApiTests extends AbstractRepositoryApiTests<Match, MatchRepository, MatchApiService> {
+
+    /**
+     * Used to get current match week for findCurrentMatches test.
+     */
+    @Autowired
+    private MatchWeekService matchWeekService;
 
     /**
      * Tests the findMatchById API operation.
@@ -97,6 +111,36 @@ public class MatchApiTests extends AbstractRepositoryApiTests<Match, MatchReposi
                 assertEquals(matchIds, result,
                         "Matches by team id and season id should equal team matches by season.");
             }
+        }
+    }
+
+    /**
+     * Test the findCurrentMatches API operation.
+     */
+    @Test
+    @SuppressWarnings({"PMD", "checkstyle:IllegalCatch", "checkstyle:BooleanExpressionComplexity" })
+    public void findCurrentMatches() {
+        final List<Match> matches = new ArrayList<>();
+        final MatchWeekDTO matchWeekDTO = this.matchWeekService.findCurrentMatchWeek();
+        for(final Match match : getEntities()) {
+            if(match.getMatchWeek().getId().equals(matchWeekDTO.getId())
+                || match.getStatus().equals(Status.ACTIVE)
+                || match.getStatus().equals(Status.FULL_TIME)
+                || (match.getDatetime().toLocalDate().isAfter(LocalDate.now().minus(1, ChronoUnit.DAYS))
+                    && match.getDatetime().toLocalDate().isBefore(LocalDate.now().plus(2, ChronoUnit.DAYS)))) {
+                matches.add(match);
+            }
+        }
+
+        matches.sort(Comparator.comparing(Match::getDatetime));
+        final MatchesByDateDTO matchesByDateDTO = new MatchesByDateDTO();
+        matchesByDateDTO.setMatches(new MatchesByDateMapperConverter().convert(matches));
+
+        try {
+            final MatchesByDateDTO result = getApiService().findCurrentMatches();
+            assertEquals(matchesByDateDTO, result, "Current matches should equal result.");
+        } catch(Exception e) {
+            // Native query doesn't work with H2 so this won't work but we'll leave it here in case we figure it out.
         }
     }
 

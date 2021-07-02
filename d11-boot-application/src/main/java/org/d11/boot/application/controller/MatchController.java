@@ -2,6 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.MatchesApi;
 import org.d11.boot.api.model.MatchDTO;
+import org.d11.boot.api.model.MatchesByDateDTO;
 import org.d11.boot.application.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,4 +37,11 @@ public class MatchController extends AbstractRepositoryServiceController<MatchDT
         return ResponseEntity.ok(matchIds);
     }
 
+    @Override
+    public ResponseEntity<MatchesByDateDTO> findCurrentMatches() {
+        final MatchesByDateDTO matchesByDateDTO = getRepositoryService().findCurrentMatches();
+        return ResponseEntity.ok(matchesByDateDTO);
+    }
+
 }
+

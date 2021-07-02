@@ -68,8 +68,8 @@ INSERT INTO match_week VALUES(4, 2, null, null, null, 2, CURRENT_DATE + 1, 0, 0,
 -- INSERT INTO match(
 --     id, home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals, previous_home_team_goals, previous_away_team_goals, elapsed, status, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-INSERT INTO match VALUES(1, 1, 2, 1, 1, 1, '2020-01-01 17:00:00', 0, 1, 0, 0, 'FT', 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO match VALUES(2, 2, 1, 1, 2, 2, '2020-01-02 17:00:00', 2, 1, 1, 0, 'FT', 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO match VALUES(1, 1, 2, 1, 1, 1, '2020-01-01 17:00:00', 0, 1, 0, 0, 'FT', 3, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO match VALUES(2, 2, 1, 1, 2, 2, '2020-01-02 17:00:00', 2, 1, 1, 0, 'FT', 3, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO match VALUES(3, 1, 2, 2, 1, 3, '2020-02-01 17:00:00', 0, 1, 0, 0, 'FT', 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO match VALUES(4, 2, 1, 2, 2, 4, '2020-02-02 17:00:00', 2, 1, 1, 0, 'FT', 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO match VALUES(5, 1, 2, 3, 1, 5, '2021-01-01 17:00:00', 0, 1, 0, 0, 'HT', 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
