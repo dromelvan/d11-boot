@@ -2,6 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.D11MatchesApi;
 import org.d11.boot.api.model.D11MatchDTO;
+import org.d11.boot.api.model.D11MatchesByDateDTO;
 import org.d11.boot.application.service.D11MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,12 @@ public class D11MatchController extends AbstractRepositoryServiceController<D11M
     public ResponseEntity<List<Long>> findD11MatchByD11TeamIdAndSeasonId(final Long d11TeamId, final Long seasonId) {
         final List<Long> d11MatchIds = getRepositoryService().findD11MatchByD11TeamIdAndSeasonId(d11TeamId, seasonId);
         return ResponseEntity.ok(d11MatchIds);
+    }
+
+    @Override
+    public ResponseEntity<D11MatchesByDateDTO> findCurrentD11Matches() {
+        final D11MatchesByDateDTO d11MatchesByDateDTO = getRepositoryService().findCurrentD11Matches();
+        return ResponseEntity.ok(d11MatchesByDateDTO);
     }
 
 }

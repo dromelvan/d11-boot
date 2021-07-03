@@ -634,6 +634,21 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /d11-matches/current:
+    get:
+      summary: Find the current D11 matches.
+      operationId: findCurrentD11Matches
+      tags:
+        - d11Match
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/D11MatchesByDate"
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /player-match-stats/{playerMatchStatId}:
     get:
       summary: Find a player match stat by id.
@@ -2260,6 +2275,19 @@ components:
           $ref: '#/components/schemas/D11TeamBase'
         matchWeek:
           $ref: '#/components/schemas/MatchWeekBase'
+
+    D11MatchesByDate:
+      type: object
+      required:
+        - d11Matches
+      properties:
+        d11Matches:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: integer
+              format: int64
 
     GoalBase:
       type: object

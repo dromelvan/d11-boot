@@ -1,6 +1,7 @@
 package org.d11.boot.api.service;
 
 import org.d11.boot.api.model.D11MatchDTO;
+import org.d11.boot.api.model.D11MatchesByDateDTO;
 import org.d11.boot.client.api.D11MatchApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,23 @@ public class D11MatchApiService extends D11ApiService {
         try {
             final D11MatchApi d11MatchApi = new D11MatchApi(getApiClient());
             return d11MatchApi.findD11MatchByD11TeamIdAndSeasonId(d11TeamId, seasonId).collectList().block();
+        } catch(WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw translate(e);
+        }
+    }
+
+    /**
+     * Gets current D11 matches.
+     *
+     * @return A set of current D11 matches mapped and sorted by datetime.
+     */
+    public D11MatchesByDateDTO findCurrentD11Matches() {
+        try {
+            final D11MatchApi d11MatchApi = new D11MatchApi(getApiClient());
+            return d11MatchApi.findCurrentD11Matches().block();
         } catch(WebClientResponseException e) {
             if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 return null;

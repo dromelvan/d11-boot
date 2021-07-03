@@ -1,11 +1,13 @@
 package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.D11Match;
+import org.d11.boot.application.model.Status;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Repository for D11 match entities.
@@ -25,5 +27,14 @@ public interface D11MatchRepository extends D11EntityRepository<D11Match> {
             "WHERE (d11Match.homeD11Team.id = :d11TeamId OR d11Match.awayD11Team.id = :d11TeamId) AND d11Match.matchWeek.season.id = :seasonId " +
             "ORDER BY d11Match.datetime")
     List<Long> findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime(@Param("d11TeamId") Long d11TeamId, @Param("seasonId") Long seasonId);
+
+    /**
+     * Finds D11 matches for a specific match week or that have one of a set of statuses.
+     *
+     * @param matchWeekId Id for the match week for which D11 matches will be looked up.
+     * @param status Set of statuses for which D11 matches will be looked up.
+     * @return List of D11 matches for the match week and statuses, ordered by datetime.
+     */
+    List<D11Match> findByMatchWeekIdOrStatusInOrderByDatetime(@Param("matchWeekId") Long matchWeekId, @Param("status") Set<Status> status);
 
 }

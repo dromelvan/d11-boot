@@ -29,7 +29,7 @@ public interface MatchRepository extends D11EntityRepository<Match> {
     List<Long> findByTeamIdAndMatchWeekSeasonIdOrderByDatetime(@Param("teamId") Long teamId, @Param("seasonId") Long seasonId);
 
     /**
-     * Finds matches for a specific match or that have one of a set of statuses.
+     * Finds matches for a specific match week or that have one of a set of statuses.
      *
      * @param matchWeekId Id for the match week for which matches will be looked up.
      * @param status Set of statuses for which matches will be looked up.
