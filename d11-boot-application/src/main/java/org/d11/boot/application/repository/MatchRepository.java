@@ -1,11 +1,13 @@
 package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.Match;
+import org.d11.boot.application.model.Status;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Repository for match entities.
@@ -27,23 +29,12 @@ public interface MatchRepository extends D11EntityRepository<Match> {
     List<Long> findByTeamIdAndMatchWeekSeasonIdOrderByDatetime(@Param("teamId") Long teamId, @Param("seasonId") Long seasonId);
 
     /**
-     * Gets current matches. These are matches with datetime yesterday, today or tomorrow, who belong to the current
-     * match week or who have status active or full time. Using native SQL since JPQL apparently doesn't support UNION.
+     * Finds matches for a specific match or that have one of a set of statuses.
      *
-     * @return A list of current matches sorted by datetime.
+     * @param matchWeekId Id for the match week for which matches will be looked up.
+     * @param status Set of statuses for which matches will be looked up.
+     * @return List of matches for the match week and statuses, ordered by datetime.
      */
-    @Query(value = "SELECT * FROM {h-schema}match WHERE match_week_id = (" +
-                        "SELECT id " +
-                        "FROM {h-schema}match_week " +
-                        "WHERE date <= now()\\:\\:date + interval '1 day' " +
-                        "ORDER BY date DESC " +
-                        "LIMIT 1" +
-                   ")" +
-                   "UNION " +
-                   "SELECT * from {h-schema}match WHERE datetime > now()\\:\\:date - interval '1 day' AND datetime < now()\\:\\:date + interval '2 day'" +
-                   "UNION " +
-                   "SELECT * FROM {h-schema}match WHERE status = 1 OR status = 2 " +
-                   "ORDER BY datetime", nativeQuery = true)
-    List<Match> findCurrent();
+    List<Match> findByMatchWeekIdOrStatusInOrderByDatetime(@Param("matchWeekId") Long matchWeekId, @Param("status") Set<Status> status);
 
 }

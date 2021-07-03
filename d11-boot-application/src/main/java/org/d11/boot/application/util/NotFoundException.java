@@ -20,4 +20,13 @@ public class NotFoundException extends RuntimeException {
         super("Not Found");
     }
 
+    /**
+     * Creates a new exception.
+     *
+     * @param message Exception message.
+     */
+    public NotFoundException(final String message) {
+        super(message);
+    }
+
 }

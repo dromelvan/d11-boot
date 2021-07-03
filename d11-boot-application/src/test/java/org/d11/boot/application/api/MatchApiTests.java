@@ -15,8 +15,6 @@ import org.d11.boot.application.util.MatchesByDateMapperConverter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -118,30 +116,23 @@ public class MatchApiTests extends AbstractRepositoryApiTests<Match, MatchReposi
      * Test the findCurrentMatches API operation.
      */
     @Test
-    @SuppressWarnings({"PMD", "checkstyle:IllegalCatch", "checkstyle:BooleanExpressionComplexity" })
     public void findCurrentMatches() {
         final List<Match> matches = new ArrayList<>();
         final MatchWeekDTO matchWeekDTO = this.matchWeekService.findCurrentMatchWeek();
         for(final Match match : getEntities()) {
             if(match.getMatchWeek().getId().equals(matchWeekDTO.getId())
                 || match.getStatus().equals(Status.ACTIVE)
-                || match.getStatus().equals(Status.FULL_TIME)
-                || (match.getDatetime().toLocalDate().isAfter(LocalDate.now().minus(1, ChronoUnit.DAYS))
-                    && match.getDatetime().toLocalDate().isBefore(LocalDate.now().plus(2, ChronoUnit.DAYS)))) {
+                || match.getStatus().equals(Status.FULL_TIME)) {
                 matches.add(match);
             }
         }
 
         matches.sort(Comparator.comparing(Match::getDatetime));
-        final MatchesByDateDTO matchesByDateDTO = new MatchesByDateDTO();
-        matchesByDateDTO.setMatches(new MatchesByDateMapperConverter().convert(matches));
+        final MatchesByDateDTO matchesByDateDTO = new MatchesByDateDTO()
+                .matches(new MatchesByDateMapperConverter().convert(matches));
 
-        try {
-            final MatchesByDateDTO result = getApiService().findCurrentMatches();
-            assertEquals(matchesByDateDTO, result, "Current matches should equal result.");
-        } catch(Exception e) {
-            // Native query doesn't work with H2 so this won't work but we'll leave it here in case we figure it out.
-        }
+        final MatchesByDateDTO result = getApiService().findCurrentMatches();
+        assertEquals(matchesByDateDTO, result, "Current matches should equal result.");
     }
 
 }

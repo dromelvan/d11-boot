@@ -3,13 +3,18 @@ package org.d11.boot.application.service;
 import org.d11.boot.api.model.MatchDTO;
 import org.d11.boot.api.model.MatchesByDateDTO;
 import org.d11.boot.application.model.Match;
+import org.d11.boot.application.model.MatchWeek;
+import org.d11.boot.application.model.Status;
 import org.d11.boot.application.repository.MatchRepository;
+import org.d11.boot.application.repository.MatchWeekRepository;
 import org.d11.boot.application.util.MatchesByDateMapperConverter;
+import org.d11.boot.application.util.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * Provides match services.
@@ -18,18 +23,28 @@ import java.util.Map;
 public class MatchService extends AbstractRepositoryService<Match, MatchDTO, MatchRepository> {
 
     /**
+     * A set of statuses that means a match is current.
+     */
+    private final Set<Status> currentStatuses = Set.of(Status.ACTIVE, Status.FULL_TIME);
+    /**
      * Converts a list of matches to a map of date to matches mappings.
      */
     private final MatchesByDateMapperConverter matchesByDateMapperConverter = new MatchesByDateMapperConverter();
+    /**
+     * Repository for looking up current match week.
+     */
+    private final MatchWeekRepository matchWeekRepository;
 
     /**
      * Creates a new service.
      *
      * @param matchRepository The repository this service will use.
+     * @param matchWeekRepository Repository for looking up current match week.
      */
     @Autowired
-    public MatchService(final MatchRepository matchRepository) {
+    public MatchService(final MatchRepository matchRepository, final MatchWeekRepository matchWeekRepository) {
         super(matchRepository);
+        this.matchWeekRepository = matchWeekRepository;
     }
 
     /**
@@ -49,11 +64,11 @@ public class MatchService extends AbstractRepositoryService<Match, MatchDTO, Mat
      * @return A set of current matches mapped and sorted by datetime.
      */
     public MatchesByDateDTO findCurrentMatches() {
-        final List<Match> matches = getJpaRepository().findCurrent();
-        final Map<String, List<Long>> matchesByDate = this.matchesByDateMapperConverter.convert(matches);
-        final MatchesByDateDTO matchesByDateDTO = new MatchesByDateDTO();
-        matchesByDateDTO.setMatches(matchesByDate);
-        return matchesByDateDTO;
+        final MatchWeek matchWeek = this.matchWeekRepository.findFirstByDateLessThanEqualOrderByDateDesc(LocalDate.now())
+                .orElseThrow(() -> new NotFoundException("Current match week not found"));
+        final List<Match> matches = getJpaRepository().findByMatchWeekIdOrStatusInOrderByDatetime(matchWeek.getId(), this.currentStatuses);
+
+        return new MatchesByDateDTO().matches(this.matchesByDateMapperConverter.convert(matches));
     }
 
 }
