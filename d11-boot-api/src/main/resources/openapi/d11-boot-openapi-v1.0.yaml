@@ -1958,6 +1958,7 @@ components:
         - matchWeekNumber
         - status
         - date
+        - season
       properties:
         id:
           type: integer
@@ -1967,6 +1968,8 @@ components:
           format: int32
         status:
           $ref: '#/components/schemas/Status'
+        season:
+          $ref: '#/components/schemas/SeasonBase'
         date:
           type: string
           format: date
