@@ -1,7 +1,3 @@
-jasypt:
-  encryptor:
-    bean: encryptor
-
 spring:
   flyway:
     baselineOnMigrate: true
