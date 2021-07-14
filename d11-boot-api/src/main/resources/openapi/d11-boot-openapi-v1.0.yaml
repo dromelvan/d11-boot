@@ -1332,6 +1332,81 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /transfer-windows/{transferWindowId}:
+    get:
+      summary: Find a transfer window by id.
+      operationId: findTransferWindowById
+      tags:
+        - transferWindow
+      parameters:
+        - name: transferWindowId
+          in: path
+          required: true
+          description: The id of the transfer window to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferWindow"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /transfer-windows/current:
+    get:
+      summary: Find the current transfer window.
+      operationId: findCurrentTransferWindow
+      tags:
+        - transferWindow
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferWindow"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /transfer-windows/season/{seasonId}:
+    get:
+      summary: Find a transfer window by season id.
+      operationId: findTransferWindowBySeasonId
+      tags:
+        - transferWindow
+      parameters:
+        - name: seasonId
+          in: path
+          required: true
+          description: The id of the season that transfer windows will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransferWindow"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /search:
     get:
       summary: Search players, teams and D11 teams by name.
@@ -4004,3 +4079,48 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PlayerSearchResult"
+
+    TransferWindowBase:
+      type: object
+      required:
+        - id
+        - transferWindowNumber
+        - draft
+        - status
+      properties:
+        id:
+          type: integer
+          format: int64
+        transferWindowNumber:
+          type: integer
+          format: int32
+        draft:
+          type: boolean
+        status:
+          $ref: '#/components/schemas/Status'
+    TransferWindow:
+      type: object
+      required:
+        - id
+        - transferWindowNumber
+        - draft
+        - status
+        - datetime
+        - matchWeek
+      properties:
+        id:
+          type: integer
+          format: int64
+        transferWindowNumber:
+          type: integer
+          format: int32
+        draft:
+          type: boolean
+        status:
+          $ref: '#/components/schemas/Status'
+        datetime:
+          type: string
+          format: date-time
+        matchWeek:
+          $ref: '#/components/schemas/MatchWeekBase'
+

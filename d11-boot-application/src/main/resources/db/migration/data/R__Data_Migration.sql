@@ -1,4 +1,7 @@
 -- Delete existing data
+DELETE FROM transfer_window WHERE id > 0;
+SELECT setval('transfer_window_id_seq', 1);
+
 DELETE FROM d11_team_season_stat WHERE id > 0;
 SELECT setval('d11_team_season_stat_id_seq', 1);
 
@@ -328,6 +331,11 @@ SELECT psi.id, psi.player_id, psi.season_id, team_id, d11_team_id, position_id, 
        WHERE pss.ranking > 0;
 SELECT setval('player_season_stat_id_seq', (SELECT MAX(id) FROM player_season_stat));
 
+-- Transfer window
+INSERT INTO transfer_window
+SELECT id, d11_match_day_id, transfer_window_number, transfer_window_number < 1, 3, datetime, created_at, updated_at
+FROM data.transfer_windows;
+SELECT setval('transfer_window_id_seq', (SELECT last_value FROM data.transfer_windows_id_seq));
 
 
 

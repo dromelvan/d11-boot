@@ -50,6 +50,7 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
         randomize(FieldPredicates.named("iso"), new StringRandomizer(Country.ISO_CODE_LENGTH, Country.ISO_CODE_LENGTH, System.currentTimeMillis()));
         randomize(FieldPredicates.named("sortOrder"), new IntegerRangeRandomizer(1, MAX_POSITIVE));
         randomize(FieldPredicates.named("matchWeekNumber"), new IntegerRangeRandomizer(1, MatchWeek.MAX_MATCH_WEEK_NUMBER));
+        randomize(FieldPredicates.named("transferWindowNumber"), new IntegerRangeRandomizer(1, MatchWeek.MAX_MATCH_WEEK_NUMBER));
         randomize(FieldPredicates.named("elapsed").and(FieldPredicates.inClass(MatchWeek.class)),
                 new IntegerRangeRandomizer(0, MatchWeek.MAX_ELAPSED));
 

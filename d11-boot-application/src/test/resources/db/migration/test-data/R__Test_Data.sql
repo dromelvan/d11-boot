@@ -236,3 +236,11 @@ INSERT INTO d11_team_season_stat VALUES (1, 1, 1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 3, 
 INSERT INTO d11_team_season_stat VALUES (2, 2, 1, null, 1, 0, 0, 1, 1, 2, -1, 0, 0, '0', 2, 1, 1, 1, 0, 0, 2, 1, 1, 3, 1,  1, 1, 0, 0, 2, 1, 1, 3, 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO d11_team_season_stat VALUES (3, 1, 2, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 2, 2, 1, 1, 0, 0, 2, 1, 1, 3, 1,  0, 0, 0, 0, 0, 0, 0, 0, 0, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO d11_team_season_stat VALUES (4, 2, 2, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 1,  1, 1, 0, 0, 2, 1, 1, 3, 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+
+-- INSERT INTO transfer_window(
+--     id, season_id, match_week_id, transfer_window_number, draft, status, datetime, created_at, updated_at)
+--     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+INSERT INTO transfer_window VALUES(1, 1, 0, true, 3, CURRENT_DATE - 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO transfer_window VALUES(2, 2, 1, false, 3, CURRENT_DATE - 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO transfer_window VALUES(3, 3, 0, true, 3, CURRENT_DATE, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO transfer_window VALUES(4, 4, 1, false, 3, CURRENT_DATE + 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
