@@ -18,7 +18,7 @@ public class TransferWindowController extends AbstractRepositoryServiceControlle
     /**
      * Creates a new controller.
      *
-     * @param transferWindowService The repository service this
+     * @param transferWindowService The repository service this controller will use.
      */
     @Autowired
     public TransferWindowController(final TransferWindowService transferWindowService) {

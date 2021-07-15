@@ -67,10 +67,10 @@ public class TransferWindowApiTests extends AbstractRepositoryApiTests<TransferW
     }
 
     /**
-     * Tests the findTransferWindowByPlayerId API operation.
+     * Tests the findTransferWindowBySeasonId API operation.
      */
     @Test
-    public void findTransferWindowByPlayerId() {
+    public void findTransferWindowBySeasonId() {
         final Map<Season, List<TransferWindow>> seasonMap = new HashMap<>();
         for(final TransferWindow transferWindow : getEntities()) {
             final List<TransferWindow> transferWindows = seasonMap.computeIfAbsent(transferWindow.getMatchWeek().getSeason(), p -> new ArrayList<>());

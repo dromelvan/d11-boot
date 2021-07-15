@@ -1,4 +1,7 @@
 -- Delete existing data
+DELETE FROM transfer_day WHERE id > 0;
+SELECT setval('transfer_day_id_seq', 1);
+
 DELETE FROM transfer_window WHERE id > 0;
 SELECT setval('transfer_window_id_seq', 1);
 
@@ -337,6 +340,10 @@ SELECT id, d11_match_day_id, transfer_window_number, transfer_window_number < 1,
 FROM data.transfer_windows;
 SELECT setval('transfer_window_id_seq', (SELECT last_value FROM data.transfer_windows_id_seq));
 
+-- Transfer day
+INSERT INTO transfer_day
+SELECT * FROM data.transfer_days;
+SELECT setval('transfer_day_id_seq', (SELECT last_value FROM data.transfer_days_id_seq));
 
 
 -- Update match week premier league leader

@@ -5,14 +5,18 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.d11.boot.application.model.converter.StatusConverter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * A transfer window containing a number of transfer days.
@@ -54,6 +58,14 @@ public class TransferWindow extends D11Entity implements Comparable<TransferWind
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private MatchWeek matchWeek;
+
+    /**
+     * List of transfer days in this transfer window.
+     */
+    @OneToMany(mappedBy = "transferWindow", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<TransferDay> transferDays = new ArrayList<>();
 
     @Override
     public int compareTo(final TransferWindow transferWindow) {

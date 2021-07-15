@@ -24,19 +24,19 @@ public class TransferWindowTests extends D11EasyRandomTests {
         assertTrue(transferWindow.isValid(), "New transfer window should be valid.");
 
         transferWindow.setTransferWindowNumber(-1);
-        assertFalse(transferWindow.isValid(), "Negative whoscoredId should not be valid.");
+        assertFalse(transferWindow.isValid(), "Negative transfer window number should not be valid.");
         transferWindow.setTransferWindowNumber(1);
 
         transferWindow.setStatus(null);
-        assertFalse(transferWindow.isValid(), "Null status not be valid.");
+        assertFalse(transferWindow.isValid(), "Null status should not be valid.");
         transferWindow.setStatus(Status.PENDING);
 
         transferWindow.setDatetime(null);
-        assertFalse(transferWindow.isValid(), "Null datetime not be valid.");
+        assertFalse(transferWindow.isValid(), "Null datetime should not be valid.");
         transferWindow.setDatetime(LocalDateTime.now());
 
         transferWindow.setMatchWeek(null);
-        assertFalse(transferWindow.isValid(), "Null match week not be valid.");
+        assertFalse(transferWindow.isValid(), "Null match week should not be valid.");
         transferWindow.setMatchWeek(new MatchWeek());
 
         assertTrue(transferWindow.isValid(), "Transfer window should be valid.");

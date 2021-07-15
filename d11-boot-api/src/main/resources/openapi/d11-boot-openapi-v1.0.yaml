@@ -1407,6 +1407,81 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /transfer-days/{transferDayId}:
+    get:
+      summary: Find a transfer day by id.
+      operationId: findTransferDayById
+      tags:
+        - transferDay
+      parameters:
+        - name: transferDayId
+          in: path
+          required: true
+          description: The id of the transfer day to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferDay"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /transfer-days/current:
+    get:
+      summary: Find the current transfer day.
+      operationId: findCurrentTransferDay
+      tags:
+        - transferDay
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferDay"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /transfer-days/transfer-window/{transferWindowId}:
+    get:
+      summary: Find a transfer day by transfer window id.
+      operationId: findTransferDayByTransferWindowId
+      tags:
+        - transferDay
+      parameters:
+        - name: transferWindowId
+          in: path
+          required: true
+          description: The id of the transfer window that transfer days will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransferDay"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /search:
     get:
       summary: Search players, teams and D11 teams by name.
@@ -4087,6 +4162,7 @@ components:
         - transferWindowNumber
         - draft
         - status
+        - datetime
       properties:
         id:
           type: integer
@@ -4098,6 +4174,9 @@ components:
           type: boolean
         status:
           $ref: '#/components/schemas/Status'
+        datetime:
+          type: string
+          format: date-time
     TransferWindow:
       type: object
       required:
@@ -4124,3 +4203,44 @@ components:
         matchWeek:
           $ref: '#/components/schemas/MatchWeekBase'
 
+    TransferDayBase:
+      type: object
+      required:
+        - id
+        - transferDayNumber
+        - status
+        - datetime
+      properties:
+        id:
+          type: integer
+          format: int64
+        transferDayNumber:
+          type: integer
+          format: int32
+        status:
+          $ref: '#/components/schemas/Status'
+        datetime:
+          type: string
+          format: date-time
+    TransferDay:
+      type: object
+      required:
+        - id
+        - transferDayNumber
+        - status
+        - datetime
+        - transferWindow
+      properties:
+        id:
+          type: integer
+          format: int64
+        transferDayNumber:
+          type: integer
+          format: int32
+        status:
+          $ref: '#/components/schemas/Status'
+        datetime:
+          type: string
+          format: date-time
+        matchWeek:
+          $ref: '#/components/schemas/TransferWindow'
