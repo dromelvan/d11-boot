@@ -14,11 +14,6 @@ import javax.validation.constraints.PositiveOrZero;
 public class PlayerStatSummary extends PlayerStat {
 
     /**
-     * Current or total fees paid for the player by D11 teams.
-     */
-    @PositiveOrZero
-    private int value;
-    /**
      * Player ranking.
      */
     @Positive

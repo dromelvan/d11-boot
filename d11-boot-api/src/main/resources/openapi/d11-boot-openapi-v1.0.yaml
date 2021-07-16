@@ -1455,7 +1455,7 @@ paths:
           $ref: '#/components/responses/Unexpected'
   /transfer-days/transfer-window/{transferWindowId}:
     get:
-      summary: Find a transfer day by transfer window id.
+      summary: Find transfer days by transfer window id.
       operationId: findTransferDayByTransferWindowId
       tags:
         - transferDay
@@ -1476,6 +1476,69 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/TransferDay"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /transfer-listings/{transferListingId}:
+    get:
+      summary: Find a transfer listing by id.
+      operationId: findTransferListingById
+      tags:
+        - transferListing
+      parameters:
+        - name: transferListingId
+          in: path
+          required: true
+          description: The id of the transfer listing to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferListing"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /transfer-listings/transfer-day/{transferDayId}/page/{page}:
+    get:
+      summary: Find transfer listings by transfer day id.
+      operationId: findTransferListingByTransferDayId
+      tags:
+        - transferListing
+      parameters:
+        - name: transferDayId
+          in: path
+          required: true
+          description: The id of the transfer day that transfer listings will be found for.
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: path
+          required: true
+          description: The page (25 per page) of transfer listings for the transfer day that will be returned.
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransferListing"
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -4229,6 +4292,7 @@ components:
         - transferDayNumber
         - status
         - datetime
+        - transferListingCount
         - transferWindow
       properties:
         id:
@@ -4242,5 +4306,250 @@ components:
         datetime:
           type: string
           format: date-time
-        matchWeek:
+        transferListingCount:
+          type: integer
+          format: int32
+        transferWindow:
           $ref: '#/components/schemas/TransferWindow'
+
+    TransferListingStub:
+      type: object
+      required:
+        - id
+        - ranking
+        - points
+        - goals
+        - newPlayer
+        - player
+        - team
+        - d11Team
+      properties:
+        id:
+          type: integer
+          format: int64
+        ranking:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        goals:
+          type: integer
+          format: int32
+        newPlayer:
+          type: boolean
+        player:
+          $ref: '#/components/schemas/PlayerName'
+        team:
+          $ref: '#/components/schemas/TeamName'
+        d11Team:
+          $ref: '#/components/schemas/D11TeamName'
+    TransferListingBase:
+      type: object
+      required:
+        - id
+        - ranking
+        - points
+        - formPoints
+        - formMatchPoints
+        - pointsPerAppearance
+        - goals
+        - goalAssists
+        - ownGoals
+        - goalsConceded
+        - cleanSheets
+        - yellowCards
+        - redCards
+        - substitutionsOn
+        - substitutionsOff
+        - manOfTheMatch
+        - sharedManOfTheMatch
+        - rating
+        - gamesStarted
+        - gamesSubstitute
+        - gamesDidNotParticipate
+        - minutesPlayed
+        - newPlayer
+      properties:
+        id:
+          type: integer
+          format: int64
+        ranking:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        formPoints:
+          type: integer
+          format: int32
+        formMatchPoints:
+          type: array
+          items:
+            type: integer
+            format: int32
+        pointsPerAppearance:
+          type: integer
+          format: int32
+        goals:
+          type: integer
+          format: int32
+        goalAssists:
+          type: integer
+          format: int32
+        ownGoals:
+          type: integer
+          format: int32
+        goalsConceded:
+          type: integer
+          format: int32
+        cleanSheets:
+          type: integer
+          format: int32
+        yellowCards:
+          type: integer
+          format: int32
+        redCards:
+          type: integer
+          format: int32
+        substitutionsOn:
+          type: integer
+          format: int32
+        substitutionsOff:
+          type: integer
+          format: int32
+        manOfTheMatch:
+          type: integer
+          format: int32
+        sharedManOfTheMatch:
+          type: integer
+          format: int32
+        rating:
+          type: integer
+          format: int32
+        gamesStarted:
+          type: integer
+          format: int32
+        gamesSubstitute:
+          type: integer
+          format: int32
+        gamesDidNotParticipate:
+          type: integer
+          format: int32
+        minutesPlayed:
+          type: integer
+          format: int32
+        newPlayer:
+          type: boolean
+    TransferListing:
+      type: object
+      required:
+        - id
+        - ranking
+        - points
+        - formPoints
+        - formMatchPoints
+        - pointsPerAppearance
+        - goals
+        - goalAssists
+        - ownGoals
+        - goalsConceded
+        - cleanSheets
+        - yellowCards
+        - redCards
+        - substitutionsOn
+        - substitutionsOff
+        - manOfTheMatch
+        - sharedManOfTheMatch
+        - rating
+        - gamesStarted
+        - gamesSubstitute
+        - gamesDidNotParticipate
+        - minutesPlayed
+        - transferDay
+        - player
+        - team
+        - d11Team
+        - position
+        - newPlayer
+      properties:
+        id:
+          type: integer
+          format: int64
+        ranking:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        formPoints:
+          type: integer
+          format: int32
+        formMatchPoints:
+          type: array
+          items:
+            type: integer
+            format: int32
+        pointsPerAppearance:
+          type: integer
+          format: int32
+        goals:
+          type: integer
+          format: int32
+        goalAssists:
+          type: integer
+          format: int32
+        ownGoals:
+          type: integer
+          format: int32
+        goalsConceded:
+          type: integer
+          format: int32
+        cleanSheets:
+          type: integer
+          format: int32
+        yellowCards:
+          type: integer
+          format: int32
+        redCards:
+          type: integer
+          format: int32
+        substitutionsOn:
+          type: integer
+          format: int32
+        substitutionsOff:
+          type: integer
+          format: int32
+        manOfTheMatch:
+          type: integer
+          format: int32
+        sharedManOfTheMatch:
+          type: integer
+          format: int32
+        rating:
+          type: integer
+          format: int32
+        gamesStarted:
+          type: integer
+          format: int32
+        gamesSubstitute:
+          type: integer
+          format: int32
+        gamesDidNotParticipate:
+          type: integer
+          format: int32
+        minutesPlayed:
+          type: integer
+          format: int32
+        newPlayer:
+          type: boolean
+        transferDay:
+          $ref: '#/components/schemas/TransferDayBase'
+        player:
+          $ref: '#/components/schemas/PlayerBase'
+        team:
+          $ref: '#/components/schemas/TeamBase'
+        d11Team:
+          $ref: '#/components/schemas/D11TeamBase'
+        position:
+          $ref: '#/components/schemas/Position'

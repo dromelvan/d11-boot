@@ -48,7 +48,7 @@ public class PlayerSeasonStatService extends AbstractRepositoryService<PlayerSea
      * Gets player season stats for a season.
      *
      * @param seasonId Id for the season for which player season stats will be looked up.
-     * @param page Page number (25 per page) for the
+     * @param page Page number (25 per page) for the search result page that will be returned.
      * @return Player season stats for the season, in pages of size 25.
      */
     public List<PlayerSeasonStatDTO> findPlayerSeasonStatBySeasonId(final long seasonId, final int page) {

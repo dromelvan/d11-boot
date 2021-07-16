@@ -58,7 +58,7 @@ public class TransferDayApiTests extends AbstractRepositoryApiTests<TransferDay,
      */
     @Test
     public void findCurrentTransferDay() {
-        final TransferDay currentTransferDay = getEntities().get(0);
+        final TransferDay currentTransferDay = getRepository().findFirstByOrderByDatetimeDesc().orElse(null);
         final TransferDayDTO transferDayDTO = map(currentTransferDay, TransferDayDTO.class);
 
         final TransferDayDTO result = getApiService().findCurrentTransferDay();
@@ -72,7 +72,7 @@ public class TransferDayApiTests extends AbstractRepositoryApiTests<TransferDay,
     @Test
     public void findTransferDayByTransferWindowId() {
         final Map<TransferWindow, List<TransferDay>> transferWindowMap = new HashMap<>();
-        for(final TransferDay transferDay : getEntities()) {
+        for(final TransferDay transferDay : getRepository().findAll()) {
             final List<TransferDay> transferDays = transferWindowMap.computeIfAbsent(transferDay.getTransferWindow(), p -> new ArrayList<>());
             transferDays.add(transferDay);
         }

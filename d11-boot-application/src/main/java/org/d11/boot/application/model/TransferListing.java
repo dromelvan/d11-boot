@@ -10,28 +10,14 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
- * Stats and information for one player and one season.
+ * A transfer listing in a transfer day.
  */
 @Data
 @Entity
-public class PlayerSeasonStat extends PlayerStatSummary {
-
-    /**
-     * Current fee paid for the player by a D11 team.
-     */
-    @PositiveOrZero
-    private int value;
-
-    /**
-     * The nth most valuable player win for this player, if he won this season.
-     */
-    @Positive
-    private Integer winCount;
+public class TransferListing extends PlayerStatSummary {
 
     /**
      * Total points the last five games.
@@ -45,6 +31,21 @@ public class PlayerSeasonStat extends PlayerStatSummary {
     private List<Integer> formMatchPoints;
 
     /**
+     * A new player has not been available for transfer so far this season.
+     */
+    private boolean newPlayer;
+
+    /**
+     * The transfer day the stats are for.
+     */
+    @ManyToOne
+    @JoinColumn(name = "transfer_day_id")
+    @NotNull
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private TransferDay transferDay;
+
+    /**
      * The player the stats are for.
      */
     @ManyToOne
@@ -53,16 +54,6 @@ public class PlayerSeasonStat extends PlayerStatSummary {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Player player;
-
-    /**
-     * The season the stats are for.
-     */
-    @ManyToOne
-    @JoinColumn(name = "season_id")
-    @NotNull
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Season season;
 
     /**
      * The team the player belongs to at the current point of this season.
@@ -95,3 +86,4 @@ public class PlayerSeasonStat extends PlayerStatSummary {
     private Position position;
 
 }
+

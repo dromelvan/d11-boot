@@ -22,10 +22,6 @@ public class PlayerStatSummaryTests extends D11EasyRandomTests {
 
         assertTrue(playerStatSummary.isValid(), "New player stat summary should be valid.");
 
-        playerStatSummary.setValue(-1);
-        assertFalse(playerStatSummary.isValid(), "Negative value should not be valid.");
-        playerStatSummary.setValue(1);
-
         playerStatSummary.setRanking(-1);
         assertFalse(playerStatSummary.isValid(), "Non positive ranking should not be valid.");
         playerStatSummary.setRanking(1);

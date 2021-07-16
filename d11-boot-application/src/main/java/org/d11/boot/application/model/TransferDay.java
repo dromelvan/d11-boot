@@ -5,14 +5,18 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.d11.boot.application.model.converter.StatusConverter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * A transfer day in a transfer window, containing transfer listings, bids and transfers.
@@ -49,6 +53,14 @@ public class TransferDay extends D11Entity implements Comparable<TransferDay> {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private TransferWindow transferWindow;
+
+    /**
+     * List of transfer listings in this transfer day.
+     */
+    @OneToMany(mappedBy = "transferDay", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<TransferListing> transferListings = new ArrayList<>();
 
     @Override
     public int compareTo(final TransferDay transferDay) {

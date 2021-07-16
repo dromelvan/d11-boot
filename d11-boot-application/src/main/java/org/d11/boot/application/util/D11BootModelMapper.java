@@ -2,8 +2,10 @@ package org.d11.boot.application.util;
 
 import org.d11.boot.api.model.MatchWeekDTO;
 import org.d11.boot.api.model.SeasonDTO;
+import org.d11.boot.api.model.TransferDayDTO;
 import org.d11.boot.application.model.MatchWeek;
 import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.TransferDay;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 
@@ -38,6 +40,12 @@ public class D11BootModelMapper extends ModelMapper {
                 skip(destination.getPremierLeagueLeader());
                 skip(destination.getD11LeagueLeader());
                 skip(destination.getMostValuablePlayer());
+            }
+        });
+        addMappings(new PropertyMap<TransferDay, TransferDayDTO>() {
+            @Override
+            protected void configure() {
+                using(new D11EntityListSizeMapperConverter()).map(source.getTransferListings()).setTransferListingCount(null);
             }
         });
     }

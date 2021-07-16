@@ -1,4 +1,7 @@
 -- Delete existing data
+DELETE FROM transfer_listing WHERE id > 0;
+SELECT setval('transfer_listing_id_seq', 1);
+
 DELETE FROM transfer_day WHERE id > 0;
 SELECT setval('transfer_day_id_seq', 1);
 
@@ -345,6 +348,13 @@ INSERT INTO transfer_day
 SELECT * FROM data.transfer_days;
 SELECT setval('transfer_day_id_seq', (SELECT last_value FROM data.transfer_days_id_seq));
 
+-- Transfer listing
+INSERT INTO transfer_listing
+SELECT id, transfer_day_id, player_id, team_id, d11_team_id, position_id, ranking, points, 0, '', points_per_appearance,
+       goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match,
+       rating, games_started, games_substitute, games_did_not_participate,minutes_played, new_player, created_at, updated_at
+FROM data.transfer_listings;
+SELECT setval('transfer_listing_id_seq', (SELECT last_value FROM data.transfer_listings_id_seq));
 
 -- Update match week premier league leader
 UPDATE match_week

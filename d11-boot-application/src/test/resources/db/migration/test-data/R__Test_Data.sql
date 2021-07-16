@@ -256,3 +256,11 @@ INSERT INTO transfer_day VALUES(5, 3, 1, 3, CURRENT_DATE - 2, '2020-01-01 00:00:
 INSERT INTO transfer_day VALUES(6, 3, 2, 3, CURRENT_DATE - 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO transfer_day VALUES(7, 4, 1, 2, CURRENT_DATE - 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO transfer_day VALUES(8, 4, 2, 1, CURRENT_DATE + 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+
+-- INSERT INTO transfer_listing(
+--     id, transfer_day_id, player_id, team_id, d11_team_id, position_id, ranking, points, form_points, form_match_points, points_per_appearance, goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, new_player, created_at, updated_at
+--     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO transfer_listing VALUES (1, 1, 1, 1, 1, 1, 1, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO transfer_listing VALUES (2, 1, 2, 2, 2, 2, 2, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO transfer_listing VALUES (3, 2, 1, 1, 1, 1, 1, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO transfer_listing VALUES (4, 2, 2, 2, 2, 2, 2, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');

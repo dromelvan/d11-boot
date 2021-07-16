@@ -2,6 +2,8 @@ package org.d11.boot.application.model;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,11 +23,19 @@ public class PlayerSeasonStatTests extends D11EasyRandomTests {
 
         assertTrue(playerSeasonStat.isValid(), "New player season stat should be valid.");
 
+        playerSeasonStat.setValue(-1);
+        assertFalse(playerSeasonStat.isValid(), "Negative value should not be valid.");
+        playerSeasonStat.setValue(1);
+
         playerSeasonStat.setWinCount(null);
         assertTrue(playerSeasonStat.isValid(), "Null win count should be valid.");
         playerSeasonStat.setWinCount(0);
         assertFalse(playerSeasonStat.isValid(), "Non positive win count should be valid.");
         playerSeasonStat.setWinCount(1);
+
+        playerSeasonStat.setFormMatchPoints(null);
+        assertFalse(playerSeasonStat.isValid(), "Null form match points should not be valid.");
+        playerSeasonStat.setFormMatchPoints(new ArrayList<>());
 
         playerSeasonStat.setPlayer(null);
         assertFalse(playerSeasonStat.isValid(), "Null player should not be valid.");
