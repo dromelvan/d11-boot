@@ -1545,6 +1545,62 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /transfer-bids/{transferBidId}:
+    get:
+      summary: Find a transfer bid by id.
+      operationId: findTransferBidById
+      tags:
+        - transferBid
+      parameters:
+        - name: transferBidId
+          in: path
+          required: true
+          description: The id of the transfer bid to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferBid"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /transfer-bids/transfer-day/{transferDayId}:
+    get:
+      summary: Find transfer bids by transfer day id.
+      operationId: findTransferBidByTransferDayId
+      tags:
+        - transferBid
+      parameters:
+        - name: transferDayId
+          in: path
+          required: true
+          description: The id of the transfer day that transfer bids will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransferBid"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /search:
     get:
       summary: Search players, teams and D11 teams by name.
@@ -4553,3 +4609,67 @@ components:
           $ref: '#/components/schemas/D11TeamBase'
         position:
           $ref: '#/components/schemas/Position'
+
+    TransferBidBase:
+      type: object
+      required:
+        - id
+        - playerRanking
+        - d11TeamRanking
+        - fee
+        - activeFee
+        - successful
+      properties:
+        id:
+          type: integer
+          format: int64
+        playerRanking:
+          type: integer
+          format: int32
+        d11TeamRanking:
+          type: integer
+          format: int32
+        fee:
+          type: integer
+          format: int32
+        activeFee:
+          type: integer
+          format: int32
+        successful:
+          type: boolean
+    TransferBid:
+      type: object
+      required:
+        - id
+        - playerRanking
+        - d11TeamRanking
+        - fee
+        - activeFee
+        - successful
+        - transferDay
+        - player
+        - d11Team
+      properties:
+        id:
+          type: integer
+          format: int64
+        playerRanking:
+          type: integer
+          format: int32
+        d11TeamRanking:
+          type: integer
+          format: int32
+        fee:
+          type: integer
+          format: int32
+        activeFee:
+          type: integer
+          format: int32
+        successful:
+          type: boolean
+        transferDay:
+          $ref: '#/components/schemas/TransferDayBase'
+        player:
+          $ref: '#/components/schemas/PlayerBase'
+        d11Team:
+          $ref: '#/components/schemas/D11TeamBase'

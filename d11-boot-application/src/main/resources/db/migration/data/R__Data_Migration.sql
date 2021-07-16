@@ -1,4 +1,7 @@
 -- Delete existing data
+DELETE FROM transfer_bid WHERE id > 0;
+SELECT setval('transfer_bid_id_seq', 1);
+
 DELETE FROM transfer_listing WHERE id > 0;
 SELECT setval('transfer_listing_id_seq', 1);
 
@@ -355,6 +358,13 @@ SELECT id, transfer_day_id, player_id, team_id, d11_team_id, position_id, rankin
        rating, games_started, games_substitute, games_did_not_participate,minutes_played, new_player, created_at, updated_at
 FROM data.transfer_listings;
 SELECT setval('transfer_listing_id_seq', (SELECT last_value FROM data.transfer_listings_id_seq));
+
+-- Transfer bid
+INSERT INTO transfer_bid
+SELECT id, transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful, created_at, updated_at
+FROM data.transfer_bids;
+SELECT setval('transfer_bid_id_seq', (SELECT last_value FROM data.transfer_bids_id_seq));
+
 
 -- Update match week premier league leader
 UPDATE match_week

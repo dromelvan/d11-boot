@@ -129,6 +129,11 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
         randomize(FieldPredicates.named("awayRanking"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
 
         randomize(FieldPredicates.named("winCount"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+
+        randomize(FieldPredicates.named("playerRanking"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("d11TeamRanking"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("fee"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
+        randomize(FieldPredicates.named("activeFee"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
     }
 
 }
