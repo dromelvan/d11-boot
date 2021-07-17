@@ -55,7 +55,7 @@ public class TransferBidApiTests extends AbstractRepositoryApiTests<TransferBid,
      * Tests the findTransferBidByTransferDayId API operation.
      */
     @Test
-    public void findTransferDayByTransferWindowId() {
+    public void findTransferBidByTransferDayId() {
         final Map<TransferDay, List<TransferBid>> transferDayMap = new HashMap<>();
         for(final TransferBid transferBid : getEntities()) {
             final List<TransferBid> transferBids = transferDayMap.computeIfAbsent(transferBid.getTransferDay(), p -> new ArrayList<>());

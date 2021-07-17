@@ -1,4 +1,7 @@
 -- Delete existing data
+DELETE FROM transfer WHERE id > 0;
+SELECT setval('transfer_id_seq', 1);
+
 DELETE FROM transfer_bid WHERE id > 0;
 SELECT setval('transfer_bid_id_seq', 1);
 
@@ -20,13 +23,16 @@ SELECT setval('team_season_stat_id_seq', 1);
 DELETE FROM player_season_stat WHERE id > 0;
 SELECT setval('player_season_stat_id_seq', 1);
 
+UPDATE match_week SET most_valuable_player_id = null;
+UPDATE match_week SET d11_league_leader_id = null;
+UPDATE match_week SET premier_league_leader_id = null;
+
 DELETE FROM d11_team_match_week_stat WHERE id > 0;
 SELECT setval('d11_team_match_week_stat_id_seq', 1);
 
 DELETE FROM team_match_week_stat WHERE id > 0;
 SELECT setval('team_match_week_stat_id_seq', 1);
 
-UPDATE match_week SET most_valuable_player_id = null;
 DELETE FROM player_match_stat WHERE id > 0;
 SELECT setval('player_match_stat_id_seq', 1);
 
@@ -364,6 +370,11 @@ INSERT INTO transfer_bid
 SELECT id, transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful, created_at, updated_at
 FROM data.transfer_bids;
 SELECT setval('transfer_bid_id_seq', (SELECT last_value FROM data.transfer_bids_id_seq));
+
+-- Transfer
+INSERT INTO transfer
+SELECT * FROM data.transfers;
+SELECT setval('transfer_id_seq', (SELECT last_value FROM data.transfers_id_seq));
 
 
 -- Update match week premier league leader

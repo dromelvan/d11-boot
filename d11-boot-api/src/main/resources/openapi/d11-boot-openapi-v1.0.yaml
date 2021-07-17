@@ -1601,6 +1601,91 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /transfers/{transferId}:
+    get:
+      summary: Find a transfer by id.
+      operationId: findTransferById
+      tags:
+        - transfer
+      parameters:
+        - name: transferId
+          in: path
+          required: true
+          description: The id of the transfer to find.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transfer"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /transfers/transfer-day/{transferDayId}:
+    get:
+      summary: Find transfers by transfer day id.
+      operationId: findTransferByTransferDayId
+      tags:
+        - transfer
+      parameters:
+        - name: transferDayId
+          in: path
+          required: true
+          description: The id of the transfer day that transfers will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transfer"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /transfers/player/{playerId}:
+    get:
+      summary: Find transfers by player id.
+      operationId: findTransferByPlayerId
+      tags:
+        - transfer
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          description: The id of the player that transfers will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transfer"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /search:
     get:
       summary: Search players, teams and D11 teams by name.
@@ -4667,6 +4752,40 @@ components:
           format: int32
         successful:
           type: boolean
+        transferDay:
+          $ref: '#/components/schemas/TransferDayBase'
+        player:
+          $ref: '#/components/schemas/PlayerBase'
+        d11Team:
+          $ref: '#/components/schemas/D11TeamBase'
+
+    TransferBase:
+      type: object
+      required:
+        - id
+        - fee
+      properties:
+        id:
+          type: integer
+          format: int64
+        fee:
+          type: integer
+          format: int32
+    Transfer:
+      type: object
+      required:
+        - id
+        - fee
+        - transferDay
+        - player
+        - d11Team
+      properties:
+        id:
+          type: integer
+          format: int64
+        fee:
+          type: integer
+          format: int32
         transferDay:
           $ref: '#/components/schemas/TransferDayBase'
         player:
