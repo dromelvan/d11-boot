@@ -87,8 +87,8 @@ SELECT setval('application_user_id_seq', 1);
 -- We need the old data to be in a 'data' schema.
 -- Seasons
 INSERT INTO season
-SELECT * FROM data.seasons;
-SELECT setval('season_id_seq', (SELECT last_value FROM data.seasons_id_seq));
+SELECT id - 1, name, status, date, legacy, created_at, updated_at FROM data.seasons;
+SELECT setval('season_id_seq', (SELECT last_value -1 FROM data.seasons_id_seq));
 
 UPDATE season SET status = 99 WHERE status = 3;
 UPDATE season SET status = 3 WHERE status = 2;
@@ -96,12 +96,12 @@ UPDATE season SET status = 2 WHERE status = 99;
 
 -- Premier Leagues
 INSERT INTO premier_league
-SELECT * FROM data.premier_leagues;
+SELECT id, season_id - 1, name, created_at, updated_at FROM data.premier_leagues;
 SELECT setval('premier_league_id_seq', (SELECT last_value FROM data.premier_leagues_id_seq));
 
 -- D11 Leagues
 INSERT INTO d11_league
-SELECT * FROM data.d11_leagues;
+SELECT id, season_id - 1, name, created_at, updated_at FROM data.d11_leagues;
 SELECT setval('d11_league_id_seq', (SELECT last_value FROM data.d11_leagues_id_seq));
 
 -- Stadia
@@ -220,7 +220,7 @@ SELECT setval('position_id_seq', (SELECT last_value FROM data.positions_id_seq))
 
 -- Match weeks
 INSERT INTO match_week
-SELECT id, premier_league_id + 1, null, null, null, match_day_number, date, 0, status, created_at, updated_at FROM data.match_days;
+SELECT id, premier_league_id, null, null, null, match_day_number, date, 0, status, created_at, updated_at FROM data.match_days;
 SELECT setval('match_week_id_seq', (SELECT last_value FROM data.match_days_id_seq));
 
 UPDATE match_week SET status = 99 WHERE status = 3;
@@ -311,7 +311,7 @@ SELECT setval('d11_team_match_week_stat_id_seq', (SELECT last_value FROM data.d1
 -- Team season stats
 INSERT INTO team_season_stat
 SELECT NEXTVAL('team_season_stat_id_seq') id, subquery.* FROM(
-SELECT tts.team_id, season_id, CAST(null AS INTEGER) win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, form_match_points, ranking, previous_ranking,
+SELECT tts.team_id, season_id - 1, CAST(null AS INTEGER) win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, form_match_points, ranking, previous_ranking,
        home_matches_played, home_matches_won, home_matches_drawn, home_matches_lost, home_goals_for, home_goals_against, home_goal_difference, home_points, home_ranking,
        away_matches_played, away_matches_won, away_matches_drawn, away_matches_lost, away_goals_for, away_goals_against, away_goal_difference, away_points, away_ranking,
        now()::timestamp created_at, now()::timestamp updated_at
@@ -325,7 +325,7 @@ ORDER BY season_id, ranking
 -- D11 team season stats
 INSERT INTO d11_team_season_stat
 SELECT NEXTVAL('d11_team_season_stat_id_seq') id, subquery.* FROM(
-SELECT d11tts.d11_team_id, season_id, CAST(null AS INTEGER) win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, form_match_points, ranking, previous_ranking,
+SELECT d11tts.d11_team_id, season_id - 1, CAST(null AS INTEGER) win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, form_match_points, ranking, previous_ranking,
        home_matches_played, home_matches_won, home_matches_drawn, home_matches_lost, home_goals_for, home_goals_against, home_goal_difference, home_points, home_ranking,
        away_matches_played, away_matches_won, away_matches_drawn, away_matches_lost, away_goals_for, away_goals_against, away_goal_difference, away_points, away_ranking,
        now()::timestamp created_at, now()::timestamp updated_at
@@ -338,7 +338,7 @@ ORDER BY season_id, ranking
 
 -- Player season stats
 INSERT INTO player_season_stat
-SELECT psi.id, psi.player_id, psi.season_id, team_id, d11_team_id, position_id, CAST(null AS INTEGER) win_count, value, ranking, points, form_points, form_match_points, points_per_appearance,
+SELECT psi.id, psi.player_id, psi.season_id - 1, team_id, d11_team_id, position_id, CAST(null AS INTEGER) win_count, value, ranking, points, form_points, form_match_points, points_per_appearance,
        goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match, rating,
        games_started, games_substitute, games_did_not_participate, minutes_played, psi.created_at, psi.updated_at
        FROM data.player_season_infos psi JOIN data.player_season_stats pss ON psi.player_id = pss.player_id AND psi.season_id = pss.season_id
