@@ -41,8 +41,8 @@ public class TransferListingService extends AbstractRepositoryService<TransferLi
      */
     public List<TransferListingDTO> findByTransferDayId(final long transferDayId, final int page) {
         final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("ranking"));
-        final List<TransferListing> transferDays = getJpaRepository().findByTransferDayIdOrderByRanking(transferDayId, pageable);
-        return map(transferDays);
+        final List<TransferListing> transferListings = getJpaRepository().findByTransferDayIdOrderByRanking(transferDayId, pageable);
+        return map(transferListings);
     }
 
 }

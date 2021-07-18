@@ -1686,6 +1686,27 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /available-players:
+    get:
+      summary: Finds currently available players
+      operationId: findAvailablePlayers
+      tags:
+        - availablePlayer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AvailablePlayersTeam"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /search:
     get:
       summary: Search players, teams and D11 teams by name.
@@ -4792,3 +4813,45 @@ components:
           $ref: '#/components/schemas/PlayerBase'
         d11Team:
           $ref: '#/components/schemas/D11TeamBase'
+
+    AvailablePlayer:
+      type: object
+      required:
+        - playerName
+        - playerShortName
+        - teamId
+        - teamName
+        - positionCode
+        - positionSortOrder
+      properties:
+        playerName:
+          type: string
+        playerShortName:
+          type: string
+        teamId:
+          type: integer
+          format: int64
+        teamName:
+          type: string
+        positionCode:
+          type: string
+        positionSortOrder:
+          type: integer
+          format: int32
+
+    AvailablePlayersTeam:
+      type: object
+      required:
+        - id
+        - name
+        - players
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailablePlayer'

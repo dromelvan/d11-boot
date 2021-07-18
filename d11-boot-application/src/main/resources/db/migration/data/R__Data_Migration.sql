@@ -352,10 +352,14 @@ SELECT id, d11_match_day_id, transfer_window_number, transfer_window_number < 1,
 FROM data.transfer_windows;
 SELECT setval('transfer_window_id_seq', (SELECT last_value FROM data.transfer_windows_id_seq));
 
+UPDATE transfer_window SET status = 3 WHERE status = 2;
+
 -- Transfer day
 INSERT INTO transfer_day
 SELECT * FROM data.transfer_days;
 SELECT setval('transfer_day_id_seq', (SELECT last_value FROM data.transfer_days_id_seq));
+
+UPDATE transfer_day SET status = 3 WHERE status = 2;
 
 -- Transfer listing
 INSERT INTO transfer_listing

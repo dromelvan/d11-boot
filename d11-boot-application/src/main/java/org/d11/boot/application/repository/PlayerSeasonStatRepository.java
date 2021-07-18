@@ -1,6 +1,7 @@
 package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.PlayerSeasonStat;
+import org.d11.boot.application.model.projection.TransferListingProjection;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -31,6 +32,14 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
      * @return Player season stats for the season ordered and paged by the pageable.
      */
     List<PlayerSeasonStat> findBySeasonId(@Param("seasonId") Long seasonId, Pageable pageable);
+
+    /**
+     * Gets transfer listing projections for players for a season.
+     *
+     * @param seasonId Id for the season for which transfer listing projections will be looked up.
+     * @return transfer listing projections for the season.
+     */
+    List<TransferListingProjection> findBySeasonId(@Param("seasonId") Long seasonId);
 
     /**
      * Gets a player season stat for a specific player and a specific season.
