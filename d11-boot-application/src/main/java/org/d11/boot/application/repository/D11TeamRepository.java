@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository for D11 team entities.
@@ -24,5 +25,13 @@ public interface D11TeamRepository extends D11EntityRepository<D11Team> {
             "WHERE d11TeamSeasonStat.season.id = :seasonId " +
             "ORDER BY d11Team.name")
     List<D11Team> findByD11TeamSeasonStatSeasonIdOrderByName(@Param("seasonId") Long seasonId);
+
+    /**
+     * Gets D11 team owned by a specific user.
+     *
+     * @param email Email/username of the user for which D11 team will be looked up.
+     * @return Optional of D11 team owned by the user.
+     */
+    Optional<D11Team> findByOwnerEmail(@Param("email") String email);
 
 }

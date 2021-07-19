@@ -1,6 +1,9 @@
 package org.d11.boot.application.service;
 
 import org.d11.boot.api.model.AuthenticationResultDTO;
+import org.d11.boot.api.model.D11TeamNameDTO;
+import org.d11.boot.application.model.D11Team;
+import org.d11.boot.application.repository.D11TeamRepository;
 import org.d11.boot.application.security.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -21,6 +24,10 @@ public class AuthenticationService extends D11BootService {
      */
     private final UserDetailsService userDetailsService;
     /**
+     * D11 team repository for finding user D11 teams.
+     */
+    private final D11TeamRepository d11TeamRepository;
+    /**
      * Password encoder that matches provided password with the encrypted user password in the database.
      */
     private final PasswordEncoder passwordEncoder;
@@ -33,14 +40,17 @@ public class AuthenticationService extends D11BootService {
      * Creates a new service.
      *
      * @param userDetailsService The user details service this service will use.
+     * @param d11TeamRepository  The D11 team repository this service will use.
      * @param passwordEncoder    The password encoder this service will use.
      * @param jwtBuilder         The JWT builder this service will use.
      */
     @Autowired
     public AuthenticationService(final UserDetailsService userDetailsService,
+                                 final D11TeamRepository d11TeamRepository,
                                  final PasswordEncoder passwordEncoder,
                                  final JwtBuilder jwtBuilder) {
         this.userDetailsService = userDetailsService;
+        this.d11TeamRepository = d11TeamRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtBuilder = jwtBuilder;
     }
@@ -56,8 +66,10 @@ public class AuthenticationService extends D11BootService {
     public AuthenticationResultDTO authenticate(final String username, final String password) {
         final UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
         if(this.passwordEncoder.matches(password, userDetails.getPassword())) {
+            final D11Team d11Team = this.d11TeamRepository.findByOwnerEmail(userDetails.getUsername()).orElse(null);
             final String jwt = this.jwtBuilder.build(username);
             return new AuthenticationResultDTO()
+                    .d11Team(map(d11Team, D11TeamNameDTO.class))
                     .jwt(jwt);
         }
         throw new BadCredentialsException("Authentication failed");

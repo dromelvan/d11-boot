@@ -1794,9 +1794,12 @@ components:
       type: object
       required:
         - jwt
+        - d11Team
       properties:
         jwt:
           type: string
+        d11Team:
+          $ref: '#/components/schemas/D11TeamName'
 
     User:
       type: object

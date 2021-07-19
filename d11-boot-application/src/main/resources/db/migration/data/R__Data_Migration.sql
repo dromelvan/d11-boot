@@ -196,6 +196,14 @@ UPDATE d11_team
 SET photo_file_name = concat(id, '.png')
 WHERE photo_file_name IS NOT NULL;
 
+UPDATE d11_team
+SET owner_id = null
+WHERE owner_id = 1;
+
+UPDATE d11_team
+SET owner_id = 1
+WHERE id = 1;
+
 -- Countries
 INSERT INTO country
 SELECT * FROM data.countries;
