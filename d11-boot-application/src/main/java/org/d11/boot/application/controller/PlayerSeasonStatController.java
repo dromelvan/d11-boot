@@ -2,6 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.PlayerSeasonStatsApi;
 import org.d11.boot.api.model.PlayerSeasonStatDTO;
+import org.d11.boot.api.model.TeamPlayerSeasonStatsDTO;
 import org.d11.boot.application.service.PlayerSeasonStatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,6 +57,12 @@ public class PlayerSeasonStatController extends AbstractRepositoryServiceControl
     public ResponseEntity<List<PlayerSeasonStatDTO>> findPlayerSeasonStatByD11TeamIdAndSeasonId(final Long d11TeamId, final Long seasonId) {
         final List<PlayerSeasonStatDTO> playerSeasonStats = getRepositoryService().findPlayerSeasonStatByD11TeamIdAndSeasonId(d11TeamId, seasonId);
         return ResponseEntity.ok(playerSeasonStats);
+    }
+
+    @Override
+    public ResponseEntity<List<TeamPlayerSeasonStatsDTO>> findAvailablePlayerSeasonStatBySeasonId(final Long seasonId) {
+        final List<TeamPlayerSeasonStatsDTO> teamPlayerSeasonStats = getRepositoryService().findTeamPlayerSeasonStatsBySeasonIdAndAvailable(seasonId, true);
+        return ResponseEntity.ok(teamPlayerSeasonStats);
     }
 
 }

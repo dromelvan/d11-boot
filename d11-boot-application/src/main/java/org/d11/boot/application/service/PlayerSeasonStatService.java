@@ -1,8 +1,11 @@
 package org.d11.boot.application.service;
 
 import org.d11.boot.api.model.PlayerSeasonStatDTO;
+import org.d11.boot.api.model.TeamPlayerSeasonStatsDTO;
 import org.d11.boot.application.model.PlayerSeasonStat;
 import org.d11.boot.application.repository.PlayerSeasonStatRepository;
+import org.d11.boot.application.util.NotFoundException;
+import org.d11.boot.application.util.PlayerSeasonStatsToTeamPlayerSeasonStatsMapConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -48,7 +52,7 @@ public class PlayerSeasonStatService extends AbstractRepositoryService<PlayerSea
      * Gets player season stats for a season.
      *
      * @param seasonId Id for the season for which player season stats will be looked up.
-     * @param page Page number (25 per page) for the search result page that will be returned.
+     * @param page     Page number (25 per page) for the search result page that will be returned.
      * @return Player season stats for the season, in pages of size 25.
      */
     public List<PlayerSeasonStatDTO> findPlayerSeasonStatBySeasonId(final long seasonId, final int page) {
@@ -73,7 +77,7 @@ public class PlayerSeasonStatService extends AbstractRepositoryService<PlayerSea
      * Gets player season stats for a specific team and a specific season ordered by player position sort order,
      * games started, descending, substitutions on, descending and games as substitute, descending.
      *
-     * @param teamId Id for the team for which player season stats will be looked up.
+     * @param teamId   Id for the team for which player season stats will be looked up.
      * @param seasonId Id for the season for which player season stats will be looked up.
      * @return Player season stat DTOs for the team and season.
      */
@@ -88,13 +92,32 @@ public class PlayerSeasonStatService extends AbstractRepositoryService<PlayerSea
      * games started, descending, substitutions on, descending and games as substitute, descending.
      *
      * @param d11TeamId Id for the D11 team for which player season stats will be looked up.
-     * @param seasonId Id for the season for which player season stats will be looked up.
+     * @param seasonId  Id for the season for which player season stats will be looked up.
      * @return Player season stat DTOs for the D11 team and season.
      */
     public List<PlayerSeasonStatDTO> findPlayerSeasonStatByD11TeamIdAndSeasonId(final long d11TeamId, final long seasonId) {
         final List<PlayerSeasonStat> playerSeasonStats = getJpaRepository()
                 .findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscGamesStartedDescSubstitutionsOnDescGamesSubstituteDescPointsDesc(d11TeamId, seasonId);
         return map(playerSeasonStats);
+    }
+
+    /**
+     * Gets players grouped by team for a specific season.
+     *
+     * @param seasonId  Id for the season for which player season stats will be looked up.
+     * @param available If true, only available players will be included.
+     * @return Players form the season grouped by team.
+     */
+    public List<TeamPlayerSeasonStatsDTO> findTeamPlayerSeasonStatsBySeasonIdAndAvailable(final long seasonId, final boolean available) {
+        final List<PlayerSeasonStat> playerSeasonStats = available
+                ? getJpaRepository().findBySeasonIdAndTeamDummyAndD11TeamDummyOrderByTeamNameAscPositionSortOrderAscPlayerLastNameAsc(seasonId, false, true)
+                : getJpaRepository().findBySeasonIdAndTeamDummyOrderByTeamNameAscPositionSortOrderAscPlayerLastNameAsc(seasonId, false);
+
+        final List<Map<String, Object>> teamPlayerSeasonStatsMap = new PlayerSeasonStatsToTeamPlayerSeasonStatsMapConverter().convert(playerSeasonStats);
+        if(teamPlayerSeasonStatsMap == null) {
+            throw new NotFoundException();
+        }
+        return map(teamPlayerSeasonStatsMap, TeamPlayerSeasonStatsDTO.class);
     }
 
 }

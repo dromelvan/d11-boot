@@ -1,7 +1,6 @@
 package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.TransferListing;
-import org.d11.boot.application.model.projection.TransferListingProjection;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -22,13 +21,5 @@ public interface TransferListingRepository extends D11EntityRepository<TransferL
      * @return Transfer listings for the transfer day.
      */
     List<TransferListing> findByTransferDayIdOrderByRanking(@Param("transferDayId") Long transferDayId, Pageable pageable);
-
-    /**
-     * Finds transfer listing projections for a specific transfer day.
-     *
-     * @param transferDayId Id for the transfer day for which transfer listing projections will be looked up.
-     * @return Transfer listing projections for the transfer day.
-     */
-    List<TransferListingProjection> findByTransferDayId(@Param("transferDayId") Long transferDayId);
 
 }

@@ -992,6 +992,35 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /player-season-stats/season/{seasonId}/available:
+    get:
+      summary: Find player season stats for available players by season id.
+      operationId: findAvailablePlayerSeasonStatBySeasonId
+      tags:
+        - playerSeasonStat
+      parameters:
+        - name: seasonId
+          in: path
+          required: true
+          description: Id for the season that available player season stats will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamPlayerSeasonStats"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /player-season-stats/player/{playerId}/season/{seasonId}:
     get:
       summary: Find a player season stat by player id and season id.
@@ -1680,27 +1709,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Transfer"
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/Unexpected'
-  /available-players:
-    get:
-      summary: Finds currently available players
-      operationId: findAvailablePlayers
-      tags:
-        - availablePlayer
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/AvailablePlayersTeam"
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -2915,6 +2923,7 @@ components:
         - player
         - team
         - d11Team
+        - position
       properties:
         id:
           type: integer
@@ -2937,6 +2946,8 @@ components:
           $ref: '#/components/schemas/TeamName'
         d11Team:
           $ref: '#/components/schemas/D11TeamName'
+        position:
+          $ref: '#/components/schemas/Position'
     PlayerSeasonStatBase:
       type: object
       required:
@@ -3156,6 +3167,32 @@ components:
           $ref: '#/components/schemas/D11TeamBase'
         position:
           $ref: '#/components/schemas/Position'
+
+    TeamPlayerSeasonStat:
+      type: object
+      required:
+        - playerName
+        - playerShortName
+        - positionCode
+      properties:
+        playerName:
+          type: string
+        playerShortName:
+          type: string
+        positionCode:
+          type: string
+    TeamPlayerSeasonStats:
+      type: object
+      required:
+        - team
+        - players
+      properties:
+        team:
+          $ref: '#/components/schemas/TeamName'
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamPlayerSeasonStat'
 
     TeamMatchWeekStatStub:
       type: object
@@ -4813,45 +4850,3 @@ components:
           $ref: '#/components/schemas/PlayerBase'
         d11Team:
           $ref: '#/components/schemas/D11TeamBase'
-
-    AvailablePlayer:
-      type: object
-      required:
-        - playerName
-        - playerShortName
-        - teamId
-        - teamName
-        - positionCode
-        - positionSortOrder
-      properties:
-        playerName:
-          type: string
-        playerShortName:
-          type: string
-        teamId:
-          type: integer
-          format: int64
-        teamName:
-          type: string
-        positionCode:
-          type: string
-        positionSortOrder:
-          type: integer
-          format: int32
-
-    AvailablePlayersTeam:
-      type: object
-      required:
-        - id
-        - name
-        - players
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        players:
-          type: array
-          items:
-            $ref: '#/components/schemas/AvailablePlayer'

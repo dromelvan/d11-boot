@@ -1,6 +1,7 @@
 package org.d11.boot.api.service;
 
 import org.d11.boot.api.model.PlayerSeasonStatDTO;
+import org.d11.boot.api.model.TeamPlayerSeasonStatsDTO;
 import org.d11.boot.client.api.PlayerSeasonStatApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -118,6 +119,24 @@ public class PlayerSeasonStatApiService extends D11ApiService {
         try {
             final PlayerSeasonStatApi playerSeasonStatApi = new PlayerSeasonStatApi(getApiClient());
             return playerSeasonStatApi.findPlayerSeasonStatByD11TeamIdAndSeasonId(d11TeamId, seasonId).collectList().block();
+        } catch(WebClientResponseException e) {
+            if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return null;
+            }
+            throw translate(e);
+        }
+    }
+
+    /**
+     * Find available players grouped by team for a specific season.
+     *
+     * @param seasonId The id of the season for which available players will be looked up.
+     * @return Available players grouped by team for the specified season.
+     */
+    public List<TeamPlayerSeasonStatsDTO> findAvailablePlayerSeasonStatBySeasonId(final Long seasonId) {
+        try {
+            final PlayerSeasonStatApi playerSeasonStatApi = new PlayerSeasonStatApi(getApiClient());
+            return playerSeasonStatApi.findAvailablePlayerSeasonStatBySeasonId(seasonId).collectList().block();
         } catch(WebClientResponseException e) {
             if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 return null;

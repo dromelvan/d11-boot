@@ -25,7 +25,7 @@ INSERT INTO team VALUES(2, 2, 22222, 'TeamB', 'ShortB', 'TMB', 'NicknameB', 2020
 -- INSERT INTO d11_team(
 --     id, owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-INSERT INTO d11_team VALUES(1, 1, null, 'D11TeamA', 'ShortA', 'DTA', false, '1.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO d11_team VALUES(1, 1, null, 'D11TeamA', 'ShortA', 'DTA', true, '1.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO d11_team VALUES(2, 2, null, 'D11TeamB', 'ShortB', 'DTB', false, '2.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO "position"(

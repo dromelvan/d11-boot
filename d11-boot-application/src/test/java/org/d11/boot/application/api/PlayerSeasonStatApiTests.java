@@ -1,6 +1,7 @@
 package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.PlayerSeasonStatDTO;
+import org.d11.boot.api.model.TeamPlayerSeasonStatsDTO;
 import org.d11.boot.api.service.PlayerSeasonStatApiService;
 import org.d11.boot.application.model.D11Team;
 import org.d11.boot.application.model.Player;
@@ -183,6 +184,21 @@ public class PlayerSeasonStatApiTests extends AbstractRepositoryApiTests<PlayerS
                         "Player season stats by D11 team id and season id should equal player season stats.");
             }
         }
+    }
+
+    /**
+     * Tests the findAvailablePlayerSeasonStatBySeasonId API operation.
+     */
+    @Test
+    public void findAvailablePlayerSeasonStatBySeasonId() {
+        for(final PlayerSeasonStat playerSeasonStat : getEntities()) {
+            final List<TeamPlayerSeasonStatsDTO> teamPlayerSeasonStats = getApiService().findAvailablePlayerSeasonStatBySeasonId(
+                    playerSeasonStat.getSeason().getId()
+            );
+            assertNotNull(teamPlayerSeasonStats, "Team player season stats by season id should not be null.");
+            assertFalse(teamPlayerSeasonStats.isEmpty(), "Team player season stats by season id should not be empty.");
+        }
+
     }
 
 }

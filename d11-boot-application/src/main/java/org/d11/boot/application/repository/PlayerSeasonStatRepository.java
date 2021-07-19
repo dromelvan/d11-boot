@@ -1,7 +1,6 @@
 package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.PlayerSeasonStat;
-import org.d11.boot.application.model.projection.TransferListingProjection;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -34,12 +33,30 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
     List<PlayerSeasonStat> findBySeasonId(@Param("seasonId") Long seasonId, Pageable pageable);
 
     /**
-     * Gets transfer listing projections for players for a season.
+     * Gets player season stats for a season.
      *
-     * @param seasonId Id for the season for which transfer listing projections will be looked up.
-     * @return transfer listing projections for the season.
+     * @param seasonId  Id for the season for which player season stats will be looked up.
+     * @param teamDummy Include only players from teams with this dummy status.
+     * @return Player season stats for the season for teams with the specified dummy status.
      */
-    List<TransferListingProjection> findBySeasonId(@Param("seasonId") Long seasonId);
+    List<PlayerSeasonStat> findBySeasonIdAndTeamDummyOrderByTeamNameAscPositionSortOrderAscPlayerLastNameAsc(
+            @Param("seasonId") Long seasonId,
+            @Param("teamDummy") Boolean teamDummy
+    );
+
+    /**
+     * Gets player season stats for a season.
+     *
+     * @param seasonId  Id for the season for which player season stats will be looked up.
+     * @param teamDummy Include only players from teams with this dummy status.
+     * @param d11TeamDummy Include only players from D11 teams with this dummy status.
+     * @return Player season stats for the season for teams and D11 teams with the specified dummy status.
+     */
+    List<PlayerSeasonStat> findBySeasonIdAndTeamDummyAndD11TeamDummyOrderByTeamNameAscPositionSortOrderAscPlayerLastNameAsc(
+            @Param("seasonId") Long seasonId,
+            @Param("teamDummy") Boolean teamDummy,
+            @Param("d11TeamDummy") Boolean d11TeamDummy
+    );
 
     /**
      * Gets a player season stat for a specific player and a specific season.
