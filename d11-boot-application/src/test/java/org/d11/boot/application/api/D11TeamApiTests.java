@@ -37,7 +37,7 @@ public class D11TeamApiTests extends AbstractRepositoryApiTests<D11Team, D11Team
      */
     @Test
     public void findD11TeamsById() {
-        for(final D11Team d11Team : getEntities()) {
+        for(final D11Team d11Team : getRepository().findAll()) {
             final D11TeamDTO result = getApiService().findD11TeamById(d11Team.getId());
             final D11TeamDTO d11TeamDTO = map(d11Team, D11TeamDTO.class);
 

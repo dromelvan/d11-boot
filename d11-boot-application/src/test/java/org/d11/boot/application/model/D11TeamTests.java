@@ -44,15 +44,9 @@ public class D11TeamTests extends D11EasyRandomTests {
         assertFalse(d11Team.isValid(), "Too short code should not be valid.");
         d11Team.setCode("ABC");
 
-
-        d11Team.setOwner(null);
-        assertFalse(d11Team.isValid(), "Null owner should not be valid.");
-        d11Team.setOwner(new User());
-
         d11Team.setCoOwner(null);
         assertTrue(d11Team.isValid(), "Null co owner should not be valid.");
         d11Team.setOwner(new User());
-
 
         assertTrue(d11Team.isValid(), "D11 team should be valid.");
     }

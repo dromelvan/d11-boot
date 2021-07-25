@@ -56,8 +56,7 @@ public class D11Team extends D11Entity {
     /**
      * The owner of the D11 team.
      */
-    @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name="owner_id", nullable=false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
