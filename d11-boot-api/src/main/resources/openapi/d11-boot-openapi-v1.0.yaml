@@ -2454,7 +2454,7 @@ components:
           $ref: '#/components/schemas/Status'
         # Matches are a special case where we want to include match week and team name, code and id in the base DTO.
         matchWeek:
-          $ref: '#/components/schemas/MatchWeekName'
+          $ref: '#/components/schemas/MatchWeekBase'
         homeTeam:
           $ref: '#/components/schemas/TeamName'
         awayTeam:
