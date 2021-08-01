@@ -1,7 +1,6 @@
 spring:
   flyway:
     baselineOnMigrate: true
-    schemas: production
     locations: classpath:db/migration/table,classpath:db/migration/data
   datasource:
     # default connection pool
@@ -13,5 +12,4 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         generate_statistics: false
-        default_schema: production
     open-in-view: false

@@ -5,6 +5,7 @@ plugins {
 	id 'checkstyle'
 	id 'pmd'
 	id "com.github.spotbugs" version "4.5.1"
+    id "com.palantir.docker" version "0.27.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_10
@@ -34,7 +35,7 @@ dependencies {
 	implementation 'com.google.guava:guava:29.0-jre'
 	// Java 8 requires Caffeine 2.x instead of 3.x
 	implementation 'com.github.ben-manes.caffeine:caffeine:2.9.1'
-	implementation 'org.modelmapper:modelmapper:2.4.0'
+	implementation 'org.modelmapper:modelmapper:2.4.1'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
 	implementation 'org.flywaydb:flyway-core'
 
@@ -71,7 +72,17 @@ springBoot {
 	buildInfo()
 }
 
+processResources {
+	exclude("application-secrets-development.yaml")
+}
+
 bootRun {
     // Support passing -Dsystem.property=value to the bootRun task.
     systemProperties = System.properties
+}
+
+docker {
+	dependsOn bootJar
+	name "192.168.1.3:5000/d11/d11-boot-application"
+	files bootJar.archivePath
 }

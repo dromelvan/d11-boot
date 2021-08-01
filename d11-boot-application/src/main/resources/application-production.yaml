@@ -1,0 +1,22 @@
+# Provide decryption password as -e JASYPT_ENCRYPTOR_PASSWORD=<password> when starting Docker container.
+d11:
+  security:
+    keystore:
+      # Create keystore with: keytool -genkey -alias <alias> -keyalg RSA -keystore <profile>-keystore.jks -keysize 2048
+      location: keys/production-keystore.jks
+      password: ENC(UoMqZKOaqrK5sF69XV6BFX/BMw6/0qEzyUe4hx6XY2qbgtAPzwvixUoa6gc3YRsT)
+      keyAlias: production
+      privateKeyPassphrase: ENC(N5ZzO7o6fZjmhLrqI4VEFWIFWmBlLIjgQVCNpks+d2p+if8Mg/T0nE24FdeXUf9v)
+
+spring:
+  datasource:
+    username: ENC(FgetNrATqdSWSyphAK4AfLLMepLcLimizbFtxcentvmy5mkBkIMsMvnR0dyqKvRb)
+    password: ENC(eXLy/SImQ0/GrJzA4IT09a7ot4cbg4pPdMPuL0D//zox09LvXw1Zz7h4dM5U82xI)
+    url: ENC(RQ8mnFkJxhxgkSCwhGFvo7657iEzSdOmGYjuH098PIBoEr2kb/ZizHDi0FiqjpvkdUB/LsVcnpHNL8P99NhG1uPBjGRea5V0UT3odvttU7U=)
+  flyway:
+    schemas: production
+  jpa:
+    properties:
+      hibernate:
+        default_schema: production
+
