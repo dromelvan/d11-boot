@@ -111,10 +111,7 @@ SELECT setval('stadium_id_seq', (SELECT last_value FROM data.stadia_id_seq));
 
 UPDATE stadium
 SET photo_file_name = concat(id, '.png')
-WHERE photo_file_name IS NOT NULL;
-
-INSERT INTO stadium (name, city, capacity, opened, photo_file_name, created_at, updated_at)
-VALUES ('Brentford Community Stadium', 'Brentford', 17250, 2020, '45.png', now()::timestamp, now()::timestamp);
+WHERE id > 1;
 
 -- Teams
 INSERT INTO team
@@ -123,21 +120,7 @@ SELECT setval('team_id_seq', (SELECT last_value FROM data.teams_id_seq));
 
 UPDATE team
 SET photo_file_name = concat(id, '.png')
-WHERE photo_file_name IS NOT NULL;
-
--- We have a team that's a deleted team. Use that for newly promoted Brentford.
-UPDATE team
-SET stadium_id = 46,
-    whoscored_id = 189,
-    name = 'Brentford FC',
-    short_name = 'Brentford',
-    code = 'BRE',
-    nickname = 'The Bees',
-    established = 1889,
-    photo_file_name = '29.png',
-    created_at = now()::timestamp,
-    updated_at = now()::timestamp
-WHERE id = 29;
+WHERE id > 1;
 
 UPDATE team SET url = 'https://www.arsenal.com/' WHERE id = 2;
 UPDATE team SET url = 'https://www.avfc.co.uk/' WHERE id = 3;
