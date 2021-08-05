@@ -1,8 +1,8 @@
 -- INSERT INTO application_user(
 --     id, name, email, encrypted_password, administrator, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?);
-INSERT INTO application_user VALUES(1, 'User', 'user@email.com', 'password', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO application_user VALUES(2, 'Administrator', 'administrator@email.com', 'password', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO application_user VALUES(1, 'User', 'user@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO application_user VALUES(2, 'Administrator', 'administrator@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO country(
 --     id, name, iso, created_at, updated_at)

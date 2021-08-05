@@ -1,6 +1,7 @@
 package org.d11.boot.application.controller;
 
 import org.d11.boot.api.AuthenticationApi;
+import org.d11.boot.api.model.AuthenticationDTO;
 import org.d11.boot.api.model.AuthenticationResultDTO;
 import org.d11.boot.application.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,9 @@ public class AuthenticationController implements AuthenticationApi {
     }
 
     @Override
-    public ResponseEntity<AuthenticationResultDTO> authenticate(final String username, final String password) {
-        final AuthenticationResultDTO authenticationResultDTO = this.authenticationService.authenticate(username, password);
+    public ResponseEntity<AuthenticationResultDTO> authenticate(final AuthenticationDTO authenticationDTO) {
+        final AuthenticationResultDTO authenticationResultDTO =
+                this.authenticationService.authenticate(authenticationDTO.getUsername(), authenticationDTO.getPassword());
         return ResponseEntity.ok(authenticationResultDTO);
     }
 
