@@ -28,6 +28,16 @@ public class MappingProvider {
     }
 
     /**
+     * Maps a source object to a destination object.
+     *
+     * @param source      The object from which values will be copied.
+     * @param destination The object to which values will be copied;
+     */
+    protected void map(final Object source, final Object destination) {
+        this.modelMapper.map(source, destination);
+    }
+
+    /**
      * Maps a list of objects to a list of objects in a destination class.
      *
      * @param objects The list of objects to map.
