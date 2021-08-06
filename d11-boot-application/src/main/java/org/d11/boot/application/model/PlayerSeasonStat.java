@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public class PlayerSeasonStat extends PlayerStatSummary {
      */
     @NotNull
     @Convert(converter = FormMatchPointsConverter.class)
-    private List<Integer> formMatchPoints;
+    private List<Integer> formMatchPoints = new ArrayList<>();
 
     /**
      * The player the stats are for.

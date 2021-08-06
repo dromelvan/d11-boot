@@ -1,5 +1,7 @@
 package org.d11.boot.api.service;
 
+import org.d11.boot.api.model.InsertPlayerDTO;
+import org.d11.boot.api.model.InsertPlayerResultDTO;
 import org.d11.boot.api.model.PlayerDTO;
 import org.d11.boot.client.api.PlayerApi;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,21 @@ public class PlayerApiService extends D11ApiService {
             if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 return null;
             }
+            throw translate(e);
+        }
+    }
+
+    /**
+     * Inserts a player and a player season stat for the current season.
+     *
+     * @param insertPlayerDTO Details for the player that will be inserted.
+     * @return Result of the insert with ids of created entities if successful and list of errors if not.
+     */
+    public InsertPlayerResultDTO insertPlayer(InsertPlayerDTO insertPlayerDTO) {
+        try {
+            final PlayerApi playerApi = new PlayerApi(getApiClient());
+            return playerApi.insertPlayer(insertPlayerDTO).block();
+        } catch(WebClientResponseException e) {
             throw translate(e);
         }
     }

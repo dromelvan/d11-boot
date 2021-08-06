@@ -26,6 +26,10 @@ public class D11Team extends D11Entity {
      * Code string length.
      */
     public static final int CODE_LENGTH = 3;
+    /**
+     * Id for the dummy D11 team.
+     */
+    public static final long DUMMY_D11_TEAM_ID = 1;
 
     /**
      * Team name.

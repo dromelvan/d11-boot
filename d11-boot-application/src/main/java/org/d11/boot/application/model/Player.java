@@ -44,7 +44,6 @@ public class Player extends D11Entity {
     /**
      * Player parameterized name for searches.
      */
-    @NotEmpty
     private String parameterizedName;
     /**
      * Player birth date.

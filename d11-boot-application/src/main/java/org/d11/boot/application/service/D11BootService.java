@@ -22,7 +22,7 @@ public class D11BootService extends MappingProvider {
     protected List<String> getValidationErrors(final D11Entity... entities) {
         final List<String> errors = new ArrayList<>();
         for(final D11Entity entity : entities) {
-            for(ConstraintViolation<D11Entity> constraintViolation : entity.validate()) {
+            for(final ConstraintViolation<D11Entity> constraintViolation : entity.validate()) {
                 errors.add(StringUtils.capitalize(constraintViolation.getPropertyPath().toString()) + " " + constraintViolation.getMessage());
             }
         }

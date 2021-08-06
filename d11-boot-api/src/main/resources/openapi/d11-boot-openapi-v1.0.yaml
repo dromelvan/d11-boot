@@ -159,6 +159,37 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /players:
+    post:
+      summary: Insert a new player.
+      security:
+        - BearerAuth: []
+      operationId: insertPlayer
+      tags:
+        - player
+      requestBody:
+        description: The player that will be inserted.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsertPlayer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsertPlayerResult"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+
   /stadia/{stadiumId}:
     get:
       summary: Find a stadium by id.
@@ -1748,6 +1779,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/D11BootError'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/D11BootError'
     BadRequest:
       description: Bad Request
       content:
@@ -1861,6 +1898,57 @@ components:
         sortOrder:
           type: integer
           format: int32
+
+    InsertPlayer:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - fullName
+        - teamId
+        - countryId
+        - positionId
+        - whoscoredId
+        - dateOfBirth
+        - height
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        fullName:
+          type: string
+        teamId:
+          type: integer
+          format: int64
+        countryId:
+          type: integer
+          format: int64
+        positionId:
+          type: integer
+          format: int64
+        whoscoredId:
+          type: integer
+          format: int64
+        dateOfBirth:
+          type: string
+          format: date
+        height:
+          type: integer
+          format: int32
+    InsertPlayerResult:
+      type: object
+      properties:
+        playerId:
+          type: integer
+          format: int64
+        playerSeasonStatId:
+          type: integer
+          format: int64
+        errors:
+          type: array
+          items:
+            type: string
 
     PlayerName:
       type: object
@@ -4853,3 +4941,9 @@ components:
           $ref: '#/components/schemas/PlayerBase'
         d11Team:
           $ref: '#/components/schemas/D11TeamBase'
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+

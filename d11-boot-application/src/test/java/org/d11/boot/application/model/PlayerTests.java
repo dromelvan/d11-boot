@@ -63,11 +63,6 @@ public class PlayerTests extends D11EasyRandomTests {
         assertFalse(player.isValid(), "Negative height should not be valid.");
         player.setHeight(1);
 
-        player.setParameterizedName(null);
-        assertFalse(player.isValid(), "Null parameterized name should not be valid.");
-        player.setParameterizedName("");
-        assertFalse(player.isValid(), "Empty parameterized name should not be valid.");
-
         player.prePersist();
         assertTrue(player.isValid(), "Player should be valid.");
 

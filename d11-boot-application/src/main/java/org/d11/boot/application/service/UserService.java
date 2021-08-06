@@ -42,13 +42,15 @@ public class UserService extends AbstractRepositoryService<User, UserDTO, UserRe
     @Override
     @CacheEvict(value = CacheConfiguration.USER_DETAILS_CACHE, key = "#username")
     public UserDetails loadUserByUsername(final String username) {
+        final String userRole = "USER";
+        final String adminRole = "ADMIN";
         final User user = getJpaRepository()
                 .findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No user with provided email found."));
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 // TODO: Authorities
-                .roles(user.isAdministrator() ? new String[] { "USER", "ADMIN"  } : new String[] { "USER" })
+                .roles(user.isAdministrator() ? new String[] { userRole, adminRole } : new String[] { userRole })
                 .password(user.getEncryptedPassword())
                 .build();
     }

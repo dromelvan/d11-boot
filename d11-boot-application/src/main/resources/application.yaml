@@ -1,7 +1,7 @@
 spring:
   flyway:
     baselineOnMigrate: true
-    locations: classpath:db/migration/table,classpath:db/migration/data
+    locations: classpath:db/migration/table,classpath:db/migration/procedure/postgres,classpath:db/migration/data
   datasource:
     # default connection pool
     hikari:

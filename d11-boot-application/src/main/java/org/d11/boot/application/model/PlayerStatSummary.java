@@ -3,7 +3,6 @@ package org.d11.boot.application.model;
 import lombok.Data;
 
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 /**
@@ -16,7 +15,7 @@ public class PlayerStatSummary extends PlayerStat {
     /**
      * Player ranking.
      */
-    @Positive
+    @PositiveOrZero
     private int ranking;
     /**
      * Average points per appearance (game started or substituted on).

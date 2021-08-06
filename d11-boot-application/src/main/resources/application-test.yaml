@@ -13,7 +13,7 @@ spring:
   flyway:
     # enabled: false
     schemas:
-    locations: classpath:db/migration/table,classpath:db/migration/test-data
+    locations: classpath:db/migration/table,classpath:db/migration/procedure/h2,classpath:db/migration/test-data
   datasource:
     username: sa
     password:

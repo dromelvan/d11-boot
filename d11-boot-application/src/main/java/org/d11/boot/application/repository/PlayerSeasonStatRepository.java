@@ -2,8 +2,11 @@ package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.PlayerSeasonStat;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,8 +50,8 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
     /**
      * Gets player season stats for a season.
      *
-     * @param seasonId  Id for the season for which player season stats will be looked up.
-     * @param teamDummy Include only players from teams with this dummy status.
+     * @param seasonId     Id for the season for which player season stats will be looked up.
+     * @param teamDummy    Include only players from teams with this dummy status.
      * @param d11TeamDummy Include only players from D11 teams with this dummy status.
      * @return Player season stats for the season for teams and D11 teams with the specified dummy status.
      */
@@ -93,5 +96,16 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
             @Param("d11TeamId") Long d11TeamId,
             @Param("seasonId") Long seasonId
     );
+
+    /**
+     * Updates rankings for all player season stats for a specific season.
+     *
+     * @param seasonId Id for the season for which player season stat rankings will be updated.
+     */
+    // We have to do a @Query instead of a @Procedure as longs as we're using dev/prod schemas in the same database.
+    @Modifying
+    @Transactional
+    @Query(value = "CALL {h-schema}update_player_season_stat_ranking(:seasonId)", nativeQuery = true)
+    void updateRankingsBySeasonId(@Param("seasonId") Long seasonId);
 
 }
