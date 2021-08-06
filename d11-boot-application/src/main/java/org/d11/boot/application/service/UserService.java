@@ -48,7 +48,7 @@ public class UserService extends AbstractRepositoryService<User, UserDTO, UserRe
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 // TODO: Authorities
-                .roles("USER")
+                .roles(user.isAdministrator() ? new String[] { "USER", "ADMIN"  } : new String[] { "USER" })
                 .password(user.getEncryptedPassword())
                 .build();
     }
