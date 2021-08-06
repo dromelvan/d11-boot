@@ -34,7 +34,7 @@ public class D11Entity {
      * Entity id.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     /**
      * Entity creation timestamp.
