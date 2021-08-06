@@ -57,7 +57,7 @@
 
     <rule ref="category/java/codestyle.xml/TooManyStaticImports">
         <properties>
-            <property name="maximumStaticImports" value="5" />
+            <property name="maximumStaticImports" value="6" />
         </properties>
     </rule>
 
