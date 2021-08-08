@@ -2,6 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.D11TeamsApi;
 import org.d11.boot.api.model.D11TeamDTO;
+import org.d11.boot.api.model.D11TeamNameDTO;
 import org.d11.boot.application.service.D11TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,12 @@ public class D11TeamController extends AbstractRepositoryServiceController<D11Te
     @Override
     public ResponseEntity<D11TeamDTO> findD11TeamById(final Long d11TeamId) {
         return findById(d11TeamId);
+    }
+
+    @Override
+    public ResponseEntity<List<D11TeamNameDTO>> findAllD11Teams() {
+        final List<D11TeamNameDTO> d11TeamNameDTOs = getRepositoryService().findAllD11Teams();
+        return ResponseEntity.ok(d11TeamNameDTOs);
     }
 
     @Override

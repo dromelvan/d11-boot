@@ -1,6 +1,7 @@
 package org.d11.boot.application.service;
 
 import org.d11.boot.api.model.D11TeamDTO;
+import org.d11.boot.api.model.D11TeamNameDTO;
 import org.d11.boot.application.model.D11Team;
 import org.d11.boot.application.repository.D11TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,17 @@ public class D11TeamService extends AbstractRepositoryService<D11Team, D11TeamDT
     public D11TeamService(final D11TeamRepository d11TeamRepository) {
         super(d11TeamRepository);
     }
+
+    /**
+     * Gets all D11 teams ordered by name.
+     *
+     * @return List of D11 team name DTOs.
+     */
+    public List<D11TeamNameDTO> findAllD11Teams() {
+        final List<D11Team> d11Teams = getJpaRepository().findByOrderByName();
+        return map(d11Teams, D11TeamNameDTO.class);
+    }
+
 
     /**
      * Gets D11 teams participating in a specific season.

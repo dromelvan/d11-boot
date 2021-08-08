@@ -1,6 +1,7 @@
 package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.D11TeamDTO;
+import org.d11.boot.api.model.D11TeamNameDTO;
 import org.d11.boot.api.service.D11TeamApiService;
 import org.d11.boot.application.model.D11Team;
 import org.d11.boot.application.model.D11TeamSeasonStat;
@@ -47,6 +48,20 @@ public class D11TeamApiTests extends AbstractRepositoryApiTests<D11Team, D11Team
 
         assertNull(getApiService().findD11TeamById(-1L), "D11 team not found should return null.");
         assertBadRequest(get("BAD_REQUEST"));
+    }
+
+    /**
+     * Tests the findAllD11Teams API operation.
+     */
+    @Test
+    public void findAllD11Teams() {
+        final List<D11TeamNameDTO> result = getApiService().findAllD11Teams();
+
+        final List<D11TeamNameDTO> d11TeamNameDTOs = map(getEntities(), D11TeamNameDTO.class);
+        d11TeamNameDTOs.sort(Comparator.comparing(D11TeamNameDTO::getName));
+
+        assertNotNull(result, "All D11 teams should not be null.");
+        assertEquals(d11TeamNameDTOs, result, "All D11 teams should equal D11 teams.");
     }
 
     /**

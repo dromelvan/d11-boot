@@ -217,6 +217,23 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /teams:
+    get:
+      summary: Finds all teams.
+      operationId: findAllTeams
+      tags:
+        - team
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TeamName"
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /teams/{teamId}:
     get:
       summary: Find a team by id.
@@ -242,6 +259,23 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+  /d11-teams:
+    get:
+      summary: Finds all D11 teams.
+      operationId: findAllD11Teams
+      tags:
+        - d11Team
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/D11TeamName"
         '500':
           $ref: '#/components/responses/Unexpected'
   /d11-teams/{d11TeamId}:

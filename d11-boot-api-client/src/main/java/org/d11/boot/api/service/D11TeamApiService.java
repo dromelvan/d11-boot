@@ -1,6 +1,7 @@
 package org.d11.boot.api.service;
 
 import org.d11.boot.api.model.D11TeamDTO;
+import org.d11.boot.api.model.D11TeamNameDTO;
 import org.d11.boot.client.api.D11TeamApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,16 @@ public class D11TeamApiService extends D11ApiService {
             }
             throw translate(e);
         }
+    }
+
+    /**
+     * Gets a list of all D11 teams.
+     *
+     * @return List of all D11 teams sorted by name.
+     */
+    public List<D11TeamNameDTO> findAllD11Teams() {
+        final D11TeamApi d11TeamApi = new D11TeamApi(getApiClient());
+        return d11TeamApi.findAllD11Teams().collectList().block();
     }
 
 }

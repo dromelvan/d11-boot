@@ -15,6 +15,13 @@ import java.util.Optional;
 public interface D11TeamRepository extends D11EntityRepository<D11Team> {
 
     /**
+     * Finds all D11 teams.
+     *
+     * @return List of all teams, ordered by name.
+     */
+    List<D11Team> findByOrderByName();
+
+    /**
      * Gets D11 teams participating in a specific season.
      *
      * @param seasonId Id for the season for which D11 teams will be looked up.
