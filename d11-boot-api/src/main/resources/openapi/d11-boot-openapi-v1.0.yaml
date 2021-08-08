@@ -1936,15 +1936,11 @@ components:
     InsertPlayer:
       type: object
       required:
-        - firstName
         - lastName
-        - fullName
         - teamId
         - countryId
         - positionId
         - whoscoredId
-        - dateOfBirth
-        - height
       properties:
         firstName:
           type: string

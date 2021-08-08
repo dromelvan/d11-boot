@@ -48,7 +48,6 @@ public class Player extends D11Entity {
     /**
      * Player birth date.
      */
-    @NotNull
     private LocalDate dateOfBirth;
     /**
      * Player height.

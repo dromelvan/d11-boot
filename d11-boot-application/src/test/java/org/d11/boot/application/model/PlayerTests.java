@@ -3,8 +3,6 @@ package org.d11.boot.application.model;
 import org.d11.boot.api.model.PlayerDTO;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -54,10 +52,6 @@ public class PlayerTests extends D11EasyRandomTests {
         assertEquals(player.getLastName().trim(), player.getName(), "Name with empty first name should be correct.");
         assertEquals(player.getLastName().trim(), player.getShortName(), "ShortName with empty first name should be correct.");
         player.setFirstName("Name");
-
-        player.setDateOfBirth(null);
-        assertFalse(player.isValid(), "Null date of birth should not be valid.");
-        player.setDateOfBirth(LocalDate.now());
 
         player.setHeight(-1);
         assertFalse(player.isValid(), "Negative height should not be valid.");
