@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.util.List;
+
 /**
  * Provides country API services.
  */
@@ -28,6 +30,16 @@ public class CountryApiService extends D11ApiService {
             }
             throw translate(e);
         }
+    }
+
+    /**
+     * Gets a list of all countries.
+     *
+     * @return List of all countries sorted by name.
+     */
+    public List<CountryDTO> findAllCountries() {
+        final CountryApi countryApi = new CountryApi(getApiClient());
+        return countryApi.findAllCountries().collectList().block();
     }
 
 }

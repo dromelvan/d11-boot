@@ -6,6 +6,8 @@ import org.d11.boot.application.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Provides country services.
  */
@@ -20,6 +22,16 @@ public class CountryService extends AbstractRepositoryService<Country, CountryDT
     @Autowired
     public CountryService(final CountryRepository countryRepository) {
         super(countryRepository);
+    }
+
+    /**
+     * Gets all countries ordered by name.
+     *
+     * @return List of country DTOs.
+     */
+    public List<CountryDTO> findAllCountries() {
+        final List<Country> countries = getJpaRepository().findByOrderByName();
+        return map(countries, CountryDTO.class);
     }
 
 }

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Controller that implements the CountriesApi and provides country endpoints.
  */
@@ -26,6 +28,12 @@ public class CountryController extends AbstractRepositoryServiceController<Count
     @Override
     public ResponseEntity<CountryDTO> findCountryById(final Long countryId) {
         return findById(countryId);
+    }
+
+    @Override
+    public ResponseEntity<List<CountryDTO>> findAllCountries() {
+        final List<CountryDTO> countryDTOs = getRepositoryService().findAllCountries();
+        return ResponseEntity.ok(countryDTOs);
     }
 
 }

@@ -59,6 +59,23 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /countries:
+    get:
+      summary: Finds all countries.
+      operationId: findAllCountries
+      tags:
+        - country
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Country"
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /countries/{countryId}:
     get:
       summary: Find a country by id.

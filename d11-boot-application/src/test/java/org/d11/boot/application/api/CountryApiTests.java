@@ -6,6 +6,9 @@ import org.d11.boot.application.model.Country;
 import org.d11.boot.application.repository.CountryRepository;
 import org.junit.jupiter.api.Test;
 
+import java.util.Comparator;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -30,6 +33,21 @@ public class CountryApiTests extends AbstractRepositoryApiTests<Country, Country
 
         assertNull(getApiService().findCountryById(-1L), "Country not found should return null.");
         assertBadRequest(get("countries", "BAD_REQUEST"));
+    }
+
+
+    /**
+     * Tests the findAllCountries API operation.
+     */
+    @Test
+    public void findAllCountries() {
+        final List<CountryDTO> result = getApiService().findAllCountries();
+
+        final List<CountryDTO> countryDTOs = map(getEntities(), CountryDTO.class);
+        countryDTOs.sort(Comparator.comparing(CountryDTO::getName));
+
+        assertNotNull(result, "All countries should not be null.");
+        assertEquals(countryDTOs, result, "All countries should equal countries.");
     }
 
 }
