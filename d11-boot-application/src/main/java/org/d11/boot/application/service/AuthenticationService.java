@@ -8,10 +8,13 @@ import org.d11.boot.application.security.JwtBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 /**
  * Provides authentication services.
@@ -70,7 +73,8 @@ public class AuthenticationService extends D11BootService {
             final String jwt = this.jwtBuilder.build(username);
             return new AuthenticationResultDTO()
                     .d11Team(map(d11Team, D11TeamNameDTO.class))
-                    .jwt(jwt);
+                    .jwt(jwt)
+                    .authorities(userDetails.getAuthorities().stream().map(GrantedAuthority::toString).collect(Collectors.toList()));
         }
         throw new BadCredentialsException("Authentication failed");
     }

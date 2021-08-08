@@ -1883,11 +1883,16 @@ components:
       required:
         - jwt
         - d11Team
+        - authorities
       properties:
         jwt:
           type: string
         d11Team:
           $ref: '#/components/schemas/D11TeamName'
+        authorities:
+          type: array
+          items:
+            type: string
 
     User:
       type: object
