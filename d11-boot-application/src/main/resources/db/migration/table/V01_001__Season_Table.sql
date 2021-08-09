@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS season (
     id SERIAL PRIMARY KEY,
     name VARCHAR(64) UNIQUE NOT NULL,
+    d11_team_budget INTEGER NOT NULL,
     status INTEGER NOT NULL,
     date DATE NOT NULL,
     legacy BOOLEAN NOT NULL,

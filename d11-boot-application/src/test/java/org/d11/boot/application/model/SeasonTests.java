@@ -36,6 +36,10 @@ public class SeasonTests extends D11EasyRandomTests {
         season.setName("1000-1001");
         assertEquals(season.getShortName(), "00-01", "Valid name should produce correct shortName.");
 
+        season.setD11TeamBudget(0);
+        assertFalse(season.isValid(), "Non positive D11 team budget should not be valid.");
+        season.setD11TeamBudget(1);
+
         season.setStatus(null);
         assertFalse(season.isValid(), "Null status should not be valid.");
         season.setStatus(Status.PENDING);
