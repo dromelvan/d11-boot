@@ -4,6 +4,8 @@ import org.d11.boot.api.PlayersApi;
 import org.d11.boot.api.model.InsertPlayerDTO;
 import org.d11.boot.api.model.InsertPlayerResultDTO;
 import org.d11.boot.api.model.PlayerDTO;
+import org.d11.boot.api.model.UpdatePlayerDTO;
+import org.d11.boot.api.model.UpdatePlayerResultDTO;
 import org.d11.boot.application.service.PlayerAdminService;
 import org.d11.boot.application.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,12 @@ public class PlayerController extends AbstractRepositoryServiceController<Player
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<InsertPlayerResultDTO> insertPlayer(@Valid final InsertPlayerDTO insertPlayerDTO) {
         return ResponseEntity.ok(this.playerAdminService.insertPlayer(insertPlayerDTO));
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<UpdatePlayerResultDTO> updatePlayer(@Valid final UpdatePlayerDTO updatePlayerDTO) {
+        return ResponseEntity.ok(this.playerAdminService.updatePlayer(updatePlayerDTO));
     }
 
 }

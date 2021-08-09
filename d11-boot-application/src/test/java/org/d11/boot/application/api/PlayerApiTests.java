@@ -3,6 +3,7 @@ package org.d11.boot.application.api;
 import org.d11.boot.api.model.InsertPlayerDTO;
 import org.d11.boot.api.model.InsertPlayerResultDTO;
 import org.d11.boot.api.model.PlayerDTO;
+import org.d11.boot.api.model.UpdatePlayerDTO;
 import org.d11.boot.api.service.D11ApiServiceException;
 import org.d11.boot.api.service.PlayerApiService;
 import org.d11.boot.application.model.Player;
@@ -43,7 +44,7 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
      */
     @Test
     public void findPlayerById() {
-        for(final Player player : getEntities()) {
+        for(final Player player : getRepository().findAll()) {
             final PlayerDTO result = getApiService().findPlayerById(player.getId());
             final PlayerDTO playerDTO = map(player, PlayerDTO.class);
 
@@ -64,7 +65,7 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
         final D11ApiServiceException d11ApiServiceException =
                 assertThrows(D11ApiServiceException.class, () -> getApiService().insertPlayer(insertPlayerDTO));
         assertEquals(HttpStatus.BAD_REQUEST, d11ApiServiceException.getStatusCode(),
-                "Request with missing properties should result in BAD_REQUEST.");
+                "Insert player request with missing properties should result in BAD_REQUEST.");
 
         insertPlayerDTO
                 .firstName("")
@@ -104,6 +105,20 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
                 this.playerSeasonStatRepository.findById(insertPlayerResultDTO.getPlayerSeasonStatId()).orElse(null);
         assertNotNull(playerSeasonStat, "Inserted player season stat should not be null.");
         this.playerSeasonStatRepository.delete(playerSeasonStat);
+    }
+
+    /**
+     * Tests the updatePlayer operation.
+     */
+    @Test
+    public void updatePlayer() {
+        final UpdatePlayerDTO updatePlayerDTO = new UpdatePlayerDTO();
+        final D11ApiServiceException d11ApiServiceException =
+                assertThrows(D11ApiServiceException.class, () -> getApiService().updatePlayer(updatePlayerDTO));
+        assertEquals(HttpStatus.BAD_REQUEST, d11ApiServiceException.getStatusCode(),
+                "Update player request with missing properties should result in BAD_REQUEST.");
+
+        // Add successful tests when we can be bothered figuring out how to not mess up other tests with new data.
     }
 
 }
