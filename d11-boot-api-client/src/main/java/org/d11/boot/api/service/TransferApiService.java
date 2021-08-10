@@ -1,5 +1,7 @@
 package org.d11.boot.api.service;
 
+import org.d11.boot.api.model.InsertTransferDTO;
+import org.d11.boot.api.model.InsertTransferResultDTO;
 import org.d11.boot.api.model.TransferDTO;
 import org.d11.boot.client.api.TransferApi;
 import org.springframework.http.HttpStatus;
@@ -64,6 +66,21 @@ public class TransferApiService extends D11ApiService {
             if(e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 return null;
             }
+            throw translate(e);
+        }
+    }
+
+    /**
+     * Inserts a transfer for the current transfer day.
+     *
+     * @param insertTransferDTO Details for the transfer that will be inserted.
+     * @return Result of the insert with ids of created entities if successful and a list of errors if not.
+     */
+    public InsertTransferResultDTO insertTransfer(InsertTransferDTO insertTransferDTO) {
+        try {
+            final TransferApi transferApi = new TransferApi(getApiClient());
+            return transferApi.insertTransfer(insertTransferDTO).block();
+        } catch(WebClientResponseException e) {
             throw translate(e);
         }
     }

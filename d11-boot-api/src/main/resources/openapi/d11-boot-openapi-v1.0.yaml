@@ -1826,6 +1826,37 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /transfers:
+    post:
+      summary: Insert a new transfer.
+      security:
+        - BearerAuth: []
+      operationId: insertTransfer
+      tags:
+        - transfer
+      requestBody:
+        description: The transfer that will be inserted.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsertTransfer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsertTransferResult"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+
   /search:
     get:
       summary: Search players, teams and D11 teams by name.
@@ -2083,6 +2114,36 @@ components:
           type: integer
           format: int64
         playerSeasonStatId:
+          type: integer
+          format: int64
+        errors:
+          type: array
+          items:
+            type: string
+
+    InsertTransfer:
+      type: object
+      required:
+        - playerId
+        - d11TeamId
+        - fee
+      properties:
+        playerId:
+          type: integer
+          format: int64
+        d11TeamId:
+          type: integer
+          format: int64
+        fee:
+          type: integer
+          format: int32
+    InsertTransferResult:
+      type: object
+      properties:
+        playerId:
+          type: integer
+          format: int64
+        transferId:
           type: integer
           format: int64
         errors:

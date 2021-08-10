@@ -85,6 +85,15 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
     );
 
     /**
+     * Gets player season stats for a specific D11 team and a specific season.
+     *
+     * @param d11TeamId Id for the D11 team for which player season stats will be looked up.
+     * @param seasonId  Id for the season for which player season stats will be looked up.
+     * @return Player season stats for the team and the season.
+     */
+    List<PlayerSeasonStat> findByD11TeamIdAndSeasonId(@Param("d11TeamId") Long d11TeamId, @Param("seasonId") Long seasonId);
+
+    /**
      * Gets player season stats for a specific D11 team and a specific season ordered by player position sort order,
      * games started, descending, substitutions on, descending and games as substitute, descending.
      *

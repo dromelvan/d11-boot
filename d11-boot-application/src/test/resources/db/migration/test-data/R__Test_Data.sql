@@ -48,8 +48,8 @@ INSERT INTO player VALUES(6, 1, 666666, 'Foo', '', null, 'foo', '2020-01-01', 11
 -- INSERT INTO season(
 --     id, name, status, date, legacy, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?);
-INSERT INTO season VALUES(1, '2020-2021', 3, '2020-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO season VALUES(2, '2021-2022', 1, '2021-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO season VALUES(1, '2020-2021', 600, 3, '2020-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO season VALUES(2, '2021-2022', 600, 1, '2021-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO premier_league(
 --     id, season_id, name, created_at, updated_at)

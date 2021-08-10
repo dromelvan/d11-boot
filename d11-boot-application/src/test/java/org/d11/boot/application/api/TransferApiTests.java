@@ -1,6 +1,8 @@
 package org.d11.boot.application.api;
 
+import org.d11.boot.api.model.InsertTransferDTO;
 import org.d11.boot.api.model.TransferDTO;
+import org.d11.boot.api.service.D11ApiServiceException;
 import org.d11.boot.api.service.TransferApiService;
 import org.d11.boot.application.model.D11Team;
 import org.d11.boot.application.model.Player;
@@ -9,6 +11,7 @@ import org.d11.boot.application.model.TransferDay;
 import org.d11.boot.application.repository.TransferRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -109,6 +113,20 @@ public class TransferApiTests extends AbstractRepositoryApiTests<Transfer, Trans
 
         assertTrue(getApiService().findTransferByPlayerId(-1L).isEmpty(),
                 "Transfers by player id not found should be empty.");
+    }
+
+    /**
+     * Tests the insertTransfer operation.
+     */
+    @Test
+    public void insertTransfer() {
+        final InsertTransferDTO insertTransferDTO = new InsertTransferDTO();
+        final D11ApiServiceException d11ApiServiceException =
+                assertThrows(D11ApiServiceException.class, () -> getApiService().insertTransfer(insertTransferDTO));
+        assertEquals(HttpStatus.BAD_REQUEST, d11ApiServiceException.getStatusCode(),
+                "Insert transfer request with missing properties should result in BAD_REQUEST.");
+
+        // Add successful tests when we can be bothered figuring out how to not mess up other tests with new data.
     }
 
 }

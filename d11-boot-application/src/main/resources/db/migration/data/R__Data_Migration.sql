@@ -98,6 +98,7 @@ UPDATE season SET d11_team_budget = 400 WHERE id = 2;
 UPDATE season SET d11_team_budget = 300 WHERE id = 3;
 UPDATE season SET d11_team_budget = 250  WHERE id = 4;
 UPDATE season SET d11_team_budget = 600 WHERE id = 17;
+UPDATE season SET d11_team_budget = 600 WHERE id = 18;
 
 -- Premier Leagues
 INSERT INTO premier_league
