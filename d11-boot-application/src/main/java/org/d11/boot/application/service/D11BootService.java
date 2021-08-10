@@ -3,6 +3,7 @@ package org.d11.boot.application.service;
 import org.apache.commons.lang3.StringUtils;
 import org.d11.boot.application.model.D11Entity;
 import org.d11.boot.application.util.MappingProvider;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.validation.ConstraintViolation;
 import java.util.ArrayList;
@@ -27,6 +28,13 @@ public class D11BootService extends MappingProvider {
             }
         }
         return errors;
+    }
+
+    /**
+     * Performs a rollback in methods annotated with @Transactional without throwing an exception.
+     */
+    protected void rollback() {
+        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     }
 
 }
