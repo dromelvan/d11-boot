@@ -31,8 +31,8 @@ INSERT INTO d11_team VALUES(2, 2, null, 'D11TeamB', 'ShortB', 'DTB', false, '2.p
 -- INSERT INTO "position"(
 --     id, name, code, defender, sort_order, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?);
-INSERT INTO position VALUES(1, 'Defender', 'D', true, 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO position VALUES(2, 'Non Defender', 'ND', false, 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO position VALUES(1, 'Defender', 'D', 4, true, 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO position VALUES(2, 'Non Defender', 'ND', 4, false, 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO player(
 --     id, country_id, whoscored_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, created_at, updated_at)

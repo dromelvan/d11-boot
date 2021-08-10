@@ -211,8 +211,13 @@ WHERE photo_file_name IS NOT NULL;
 
 -- Positions
 INSERT INTO "position"
-SELECT * FROM data.positions;
+SELECT id, name, code, 0, defender, sort_order, created_at, updated_at FROM data.positions;
 SELECT setval('position_id_seq', (SELECT last_value FROM data.positions_id_seq));
+
+UPDATE "position" SET max_count = 1 WHERE id = 1;
+UPDATE "position" SET max_count = 4 WHERE id = 3;
+UPDATE "position" SET max_count = 4 WHERE id = 4;
+UPDATE "position" SET max_count = 2 WHERE id = 5;
 
 -- Match weeks
 INSERT INTO match_week

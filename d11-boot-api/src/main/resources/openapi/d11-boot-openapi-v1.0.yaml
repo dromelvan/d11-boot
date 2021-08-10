@@ -236,7 +236,6 @@ paths:
         '500':
           $ref: '#/components/responses/Unexpected'
 
-
   /stadia/{stadiumId}:
     get:
       summary: Find a stadium by id.
@@ -1969,6 +1968,7 @@ components:
         - id
         - name
         - code
+        - maxCount
         - defender
         - sortOrder
       properties:
@@ -1979,6 +1979,9 @@ components:
           type: string
         code:
           type: string
+        maxCount:
+          type: integer
+          format: int32
         defender:
           type: boolean
         sortOrder:

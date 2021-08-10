@@ -3,6 +3,8 @@ package org.d11.boot.application.model;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -19,6 +21,10 @@ public class Position extends D11Entity implements Comparable<Position> {
      * Max position code length.
      */
     public static final int MAX_CODE_LENGTH = 3;
+    /**
+     * Maximum maxCount value allowed.
+     */
+    public static final int MAX_MAX_COUNT = 4;
 
     /**
      * Position name.
@@ -31,6 +37,12 @@ public class Position extends D11Entity implements Comparable<Position> {
     @NotNull
     @Size(min = 1, max = MAX_CODE_LENGTH)
     private String code;
+    /**
+     * Max number of players of this position allowed in a D11 team.
+     */
+    @Min(0)
+    @Max(MAX_MAX_COUNT)
+    private int maxCount;
     /**
      * Indicates a position that should be considered a defender for point calculation purposes.
      */

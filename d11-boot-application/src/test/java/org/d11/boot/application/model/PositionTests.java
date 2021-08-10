@@ -35,6 +35,12 @@ public class PositionTests extends D11EasyRandomTests {
         assertFalse(position.isValid(), "Too long code should not be valid.");
         position.setCode("P");
 
+        position.setMaxCount(-1);
+        assertFalse(position.isValid(), "Negative max count should not be valid.");
+        position.setMaxCount(Position.MAX_MAX_COUNT + 1);
+        assertFalse(position.isValid(), "Too high max count should not be valid.");
+        position.setMaxCount(1);
+
         position.setSortOrder(-1);
         assertFalse(position.isValid(), "Negative sort order should not be valid.");
         position.setSortOrder(1);

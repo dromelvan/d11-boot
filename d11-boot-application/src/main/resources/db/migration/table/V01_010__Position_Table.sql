@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS position (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     code VARCHAR(3) NOT NULL,
+    max_count INTEGER NOT NULL,
     defender BOOLEAN NOT NULL,
     sort_order INTEGER NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
