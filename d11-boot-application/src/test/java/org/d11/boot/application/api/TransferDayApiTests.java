@@ -1,12 +1,15 @@
 package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.TransferDayDTO;
+import org.d11.boot.api.model.UpdateTransferDayDTO;
+import org.d11.boot.api.service.D11ApiServiceException;
 import org.d11.boot.api.service.TransferDayApiService;
 import org.d11.boot.application.model.TransferDay;
 import org.d11.boot.application.model.TransferWindow;
 import org.d11.boot.application.repository.TransferDayRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -92,6 +96,20 @@ public class TransferDayApiTests extends AbstractRepositoryApiTests<TransferDay,
 
         assertTrue(getApiService().findTransferDayByTransferWindowId(-1L).isEmpty(),
                 "Transfer days by transfer window id not found should be empty.");
+    }
+
+    /**
+     * Tests the updateTransferDay operation.
+     */
+    @Test
+    public void updateTransferDay() {
+        final UpdateTransferDayDTO updateTransferDayDTO = new UpdateTransferDayDTO();
+        final D11ApiServiceException d11ApiServiceException =
+                assertThrows(D11ApiServiceException.class, () -> getApiService().updateTransferDay(updateTransferDayDTO));
+        assertEquals(HttpStatus.BAD_REQUEST, d11ApiServiceException.getStatusCode(),
+                "Update transfer day request with missing properties should result in BAD_REQUEST.");
+
+        // Add successful tests when we can be bothered figuring out how to not mess up other tests with new data.
     }
 
 }

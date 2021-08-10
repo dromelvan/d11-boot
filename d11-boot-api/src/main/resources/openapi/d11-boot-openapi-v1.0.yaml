@@ -1622,6 +1622,36 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /transfer-days:
+    put:
+      summary: Update a transfer day.
+      security:
+        - BearerAuth: []
+      operationId: updateTransferDay
+      tags:
+        - transferDay
+      requestBody:
+        description: The transfer day that will be updated.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTransferDay'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateTransferDayResult"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /transfer-listings/{transferListingId}:
     get:
       summary: Find a transfer listing by id.
@@ -2144,6 +2174,28 @@ components:
           type: integer
           format: int64
         transferId:
+          type: integer
+          format: int64
+        errors:
+          type: array
+          items:
+            type: string
+
+    UpdateTransferDay:
+      type: object
+      required:
+        - id
+        - status
+      properties:
+        id:
+          type: integer
+          format: int64
+        status:
+          $ref: '#/components/schemas/Status'
+    UpdateTransferDayResult:
+      type: object
+      properties:
+        transferDayId:
           type: integer
           format: int64
         errors:

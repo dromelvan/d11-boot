@@ -2,10 +2,14 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.TransferDaysApi;
 import org.d11.boot.api.model.TransferDayDTO;
+import org.d11.boot.api.model.UpdateTransferDayDTO;
+import org.d11.boot.api.model.UpdateTransferDayResultDTO;
 import org.d11.boot.application.service.TransferDayService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -39,4 +43,12 @@ public class TransferDayController extends AbstractRepositoryServiceController<T
         final List<TransferDayDTO> transferDays = getRepositoryService().findByTransferWindowId(transferWindowId);
         return ResponseEntity.ok(transferDays);
     }
+
+    @Override
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<UpdateTransferDayResultDTO> updateTransferDay(@Valid final UpdateTransferDayDTO updateTransferDayDTO) {
+        // Later on we might want to flip to other statuses.
+        return ResponseEntity.ok(getRepositoryService().activateTransferDayByTransferDayId(updateTransferDayDTO.getId()));
+    }
+
 }

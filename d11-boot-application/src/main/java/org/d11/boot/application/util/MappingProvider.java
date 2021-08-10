@@ -32,9 +32,12 @@ public class MappingProvider {
      *
      * @param source      The object from which values will be copied.
      * @param destination The object to which values will be copied;
+     * @param <T>         Type of the destination object.
+     * @return A mapped destination type object.
      */
-    protected void map(final Object source, final Object destination) {
+    protected <T> T map(final Object source, final T destination) {
         this.modelMapper.map(source, destination);
+        return destination;
     }
 
     /**
