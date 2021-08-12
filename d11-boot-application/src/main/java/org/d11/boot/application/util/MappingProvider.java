@@ -1,6 +1,7 @@
 package org.d11.boot.application.util;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.spi.MatchingStrategy;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +15,15 @@ public class MappingProvider {
      * ModelMapper for doing the actual mapping.
      */
     private final ModelMapper modelMapper = new D11BootModelMapper();
+
+    /**
+     * Sets the matching strategy the matcher should use.
+     *
+     * @param matchingStrategy The matching strategy the matcher should use.
+     */
+    protected void setMatchingStrategy(final MatchingStrategy matchingStrategy) {
+        this.modelMapper.getConfiguration().setMatchingStrategy(matchingStrategy);
+    }
 
     /**
      * Maps an object to a destination class.

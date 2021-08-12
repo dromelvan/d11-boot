@@ -6,6 +6,7 @@ import org.d11.boot.application.model.PlayerSeasonStat;
 import org.d11.boot.application.repository.PlayerSeasonStatRepository;
 import org.d11.boot.application.util.NotFoundException;
 import org.d11.boot.application.util.PlayerSeasonStatsToTeamPlayerSeasonStatsMapConverter;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -117,7 +118,12 @@ public class PlayerSeasonStatService extends AbstractRepositoryService<PlayerSea
         if(teamPlayerSeasonStatsMap == null) {
             throw new NotFoundException();
         }
-        return map(teamPlayerSeasonStatsMap, TeamPlayerSeasonStatsDTO.class);
+
+        // Fix updatePlayer so that it uses strict and everything else uses standard instead.
+        setMatchingStrategy(MatchingStrategies.STANDARD);
+        final List<TeamPlayerSeasonStatsDTO> teamPlayerSeasonStatsDTOs = map(teamPlayerSeasonStatsMap, TeamPlayerSeasonStatsDTO.class);
+        setMatchingStrategy(MatchingStrategies.STRICT);
+        return teamPlayerSeasonStatsDTOs;
     }
 
 }
