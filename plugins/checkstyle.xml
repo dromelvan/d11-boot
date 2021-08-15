@@ -72,7 +72,7 @@
     <module name="IllegalInstantiation"/>
     <module name="IllegalThrows"/>
     <module name="IllegalToken"/>
-    <module name="IllegalType"/>
+    <!--<module name="IllegalType"/> -->
     <module name="InnerAssignment"/>
     <module name="MagicNumber"/>
     <!--<module name="MissingCtor"/> -->
@@ -128,7 +128,7 @@
     <module name="JavadocMethod"/>
     <module name="JavadocMissingWhitespaceAfterAsterisk"/>
     <!-- <module name="JavadocPackage"/> -->
-    <module name="JavadocParagraph"/>
+    <!-- <module name="JavadocParagraph"/> -->
     <module name="JavadocStyle"/>
     <module name="JavadocTagContinuationIndentation"/>
     <module name="JavadocType"/>
