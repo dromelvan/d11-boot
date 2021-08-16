@@ -50,7 +50,7 @@ public class TransferValidator {
         final List<String> errors = new ArrayList<>();
         final int maxFee = this.season.getD11TeamBudget()
                 - this.playerSeasonStats.stream().mapToInt(PlayerSeasonStat::getValue).sum()
-                - (11 - this.playerSeasonStats.size()) * 5;
+                - (10 - this.playerSeasonStats.size()) * 5;
         if(fee > maxFee) {
             errors.add(fee + " fee is greater than max fee " + maxFee + ".");
         }

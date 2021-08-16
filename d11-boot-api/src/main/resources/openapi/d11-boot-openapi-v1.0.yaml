@@ -2207,6 +2207,7 @@ components:
       type: object
       required:
         - id
+        - whoscoredId
         - firstName
         - lastName
         - name
@@ -2215,6 +2216,9 @@ components:
         - photoFileName
       properties:
         id:
+          type: integer
+          format: int64
+        whoscoredId:
           type: integer
           format: int64
         firstName:
@@ -2345,12 +2349,16 @@ components:
       type: object
       required:
         - id
+        - whoscoredId
         - name
         - shortName
         - code
         - photoFileName
       properties:
         id:
+          type: integer
+          format: int64
+        whoscoredId:
           type: integer
           format: int64
         name:
@@ -2868,6 +2876,41 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/GoalBase"
+
+    UpdateMatch:
+      type: object
+      required:
+        - whoscoredId
+        - datetime
+        - elapsed
+        - status
+        - homeTeam
+        - awayTeam
+        - goals
+        - playerMatchStats
+      properties:
+        whoscoredId:
+          type: integer
+          format: int64
+        datetime:
+          type: string
+          format: date-time
+        elapsed:
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
+        homeTeam:
+          $ref: '#/components/schemas/TeamBase'
+        awayTeam:
+          $ref: '#/components/schemas/TeamBase'
+        goals:
+          type: array
+          items:
+            $ref: "#/components/schemas/GoalBase"
+        playerMatchStats:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlayerMatchStat"
 
     MatchesByDate:
       type: object
