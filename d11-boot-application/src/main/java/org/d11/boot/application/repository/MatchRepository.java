@@ -1,7 +1,7 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.Match;
-import org.d11.boot.application.model.Status;
+import org.d11.boot.application.model.jpa.Match;
+import org.d11.boot.application.model.jpa.Status;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;

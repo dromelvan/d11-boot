@@ -1,7 +1,7 @@
 package org.d11.boot.application.util;
 
-import org.d11.boot.application.model.PlayerSeasonStat;
-import org.d11.boot.application.model.Team;
+import org.d11.boot.application.model.jpa.PlayerSeasonStat;
+import org.d11.boot.application.model.jpa.Team;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.ArrayList;

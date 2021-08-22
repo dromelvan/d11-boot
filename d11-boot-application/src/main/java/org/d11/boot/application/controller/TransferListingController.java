@@ -2,7 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.TransferListingsApi;
 import org.d11.boot.api.model.TransferListingDTO;
-import org.d11.boot.application.service.TransferListingService;
+import org.d11.boot.application.service.api.TransferListingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 

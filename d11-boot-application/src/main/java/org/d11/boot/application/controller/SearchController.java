@@ -2,7 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.SearchApi;
 import org.d11.boot.api.model.SearchResultDTO;
-import org.d11.boot.application.service.SearchService;
+import org.d11.boot.application.service.api.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

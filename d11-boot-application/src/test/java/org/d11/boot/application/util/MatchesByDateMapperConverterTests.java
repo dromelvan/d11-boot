@@ -1,8 +1,8 @@
 package org.d11.boot.application.util;
 
 import org.d11.boot.application.model.D11EasyRandomTests;
-import org.d11.boot.application.model.Match;
-import org.d11.boot.application.model.Status;
+import org.d11.boot.application.model.jpa.Match;
+import org.d11.boot.application.model.jpa.Status;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

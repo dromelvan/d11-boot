@@ -2,7 +2,7 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.D11TeamMatchWeekStatDTO;
 import org.d11.boot.api.service.D11TeamMatchWeekStatApiService;
-import org.d11.boot.application.model.D11TeamMatchWeekStat;
+import org.d11.boot.application.model.jpa.D11TeamMatchWeekStat;
 import org.d11.boot.application.repository.D11TeamMatchWeekStatRepository;
 import org.junit.jupiter.api.Test;
 

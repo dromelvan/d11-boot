@@ -2,13 +2,13 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.PlayerMatchStatDTO;
 import org.d11.boot.api.service.PlayerMatchStatApiService;
-import org.d11.boot.application.model.D11Match;
-import org.d11.boot.application.model.Lineup;
-import org.d11.boot.application.model.Match;
-import org.d11.boot.application.model.MatchWeek;
-import org.d11.boot.application.model.Player;
-import org.d11.boot.application.model.PlayerMatchStat;
-import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.jpa.D11Match;
+import org.d11.boot.application.model.jpa.Lineup;
+import org.d11.boot.application.model.jpa.Match;
+import org.d11.boot.application.model.jpa.MatchWeek;
+import org.d11.boot.application.model.jpa.Player;
+import org.d11.boot.application.model.jpa.PlayerMatchStat;
+import org.d11.boot.application.model.jpa.Season;
 import org.d11.boot.application.repository.PlayerMatchStatRepository;
 import org.junit.jupiter.api.Test;
 

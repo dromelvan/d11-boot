@@ -2,7 +2,7 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.CountryDTO;
 import org.d11.boot.api.service.CountryApiService;
-import org.d11.boot.application.model.Country;
+import org.d11.boot.application.model.jpa.Country;
 import org.d11.boot.application.repository.CountryRepository;
 import org.junit.jupiter.api.Test;
 

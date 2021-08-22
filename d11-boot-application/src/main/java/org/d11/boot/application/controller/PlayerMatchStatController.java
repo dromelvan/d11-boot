@@ -2,7 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.PlayerMatchStatsApi;
 import org.d11.boot.api.model.PlayerMatchStatDTO;
-import org.d11.boot.application.service.PlayerMatchStatService;
+import org.d11.boot.application.service.api.PlayerMatchStatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 

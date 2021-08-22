@@ -2,8 +2,8 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.MatchWeekDTO;
 import org.d11.boot.api.service.MatchWeekApiService;
-import org.d11.boot.application.model.MatchWeek;
-import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.jpa.MatchWeek;
+import org.d11.boot.application.model.jpa.Season;
 import org.d11.boot.application.repository.MatchWeekRepository;
 import org.d11.boot.application.util.MatchesByDateMapperConverter;
 import org.junit.jupiter.api.Test;

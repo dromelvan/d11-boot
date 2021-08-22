@@ -1,6 +1,6 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.Team;
+import org.d11.boot.application.model.jpa.Team;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

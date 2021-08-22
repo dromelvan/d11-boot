@@ -1,6 +1,12 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.TransferListingDTO;
+import org.d11.boot.application.model.jpa.D11Team;
+import org.d11.boot.application.model.jpa.Player;
+import org.d11.boot.application.model.jpa.Position;
+import org.d11.boot.application.model.jpa.Team;
+import org.d11.boot.application.model.jpa.TransferDay;
+import org.d11.boot.application.model.jpa.TransferListing;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

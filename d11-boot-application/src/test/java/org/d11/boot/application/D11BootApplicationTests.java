@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
  */
 @SpringBootTest
 @ActiveProfiles("test")
-class D11BootApplicationTests {
+public class D11BootApplicationTests {
 
     /**
      * Context loading test.

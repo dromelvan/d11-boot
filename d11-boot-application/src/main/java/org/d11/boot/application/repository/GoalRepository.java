@@ -1,6 +1,6 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.Goal;
+import org.d11.boot.application.model.jpa.Goal;
 import org.springframework.stereotype.Repository;
 
 /**

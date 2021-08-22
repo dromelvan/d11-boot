@@ -2,8 +2,8 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.TransferWindowDTO;
 import org.d11.boot.api.service.TransferWindowApiService;
-import org.d11.boot.application.model.Season;
-import org.d11.boot.application.model.TransferWindow;
+import org.d11.boot.application.model.jpa.Season;
+import org.d11.boot.application.model.jpa.TransferWindow;
 import org.d11.boot.application.repository.TransferWindowRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

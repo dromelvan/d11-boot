@@ -3,7 +3,7 @@ package org.d11.boot.application.controller;
 import org.d11.boot.api.PlayerSeasonStatsApi;
 import org.d11.boot.api.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.model.TeamPlayerSeasonStatsDTO;
-import org.d11.boot.application.service.PlayerSeasonStatService;
+import org.d11.boot.application.service.api.PlayerSeasonStatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 

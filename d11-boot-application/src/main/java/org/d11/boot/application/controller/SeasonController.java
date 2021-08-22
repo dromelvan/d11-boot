@@ -3,7 +3,7 @@ package org.d11.boot.application.controller;
 import org.d11.boot.api.SeasonsApi;
 import org.d11.boot.api.model.SeasonDTO;
 import org.d11.boot.api.model.SeasonSummaryDTO;
-import org.d11.boot.application.service.SeasonService;
+import org.d11.boot.application.service.api.SeasonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

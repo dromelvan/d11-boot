@@ -3,7 +3,7 @@ package org.d11.boot.application.api;
 import org.d11.boot.api.model.TeamDTO;
 import org.d11.boot.api.model.TeamNameDTO;
 import org.d11.boot.api.service.TeamApiService;
-import org.d11.boot.application.model.Team;
+import org.d11.boot.application.model.jpa.Team;
 import org.d11.boot.application.repository.TeamRepository;
 import org.junit.jupiter.api.Test;
 

@@ -1,7 +1,7 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.Player;
-import org.d11.boot.application.model.projection.PlayerSearchResult;
+import org.d11.boot.application.model.jpa.Player;
+import org.d11.boot.application.model.jpa.projection.PlayerSearchResult;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;

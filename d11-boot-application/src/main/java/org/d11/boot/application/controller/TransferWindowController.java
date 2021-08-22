@@ -2,7 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.TransferWindowsApi;
 import org.d11.boot.api.model.TransferWindowDTO;
-import org.d11.boot.application.service.TransferWindowService;
+import org.d11.boot.application.service.api.TransferWindowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

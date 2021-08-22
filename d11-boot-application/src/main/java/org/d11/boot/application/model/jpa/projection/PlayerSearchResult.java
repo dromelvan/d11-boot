@@ -1,0 +1,43 @@
+package org.d11.boot.application.model.jpa.projection;
+
+/**
+ * Player search information projection for one player.
+ */
+public interface PlayerSearchResult {
+
+    /**
+     * Gets the player id.
+     *
+     * @return Player id.
+     */
+    Long getId();
+
+    /**
+     * Gets the player name.
+     *
+     * @return Player name.
+     */
+    String getName();
+
+    /**
+     * Gets the player photo file name.
+     *
+     * @return Player photo file name or null if the player does not have a photo.
+     */
+    String getPhotoFileName();
+
+    /**
+     * Gets the player team id.
+     *
+     * @return Player team id.
+     */
+    Long getTeamId();
+
+    /**
+     * Gets the player team name.
+     *
+     * @return Player team name.
+     */
+    String getTeamName();
+
+}

@@ -1,7 +1,7 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.Season;
-import org.d11.boot.application.model.projection.EntityId;
+import org.d11.boot.application.model.jpa.Season;
+import org.d11.boot.application.model.jpa.projection.EntityId;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

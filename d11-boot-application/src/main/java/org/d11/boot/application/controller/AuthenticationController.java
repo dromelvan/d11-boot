@@ -3,7 +3,7 @@ package org.d11.boot.application.controller;
 import org.d11.boot.api.AuthenticationApi;
 import org.d11.boot.api.model.AuthenticationDTO;
 import org.d11.boot.api.model.AuthenticationResultDTO;
-import org.d11.boot.application.service.AuthenticationService;
+import org.d11.boot.application.service.api.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

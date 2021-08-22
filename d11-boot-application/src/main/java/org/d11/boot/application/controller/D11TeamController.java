@@ -3,7 +3,7 @@ package org.d11.boot.application.controller;
 import org.d11.boot.api.D11TeamsApi;
 import org.d11.boot.api.model.D11TeamDTO;
 import org.d11.boot.api.model.D11TeamNameDTO;
-import org.d11.boot.application.service.D11TeamService;
+import org.d11.boot.application.service.api.D11TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

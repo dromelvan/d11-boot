@@ -1,6 +1,6 @@
 package org.d11.boot.application.util;
 
-import org.d11.boot.application.model.D11Match;
+import org.d11.boot.application.model.jpa.D11Match;
 import org.modelmapper.AbstractConverter;
 
 import java.time.format.DateTimeFormatter;

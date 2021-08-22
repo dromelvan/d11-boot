@@ -1,6 +1,7 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.application.mock.D11EasyRandom;
+import org.d11.boot.application.model.jpa.D11Entity;
 import org.d11.boot.application.util.MappingProvider;
 
 import java.util.List;

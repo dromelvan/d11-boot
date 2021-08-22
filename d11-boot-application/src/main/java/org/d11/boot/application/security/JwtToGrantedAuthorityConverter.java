@@ -1,6 +1,6 @@
 package org.d11.boot.application.security;
 
-import org.d11.boot.application.service.UserService;
+import org.d11.boot.application.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;

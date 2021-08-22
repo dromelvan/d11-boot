@@ -1,6 +1,6 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.D11TeamMatchWeekStat;
+import org.d11.boot.application.model.jpa.D11TeamMatchWeekStat;
 import org.springframework.stereotype.Repository;
 
 /**

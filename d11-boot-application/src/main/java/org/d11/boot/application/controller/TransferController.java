@@ -4,7 +4,7 @@ import org.d11.boot.api.TransfersApi;
 import org.d11.boot.api.model.InsertTransferDTO;
 import org.d11.boot.api.model.InsertTransferResultDTO;
 import org.d11.boot.api.model.TransferDTO;
-import org.d11.boot.application.service.TransferService;
+import org.d11.boot.application.service.api.TransferService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;

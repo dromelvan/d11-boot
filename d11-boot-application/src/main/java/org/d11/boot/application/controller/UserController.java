@@ -2,7 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.UsersApi;
 import org.d11.boot.api.model.UserDTO;
-import org.d11.boot.application.service.UserService;
+import org.d11.boot.application.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

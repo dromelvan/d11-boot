@@ -2,7 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.MatchWeeksApi;
 import org.d11.boot.api.model.MatchWeekDTO;
-import org.d11.boot.application.service.MatchWeekService;
+import org.d11.boot.application.service.api.MatchWeekService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

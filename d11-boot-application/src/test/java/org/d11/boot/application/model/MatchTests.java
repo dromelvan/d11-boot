@@ -1,6 +1,8 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.MatchDTO;
+import org.d11.boot.application.model.jpa.Match;
+import org.d11.boot.application.model.jpa.Status;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

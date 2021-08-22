@@ -2,7 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.TransferBidsApi;
 import org.d11.boot.api.model.TransferBidDTO;
-import org.d11.boot.application.service.TransferBidService;
+import org.d11.boot.application.service.api.TransferBidService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 

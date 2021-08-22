@@ -2,7 +2,7 @@ package org.d11.boot.application.api;
 
 import lombok.Getter;
 import org.d11.boot.api.service.D11ApiService;
-import org.d11.boot.application.model.D11Entity;
+import org.d11.boot.application.model.jpa.D11Entity;
 import org.d11.boot.application.repository.D11EntityRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;

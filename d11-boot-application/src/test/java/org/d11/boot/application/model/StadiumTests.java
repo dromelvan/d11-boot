@@ -1,6 +1,7 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.StadiumDTO;
+import org.d11.boot.application.model.jpa.Stadium;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

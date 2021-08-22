@@ -1,6 +1,9 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.TransferWindowDTO;
+import org.d11.boot.application.model.jpa.MatchWeek;
+import org.d11.boot.application.model.jpa.Status;
+import org.d11.boot.application.model.jpa.TransferWindow;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

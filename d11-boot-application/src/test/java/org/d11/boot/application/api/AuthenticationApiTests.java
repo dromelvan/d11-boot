@@ -4,7 +4,7 @@ import org.d11.boot.api.model.AuthenticationDTO;
 import org.d11.boot.api.model.AuthenticationResultDTO;
 import org.d11.boot.api.service.AuthenticationApiService;
 import org.d11.boot.api.service.D11ApiServiceException;
-import org.d11.boot.application.model.User;
+import org.d11.boot.application.model.jpa.User;
 import org.d11.boot.application.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;

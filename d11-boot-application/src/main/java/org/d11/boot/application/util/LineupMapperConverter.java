@@ -1,6 +1,6 @@
 package org.d11.boot.application.util;
 
-import org.d11.boot.application.model.Lineup;
+import org.d11.boot.application.model.jpa.Lineup;
 import org.modelmapper.AbstractConverter;
 
 /**

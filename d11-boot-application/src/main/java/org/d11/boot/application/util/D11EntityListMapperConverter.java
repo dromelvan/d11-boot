@@ -1,6 +1,6 @@
 package org.d11.boot.application.util;
 
-import org.d11.boot.application.model.D11Entity;
+import org.d11.boot.application.model.jpa.D11Entity;
 import org.modelmapper.AbstractConverter;
 
 import java.util.List;

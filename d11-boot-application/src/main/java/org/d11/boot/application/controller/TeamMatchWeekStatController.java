@@ -2,7 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.TeamMatchWeekStatsApi;
 import org.d11.boot.api.model.TeamMatchWeekStatDTO;
-import org.d11.boot.application.service.TeamMatchWeekStatService;
+import org.d11.boot.application.service.api.TeamMatchWeekStatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

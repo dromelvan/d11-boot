@@ -2,7 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.TeamSeasonStatsApi;
 import org.d11.boot.api.model.TeamSeasonStatDTO;
-import org.d11.boot.application.service.TeamSeasonStatService;
+import org.d11.boot.application.service.api.TeamSeasonStatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

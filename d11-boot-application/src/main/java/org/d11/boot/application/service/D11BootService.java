@@ -1,7 +1,7 @@
 package org.d11.boot.application.service;
 
 import org.apache.commons.lang3.StringUtils;
-import org.d11.boot.application.model.D11Entity;
+import org.d11.boot.application.model.jpa.D11Entity;
 import org.d11.boot.application.util.MappingProvider;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 

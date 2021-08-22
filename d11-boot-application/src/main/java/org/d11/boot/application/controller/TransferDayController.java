@@ -4,7 +4,7 @@ import org.d11.boot.api.TransferDaysApi;
 import org.d11.boot.api.model.TransferDayDTO;
 import org.d11.boot.api.model.UpdateTransferDayDTO;
 import org.d11.boot.api.model.UpdateTransferDayResultDTO;
-import org.d11.boot.application.service.TransferDayService;
+import org.d11.boot.application.service.api.TransferDayService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;

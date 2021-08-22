@@ -1,6 +1,6 @@
 package org.d11.boot.application.controller;
 
-import org.d11.boot.application.service.AbstractRepositoryService;
+import org.d11.boot.application.service.api.ApiRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
  * @param <T> The DTO class this controller will return.
  * @param <U> The repository service class this controller will use.
  */
-public abstract class AbstractRepositoryServiceController<T, U extends AbstractRepositoryService<?, T, ?>> extends D11BootController {
+public abstract class AbstractRepositoryServiceController<T, U extends ApiRepositoryService<?, T, ?>> extends D11BootController {
 
     /**
      * The repository service this controller will use.

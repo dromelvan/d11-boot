@@ -3,7 +3,7 @@ package org.d11.boot.application.controller;
 import org.d11.boot.api.D11MatchesApi;
 import org.d11.boot.api.model.D11MatchDTO;
 import org.d11.boot.api.model.D11MatchesByDateDTO;
-import org.d11.boot.application.service.D11MatchService;
+import org.d11.boot.application.service.api.D11MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

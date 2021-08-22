@@ -2,7 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.PositionsApi;
 import org.d11.boot.api.model.PositionDTO;
-import org.d11.boot.application.service.PositionService;
+import org.d11.boot.application.service.api.PositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

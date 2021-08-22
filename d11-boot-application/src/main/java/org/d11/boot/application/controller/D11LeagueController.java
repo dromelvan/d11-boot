@@ -2,7 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.D11LeaguesApi;
 import org.d11.boot.api.model.D11LeagueDTO;
-import org.d11.boot.application.service.D11LeagueService;
+import org.d11.boot.application.service.api.D11LeagueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

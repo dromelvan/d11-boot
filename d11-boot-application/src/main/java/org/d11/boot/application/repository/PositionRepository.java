@@ -1,6 +1,6 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.Position;
+import org.d11.boot.application.model.jpa.Position;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
