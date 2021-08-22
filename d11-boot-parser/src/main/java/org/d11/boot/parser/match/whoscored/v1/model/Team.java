@@ -1,12 +1,9 @@
 package org.d11.boot.parser.match.whoscored.v1.model;
 
 import lombok.Data;
-import org.d11.boot.api.model.GoalBaseDTO;
-import org.d11.boot.api.model.PlayerBaseDTO;
-import org.d11.boot.api.model.PlayerMatchStatDTO;
-import org.d11.boot.api.model.PlayerNameDTO;
-import org.d11.boot.api.model.TeamBaseDTO;
-import org.d11.boot.api.model.TeamNameDTO;
+import org.d11.boot.parser.model.GoalData;
+import org.d11.boot.parser.model.Lineup;
+import org.d11.boot.parser.model.PlayerMatchData;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,16 +14,16 @@ import java.util.TreeMap;
 /**
  * Represents data for a team in match centre data (provided under 'home' and 'away' keys. Example:
  * "home": {
- *     "teamId":161,
- *     ...
- *     "incidentEvents": { .. },
- *     ...
- *     "name":"Wolves",
- *     ...
- *     "players":[ .. ],
- *     ...
- *     "scores":{"halftime":1,"fulltime":1,"running":1},
- *     ...
+ * "teamId":161,
+ * ...
+ * "incidentEvents": { .. },
+ * ...
+ * "name":"Wolves",
+ * ...
+ * "players":[ .. ],
+ * ...
+ * "scores":{"halftime":1,"fulltime":1,"running":1},
+ * ...
  * }
  */
 @Data
@@ -54,45 +51,74 @@ public class Team {
     private List<IncidentEvent> incidentEvents;
 
     /**
-     * Creates a list of player match stats for this team from the player list and the incident event list.
+     * Helper for getting values from a set of incident events.
+     */
+    private IncidentEventHelper incidentEventHelper;
+
+    /**
+     * Gets an incident helper for the set of incident events for the team.
+     *
+     * @return Incident helper for the set of incident events for the team.
+     */
+    private IncidentEventHelper getIncidentEventHelper() {
+        if(this.incidentEventHelper == null) {
+            this.incidentEventHelper = new IncidentEventHelper(this.incidentEvents);
+        }
+        return this.incidentEventHelper;
+    }
+
+    /**
+     * Gets the number of goals scored by the team in the match.
+     *
+     * @return The number of goals scored by the team in the match.
+     */
+    public int getGoalsScored() {
+        return getIncidentEventHelper().getIncidentEventCount(Type.TYPE_GOAL);
+    }
+
+    /**
+     * Creates a list of player match data for this team from the player list and the incident event list.
      *
      * @param goalsConceded We can't find the number of goals conceded from the incident events so it has to be provided.
-     * @return List of player match stats for this team.
+     * @return List of player match data for this team.
      */
-    public List<PlayerMatchStatDTO> getPlayerMatchStats(final int goalsConceded) {
-        final List<PlayerMatchStatDTO> playerMatchStats = new ArrayList<>();
+    public List<PlayerMatchData> getPlayerMatchDatas(final int goalsConceded) {
+        final List<PlayerMatchData> playerMatchDatas = new ArrayList<>();
 
-        final IncidentEventHelper incidentEventHelper = new IncidentEventHelper(this.incidentEvents);
-        final TreeMap<Integer, Set<PlayerMatchStatDTO>> ratingMap = new TreeMap<>();
+        final TreeMap<Integer, Set<PlayerMatchData>> ratingMap = new TreeMap<>();
 
         for(final Player player : this.players) {
-            final PlayerMatchStatDTO playerMatchStat = new PlayerMatchStatDTO()
-                    .player(new PlayerBaseDTO()
-                            .whoscoredId(player.getPlayerId())
-                            .name(player.getName()))
-                    .team(new TeamBaseDTO()
-                            .whoscoredId(this.teamId)
-                            .name(this.name))
-                    .lineup(player.isFirstEleven() ? 2 : 1)
-                    .substitutionOnTime(incidentEventHelper.getSubstitutionOnTime(player.getPlayerId()))
-                    .substitutionOffTime(incidentEventHelper.getSubstitutionOffTime(player.getPlayerId()))
-                    .goals(incidentEventHelper.getGoals(player.getPlayerId()))
-                    .goalAssists(incidentEventHelper.getGoalAssists(player.getPlayerId()))
-                    .ownGoals(incidentEventHelper.getOwnGoals(player.getPlayerId()))
-                    .goalsConceded(goalsConceded)
-                    .yellowCardTime(incidentEventHelper.getYellowCardTime(player.getPlayerId()))
-                    .redCardTime(incidentEventHelper.getRedCardTime(player.getPlayerId()))
-                    .manOfTheMatch(0)
-                    .sharedManOfTheMatch(0)
-                    .rating(player.getRating())
-                    .playedPosition(player.getPosition());
-            playerMatchStats.add(playerMatchStat);
+            final PlayerMatchData playerMatchData = new PlayerMatchData();
+            playerMatchData.setPlayerWhoscoredId(player.getPlayerId());
+            playerMatchData.setPlayerName(player.getName());
+            playerMatchData.setTeamWhoscoredId(this.teamId);
+            playerMatchData.setTeamName(this.name);
+            playerMatchData.setLineup(player.isFirstEleven() ? Lineup.STARTING_LINEUP : Lineup.SUBSTITUTE);
+            playerMatchData.setSubstitutionOnTime(getIncidentEventHelper().getSubstitutionOnTime(player.getPlayerId()));
+            playerMatchData.setSubstitutionOffTime(getIncidentEventHelper().getSubstitutionOffTime(player.getPlayerId()));
+            playerMatchData.setGoals(getIncidentEventHelper().getGoals(player.getPlayerId()));
+            playerMatchData.setGoalAssists(getIncidentEventHelper().getGoalAssists(player.getPlayerId()));
+            playerMatchData.setOwnGoals(getIncidentEventHelper().getOwnGoals(player.getPlayerId()));
+            playerMatchData.setGoalsConceded(goalsConceded);
+            playerMatchData.setYellowCardTime(getIncidentEventHelper().getYellowCardTime(player.getPlayerId()));
+            playerMatchData.setRedCardTime(getIncidentEventHelper().getRedCardTime(player.getPlayerId()));
+            playerMatchData.setManOfTheMatch(false);
+            playerMatchData.setSharedManOfTheMatch(false);
+            playerMatchData.setRating(player.getRating());
+            playerMatchData.setPlayedPosition(player.getPosition());
 
-            ratingMap.computeIfAbsent(playerMatchStat.getRating(), rating -> new HashSet<>()).add(playerMatchStat);
+            playerMatchDatas.add(playerMatchData);
+
+            ratingMap.computeIfAbsent(player.getRating(), rating -> new HashSet<>()).add(playerMatchData);
         }
-        ratingMap.lastEntry().getValue().forEach(playerMatchStatDTO -> playerMatchStatDTO.setManOfTheMatch(1));
 
-        return playerMatchStats;
+        final Set<PlayerMatchData> moms = ratingMap.lastEntry().getValue();
+        moms.forEach(playerMatchData -> {
+            playerMatchData.setManOfTheMatch(moms.size() == 1);
+            playerMatchData.setSharedManOfTheMatch(moms.size() == 2);
+        });
+
+        return playerMatchDatas;
     }
 
     /**
@@ -101,24 +127,21 @@ public class Team {
      * @param playerIdNameDictionary Incident events don't contain player names so we need to provide them this way.
      * @return List of goals for this team.
      */
-    public List<GoalBaseDTO> getGoals(final PlayerIdNameDictionary playerIdNameDictionary) {
-        final List<GoalBaseDTO> goals = new ArrayList<>();
-        final IncidentEventHelper incidentEventHelper = new IncidentEventHelper(this.incidentEvents);
+    public List<GoalData> getGoalDatas(final PlayerIdNameDictionary playerIdNameDictionary) {
+        final List<GoalData> goalDatas = new ArrayList<>();
 
-        for(final IncidentEvent incidentEvent : incidentEventHelper.getIncidentEvents(Type.TYPE_GOAL)) {
-            goals.add(new GoalBaseDTO()
-                    .team(new TeamNameDTO()
-                            .whoscoredId(this.teamId)
-                            .name(this.name))
-                    .penalty(incidentEvent.getQualifierTypes().contains(Type.TYPE_PENALTY))
-                    .ownGoal(incidentEvent.getQualifierTypes().contains(Type.TYPE_OWN_GOAL))
-                    .player(new PlayerNameDTO()
-                            .whoscoredId(incidentEvent.getPlayerId())
-                            .name(playerIdNameDictionary.getPlayerName(String.valueOf(incidentEvent.getPlayerId()))))
-                    .time(incidentEvent.getMinute())
-            );
+        for(final IncidentEvent incidentEvent : getIncidentEventHelper().getIncidentEvents(Type.TYPE_GOAL)) {
+            final GoalData goalData = new GoalData();
+            goalData.setTime(incidentEvent.getMinute());
+            goalData.setPenalty(incidentEvent.getQualifierTypes().contains(Type.TYPE_PENALTY));
+            goalData.setOwnGoal(incidentEvent.getQualifierTypes().contains(Type.TYPE_OWN_GOAL));
+            goalData.setPlayerWhoscoredId(incidentEvent.getPlayerId());
+            goalData.setPlayerName(playerIdNameDictionary.getPlayerName(String.valueOf(incidentEvent.getPlayerId())));
+            goalData.setTeamWhoscoredId(this.teamId);
+            goalData.setTeamName(this.name);
+            goalDatas.add(goalData);
         }
 
-        return goals;
+        return goalDatas;
     }
 }

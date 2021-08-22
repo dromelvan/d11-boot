@@ -1,7 +1,11 @@
 package org.d11.boot.parser.match.whoscored.v1.model;
 
 import lombok.Data;
+import org.d11.boot.parser.model.GoalData;
+import org.d11.boot.parser.model.PlayerMatchData;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -49,6 +53,28 @@ public class MatchCenterData {
      * Away team data.
      */
     private Team away;
+
+    /**
+     * Gets a list of goals for both teams.
+     *
+     * @return List of goals for both teams.
+     */
+    public List<GoalData> getGoals() {
+        final List<GoalData> goals = new ArrayList<>(this.home.getGoalDatas(this.playerIdNameDictionary));
+        goals.addAll(this.away.getGoalDatas(this.playerIdNameDictionary));
+        return goals;
+    }
+
+    /**
+     * Gets a list of player match data for both teams.
+     *
+     * @return List of player match data for both teams.
+     */
+    public List<PlayerMatchData> getPlayerMatchDatas() {
+        final List<PlayerMatchData> players = new ArrayList<>(this.home.getPlayerMatchDatas(this.away.getGoalsScored()));
+        players.addAll(this.away.getPlayerMatchDatas(this.home.getGoalsScored()));
+        return players;
+    }
 
     /**
      * Elapsed time can sometime have weird values like MT, MS, IY, FIN etc.

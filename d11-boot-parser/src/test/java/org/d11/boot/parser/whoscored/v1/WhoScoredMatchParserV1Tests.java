@@ -1,10 +1,10 @@
 package org.d11.boot.parser.whoscored.v1;
 
-import org.d11.boot.api.model.StatusDTO;
-import org.d11.boot.api.model.UpdateMatchDTO;
 import org.d11.boot.parser.ParserException;
 import org.d11.boot.parser.match.whoscored.v1.WhoScoredMatchParserV1;
 import org.d11.boot.parser.match.whoscored.v1.model.MatchHeader;
+import org.d11.boot.parser.model.MatchData;
+import org.d11.boot.parser.model.Status;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -32,31 +32,31 @@ public class WhoScoredMatchParserV1Tests {
     public void parsePendingMatch() throws IOException, ParserException {
         final WhoScoredMatchParserV1 whoScoredMatchParserV1 = new WhoScoredMatchParserV1();
         final File pendingMatchFile = new File("src/test/resources/whoscored/v1/match/pending.html");
-        final UpdateMatchDTO updateMatchDTO = whoScoredMatchParserV1.parse(pendingMatchFile);
+        final MatchData matchData = whoScoredMatchParserV1.parse(pendingMatchFile);
 
-        assertEquals(Long.valueOf(1_549_539), updateMatchDTO.getWhoscoredId(),
-                "Update match DTO whoscoredId should equal pending file matchId.");
+        assertEquals(Long.valueOf(1_549_539), matchData.getWhoscoredId(),
+                "Match data whoscoredId should equal pending file matchId.");
 
-        assertEquals(MatchHeader.ELAPSED_PENDING, updateMatchDTO.getElapsed(),
-                "Update match DTO elapsed should be N/A.");
-        assertEquals(StatusDTO.PENDING, updateMatchDTO.getStatus(), "Update match DTO status should be pending.");
+        assertEquals(MatchHeader.ELAPSED_PENDING, matchData.getElapsed(),
+                "Match data elapsed should be N/A.");
+        assertEquals(Status.PENDING, matchData.getStatus(), "Match data status should be pending.");
 
-        assertNotNull(updateMatchDTO.getHomeTeam(), "Pending file update match DTO home team should not be null.");
-        assertEquals(Long.valueOf(189), updateMatchDTO.getHomeTeam().getWhoscoredId(),
-                "Update match DTO home team id should equal pending file home team id.");
+        assertNotNull(matchData.getHomeTeamWhoscoredId(), "Pending file match data home team should not be null.");
+        assertEquals(Long.valueOf(189), matchData.getHomeTeamWhoscoredId(),
+                "Match data home team id should equal pending file home team id.");
 
-        assertNotNull(updateMatchDTO.getAwayTeam(), "Pending file update match DTO away team should not be null.");
-        assertEquals(Long.valueOf(13), updateMatchDTO.getAwayTeam().getWhoscoredId(),
-                "Update match DTO away team id should equal pending file away team id.");
+        assertNotNull(matchData.getAwayTeamWhoscoredId(), "Pending file match data away team should not be null.");
+        assertEquals(Long.valueOf(13), matchData.getAwayTeamWhoscoredId(),
+                "Match data away team id should equal pending file away team id.");
 
-        assertEquals(LocalDateTime.of(2021, 8, 13, 22, 0, 0), updateMatchDTO.getDatetime(),
-                "Update match DTO datetime should equal pending file datetime.");
+        assertEquals(LocalDateTime.of(2021, 8, 13, 22, 0, 0), matchData.getDatetime(),
+                "Match data datetime should equal pending file datetime.");
 
-        assertTrue(updateMatchDTO.getGoals().isEmpty(),
-                "Update match DTO goals should not empty.");
+        assertTrue(matchData.getGoals().isEmpty(),
+                "Match data goals should not empty.");
 
-        assertTrue(updateMatchDTO.getPlayerMatchStats().isEmpty(),
-                "Update match DTO player match stats should be empty.");
+        assertTrue(matchData.getPlayers().isEmpty(),
+                "Match data player match stats should be empty.");
     }
 
     /**
@@ -69,31 +69,31 @@ public class WhoScoredMatchParserV1Tests {
     public void parseFullTimeMatch() throws IOException, ParserException {
         final WhoScoredMatchParserV1 whoScoredMatchParserV1 = new WhoScoredMatchParserV1();
         final File finishedMatchFile = new File("src/test/resources/whoscored/v1/match/fullTime.html");
-        final UpdateMatchDTO updateMatchDTO = whoScoredMatchParserV1.parse(finishedMatchFile);
+        final MatchData matchData = whoScoredMatchParserV1.parse(finishedMatchFile);
 
-        assertEquals(Long.valueOf(1_485_563), updateMatchDTO.getWhoscoredId(),
-                "Update match DTO whoscoredId should equal finished file matchId.");
+        assertEquals(Long.valueOf(1_485_563), matchData.getWhoscoredId(),
+                "Match data whoscoredId should equal finished file matchId.");
 
-        assertEquals(MatchHeader.ELAPSED_FULL_TIME, updateMatchDTO.getElapsed(),
-                "Update match DTO elapsed should be FT.");
-        assertEquals(StatusDTO.FULL_TIME, updateMatchDTO.getStatus(), "Update match DTO status should be full time.");
+        assertEquals(MatchHeader.ELAPSED_FULL_TIME, matchData.getElapsed(),
+                "Match data elapsed should be FT.");
+        assertEquals(Status.FULL_TIME, matchData.getStatus(), "Match data status should be full time.");
 
-        assertNotNull(updateMatchDTO.getHomeTeam(), "Full time file update match DTO home team should not be null.");
-        assertEquals(Long.valueOf(161), updateMatchDTO.getHomeTeam().getWhoscoredId(),
-                "Update match DTO home team id should equal finished file home team id.");
+        assertNotNull(matchData.getHomeTeamWhoscoredId(), "Full time file match data home team should not be null.");
+        assertEquals(Long.valueOf(161), matchData.getHomeTeamWhoscoredId(),
+                "Match data home team id should equal finished file home team id.");
 
-        assertNotNull(updateMatchDTO.getAwayTeam(), "Full time file update match DTO away team should not be null.");
-        assertEquals(Long.valueOf(32), updateMatchDTO.getAwayTeam().getWhoscoredId(),
-                "Update match DTO away team id should equal finished file away team id.");
+        assertNotNull(matchData.getAwayTeamWhoscoredId(), "Full time file match data away team should not be null.");
+        assertEquals(Long.valueOf(32), matchData.getAwayTeamWhoscoredId(),
+                "Match data away team id should equal finished file away team id.");
 
-        assertEquals(LocalDateTime.of(2021, 5, 23, 18, 0, 0), updateMatchDTO.getDatetime(),
-                "Update match DTO datetime should equal finished file datetime.");
+        assertEquals(LocalDateTime.of(2021, 5, 23, 18, 0, 0), matchData.getDatetime(),
+                "Match data datetime should equal finished file datetime.");
 
-        assertFalse(updateMatchDTO.getGoals().isEmpty(),
-                "Update match DTO goals should not be empty.");
+        assertFalse(matchData.getGoals().isEmpty(),
+                "Match data goals should not be empty.");
 
-        assertFalse(updateMatchDTO.getPlayerMatchStats().isEmpty(),
-                "Update match DTO player match stats should not be empty.");
+        assertFalse(matchData.getPlayers().isEmpty(),
+                "Match data player match stats should not be empty.");
     }
 
 }

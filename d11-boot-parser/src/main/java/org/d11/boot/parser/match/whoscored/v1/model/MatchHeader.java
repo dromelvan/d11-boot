@@ -1,7 +1,8 @@
 package org.d11.boot.parser.match.whoscored.v1.model;
 
 import lombok.Data;
-import org.d11.boot.api.model.StatusDTO;
+import org.d11.boot.parser.model.MatchData;
+import org.d11.boot.parser.model.Status;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -162,15 +163,33 @@ public class MatchHeader {
      *
      * @return Home team id.
      */
-    public StatusDTO getStatus() {
+    public Status getStatus() {
         switch(getElapsed()) {
             case ELAPSED_PENDING:
-                return StatusDTO.PENDING;
+                return Status.PENDING;
             case ELAPSED_FULL_TIME:
-                return StatusDTO.FULL_TIME;
+                return Status.FULL_TIME;
             default:
-                return StatusDTO.ACTIVE;
+                return Status.ACTIVE;
         }
+    }
+
+    /**
+     * Gets a match data object for the match in the header.
+     *
+     * @return Match data object for the match in the header.
+     */
+    public MatchData getMatchData() {
+        final MatchData matchData = new MatchData();
+        matchData.setWhoscoredId(getMatchId());
+        matchData.setHomeTeamName(getHomeTeamName());
+        matchData.setHomeTeamWhoscoredId(getHomeTeamId());
+        matchData.setAwayTeamName(getAwayTeamName());
+        matchData.setAwayTeamWhoscoredId(getAwayTeamId());
+        matchData.setDatetime(getDatetime());
+        matchData.setElapsed(getElapsed());
+        matchData.setStatus(getStatus());
+        return matchData;
     }
 
 }

@@ -1,31 +1,28 @@
 package org.d11.boot.parser.match.whoscored.v1;
 
 import lombok.extern.slf4j.Slf4j;
-import org.d11.boot.api.model.GoalBaseDTO;
-import org.d11.boot.api.model.TeamBaseDTO;
-import org.d11.boot.api.model.UpdateMatchDTO;
 import org.d11.boot.parser.AbstractParser;
 import org.d11.boot.parser.ParserException;
 import org.d11.boot.parser.match.MatchParser;
 import org.d11.boot.parser.match.whoscored.v1.model.MatchCenterData;
 import org.d11.boot.parser.match.whoscored.v1.model.MatchHeader;
+import org.d11.boot.parser.model.MatchData;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.List;
 import java.util.regex.Matcher;
 
 /**
  * V1 implementation of WhoScored match page parser.
  */
 @Slf4j
-public class WhoScoredMatchParserV1 extends AbstractParser<UpdateMatchDTO> implements MatchParser {
+public class WhoScoredMatchParserV1 extends AbstractParser<MatchData> implements MatchParser {
 
     @Override
     @SuppressWarnings("checkstyle:MagicNumber")
-    protected UpdateMatchDTO doParse(final String input) throws ParserException {
+    protected MatchData doParse(final String input) throws ParserException {
         final Document document = Jsoup.parse(input);
 
         final Elements elements = document.getElementsByTag("script");
@@ -54,32 +51,18 @@ public class WhoScoredMatchParserV1 extends AbstractParser<UpdateMatchDTO> imple
         }
 
         if(matchHeader != null) {
-            final UpdateMatchDTO updateMatchDTO = new UpdateMatchDTO()
-                    .whoscoredId(matchHeader.getMatchId())
-                    .homeTeam(new TeamBaseDTO()
-                            .whoscoredId(matchHeader.getHomeTeamId())
-                            .name(matchHeader.getHomeTeamName()))
-                    .awayTeam(new TeamBaseDTO()
-                            .whoscoredId(matchHeader.getAwayTeamId())
-                            .name(matchHeader.getAwayTeamName()))
-                    .datetime(matchHeader.getDatetime())
-                    .elapsed(matchHeader.getElapsed())
-                    .status(matchHeader.getStatus());
+            final MatchData matchData = matchHeader.getMatchData();
+
             if(matchCenterData == null) {
                 log.debug("Script element with match centre data was not found.");
             } else {
-                final List<GoalBaseDTO> homeTeamGoals = matchCenterData.getHome().getGoals(matchCenterData.getPlayerIdNameDictionary());
-                final List<GoalBaseDTO> awayTeamGoals = matchCenterData.getAway().getGoals(matchCenterData.getPlayerIdNameDictionary());
-
-                updateMatchDTO.getGoals().addAll(homeTeamGoals);
-                updateMatchDTO.getGoals().addAll(awayTeamGoals);
-                updateMatchDTO.getPlayerMatchStats().addAll(matchCenterData.getHome().getPlayerMatchStats(homeTeamGoals.size()));
-                updateMatchDTO.getPlayerMatchStats().addAll(matchCenterData.getAway().getPlayerMatchStats(awayTeamGoals.size()));
+                matchData.setGoals(matchCenterData.getGoals());
+                matchData.setPlayers(matchCenterData.getPlayerMatchDatas());
             }
 
-            log.debug("Parsed update match DTO:\n{}", getGson().toJson(updateMatchDTO));
+            log.debug("Parsed match data:\n{}", getGson().toJson(matchData));
 
-            return updateMatchDTO;
+            return matchData;
         }
 
         throw new ParserException("Script element with match header data was not found.");

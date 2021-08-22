@@ -1,11 +1,11 @@
 package org.d11.boot.parser.match;
 
-import org.d11.boot.api.model.UpdateMatchDTO;
 import org.d11.boot.parser.Parser;
+import org.d11.boot.parser.model.MatchData;
 
 /**
- * Parser that produces an UpdateMatchDTO output.
+ * Parser that produces a MatchData output.
  */
-public interface MatchParser extends Parser<UpdateMatchDTO> {
+public interface MatchParser extends Parser<MatchData> {
 
 }

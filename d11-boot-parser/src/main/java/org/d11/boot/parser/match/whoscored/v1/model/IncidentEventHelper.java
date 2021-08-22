@@ -57,6 +57,16 @@ public class IncidentEventHelper {
     }
 
     /**
+     * Gets the count of incident events of a type.
+     *
+     * @param type The type value incident event count will be looked up for.
+     * @return Count of incident events of the type.
+     */
+    public int getIncidentEventCount(final int type) {
+        return this.typeMap.computeIfAbsent(type, key -> new ArrayList<>()).size();
+    }
+
+    /**
      * Gets the substitution on time for a player.
      *
      * @param playerId The player the substitution on time will be looked up for.
