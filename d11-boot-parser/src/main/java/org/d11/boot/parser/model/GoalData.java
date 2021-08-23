@@ -31,10 +31,10 @@ public class GoalData extends ParserModel {
     /**
      * Penalty or no penalty goal.
      */
-    private Boolean penalty;
+    private boolean penalty;
     /**
      * Own goal or no own goal.
      */
-    private Boolean ownGoal;
+    private boolean ownGoal;
 
 }

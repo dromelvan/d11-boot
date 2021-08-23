@@ -55,6 +55,16 @@ public class MatchCenterData {
     private Team away;
 
     /**
+     * Gets the 'other' team than the team with the id provided.
+     *
+     * @param whoscoredId Id of the team we don't want.
+     * @return The home team if the away team id is provided and the away team if not.
+     */
+    public Team getOtherTeam(final long whoscoredId) {
+        return whoscoredId == this.home.getTeamId() ? this.away : this.home;
+    }
+
+    /**
      * Gets a list of goals for both teams.
      *
      * @return List of goals for both teams.
@@ -62,6 +72,14 @@ public class MatchCenterData {
     public List<GoalData> getGoals() {
         final List<GoalData> goals = new ArrayList<>(this.home.getGoalDatas(this.playerIdNameDictionary));
         goals.addAll(this.away.getGoalDatas(this.playerIdNameDictionary));
+        // Own goals are part of the other teams incident events for some reason. We have to flip the team.
+        goals.forEach(goal -> {
+            if(goal.isOwnGoal()) {
+                final Team team = getOtherTeam(goal.getTeamWhoscoredId());
+                goal.setTeamName(team.getName());
+                goal.setTeamWhoscoredId(team.getTeamId());
+            }
+        });
         return goals;
     }
 

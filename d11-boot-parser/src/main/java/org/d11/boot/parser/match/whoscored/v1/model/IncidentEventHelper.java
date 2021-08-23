@@ -93,7 +93,9 @@ public class IncidentEventHelper {
      * @return Goal count for a player.
      */
     public int getGoals(final long playerId) {
-        return getIncidentEvents(Type.TYPE_GOAL, playerId).size();
+        return (int) getIncidentEvents(Type.TYPE_GOAL, playerId).stream()
+                .filter(incidentEvent -> !incidentEvent.getQualifierTypes().contains(Type.TYPE_OWN_GOAL))
+                .count();
     }
 
     /**
@@ -113,7 +115,9 @@ public class IncidentEventHelper {
      * @return Own goal count for a player.
      */
     public int getOwnGoals(final long playerId) {
-        return getIncidentEvents(Type.TYPE_OWN_GOAL, playerId).size();
+        return (int) getIncidentEvents(Type.TYPE_GOAL, playerId).stream()
+                .filter(incidentEvent -> incidentEvent.getQualifierTypes().contains(Type.TYPE_OWN_GOAL))
+                .count();
     }
 
     /**
