@@ -19,4 +19,9 @@ public class WebPage {
      */
     private String pageSource;
 
+    @Override
+    public String toString() {
+        return this.pageSource;
+    }
+
 }
