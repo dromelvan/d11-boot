@@ -35,11 +35,11 @@ INSERT INTO position VALUES(1, 'Defender', 'D', 4, true, 1, '2020-01-01 00:00:00
 INSERT INTO position VALUES(2, 'Non Defender', 'ND', 4, false, 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO player(
---     id, country_id, whoscored_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, created_at, updated_at)
+--     id, country_id, whoscored_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-INSERT INTO player VALUES(1, 1, 111111, 'FirstA', 'LastA', 'FullA', 'firsta-lasta', '2020-01-01', 111, '1.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO player VALUES(2, 2, 222222, 'FirstB', 'LastB', 'FullB', 'firstb-lastb', '2020-01-01', 222, '2.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO player VALUES(3, 1, 333333, 'FirstC', 'LastC', 'FullC', 'firstc-lastc', '2020-01-01', 333, '3.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(1, 1, 111111, 'FirstA', 'LastA', 'FullA', 'firsta-lasta', '2020-01-01', 111, '1.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(2, 2, 222222, 'FirstB', 'LastB', 'FullB', 'firstb-lastb', '2020-01-01', 222, '2.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(3, 1, 333333, 'FirstC', 'LastC', 'FullC', 'firstc-lastc', '2020-01-01', 333, '3.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 -- Players used for search tests.
 INSERT INTO player VALUES(4, 1, 444444, 'Foo', 'Bar', null, 'foo-bar', '2020-01-01', 111, '4.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO player VALUES(5, 1, 555555, 'Bar', 'Foo', null, 'bar-foo', '2020-01-01', 111, '5.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');

@@ -58,6 +58,11 @@ public class Player extends D11Entity {
      * Name of the file with the player photo, if there is one.
      */
     private String photoFileName;
+    /**
+     * Automagically created players will start out as unverified until someone has had time to set their country,
+     * date of birth and other things that aren't available in the match data.
+     */
+    private boolean verified;
 
     /**
      * The players nationality.

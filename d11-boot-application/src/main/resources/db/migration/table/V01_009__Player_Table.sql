@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS player (
     date_of_birth DATE,
     height INTEGER,
     photo_file_name VARCHAR(64),
+    verified BOOLEAN NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );

@@ -2247,6 +2247,7 @@ components:
         - dateOfBirth
         - height
         - photoFileName
+        - verified
       properties:
         id:
           type: integer
@@ -2274,6 +2275,8 @@ components:
           format: int32
         photoFileName:
           type: string
+        verified:
+          type: boolean
     Player:
       type: object
       required:
@@ -2288,6 +2291,7 @@ components:
         - dateOfBirth
         - height
         - photoFileName
+        - verified
         - country
       properties:
         id:
@@ -2316,6 +2320,8 @@ components:
           format: int32
         photoFileName:
           type: string
+        verified:
+          type: boolean
         country:
           $ref: '#/components/schemas/Country'
 
