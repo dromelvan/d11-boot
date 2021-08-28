@@ -32,7 +32,7 @@ public class Team {
     /**
      * WhoScored id of the team.
      */
-    private Long teamId;
+    private Integer teamId;
     /**
      * Team name.
      */
@@ -91,6 +91,8 @@ public class Team {
             final PlayerMatchData playerMatchData = new PlayerMatchData();
             playerMatchData.setPlayerWhoscoredId(player.getPlayerId());
             playerMatchData.setPlayerName(player.getName());
+            playerMatchData.setCountryId(1L); // Can't parse country from WhoScored match page. 1 = Unknown.
+            playerMatchData.setPositionId(player.getPositionId());
             playerMatchData.setTeamWhoscoredId(this.teamId);
             playerMatchData.setTeamName(this.name);
             playerMatchData.setLineup(player.isFirstEleven() ? Lineup.STARTING_LINEUP : Lineup.SUBSTITUTE);
@@ -106,6 +108,7 @@ public class Team {
             playerMatchData.setSharedManOfTheMatch(false);
             playerMatchData.setRating(player.getRating());
             playerMatchData.setPlayedPosition(player.getPosition());
+            playerMatchData.setHeight(player.getHeight());
 
             playerMatchDatas.add(playerMatchData);
 

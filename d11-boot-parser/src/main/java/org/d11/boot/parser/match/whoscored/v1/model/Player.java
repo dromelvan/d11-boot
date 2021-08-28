@@ -9,6 +9,7 @@ import lombok.Data;
  *      "shirtNo":11,
  *      "name":"Rui Patrício",
  *      "position":"GK",
+ *      "height":190,
  *      ...
  *      "isFirstEleven":true,
  *      ...
@@ -26,7 +27,7 @@ public class Player {
     /**
      * Player id.
      */
-    private long playerId;
+    private int playerId;
     /**
      * Player shirt number.
      */
@@ -39,6 +40,10 @@ public class Player {
      * Position played by the player this match.
      */
     private String position;
+    /**
+     * Player height.
+     */
+    private int height;
     /**
      * True if the player started, false if the player was on the bench.
      */
@@ -62,6 +67,35 @@ public class Player {
             }
         }
         return (int) (lastRating * RATING_MULTIPLIER);
+    }
+
+    public Long getPositionId() {
+        switch (this.position.toUpperCase()) {
+            case "GK":
+                return 1L;
+            case "DC":
+            case "DL":
+            case "DR":
+                return 3L;
+            case "MC":
+            case "ML":
+            case "MR":
+            case "DMC":
+            case "DML":
+            case "DMR":
+            case "AMC":
+            case "AML":
+            case "AMR":
+                return 4L;
+            case "FW":
+            case "FWL":
+            case "FWR":
+                // Subs become forwards so new unverified players don't get bonuses/minuses until they're fixed manually.
+            case "SUB":
+                return 5L;
+            default:
+                return 6L;
+        }
     }
 
 }
