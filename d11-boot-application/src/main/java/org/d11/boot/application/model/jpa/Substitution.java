@@ -1,8 +1,6 @@
 package org.d11.boot.application.model.jpa;
 
 import lombok.Data;
-import org.d11.boot.application.model.jpa.MatchEvent;
-import org.d11.boot.application.model.jpa.Player;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

@@ -1,7 +1,6 @@
 package org.d11.boot.application.model.jpa;
 
 import lombok.Data;
-import org.d11.boot.application.model.jpa.PlayerStat;
 
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.PositiveOrZero;

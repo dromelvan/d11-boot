@@ -4,12 +4,14 @@ import org.d11.boot.api.model.InsertPlayerDTO;
 import org.d11.boot.api.model.MatchWeekDTO;
 import org.d11.boot.api.model.SeasonDTO;
 import org.d11.boot.api.model.TransferDayDTO;
-import org.d11.boot.application.model.jms.DownloadMatchRequest;
+import org.d11.boot.api.model.UpdatePlayerDTO;
+import org.d11.boot.application.model.jms.DownloadWhoscoredMatchMessage;
 import org.d11.boot.application.model.jpa.Match;
 import org.d11.boot.application.model.jpa.MatchWeek;
 import org.d11.boot.application.model.jpa.Player;
 import org.d11.boot.application.model.jpa.Season;
 import org.d11.boot.application.model.jpa.TransferDay;
+import org.d11.boot.parser.model.PlayerMatchData;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 
@@ -58,10 +60,23 @@ public class D11BootModelMapper extends ModelMapper {
                 skip(destination.getId());
             }
         });
-        addMappings(new PropertyMap<Match, DownloadMatchRequest>() {
+        addMappings(new PropertyMap<Match, DownloadWhoscoredMatchMessage>() {
             @Override
             protected void configure() {
                 map(source.getMatchWeek().getSeason().getName()).setSeasonName(null);
+            }
+        });
+        addMappings(new PropertyMap<PlayerMatchData, InsertPlayerDTO>() {
+            @Override
+            protected void configure() {
+                map(source.getPlayerWhoscoredId()).setWhoscoredId(null);
+            }
+        });
+        addMappings(new PropertyMap<PlayerMatchData, UpdatePlayerDTO>() {
+            @Override
+            protected void configure() {
+                map(source.getPlayerId()).setId(null);
+                map(source.getPlayerWhoscoredId()).setWhoscoredId(null);
             }
         });
     }

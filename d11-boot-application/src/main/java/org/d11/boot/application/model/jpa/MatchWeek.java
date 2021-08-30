@@ -115,4 +115,37 @@ public class MatchWeek extends D11Entity {
     @EqualsAndHashCode.Exclude
     private List<D11Match> d11Matches = new ArrayList<>();
 
+    /**
+     * Gets the match the team participates in this match week.
+     *
+     * @param teamId Id of the team whose match will be looked up.
+     * @return The match the team participates in this match week.
+     */
+    public Match getMatchForTeamId(final Long teamId) {
+        for(final Match match : getMatches()) {
+            if(match.getHomeTeam().getId().equals(teamId)
+                || match.getAwayTeam().getId().equals(teamId)) {
+                return match;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Gets the D11 match the D11 team participates in this match week.
+     *
+     * @param d11TeamId Id of the D11 team whose D11 match will be looked up.
+     * @return The D11 match the D11 team participates in this match week.
+     */
+    public D11Match getD11MatchForTeamId(final Long d11TeamId) {
+        for(final D11Match d11Match : getD11Matches()) {
+            if(d11Match.getHomeD11Team().getId().equals(d11TeamId)
+                || d11Match.getAwayD11Team().getId().equals(d11TeamId)) {
+                return d11Match;
+            }
+        }
+        return null;
+    }
+
 }

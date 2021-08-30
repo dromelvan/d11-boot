@@ -54,6 +54,15 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
      * @param teamDummy Include only players from teams with this dummy status.
      * @return Player season stats for the season for teams with the specified dummy status.
      */
+    List<PlayerSeasonStat> findBySeasonIdAndTeamDummy(@Param("seasonId") Long seasonId, @Param("teamDummy") Boolean teamDummy);
+
+    /**
+     * Gets player season stats for a season ordered by team name, position sort order and player last name.
+     *
+     * @param seasonId  Id for the season for which player season stats will be looked up.
+     * @param teamDummy Include only players from teams with this dummy status.
+     * @return Player season stats for the season for teams with the specified dummy status.
+     */
     List<PlayerSeasonStat> findBySeasonIdAndTeamDummyOrderByTeamNameAscPositionSortOrderAscPlayerLastNameAsc(
             @Param("seasonId") Long seasonId,
             @Param("teamDummy") Boolean teamDummy

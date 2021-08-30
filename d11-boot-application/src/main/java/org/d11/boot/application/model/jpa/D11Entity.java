@@ -15,6 +15,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -84,6 +85,18 @@ public class D11Entity {
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        return object != null
+                && object.getClass().equals(getClass())
+                && ((D11Entity) object).getId().equals(getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id, getClass());
     }
 
 }

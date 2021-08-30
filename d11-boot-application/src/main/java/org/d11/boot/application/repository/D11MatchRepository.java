@@ -16,6 +16,14 @@ import java.util.Set;
 public interface D11MatchRepository extends D11EntityRepository<D11Match> {
 
     /**
+     * Gets D11 matches for a specific match week.
+     *
+     * @param matchWeekId Id for the match week for which D11 matches will be looked up.
+     * @return List of D11 matches
+     */
+    List<D11Match> findByMatchWeekId(@Param("matchWeekId") Long matchWeekId);
+
+    /**
      * Gets D11 match ids for a specific D11 team and a specific season ordered by datetime.
      * It's tricky to do (? or ?) and ? with the brackets by defining the query in the method name so we'll use JPQL.
      *

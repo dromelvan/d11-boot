@@ -52,7 +52,7 @@ public class PlayerController extends AbstractRepositoryServiceController<Player
     @Override
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<UpdatePlayerResultDTO> updatePlayer(@Valid final UpdatePlayerDTO updatePlayerDTO) {
-        return ResponseEntity.ok(this.playerAdminService.updatePlayer(updatePlayerDTO));
+        return ResponseEntity.ok(this.playerAdminService.updatePlayer(updatePlayerDTO, false));
     }
 
 }

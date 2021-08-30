@@ -1,7 +1,6 @@
 package org.d11.boot.application.model.jpa;
 
 import lombok.Data;
-import org.d11.boot.application.model.jpa.MatchEvent;
 
 import javax.persistence.Entity;
 

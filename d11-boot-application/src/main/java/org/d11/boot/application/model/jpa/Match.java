@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.d11.boot.application.model.jpa.converter.StatusConverter;
+import org.d11.boot.application.util.NotFoundException;
 
 import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
@@ -19,6 +20,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A Premier League match.
@@ -140,6 +142,45 @@ public class Match extends D11Entity implements Comparable<Match> {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<PlayerMatchStat> playerMatchStats = new ArrayList<>();
+
+    /**
+     * Gets a player match stat for a specific player from the match.
+     *
+     * @param playerId Id of the player whose match stats will be looked up.
+     * @return Player match stat for the player.
+     */
+    public Optional<PlayerMatchStat> getPlayerMatchStatByPlayerId(final long playerId) {
+        return getPlayerMatchStats().stream()
+                .filter(playerMatchStat -> playerMatchStat.getPlayer().getId().equals(playerId))
+                .findFirst();
+    }
+
+    /**
+     * Gets a team with a specific WhoScored id from the match.
+     *
+     * @param teamWhoscoredId WhoScored id for the team that will be looked up.
+     * @return The home team or the away team depending on which teams WhoScored id is provided.
+     */
+    public Team getTeamByWhoscoredId(final int teamWhoscoredId) {
+        if(getHomeTeam().getWhoscoredId() == teamWhoscoredId) {
+            return getHomeTeam();
+        } else if(getAwayTeam().getWhoscoredId() == teamWhoscoredId) {
+            return getAwayTeam();
+        }
+        throw new NotFoundException("Team with WhoScored id " + teamWhoscoredId + " not found in match " + getId() + ".");
+    }
+
+    /**
+     * Sets previous home team and away team goals to current home team and away team goals and then sets current home
+     * team and away team goals to 0.
+     */
+    public void reset() {
+        this.goals.clear();
+        this.previousHomeTeamGoals = this.homeTeamGoals;
+        this.previousAwayTeamGoals = this.awayTeamGoals;
+        this.homeTeamGoals = 0;
+        this.awayTeamGoals = 0;
+    }
 
     @Override
     public int compareTo(@Nonnull final Match match) {

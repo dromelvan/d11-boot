@@ -14,7 +14,7 @@ public class YearIntervalValidator implements ConstraintValidator<YearInterval, 
     /**
      * A \d{4}-\d{4} regexp pattern.
      */
-    private static final Pattern pattern = Pattern.compile("(\\d{4})-(\\d{4})");
+    private static final Pattern NAME_PATTERN = Pattern.compile("(\\d{4})-(\\d{4})");
 
     @Override
     public void initialize(final YearInterval yearInterval) {
@@ -23,7 +23,7 @@ public class YearIntervalValidator implements ConstraintValidator<YearInterval, 
 
     @Override
     public boolean isValid(final String yearInterval, final ConstraintValidatorContext constraintValidatorContext) {
-        final Matcher matcher = pattern.matcher(yearInterval == null ? "" : yearInterval);
+        final Matcher matcher = NAME_PATTERN.matcher(yearInterval == null ? "" : yearInterval);
         if(matcher.matches()) {
             final int fromYear = Integer.parseInt(matcher.group(1));
             final int toYear = Integer.parseInt(matcher.group(2));

@@ -17,11 +17,19 @@ configurations {
 	}
 }
 
+dependencyManagement {
+	imports {
+		mavenBom("org.apache.camel.springboot:camel-spring-boot-bom:3.11.1")
+	}
+}
+
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     implementation project(':d11-boot-api')
+	implementation project(':d11-boot-download')
+	implementation project(':d11-boot-parser')
     implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -31,6 +39,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
 	implementation 'org.springframework.session:spring-session-core'
 
+	implementation 'org.apache.camel.springboot:camel-spring-boot-starter'
+	implementation 'org.apache.camel.springboot:camel-activemq-starter'
+	implementation 'org.apache.camel.springboot:camel-jackson-starter'
+
 	implementation 'com.auth0:java-jwt:3.11.0'
 	implementation 'com.google.guava:guava:29.0-jre'
 	// Java 8 requires Caffeine 2.x instead of 3.x
@@ -38,6 +50,7 @@ dependencies {
 	implementation 'org.modelmapper:modelmapper:2.4.1'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
 	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.slf4j:slf4j-api:1.7.30'
 
 	implementation 'org.springdoc:springdoc-openapi-ui:1.5.7'
 

@@ -4,16 +4,21 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.d11.boot.application.util.Parameterizer;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * A Premier League player.
@@ -74,13 +79,23 @@ public class Player extends D11Entity {
     @EqualsAndHashCode.Exclude
     private Country country;
 
+
+    /**
+     * Player season stats sorted by ranking for this season.
+     */
+    @OneToMany(mappedBy ="player", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<PlayerSeasonStat> playerSeasonStats;
+
     /**
      * Returns the player first name plus last name.
      *
      * @return The player first name plus last name.
      */
     public String getName() {
-        return String.format("%s %s", getFirstName(), getLastName()).trim();
+        return String.format("%s %s", getFirstName().trim(), getLastName()).trim();
     }
 
     /**

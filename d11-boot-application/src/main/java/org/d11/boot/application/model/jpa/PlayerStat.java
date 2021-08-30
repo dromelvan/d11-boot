@@ -43,6 +43,18 @@ public class PlayerStat extends D11Entity implements Comparable<PlayerStat> {
      */
     private int points;
 
+    /**
+     * Resets all stats.
+     */
+    public void reset() {
+        this.goals = 0;
+        this.goalAssists = 0;
+        this.ownGoals = 0;
+        this.goalsConceded = 0;
+        this.rating = 0;
+        this.points = 0;
+    }
+
     @Override
     public int compareTo(final PlayerStat playerStat) {
         return ComparisonChain.start()

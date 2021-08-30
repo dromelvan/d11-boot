@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository for player entities.
@@ -14,6 +15,33 @@ import java.util.List;
 @Repository
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface PlayerRepository extends D11EntityRepository<Player> {
+
+    /**
+     * Finds a player with a specific WhoScored id.
+     *
+     * @param whoscoredId WhoScored id of the player that will be looked up.
+     * @return Player with the specified WhoScored id.
+     */
+    Optional<Player> findByWhoscoredId(@Param("whoscoredId") Integer whoscoredId);
+
+    /**
+     * Finds players belonging to a specific team a specific season matching a specific parameterized name.
+     *
+     * @param teamId            Id of the team players looked up should belong to.
+     * @param seasonId          Id of the season players looked up should belong to the team for.
+     * @param parameterizedName The parameterized name player names should match.
+     * @return List of players matching the specified team, season and parameterized name.
+     */
+    @Query("SELECT player FROM Player player " +
+            "JOIN PlayerSeasonStat playerSeasonStat ON player.id = playerSeasonStat.player.id " +
+            "WHERE playerSeasonStat.team.id = :teamId " +
+            " AND playerSeasonStat.season.id = :seasonId " +
+            " AND playerSeasonStat.player.parameterizedName = :parameterizedName")
+    List<Player> findByTeamIdAndSeasonIdAndParameterizedName(
+            @Param("teamId") Long teamId,
+            @Param("seasonId") Long seasonId,
+            @Param("parameterizedName") String parameterizedName
+    );
 
     /**
      * Finds players with parameterized names that match the provided parameterized name.

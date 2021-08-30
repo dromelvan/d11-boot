@@ -124,4 +124,29 @@ public class PlayerMatchStat extends PlayerStat {
     @EqualsAndHashCode.Exclude
     private Position position;
 
+    /**
+     * Player did or did not participate in the match.
+     *
+     * @return True if lineup is starting lineup or substitution on time is greater than 0. False otherwise.
+     */
+    public boolean participated() {
+        return getLineup().equals(Lineup.STARTING_LINEUP) || getSubstitutionOnTime() > 0;
+    }
+
+    /**
+     * Resets all stats.
+     */
+    @Override
+    public void reset() {
+        super.reset();
+
+        this.playedPosition = "NA";
+        this.lineup = Lineup.DID_NOT_PARTICIPATE;
+        this.substitutionOnTime = 0;
+        this.substitutionOffTime = 0;
+        this.yellowCardTime = 0;
+        this.redCardTime = 0;
+        this.manOfTheMatch = false;
+        this.sharedManOfTheMatch = false;
+    }
 }

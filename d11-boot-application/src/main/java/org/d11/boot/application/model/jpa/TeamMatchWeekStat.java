@@ -3,9 +3,6 @@ package org.d11.boot.application.model.jpa;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.d11.boot.application.model.jpa.MatchWeek;
-import org.d11.boot.application.model.jpa.TableStat;
-import org.d11.boot.application.model.jpa.Team;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

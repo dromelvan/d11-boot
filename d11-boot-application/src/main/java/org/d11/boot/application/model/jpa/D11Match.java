@@ -32,6 +32,14 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
      * Max length for elapsed time string.
      */
     public static final int ELAPSED_TIME_MAX_LENGTH = 10;
+    /**
+     * Elapsed time divider.
+     */
+    public static final int ELAPSED_TIME_DIVIDER = 4;
+    /**
+     * Points goal divider.
+     */
+    public static final int POINTS_GOAL_DIVIDER = 5;
 
     /**
      * D11 match kickoff time.
@@ -126,6 +134,73 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<PlayerMatchStat> playerMatchStats = new ArrayList<>();
+
+    /**
+     * Updates points, goals, datetime, elapsed time and status.
+     */
+    @SuppressWarnings({ "PMD.CyclomaticComplexity", "PMD.NPathComplexity",
+                        "checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity" })
+    public void update() {
+        reset();
+
+        int activeCount = 0;
+        int fullTimeCount = 0;
+        int finishedCount = 0;
+        LocalDateTime localDateTime = null;
+
+        for(final PlayerMatchStat playerMatchStat : this.playerMatchStats) {
+            if(playerMatchStat.getD11Team().equals(this.homeD11Team)) {
+                this.homeTeamPoints += playerMatchStat.getPoints();
+            } else {
+                this.awayTeamPoints += playerMatchStat.getPoints();
+            }
+            final Status matchStatus = playerMatchStat.getMatch().getStatus();
+            if(matchStatus.equals(Status.ACTIVE)) {
+                ++activeCount;
+            } else if(matchStatus.equals(Status.FULL_TIME)) {
+                ++fullTimeCount;
+            } else if(matchStatus.equals(Status.FINISHED)) {
+                ++finishedCount;
+            }
+            if(localDateTime == null || playerMatchStat.getMatch().getDatetime().isBefore(localDateTime)) {
+                localDateTime = playerMatchStat.getMatch().getDatetime();
+            }
+        }
+        this.datetime = localDateTime;
+
+        final String fullTimeElapsed = "FT";
+        final int playerCount = this.playerMatchStats.size();
+        if(finishedCount == playerCount) {
+            this.status = Status.FINISHED;
+            this.elapsed = fullTimeElapsed;
+        } else if(fullTimeCount + finishedCount == playerCount) {
+            this.status = Status.FULL_TIME;
+            this.elapsed = fullTimeElapsed;
+        } else if(activeCount + fullTimeCount + finishedCount > 0) {
+            this.status = Status.ACTIVE;
+            this.elapsed = String.valueOf((activeCount + fullTimeCount + finishedCount) * ELAPSED_TIME_DIVIDER);
+        }
+
+        this.homeTeamGoals = this.homeTeamPoints > 0 ? this.homeTeamPoints / POINTS_GOAL_DIVIDER + 1 : 0;
+        this.awayTeamGoals = this.awayTeamPoints > 0 ? this.awayTeamPoints / POINTS_GOAL_DIVIDER + 1 : 0;
+    }
+
+    /**
+     * Sets previous home D11 team and away D11 team goals and points to current home D11 team and away D11 team goals
+     * and points and then sets current home D11 team and away D11 team goals and points to 0.
+     */
+    public void reset() {
+        this.status = Status.PENDING;
+        this.elapsed = "N/A";
+        this.previousHomeTeamGoals = this.homeTeamGoals;
+        this.previousHomeTeamPoints = this.homeTeamPoints;
+        this.previousAwayTeamGoals = this.awayTeamGoals;
+        this.previousAwayTeamPoints = this.awayTeamPoints;
+        this.homeTeamGoals = 0;
+        this.homeTeamPoints = 0;
+        this.awayTeamGoals = 0;
+        this.awayTeamPoints = 0;
+    }
 
     @Override
     public int compareTo(@Nonnull final D11Match d11Match) {

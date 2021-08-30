@@ -59,6 +59,20 @@ public interface PlayerMatchStatRepository extends D11EntityRepository<PlayerMat
     );
 
     /**
+     * Gets player match stats for a specific player and match week that is not for a specific match.
+     *
+     * @param playerId    Id for the player for which player match stats will be looked up.
+     * @param matchId     Id for the match that will be excluded.
+     * @param matchWeekId Id for the season for which player match stats will be looked up.
+     * @return Player match stats for the player and season but not the match.
+     */
+    List<PlayerMatchStat> findByPlayerIdAndMatchIdNotAndMatchMatchWeekId(
+            @Param("playerId") Long playerId,
+            @Param("matchId") Long matchId,
+            @Param("matchWeekId") Long matchWeekId
+    );
+
+    /**
      * Gets player match stats for a specific player and season ordered by match datetime.
      *
      * @param playerId Id for the player for which player match stats will be looked up.

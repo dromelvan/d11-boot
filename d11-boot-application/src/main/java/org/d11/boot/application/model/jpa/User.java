@@ -2,7 +2,6 @@ package org.d11.boot.application.model.jpa;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.d11.boot.application.model.jpa.D11Entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
