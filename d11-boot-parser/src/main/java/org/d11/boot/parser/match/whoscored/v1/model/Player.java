@@ -2,6 +2,8 @@ package org.d11.boot.parser.match.whoscored.v1.model;
 
 import lombok.Data;
 
+import java.util.Locale;
+
 /**
  * Represents data for a player. Example:
  * {
@@ -69,8 +71,15 @@ public class Player {
         return (int) (lastRating * RATING_MULTIPLIER);
     }
 
+    /**
+     * Gets position id based on played position.
+     *
+     * @return Position id based on played position.
+     */
+    @SuppressWarnings({ "PMD.CyclomaticComplexity", "checkstyle:CyclomaticComplexity", "checkstyle:ReturnCount",
+                        "checkstyle:MagicNumber" })
     public Long getPositionId() {
-        switch (this.position.toUpperCase()) {
+        switch (this.position.toUpperCase(Locale.getDefault())) {
             case "GK":
                 return 1L;
             case "DC":

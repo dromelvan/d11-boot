@@ -11,7 +11,7 @@ public class GoalData extends ParserModel {
     /**
      * Whoscored id of the player that scored the goal.
      */
-    private Long playerWhoscoredId;
+    private Integer playerWhoscoredId;
     /**
      * Name of the player that scored the goal.
      */

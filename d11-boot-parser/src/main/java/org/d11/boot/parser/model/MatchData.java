@@ -2,6 +2,7 @@ package org.d11.boot.parser.model;
 
 import lombok.Data;
 
+import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,7 @@ public class MatchData extends ParserModel {
      *
      * @return True if the match is pending, false if not.
      */
+    @Transient
     public boolean isPending() {
         return this.status.equals(Status.PENDING);
     }
@@ -72,6 +74,7 @@ public class MatchData extends ParserModel {
      *
      * @return True if the match is active, false if not.
      */
+    @Transient
     public boolean isActive() {
         return this.status.equals(Status.ACTIVE);
     }
@@ -81,6 +84,7 @@ public class MatchData extends ParserModel {
      *
      * @return True if the match is full time, false if not.
      */
+    @Transient
     public boolean isFullTime() {
         return this.status.equals(Status.FULL_TIME);
     }
@@ -90,6 +94,7 @@ public class MatchData extends ParserModel {
      *
      * @return True if the match is postponed, false if not.
      */
+    @Transient
     public boolean isPostponed() {
         return this.status.equals(Status.POSTPONED);
     }

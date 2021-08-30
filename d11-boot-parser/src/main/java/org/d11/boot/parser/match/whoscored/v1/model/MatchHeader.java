@@ -152,7 +152,8 @@ public class MatchHeader {
         if(this.input != null) {
             final String elapsed = (String) this.input.get(ELAPSED_INDEX);
             if(elapsed != null) {
-                return elapsed;
+                // We want to change 32' to 32.
+                return elapsed.replace("'", "");
             }
         }
         return ELAPSED_PENDING;

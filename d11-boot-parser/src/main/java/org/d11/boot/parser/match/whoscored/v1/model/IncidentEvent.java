@@ -49,7 +49,7 @@ public class IncidentEvent {
     /**
      * Id of the player involved in the event.
      */
-    private long playerId;
+    private int playerId;
     /**
      * Related event id. For example a substitution on <-> substitution off.
      */

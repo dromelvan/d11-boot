@@ -91,7 +91,8 @@ public class Team {
             final PlayerMatchData playerMatchData = new PlayerMatchData();
             playerMatchData.setPlayerWhoscoredId(player.getPlayerId());
             playerMatchData.setPlayerName(player.getName());
-            playerMatchData.setCountryId(1L); // Can't parse country from WhoScored match page. 1 = Unknown.
+            // Can't parse country from WhoScored match page. 1 = Unknown.
+            playerMatchData.setCountryId(1L);
             playerMatchData.setPositionId(player.getPositionId());
             playerMatchData.setTeamWhoscoredId(this.teamId);
             playerMatchData.setTeamName(this.name);

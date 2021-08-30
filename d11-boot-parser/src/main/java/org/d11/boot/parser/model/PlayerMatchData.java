@@ -11,6 +11,11 @@ import java.beans.Transient;
 public class PlayerMatchData extends ParserModel {
 
     /**
+     * Name divider.
+     */
+    public static final String NAME_DIVIDER = " ";
+
+    /**
      * Id of the player.
      */
     private Long playerId;
@@ -95,22 +100,42 @@ public class PlayerMatchData extends ParserModel {
      */
     private int height;
 
+    /**
+     * Gets the first name of the player.
+     *
+     * @return The first name of the player.
+     */
     @Transient
     public String getFirstName() {
-        int index = this.playerName.indexOf(" ");
+        final int index = this.playerName.indexOf(NAME_DIVIDER);
         if(index > 0) {
             return this.playerName.substring(0, index).trim();
         }
         return "";
     }
 
+    /**
+     * Gets the last name of the player.
+     *
+     * @return The last name of the player.
+     */
     @Transient
     public String getLastName() {
-        int index = this.playerName.indexOf(" ");
+        final int index = this.playerName.indexOf(NAME_DIVIDER);
         if(index > 0) {
             return this.playerName.substring(index).trim();
         }
         return this.playerName;
+    }
+
+    /**
+     * Player was/was not in the starting lineup.
+     *
+     * @return True if the player started the match, false otherwise.
+     */
+    @Transient
+    public boolean isStartingLineup() {
+        return this.lineup == Lineup.STARTING_LINEUP;
     }
 
 }
