@@ -20,7 +20,12 @@
     </rule>
     <rule ref="category/java/design.xml/TooManyFields">
         <properties>
-            <property name="maxfields" value="20" />
+            <property name="maxfields" value="25" />
+        </properties>
+    </rule>
+    <rule ref="category/java/design.xml/TooManyMethods">
+        <properties>
+            <property name="maxmethods" value="20" />
         </properties>
     </rule>
     <rule ref="category/java/documentation.xml"/>
