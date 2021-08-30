@@ -15,7 +15,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     implementation 'org.slf4j:slf4j-api:1.7.30'
-    implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
+    api 'org.seleniumhq.selenium:selenium-java:3.141.59'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
