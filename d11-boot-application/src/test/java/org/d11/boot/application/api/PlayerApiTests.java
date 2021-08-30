@@ -99,11 +99,11 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
 
         final Player player = this.playerRepository.findById(insertPlayerResultDTO.getPlayerId()).orElse(null);
         assertNotNull(player, "Inserted player should not be null.");
-        this.playerRepository.delete(player);
-
         final PlayerSeasonStat playerSeasonStat =
                 this.playerSeasonStatRepository.findById(insertPlayerResultDTO.getPlayerSeasonStatId()).orElse(null);
         assertNotNull(playerSeasonStat, "Inserted player season stat should not be null.");
+
+        this.playerRepository.delete(player);
         this.playerSeasonStatRepository.delete(playerSeasonStat);
     }
 
