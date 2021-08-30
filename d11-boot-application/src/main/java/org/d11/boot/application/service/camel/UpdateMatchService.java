@@ -22,6 +22,7 @@ import org.d11.boot.application.model.jpa.Team;
 import org.d11.boot.application.model.jpa.util.PlayerMatchStatPointsCalculator;
 import org.d11.boot.application.repository.D11MatchRepository;
 import org.d11.boot.application.repository.GoalRepository;
+import org.d11.boot.application.repository.MatchLogMessageRepository;
 import org.d11.boot.application.repository.MatchRepository;
 import org.d11.boot.application.repository.MatchWeekRepository;
 import org.d11.boot.application.repository.PlayerMatchStatRepository;
@@ -114,6 +115,8 @@ public class UpdateMatchService extends CamelService {
                 updatePlayerMatchStats(updateMatchContext);
 
                 updateD11Matches(updateMatchContext);
+
+                updateMatchLogMessages(updateMatchContext);
             }
         }
     }
@@ -130,17 +133,17 @@ public class UpdateMatchService extends CamelService {
             updateMatchContext.setMatch(match);
 
             if(match.getHomeTeam().getWhoscoredId() != matchData.getHomeTeamWhoscoredId()) {
-                updateMatchContext.addError("Match data home team WhoScored id %d does not match %d.",
+                log.error(String.format("Match data home team WhoScored id %d does not match %d.",
                         matchData.getHomeTeamWhoscoredId(),
-                        match.getHomeTeam().getWhoscoredId());
+                        match.getHomeTeam().getWhoscoredId()));
             }
             if(match.getAwayTeam().getWhoscoredId() != matchData.getAwayTeamWhoscoredId()) {
-                updateMatchContext.addError("Match data away team WhoScored id %d does not match %d.",
+                log.error(String.format("Match data away team WhoScored id %d does not match %d.",
                         matchData.getAwayTeamWhoscoredId(),
-                        match.getAwayTeam().getWhoscoredId());
+                        match.getAwayTeam().getWhoscoredId()));
             }
         } catch(NotFoundException e) {
-            updateMatchContext.addError("Match %d not found.", matchData.getMatchId());
+            log.error(String.format("Match %d not found.", matchData.getMatchId()));
         }
     }
 
@@ -153,7 +156,7 @@ public class UpdateMatchService extends CamelService {
     private void prepareMatchWeek(final UpdateMatchContext updateMatchContext) {
         final MatchWeek matchWeek = updateMatchContext.getMatch().getMatchWeek();
         if(matchWeek.getStatus() == Status.PENDING) {
-            updateMatchContext.addInfo("Activating match week %d (%d).", matchWeek.getMatchWeekNumber(), matchWeek.getId());
+            log.info(String.format("Activating match week %d (%d).", matchWeek.getMatchWeekNumber(), matchWeek.getId()));
 
             final List<PlayerSeasonStat> playerSeasonStats =
                     getRepository(PlayerSeasonStatRepository.class).findBySeasonIdAndTeamDummy(matchWeek.getSeason().getId(), false);
@@ -472,6 +475,10 @@ public class UpdateMatchService extends CamelService {
             d11Match.update();
         }
         d11MatchRepository.saveAll(d11Matches);
+    }
+
+    private void updateMatchLogMessages(final UpdateMatchContext updateMatchContext) {
+        getRepository(MatchLogMessageRepository.class).saveAll(updateMatchContext.getMatchLogMessages());
     }
 
     /**

@@ -2793,6 +2793,7 @@ components:
         - homeTeam
         - awayTeam
         - matchWeek
+        - matchLogMessages
       properties:
         id:
           type: integer
@@ -2826,6 +2827,10 @@ components:
           $ref: '#/components/schemas/TeamName'
         awayTeam:
           $ref: '#/components/schemas/TeamName'
+        matchLogMessages:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatchLogMessage"
 
     Match:
       type: object
@@ -2844,6 +2849,7 @@ components:
         - matchWeek
         - stadium
         - goals
+        - matchLogMessages
       properties:
         id:
           type: integer
@@ -2882,6 +2888,31 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/GoalBase"
+        matchLogMessages:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatchLogMessage"
+
+    MatchLogMessage:
+      type: object
+      required:
+        - id
+        - type
+        - message
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          $ref: '#/components/schemas/MatchLogMessageType'
+        message:
+          type: string
+
+    MatchLogMessageType:
+      type: string
+      enum:
+        - 'Info'
+        - 'Error'
 
     UpdateMatch:
       type: object

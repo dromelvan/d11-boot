@@ -33,6 +33,10 @@ public class Match extends D11Entity implements Comparable<Match> {
      * Max length for elapsed time string.
      */
     public static final int ELAPSED_TIME_MAX_LENGTH = 10;
+    /**
+     * PMD doesn't like having "match" this many times in one class.
+     */
+    private static final String MAPPED_BY = "match";
 
     /**
      * Match id on whoscored.
@@ -120,7 +124,7 @@ public class Match extends D11Entity implements Comparable<Match> {
     /**
      * List of goals that were scored in this match.
      */
-    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = MAPPED_BY, cascade = CascadeType.ALL)
     @OrderBy("time, addedTime ASC")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -129,7 +133,7 @@ public class Match extends D11Entity implements Comparable<Match> {
     /**
      * List of cards that were shown in this match.
      */
-    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = MAPPED_BY, cascade = CascadeType.ALL)
     @OrderBy("time, addedTime ASC")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -138,10 +142,18 @@ public class Match extends D11Entity implements Comparable<Match> {
     /**
      * List of player match stats for this match.
      */
-    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = MAPPED_BY, cascade = CascadeType.ALL)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<PlayerMatchStat> playerMatchStats = new ArrayList<>();
+
+    /**
+     * List of match log messages from when the match was updated.
+     */
+    @OneToMany(mappedBy = MAPPED_BY, cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<MatchLogMessage> matchLogMessages = new ArrayList<>();
 
     /**
      * Gets a player match stat for a specific player from the match.

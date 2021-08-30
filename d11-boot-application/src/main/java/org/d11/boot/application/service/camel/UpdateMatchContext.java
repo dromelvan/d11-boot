@@ -3,6 +3,8 @@ package org.d11.boot.application.service.camel;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.d11.boot.application.model.jpa.Match;
+import org.d11.boot.application.model.jpa.MatchLogMessage;
+import org.d11.boot.application.model.jpa.MatchLogMessageType;
 import org.d11.boot.application.model.jpa.Player;
 import org.d11.boot.application.model.jpa.PlayerMatchStat;
 import org.d11.boot.application.model.jpa.PlayerSeasonStat;
@@ -21,14 +23,9 @@ import java.util.Map;
 public class UpdateMatchContext {
 
     /**
-     * Error message list.
+     * List of match log messages.
      */
-    private final List<String> errors = new ArrayList<>();
-    /**
-     * Update message list.
-     */
-    private final List<String> infos = new ArrayList<>();
-
+    private final List<MatchLogMessage> matchLogMessages = new ArrayList<>();
     /**
      * Parsed match data from a match page.
      */
@@ -72,8 +69,12 @@ public class UpdateMatchContext {
      * @param values  Values that will be String.format()-ed into the message.
      */
     public void addInfo(final String message, final Object... values) {
-        this.infos.add(String.format(message, values));
-        log.info(String.format(message, values));
+        final MatchLogMessage matchLogMessage = new MatchLogMessage();
+        matchLogMessage.setMatch(this.match);
+        matchLogMessage.setMatchLogMessageType(MatchLogMessageType.INFO);
+        matchLogMessage.setMessage(String.format(message, values));
+        this.matchLogMessages.add(matchLogMessage);
+        log.info(matchLogMessage.getMessage());
     }
 
     /**
@@ -83,8 +84,12 @@ public class UpdateMatchContext {
      * @param values  Values that will be String.format()-ed into the message.
      */
     public void addError(final String message, final Object... values) {
-        this.errors.add(String.format(message, values));
-        log.error(String.format(message, values));
+        final MatchLogMessage matchLogMessage = new MatchLogMessage();
+        matchLogMessage.setMatch(this.match);
+        matchLogMessage.setMatchLogMessageType(MatchLogMessageType.ERROR);
+        matchLogMessage.setMessage(String.format(message, values));
+        this.matchLogMessages.add(matchLogMessage);
+        log.info(matchLogMessage.getMessage());
     }
 
     /**
@@ -93,7 +98,8 @@ public class UpdateMatchContext {
      * @return True if the list of error messages is not empty, false if it is.
      */
     public boolean hasErrors() {
-        return this.errors.size() > 0;
+        return this.matchLogMessages.stream()
+                .anyMatch(matchLogMessage -> matchLogMessage.getMatchLogMessageType().equals(MatchLogMessageType.ERROR));
     }
 
     /**

@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS match_log_message(
+    id SERIAL PRIMARY KEY,
+    match_id INTEGER NOT NULL REFERENCES match,
+    match_log_message_type INTEGER NOT NULL,
+    message VARCHAR(256) NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);

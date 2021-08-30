@@ -35,7 +35,7 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
      */
     @Test
     public void findPlayerMatchStatById() {
-        for(final PlayerMatchStat playerMatchStat : getEntities()) {
+        for(final PlayerMatchStat playerMatchStat : getRepository().findAll()) {
             final PlayerMatchStatDTO result = getApiService().findPlayerMatchStatById(playerMatchStat.getId());
             final PlayerMatchStatDTO playerMatchStatDTO = map(playerMatchStat, PlayerMatchStatDTO.class);
 
@@ -153,7 +153,7 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
     @Test
     public void findPlayerMatchStatByPlayerIdAndSeasonId() {
         final Map<Player, Map<Season, List<PlayerMatchStat>>> playerMatchStatMap = new HashMap<>();
-        for(final PlayerMatchStat playerMatchStat : getEntities()) {
+        for(final PlayerMatchStat playerMatchStat : getRepository().findAll()) {
             final Map<Season, List<PlayerMatchStat>> seasonMap = playerMatchStatMap.computeIfAbsent(playerMatchStat.getPlayer(), player -> new HashMap<>());
             final Season season = playerMatchStat.getMatch().getMatchWeek().getSeason();
             final List<PlayerMatchStat> playerMatchStats = seasonMap.computeIfAbsent(season, s -> new ArrayList<>());
@@ -188,7 +188,7 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
     @Test
     public void findTop5PlayerMatchStatByMatchWeek() {
         final Map<MatchWeek, List<PlayerMatchStat>> playerMatchStatMap = new HashMap<>();
-        for(final PlayerMatchStat playerMatchStat : getEntities()) {
+        for(final PlayerMatchStat playerMatchStat : getRepository().findAll()) {
             if(playerMatchStat.getLineup() != Lineup.DID_NOT_PARTICIPATE) {
                 final List<PlayerMatchStat> matchWeekList =
                         playerMatchStatMap.computeIfAbsent(playerMatchStat.getMatch().getMatchWeek(), matchWeek -> new ArrayList<>());
@@ -216,7 +216,7 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
     @Test
     public void findBottom5PlayerMatchStatByMatchWeek() {
         final Map<MatchWeek, List<PlayerMatchStat>> playerMatchStatMap = new HashMap<>();
-        for(final PlayerMatchStat playerMatchStat : getEntities()) {
+        for(final PlayerMatchStat playerMatchStat : getRepository().findAll()) {
             if(playerMatchStat.getLineup() != Lineup.DID_NOT_PARTICIPATE) {
                 final List<PlayerMatchStat> matchWeekList =
                         playerMatchStatMap.computeIfAbsent(playerMatchStat.getMatch().getMatchWeek(), matchWeek -> new ArrayList<>());
