@@ -55,6 +55,20 @@ public class PlayerStat extends D11Entity implements Comparable<PlayerStat> {
         this.points = 0;
     }
 
+    /**
+     * Sets stats from the provided player match stat.
+     *
+     * @param playerMatchStat The player match stats that will be set in this player stat.
+     */
+    public void updateStats(final PlayerMatchStat playerMatchStat) {
+        this.goals += playerMatchStat.getGoals();
+        this.goalAssists += playerMatchStat.getGoalAssists();
+        this.ownGoals += playerMatchStat.getOwnGoals();
+        this.goalsConceded += playerMatchStat.getGoalsConceded();
+        this.rating += playerMatchStat.getRating();
+        this.points += playerMatchStat.getPoints();
+    }
+
     @Override
     public int compareTo(final PlayerStat playerStat) {
         return ComparisonChain.start()

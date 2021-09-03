@@ -59,7 +59,9 @@ public class PlayerMatchStatPointsCalculatorV1 implements PlayerMatchStatPointsC
                 points += 2;
             } else if(rating >= 650) {
                 points += 1;
-            } else if(rating >= 450 && rating < 550) {
+            } else if(rating >= 550) {
+                points += 0;
+            } else if(rating >= 450) {
                 points -= 1;
             } else if(rating >= 350) {
                 points -= 2;

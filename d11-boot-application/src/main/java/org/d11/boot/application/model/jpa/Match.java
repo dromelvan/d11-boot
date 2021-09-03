@@ -34,6 +34,19 @@ public class Match extends D11Entity implements Comparable<Match> {
      */
     public static final int ELAPSED_TIME_MAX_LENGTH = 10;
     /**
+     * Points gained for a win.
+     */
+    public static final int WIN_POINTS = 3;
+    /**
+     * Points gained for a drawn.
+     */
+    public static final int DRAW_POINTS = 1;
+    /**
+     * Points gained for a loss.
+     */
+    public static final int LOSS_POINTS = 0;
+
+    /**
      * PMD doesn't like having "match" this many times in one class.
      */
     private static final String MAPPED_BY = "match";
@@ -154,6 +167,81 @@ public class Match extends D11Entity implements Comparable<Match> {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<MatchLogMessage> matchLogMessages = new ArrayList<>();
+
+    /**
+     * Get if the match is started or not.
+     *
+     * @return True if the match is started.
+     */
+    public boolean isStarted() {
+        return !this.status.equals(Status.PENDING) && !this.status.equals(Status.POSTPONED);
+    }
+
+    /**
+     * Gets if a specific team is the winner (or leader) of the match.
+     *
+     * @param team The team that winner status will be checked for.
+     * @return True if the team is the match winner (or leader).
+     */
+    public boolean isWinner(final Team team) {
+        return team.equals(this.homeTeam) && this.homeTeamGoals > this.awayTeamGoals
+                || team.equals(this.awayTeam) && this.awayTeamGoals > this.homeTeamGoals;
+    }
+
+    /**
+     * Gets if a specific team is the loser of the match (or is losing).
+     *
+     * @param team The team that loser status will be checked for.
+     * @return True if the team is the match loser (or is losing).
+     */
+    public boolean isLoser(final Team team) {
+        return team.equals(this.homeTeam) && this.homeTeamGoals < this.awayTeamGoals
+                || team.equals(this.awayTeam) && this.awayTeamGoals < this.homeTeamGoals;
+    }
+
+    /**
+     * Get if the match is a draw.
+     *
+     * @return True if the match is a draw, false is not.
+     */
+    public boolean isDraw() {
+        return this.homeTeamGoals == this.awayTeamGoals;
+    }
+
+    /**
+     * Gets the number of goals a team has scored in the match.
+     *
+     * @param team The team that goal count will be checked for.
+     * @return The number of goals scored by the team.
+     */
+    public int getGoalsFor(final Team team) {
+        return team.equals(this.homeTeam) ? this.homeTeamGoals : this.awayTeamGoals;
+    }
+
+    /**
+     * Gets the number of goals a team has conceded in the match.
+     *
+     * @param team The team that goals conceded count will be checked for.
+     * @return The number of goals conceded by the team.
+     */
+    public int getGoalsAgainst(final Team team) {
+        return team.equals(this.homeTeam) ? this.awayTeamGoals : this.homeTeamGoals;
+    }
+
+    /**
+     * Gets the number of points gained by a team in the match.
+     *
+     * @param team The team that points will be checked for.
+     * @return The number of points gained by the team.
+     */
+    public int getPoints(final Team team) {
+        if(isWinner(team)) {
+            return WIN_POINTS;
+        } else if(isDraw()) {
+            return DRAW_POINTS;
+        }
+        return LOSS_POINTS;
+    }
 
     /**
      * Gets a player match stat for a specific player from the match.

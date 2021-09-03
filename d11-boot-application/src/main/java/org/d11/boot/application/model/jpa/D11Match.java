@@ -136,6 +136,15 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
     private List<PlayerMatchStat> playerMatchStats = new ArrayList<>();
 
     /**
+     * Get started status of the D11 match.
+     *
+     * @return True if status is not pending or postponed, false if it is.
+     */
+    public boolean isStarted() {
+        return !this.status.equals(Status.PENDING) && !this.status.equals(Status.POSTPONED);
+    }
+
+    /**
      * Updates points, goals, datetime, elapsed time and status.
      */
     @SuppressWarnings({ "PMD.CyclomaticComplexity", "PMD.NPathComplexity",
@@ -149,10 +158,12 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
         LocalDateTime localDateTime = null;
 
         for(final PlayerMatchStat playerMatchStat : this.playerMatchStats) {
-            if(playerMatchStat.getD11Team().equals(this.homeD11Team)) {
-                this.homeTeamPoints += playerMatchStat.getPoints();
-            } else {
-                this.awayTeamPoints += playerMatchStat.getPoints();
+            if(!playerMatchStat.getMatch().isStarted()) {
+                if(playerMatchStat.getD11Team().equals(this.homeD11Team)) {
+                    this.homeTeamPoints += playerMatchStat.getPoints();
+                } else {
+                    this.awayTeamPoints += playerMatchStat.getPoints();
+                }
             }
             final Status matchStatus = playerMatchStat.getMatch().getStatus();
             if(matchStatus.equals(Status.ACTIVE)) {

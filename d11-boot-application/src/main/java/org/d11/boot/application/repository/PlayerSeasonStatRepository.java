@@ -128,6 +128,19 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
     );
 
     /**
+     * Gets player season stats for all players who have a player match stat for a specific match.
+     *
+     * @param matchId Id for the match for which player season stats will be looked up.
+     * @return Player season stats for players with player match stats for the match.
+     */
+    @Query("SELECT playerSeasonStat FROM PlayerMatchStat playerMatchStat " +
+            "JOIN Match match ON playerMatchStat.match = match " +
+            "JOIN MatchWeek matchWeek ON match.matchWeek = matchWeek " +
+            "JOIN PlayerSeasonStat playerSeasonStat ON playerSeasonStat.season = matchWeek.season AND playerSeasonStat.player = playerMatchStat.player " +
+            "WHERE match.id = :matchId")
+    List<PlayerSeasonStat> findByMatchId(@Param("matchId") Long matchId);
+
+    /**
      * Updates rankings for all player season stats for a specific season.
      *
      * @param seasonId Id for the season for which player season stat rankings will be updated.

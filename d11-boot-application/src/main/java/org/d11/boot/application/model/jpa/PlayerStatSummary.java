@@ -77,4 +77,42 @@ public class PlayerStatSummary extends PlayerStat {
     @PositiveOrZero
     private int minutesPlayed;
 
+    @Override
+    public void reset() {
+        super.reset();
+
+        this.ranking = 0;
+        this.pointsPerAppearance = 0;
+        this.cleanSheets = 0;
+        this.yellowCards = 0;
+        this.redCards = 0;
+        this.substitutionsOn = 0;
+        this.substitutionsOff = 0;
+        this.manOfTheMatch = 0;
+        this.sharedManOfTheMatch = 0;
+        this.gamesStarted = 0;
+        this.gamesSubstitute = 0;
+        this.gamesDidNotParticipate = 0;
+        this.minutesPlayed = 0;
+    }
+
+    @Override
+    @SuppressWarnings({ "PMD.CyclomaticComplexity", "PMD.NPathComplexity",
+                        "checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity" })
+    public void updateStats(final PlayerMatchStat playerMatchStat) {
+        super.updateStats(playerMatchStat);
+
+        this.cleanSheets += playerMatchStat.getGoalsConceded() > 0 ? 0 : 1;
+        this.yellowCards += playerMatchStat.getYellowCardTime() > 0 ? 1 : 0;
+        this.redCards += playerMatchStat.getRedCardTime() > 0 ? 1 : 0;
+        this.substitutionsOn += playerMatchStat.getSubstitutionOnTime() > 0 ? 1 : 0;
+        this.substitutionsOff += playerMatchStat.getSubstitutionOffTime() > 0 ? 1 : 0;
+        this.manOfTheMatch += playerMatchStat.isManOfTheMatch() ? 1 : 0;
+        this.sharedManOfTheMatch += playerMatchStat.isSharedManOfTheMatch() ? 1 : 0;
+        this.gamesStarted += playerMatchStat.getLineup().equals(Lineup.STARTING_LINEUP) ? 1 :0;
+        this.gamesSubstitute += playerMatchStat.getLineup().equals(Lineup.SUBSTITUTE) ? 1 :0;
+        this.gamesDidNotParticipate += playerMatchStat.getLineup().equals(Lineup.DID_NOT_PARTICIPATE) ? 1 : 0;
+        this.minutesPlayed += playerMatchStat.getMinutesPlayed();
+    }
+
 }

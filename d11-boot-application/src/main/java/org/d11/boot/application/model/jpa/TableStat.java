@@ -6,7 +6,6 @@ import org.d11.boot.application.model.jpa.converter.FormMatchPointsConverter;
 import javax.persistence.Convert;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
@@ -71,13 +70,13 @@ public class TableStat extends D11Entity {
     /**
      * Table ranking.
      */
-    @Positive
+    @PositiveOrZero
     private int ranking;
     /**
      * Table ranking after the previous match. Can be used to indicate if the team has climbed or dropped in the
      * table in table views.
      */
-    @Positive
+    @PositiveOrZero
     private int previousRanking;
     /**
      * Number of home matches played.
@@ -121,7 +120,7 @@ public class TableStat extends D11Entity {
     /**
      * Table ranking for home matches.
      */
-    @Positive
+    @PositiveOrZero
     private int homeRanking;
     /**
      * Number of away matches played.
@@ -165,7 +164,78 @@ public class TableStat extends D11Entity {
     /**
      * Table ranking for away matches.
      */
-    @Positive
+    @PositiveOrZero
     private int awayRanking;
+
+    /**
+     * Resets all stats to 0.
+     */
+    public void reset() {
+        this.matchesPlayed = 0;
+        this.matchesWon = 0;
+        this.matchesDrawn = 0;
+        this.matchesLost = 0;
+        this.goalsFor = 0;
+        this.goalsAgainst = 0;
+        this.goalDifference = 0;
+        this.points = 0;
+        this.formPoints = 0;
+        this.formMatchPoints.clear();
+        this.ranking = 0;
+        this.previousRanking = 0;
+        this.homeMatchesPlayed = 0;
+        this.homeMatchesWon = 0;
+        this.homeMatchesDrawn = 0;
+        this.homeMatchesLost = 0;
+        this.homeGoalsFor = 0;
+        this.homeGoalsAgainst = 0;
+        this.homeGoalDifference = 0;
+        this.homePoints = 0;
+        this.homeRanking = 0;
+        this.awayMatchesPlayed = 0;
+        this.awayMatchesWon = 0;
+        this.awayMatchesDrawn = 0;
+        this.awayMatchesLost = 0;
+        this.awayGoalsFor = 0;
+        this.awayGoalsAgainst = 0;
+        this.awayGoalDifference = 0;
+        this.awayPoints = 0;
+        this.awayRanking = 0;
+    }
+
+    /**
+     * Adds the stats in the provided table stat to this table stat.
+     *
+     * @param previousTableStat The table stats that will be added to this table stat.
+     */
+    public void updateCumulativeStats(final TableStat previousTableStat) {
+        if(previousTableStat != null) {
+            setMatchesPlayed(previousTableStat.getMatchesPlayed() + getMatchesPlayed());
+            setMatchesWon(previousTableStat.getMatchesWon() + getMatchesWon());
+            setMatchesDrawn(previousTableStat.getMatchesDrawn() + getMatchesDrawn());
+            setMatchesLost(previousTableStat.getMatchesLost() + getMatchesLost());
+            setGoalsFor(previousTableStat.getGoalsFor() + getGoalsFor());
+            setGoalsAgainst(previousTableStat.getGoalsAgainst() + getGoalsAgainst());
+            setGoalDifference(previousTableStat.getGoalDifference() + getGoalDifference());
+            setPoints(previousTableStat.getPoints() + getPoints());
+            setFormPoints(previousTableStat.getFormPoints() + getFormPoints());
+            setHomeMatchesPlayed(previousTableStat.getHomeMatchesPlayed() + getHomeMatchesPlayed());
+            setHomeMatchesWon(previousTableStat.getHomeMatchesWon() + getHomeMatchesWon());
+            setHomeMatchesDrawn(previousTableStat.getHomeMatchesDrawn() + getHomeMatchesDrawn());
+            setHomeMatchesLost(previousTableStat.getHomeMatchesLost() + getHomeMatchesLost());
+            setHomeGoalsFor(previousTableStat.getHomeGoalsFor() + getHomeGoalsFor());
+            setHomeGoalsAgainst(previousTableStat.getHomeGoalsAgainst() + getHomeGoalsAgainst());
+            setHomeGoalDifference(previousTableStat.getHomeGoalDifference() + getHomeGoalDifference());
+            setHomePoints(previousTableStat.getHomePoints() + getHomePoints());
+            setAwayMatchesPlayed(previousTableStat.getAwayMatchesPlayed() + getAwayMatchesPlayed());
+            setAwayMatchesWon(previousTableStat.getAwayMatchesWon() + getAwayMatchesWon());
+            setAwayMatchesDrawn(previousTableStat.getAwayMatchesDrawn() + getAwayMatchesDrawn());
+            setAwayMatchesLost(previousTableStat.getAwayMatchesLost() + getAwayMatchesLost());
+            setAwayGoalsFor(previousTableStat.getAwayGoalsFor() + getAwayGoalsFor());
+            setAwayGoalsAgainst(previousTableStat.getAwayGoalsAgainst() + getAwayGoalsAgainst());
+            setAwayGoalDifference(previousTableStat.getAwayGoalDifference() + getAwayGoalDifference());
+            setAwayPoints(previousTableStat.getAwayPoints() + getAwayPoints());
+        }
+    }
 
 }

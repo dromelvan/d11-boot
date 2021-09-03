@@ -48,7 +48,7 @@ import java.util.Optional;
  */
 @Service
 @Slf4j
-@SuppressWarnings({ "PMD.ExcessiveImports", "checkstyle:ClassFanOutComplexity" })
+@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.GodClass", "checkstyle:ClassFanOutComplexity" })
 public class UpdateMatchService extends CamelService {
 
     /**
@@ -117,6 +117,7 @@ public class UpdateMatchService extends CamelService {
                 updateD11Matches(updateMatchContext);
 
                 updateMatchLogMessages(updateMatchContext);
+                updateMatchWeek(updateMatchContext);
             }
         }
     }
@@ -477,8 +478,46 @@ public class UpdateMatchService extends CamelService {
         d11MatchRepository.saveAll(d11Matches);
     }
 
+    /**
+     * Saves match log messages produced by the update.
+     *
+     * @param updateMatchContext Context containing match log messages that will be saved.
+     */
     private void updateMatchLogMessages(final UpdateMatchContext updateMatchContext) {
         getRepository(MatchLogMessageRepository.class).saveAll(updateMatchContext.getMatchLogMessages());
+    }
+
+    /**
+     * Updates Premier League leader, D11 league leader, most valuable player, elapsed time and status for the match week.
+     *
+     * @param updateMatchContext Context containing data that will be updated.
+     */
+    private void updateMatchWeek(final UpdateMatchContext updateMatchContext) {
+        final MatchWeek matchWeek = updateMatchContext.getMatch().getMatchWeek();
+
+        int startedCount = 0;
+        int fullTimeCount = 0;
+        int finishedCount = 0;
+
+        final List<Match> matches = matchWeek.getMatches();
+        for(final Match match : matchWeek.getMatches()) {
+            if(match.isStarted()) {
+                ++startedCount;
+            }
+            if(match.getStatus().equals(Status.FULL_TIME)) {
+                ++fullTimeCount;
+            } else if(match.getStatus().equals(Status.FINISHED)) {
+                ++finishedCount;
+            }
+        }
+
+        matchWeek.setElapsed(startedCount);
+        if(fullTimeCount == matches.size()) {
+            matchWeek.setStatus(Status.FULL_TIME);
+        } else if(finishedCount == matches.size()) {
+            matchWeek.setStatus(Status.FINISHED);
+        }
+        getRepository(MatchWeekRepository.class).save(matchWeek);
     }
 
     /**

@@ -3,6 +3,7 @@ package org.d11.boot.application.camel;
 import com.fasterxml.jackson.core.JsonParseException;
 import org.apache.camel.LoggingLevel;
 import org.d11.boot.application.service.camel.UpdateMatchService;
+import org.d11.boot.application.service.camel.UpdateStatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,7 @@ public class UpdateMatchRouteBuilder extends AbstractJmsRouteBuilder {
                     // Body is UpdateMatchMessage
                     .log(LoggingLevel.INFO, "Updating match ${body.matchData.homeTeamName} vs ${body.matchData.awayTeamName} (${body.matchData.matchId}).")
                     .bean(UpdateMatchService.class, "updateMatchData(${body.matchData}, ${body.finish})")
+                    .bean(UpdateStatsService.class, "updateStats(${body.matchData})")
                     .log(LoggingLevel.INFO, "Message processing finished with result: ${body}")
                 .doCatch(JsonParseException.class)
                     .log(LoggingLevel.ERROR, "Could not unmarshal message: ${body}.")

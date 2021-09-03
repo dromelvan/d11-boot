@@ -62,12 +62,12 @@ public class TableStatTests extends D11EasyRandomTests {
         assertFalse(tableStat.isValid(), "Form match points should not be null.");
         tableStat.setFormMatchPoints(new ArrayList<>());
 
-        tableStat.setRanking(0);
-        assertFalse(tableStat.isValid(), "Non positive ranking should not be valid.");
+        tableStat.setRanking(-1);
+        assertFalse(tableStat.isValid(), "Negative ranking should not be valid.");
         tableStat.setRanking(1);
 
-        tableStat.setPreviousRanking(0);
-        assertFalse(tableStat.isValid(), "Non positive previous ranking should not be valid.");
+        tableStat.setPreviousRanking(-1);
+        assertFalse(tableStat.isValid(), "Negative previous ranking should not be valid.");
         tableStat.setPreviousRanking(1);
 
         tableStat.setHomeMatchesPlayed(-1);
@@ -98,8 +98,8 @@ public class TableStatTests extends D11EasyRandomTests {
         assertFalse(tableStat.isValid(), "Negative home points should not be valid.");
         tableStat.setHomePoints(1);
 
-        tableStat.setHomeRanking(0);
-        assertFalse(tableStat.isValid(), "Non positive home ranking should not be valid.");
+        tableStat.setHomeRanking(-1);
+        assertFalse(tableStat.isValid(), "Negative home ranking should not be valid.");
         tableStat.setHomeRanking(1);
 
         tableStat.setAwayMatchesPlayed(-1);
@@ -130,8 +130,8 @@ public class TableStatTests extends D11EasyRandomTests {
         assertFalse(tableStat.isValid(), "Negative away points should not be valid.");
         tableStat.setAwayPoints(1);
 
-        tableStat.setAwayRanking(0);
-        assertFalse(tableStat.isValid(), "Non positive away ranking should not be valid.");
+        tableStat.setAwayRanking(-1);
+        assertFalse(tableStat.isValid(), "Negative away ranking should not be valid.");
         tableStat.setAwayRanking(1);
 
         assertTrue(tableStat.isValid(), "Table stat should be valid.");

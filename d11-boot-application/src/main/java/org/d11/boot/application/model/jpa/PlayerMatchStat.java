@@ -22,6 +22,11 @@ import javax.validation.constraints.NotNull;
 public class PlayerMatchStat extends PlayerStat {
 
     /**
+     * Minutes played if the player played the whole match.
+     */
+    private static final int MAX_MINUTES_PLAYED = 90;
+
+    /**
      * Played position from stat source. This is just for posterity and not used for points calculation.
      */
     @NotEmpty
@@ -134,6 +139,16 @@ public class PlayerMatchStat extends PlayerStat {
     }
 
     /**
+     * Gets minutes played by the player in the match.
+     *
+     * @return Number of minutes played.
+     */
+    public int getMinutesPlayed() {
+        final int stopTime = this.substitutionOffTime > 0 ? this.substitutionOffTime : MAX_MINUTES_PLAYED;
+        return stopTime - this.substitutionOnTime;
+    }
+
+    /**
      * Resets all stats.
      */
     @Override
@@ -148,5 +163,9 @@ public class PlayerMatchStat extends PlayerStat {
         this.redCardTime = 0;
         this.manOfTheMatch = false;
         this.sharedManOfTheMatch = false;
+
+        if(this.position.isDefender()) {
+            setPoints(-1);
+        }
     }
 }

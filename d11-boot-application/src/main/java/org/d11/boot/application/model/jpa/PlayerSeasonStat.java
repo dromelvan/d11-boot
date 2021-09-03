@@ -95,4 +95,45 @@ public class PlayerSeasonStat extends PlayerStatSummary {
     @EqualsAndHashCode.Exclude
     private Position position;
 
+    @Override
+    public void reset() {
+        super.reset();
+
+        this.formPoints = 0;
+        this.formMatchPoints.clear();
+    }
+
+    /**
+     * Sums up the stats from the provided player match stats.
+     *
+     * @param playerMatchStats The player match stats that will be summed up.
+     */
+    public void updateStats(final List<PlayerMatchStat> playerMatchStats) {
+        reset();
+
+        int rating = 0;
+        int ratingMatches = 0;
+
+        for(final PlayerMatchStat playerMatchStat : playerMatchStats) {
+            updateStats(playerMatchStat);
+            if(playerMatchStat.getRating() > 0) {
+                rating += playerMatchStat.getRating();
+                ratingMatches++;
+            }
+        }
+        if(ratingMatches > 0) {
+            setRating(rating / ratingMatches);
+            setPointsPerAppearance(getPoints() / ratingMatches);
+        }
+
+        final int toIndex = playerMatchStats.size();
+        final int fromIndex = Math.max(0, toIndex - 5);
+        final List<PlayerMatchStat> formPlayerMatchStats = playerMatchStats.subList(fromIndex, toIndex);
+
+        for(final PlayerMatchStat playerMatchStat : formPlayerMatchStats) {
+            getFormMatchPoints().add(playerMatchStat.getPoints());
+            setFormPoints(getFormPoints() + playerMatchStat.getPoints());
+        }
+    }
+
 }
