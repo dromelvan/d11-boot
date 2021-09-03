@@ -4,9 +4,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.d11.boot.download.DownloadException;
 import org.d11.boot.download.WebPage;
 import org.d11.boot.download.browser.Browser;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -51,12 +53,17 @@ public abstract class AbstractSeleniumBrowser<T extends Capabilities> implements
 
     @Override
     public WebPage getWebPage(final URL url) {
-        getWebDriver().get(url.toString());
-        final WebPage webPage = new WebPage(getWebDriver().getTitle(), getWebDriver().getPageSource());
-        if(isAutoQuit()) {
+        try {
+            getWebDriver().get(url.toString());
+            final WebPage webPage = new WebPage(getWebDriver().getTitle(), getWebDriver().getPageSource());
+            if(isAutoQuit()) {
+                quit();
+            }
+            return webPage;
+        } catch(TimeoutException e) {
             quit();
+            throw new DownloadException("Timeout exception from WebDriver.get().", e);
         }
-        return webPage;
     }
 
     /**
