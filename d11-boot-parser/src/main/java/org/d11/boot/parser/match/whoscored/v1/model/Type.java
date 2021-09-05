@@ -13,10 +13,6 @@ import lombok.Data;
 public class Type {
 
     /**
-     * Assist type value.
-     */
-    public static final int TYPE_ASSIST = 1;
-    /**
      * Penalty type value.
      */
     public static final int TYPE_PENALTY = 9;
