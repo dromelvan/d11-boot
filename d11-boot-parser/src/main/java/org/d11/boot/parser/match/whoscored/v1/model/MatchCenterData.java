@@ -6,6 +6,7 @@ import org.d11.boot.parser.model.PlayerMatchData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -16,6 +17,8 @@ import java.util.regex.Pattern;
  *          "playerIdNameDictionary": { .. },
  *          ...
  *          "elapsed: "FT",
+ *          ...
+ *          "score: "2 : 0",
  *          ...
  *          "home": { .. },
  *          "away": { .. },
@@ -36,6 +39,10 @@ public class MatchCenterData {
                                                                             "matchCentreData: (\\{.*}),\\s*" +
                                                                             "matchCentreEventTypeJson:.*",
                                                                             Pattern.DOTALL);
+    /**
+     * Pattern for match score element.
+     */
+    public static final Pattern SCORE_PATTERN = Pattern.compile("(\\d*) : (\\d*)");
 
     /**
      * Player id <-> name dictionary.
@@ -45,6 +52,10 @@ public class MatchCenterData {
      * Match elapsed time string.
      */
     private String elapsed;
+    /**
+     * Match score.
+     */
+    private String score;
     /**
      * Home team data.
      */
@@ -89,8 +100,8 @@ public class MatchCenterData {
      * @return List of player match data for both teams.
      */
     public List<PlayerMatchData> getPlayerMatchDatas() {
-        final List<PlayerMatchData> players = new ArrayList<>(this.home.getPlayerMatchDatas(this.away.getGoalsScored()));
-        players.addAll(this.away.getPlayerMatchDatas(this.home.getGoalsScored()));
+        final List<PlayerMatchData> players = new ArrayList<>(this.home.getPlayerMatchDatas(getAwayTeamGoals()));
+        players.addAll(this.away.getPlayerMatchDatas(getHomeTeamGoals()));
         return players;
     }
 
@@ -112,6 +123,22 @@ public class MatchCenterData {
             default:
                 return this.elapsed.replace("+", "");
         }
+    }
+
+    private int getHomeTeamGoals() {
+        final Matcher matcher = SCORE_PATTERN.matcher(this.score);
+        if(matcher.matches()) {
+            return Integer.parseInt(matcher.group(1).trim());
+        }
+        return 0;
+    }
+
+    private int getAwayTeamGoals() {
+        final Matcher matcher = SCORE_PATTERN.matcher(this.score);
+        if(matcher.matches()) {
+            return Integer.parseInt(matcher.group(2).trim());
+        }
+        return 0;
     }
 
 }

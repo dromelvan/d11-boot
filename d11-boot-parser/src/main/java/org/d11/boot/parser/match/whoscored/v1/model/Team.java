@@ -68,15 +68,6 @@ public class Team {
     }
 
     /**
-     * Gets the number of goals scored by the team in the match.
-     *
-     * @return The number of goals scored by the team in the match.
-     */
-    public int getGoalsScored() {
-        return getIncidentEventHelper().getIncidentEventCount(Type.TYPE_GOAL);
-    }
-
-    /**
      * Creates a list of player match data for this team from the player list and the incident event list.
      *
      * @param goalsConceded We can't find the number of goals conceded from the incident events so it has to be provided.
