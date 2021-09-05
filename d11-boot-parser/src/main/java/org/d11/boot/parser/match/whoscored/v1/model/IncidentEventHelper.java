@@ -106,8 +106,8 @@ public class IncidentEventHelper {
      */
     public int getGoalAssists(final long playerId) {
         // Incident events for assists seem to be missing sometimes so count the goals with related player id instead.
-        return (int)getIncidentEvents(Type.TYPE_GOAL).stream()
-                .filter(incidentEvent -> incidentEvent.getRelatedPlayerId() == (int)playerId)
+        return (int) getIncidentEvents(Type.TYPE_GOAL).stream()
+                .filter(incidentEvent -> incidentEvent.getRelatedPlayerId() == (int) playerId)
                 .count();
     }
 

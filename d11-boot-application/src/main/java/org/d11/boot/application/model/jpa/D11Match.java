@@ -145,6 +145,72 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
     }
 
     /**
+     * Gets if a specific D11 team is the winner (or leader) of the D11 match.
+     *
+     * @param d11Team The D11 team that winner status will be checked for.
+     * @return True if the D11 team is the D11 match winner (or leader).
+     */
+    public boolean isWinner(final D11Team d11Team) {
+        return d11Team.equals(this.homeD11Team) && this.homeTeamGoals > this.awayTeamGoals
+                || d11Team.equals(this.awayD11Team) && this.awayTeamGoals > this.homeTeamGoals;
+    }
+
+    /**
+     * Gets if a specific D11 team is the loser of the D11 match (or is losing).
+     *
+     * @param d11Team The D11 team that loser status will be checked for.
+     * @return True if the D11 team is the D11 match loser (or is losing).
+     */
+    public boolean isLoser(final D11Team d11Team) {
+        return d11Team.equals(this.homeD11Team) && this.homeTeamGoals < this.awayTeamGoals
+                || d11Team.equals(this.awayD11Team) && this.awayTeamGoals < this.homeTeamGoals;
+    }
+
+    /**
+     * Get if the D11 match is a draw.
+     *
+     * @return True if the D11 match is a draw, false is not.
+     */
+    public boolean isDraw() {
+        return this.homeTeamGoals == this.awayTeamGoals;
+    }
+
+    /**
+     * Gets the number of goals a D11 team has scored in the match.
+     *
+     * @param d11Team The D11 team that goal count will be checked for.
+     * @return The number of goals scored by the D11 team.
+     */
+    public int getGoalsFor(final D11Team d11Team) {
+        return d11Team.equals(this.homeD11Team) ? this.homeTeamGoals : this.awayTeamGoals;
+    }
+
+    /**
+     * Gets the number of goals a D11 team has conceded in the match.
+     *
+     * @param d11Team The D11 team that goals conceded count will be checked for.
+     * @return The number of goals conceded by the D11 team.
+     */
+    public int getGoalsAgainst(final D11Team d11Team) {
+        return d11Team.equals(this.homeD11Team) ? this.awayTeamGoals : this.homeTeamGoals;
+    }
+
+    /**
+     * Gets the number of points gained by a D11 team in the D11 match.
+     *
+     * @param d11Team The D11 team that points will be checked for.
+     * @return The number of points gained by the D11 team.
+     */
+    public int getPoints(final D11Team d11Team) {
+        if(isWinner(d11Team)) {
+            return Match.WIN_POINTS;
+        } else if(isDraw()) {
+            return Match.DRAW_POINTS;
+        }
+        return Match.LOSS_POINTS;
+    }
+
+    /**
      * Updates points, goals, datetime, elapsed time and status.
      */
     @SuppressWarnings({ "PMD.CyclomaticComplexity", "PMD.NPathComplexity",
@@ -158,7 +224,7 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
         LocalDateTime localDateTime = null;
 
         for(final PlayerMatchStat playerMatchStat : this.playerMatchStats) {
-            if(!playerMatchStat.getMatch().isStarted()) {
+            if(playerMatchStat.getMatch().isStarted()) {
                 if(playerMatchStat.getD11Team().equals(this.homeD11Team)) {
                     this.homeTeamPoints += playerMatchStat.getPoints();
                 } else {

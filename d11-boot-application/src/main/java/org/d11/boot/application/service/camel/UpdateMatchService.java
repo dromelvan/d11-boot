@@ -9,6 +9,7 @@ import org.d11.boot.application.model.jms.DownloadWhoscoredMatchMessage;
 import org.d11.boot.application.model.jpa.Card;
 import org.d11.boot.application.model.jpa.D11Match;
 import org.d11.boot.application.model.jpa.D11Team;
+import org.d11.boot.application.model.jpa.D11TeamSeasonStat;
 import org.d11.boot.application.model.jpa.Goal;
 import org.d11.boot.application.model.jpa.Lineup;
 import org.d11.boot.application.model.jpa.Match;
@@ -19,8 +20,10 @@ import org.d11.boot.application.model.jpa.PlayerSeasonStat;
 import org.d11.boot.application.model.jpa.Status;
 import org.d11.boot.application.model.jpa.Substitution;
 import org.d11.boot.application.model.jpa.Team;
+import org.d11.boot.application.model.jpa.TeamSeasonStat;
 import org.d11.boot.application.model.jpa.util.PlayerMatchStatPointsCalculator;
 import org.d11.boot.application.repository.D11MatchRepository;
+import org.d11.boot.application.repository.D11TeamSeasonStatRepository;
 import org.d11.boot.application.repository.GoalRepository;
 import org.d11.boot.application.repository.MatchLogMessageRepository;
 import org.d11.boot.application.repository.MatchRepository;
@@ -29,6 +32,7 @@ import org.d11.boot.application.repository.PlayerMatchStatRepository;
 import org.d11.boot.application.repository.PlayerRepository;
 import org.d11.boot.application.repository.PlayerSeasonStatRepository;
 import org.d11.boot.application.repository.TeamRepository;
+import org.d11.boot.application.repository.TeamSeasonStatRepository;
 import org.d11.boot.application.service.api.PlayerAdminService;
 import org.d11.boot.application.util.NotFoundException;
 import org.d11.boot.application.util.Parameterizer;
@@ -172,6 +176,20 @@ public class UpdateMatchService extends CamelService {
 
             matchWeek.setStatus(Status.ACTIVE);
             getRepository(MatchWeekRepository.class).save(matchWeek);
+
+            final TeamSeasonStatRepository teamSeasonStatRepository = getRepository(TeamSeasonStatRepository.class);
+            final List<TeamSeasonStat> teamSeasonStats = teamSeasonStatRepository.findBySeasonIdOrderByRanking(matchWeek.getSeason().getId());
+            for(final TeamSeasonStat teamSeasonStat : teamSeasonStats) {
+                teamSeasonStat.setPreviousRanking(teamSeasonStat.getRanking());
+            }
+            teamSeasonStatRepository.saveAll(teamSeasonStats);
+
+            final D11TeamSeasonStatRepository d11TeamSeasonStatRepository = getRepository(D11TeamSeasonStatRepository.class);
+            final List<D11TeamSeasonStat> d11TeamSeasonStats = d11TeamSeasonStatRepository.findBySeasonIdOrderByRanking(matchWeek.getSeason().getId());
+            for(final D11TeamSeasonStat d11TeamSeasonStat : d11TeamSeasonStats) {
+                d11TeamSeasonStat.setPreviousRanking(d11TeamSeasonStat.getRanking());
+            }
+            d11TeamSeasonStatRepository.saveAll(d11TeamSeasonStats);
         }
     }
 
@@ -283,6 +301,7 @@ public class UpdateMatchService extends CamelService {
         } catch(NotFoundException e) {
             final UpdatePlayerDTO updatePlayerDTO = map(playerMatchData, UpdatePlayerDTO.class);
             updatePlayerDTO.setD11TeamId(D11Team.DUMMY_D11_TEAM_ID);
+            updatePlayerDTO.setTeamId(updateMatchContext.getMatch().getTeamByWhoscoredId(playerMatchData.getTeamWhoscoredId()).getId());
 
             final UpdatePlayerResultDTO updatePlayerResultDTO = this.playerAdminService.updatePlayer(updatePlayerDTO, true);
             final PlayerSeasonStat playerSeasonStat = playerSeasonStatRepository.findById(updatePlayerResultDTO.getPlayerSeasonStatId())
@@ -332,6 +351,9 @@ public class UpdateMatchService extends CamelService {
                         // If the player did not participate we'll assume that the player was transferred without that being
                         // registered and delete the player match stat.
                         getRepository(PlayerMatchStatRepository.class).delete(existingPlayerMatchStat);
+                        if(existingPlayerMatchStat.getD11Match() != null) {
+                            existingPlayerMatchStat.getD11Match().getPlayerMatchStats().remove(existingPlayerMatchStat);
+                        }
                         updateMatchContext.addInfo("Deleted DNP match stats for %s (%d), D11 team %s (%d), for match %s vs %s (%d).",
                                 existingPlayerMatchStat.getPlayer().getName(),
                                 existingPlayerMatchStat.getPlayer().getId(),
@@ -512,10 +534,10 @@ public class UpdateMatchService extends CamelService {
         }
 
         matchWeek.setElapsed(startedCount);
-        if(fullTimeCount == matches.size()) {
-            matchWeek.setStatus(Status.FULL_TIME);
-        } else if(finishedCount == matches.size()) {
+        if(finishedCount == matches.size()) {
             matchWeek.setStatus(Status.FINISHED);
+        } else if(fullTimeCount + finishedCount == matches.size()) {
+            matchWeek.setStatus(Status.FULL_TIME);
         }
         getRepository(MatchWeekRepository.class).save(matchWeek);
     }

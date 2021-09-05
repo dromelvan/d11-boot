@@ -1,8 +1,11 @@
 package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.jpa.D11TeamSeasonStat;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,9 +28,19 @@ public interface D11TeamSeasonStatRepository extends D11EntityRepository<D11Team
      * Finds D11 team season stats for a specific D11 team and a specific season.
      *
      * @param d11TeamId If for the D11 team for which D11 team season stats will be looked up.
-     * @param seasonId Id for the season for which D11team season stats will be looked up.
+     * @param seasonId  Id for the season for which D11team season stats will be looked up.
      * @return Optional with D11 team season stats for the D11 team and the season.
      */
     Optional<D11TeamSeasonStat> findByD11TeamIdAndSeasonId(@Param("d11TeamId") Long d11TeamId, @Param("seasonId") Long seasonId);
+
+    /**
+     * Updates rankings for all D11 team season stats for a specific season.
+     *
+     * @param seasonId Id for the season for which D11 team season stat rankings will be updated.
+     */
+    @Modifying
+    @Transactional
+    @Query(value = "CALL {h-schema}update_d11_team_season_stat_ranking(:seasonId)", nativeQuery = true)
+    void updateRankingsBySeasonId(@Param("seasonId") Long seasonId);
 
 }
