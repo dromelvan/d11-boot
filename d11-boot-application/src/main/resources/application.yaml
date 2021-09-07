@@ -1,5 +1,5 @@
 app:
-  camel.endpoint.activemq: activemq:queue:D11::%s
+  camel.endpoint.activemq: activemq:queue:%s
   download.selenium.remoteUrl: http://host:4444/wd/hub
 
 spring:

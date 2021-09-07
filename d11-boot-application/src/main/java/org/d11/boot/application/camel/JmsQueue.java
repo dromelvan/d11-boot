@@ -28,6 +28,11 @@ public enum JmsQueue {
     UPDATE_MATCH_REQUEST(UpdateMatchRequestMessage.class);
 
     /**
+     * Prefix for all JMS queues.
+     */
+    private static final String PREFIX = "D11::";
+
+    /**
      * Class of the message body for a route.
      */
     private final Class<?> bodyClass;
@@ -35,7 +40,7 @@ public enum JmsQueue {
     /**
      * Creates a new JMS queue definition.
      *
-     * @param bodyClass The class the queue expects the messagebody to have.
+     * @param bodyClass The class the queue expects the message body to have.
      */
     JmsQueue(final Class<?> bodyClass) {
         this.bodyClass = bodyClass;
@@ -56,7 +61,7 @@ public enum JmsQueue {
      * @return The name of the queue
      */
     public String getName() {
-        return toString();
+        return PREFIX + toString();
     }
 
 }
