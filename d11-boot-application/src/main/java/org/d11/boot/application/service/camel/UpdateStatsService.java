@@ -48,17 +48,17 @@ public class UpdateStatsService extends CamelService {
      */
     @Transactional
     public void updateStats(final MatchData matchData) {
-        log.info("Updating player season stats.");
+        log.debug("Updating player season stats.");
         updatePlayerSeasonStats(matchData);
-        log.info("Updating team match week stats.");
+        log.debug("Updating team match week stats.");
         updateTeamMatchWeekStats(matchData);
-        log.info("Updating team season stats.");
+        log.debug("Updating team season stats.");
         updateTeamSeasonStats(matchData);
-        log.info("Updating D11 team match week stats.");
+        log.debug("Updating D11 team match week stats.");
         updateD11TeamMatchWeekStats(matchData);
-        log.info("Updating D11 team season stats.");
+        log.debug("Updating D11 team season stats.");
         updateD11TeamSeasonStats(matchData);
-        log.info("Updating match week winners.");
+        log.debug("Updating match week winners.");
         updateMatchWeekWinners(matchData);
     }
 

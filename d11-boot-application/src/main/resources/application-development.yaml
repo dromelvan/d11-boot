@@ -16,7 +16,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        generate_statistics: true
+        generate_statistics: false
         default_schema: development
         # format_sql: true
     # show-sql: true

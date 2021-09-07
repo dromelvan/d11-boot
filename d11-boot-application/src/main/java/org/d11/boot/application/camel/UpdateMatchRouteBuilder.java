@@ -26,12 +26,13 @@ public class UpdateMatchRouteBuilder extends AbstractJmsRouteBuilder {
         from(getSource())
                 .routeId(getRouteId())
                 .doTry()
-                    .log(LoggingLevel.INFO, "Processing message: ${body}")
+                    .log(LoggingLevel.DEBUG, "Processing message: ${body}")
                     .unmarshal(getSourceDataFormat())
                     // Body is UpdateMatchMessage
                     .log(LoggingLevel.INFO,
                             "Updating match ${body.matchData.homeTeamName} vs ${body.matchData.awayTeamName} (${body.matchData.matchId}).")
                     .bean(UpdateMatchService.class, "updateMatchData(${body.matchData}, ${body.finish})")
+                    .log(LoggingLevel.INFO, "Updating player and team stats.")
                     .bean(UpdateStatsService.class, "updateStats(${body.matchData})")
                     .log(LoggingLevel.INFO,
                             "Match ${body.matchData.homeTeamName} vs ${body.matchData.awayTeamName} (${body.matchData.matchId}) update finished.")
