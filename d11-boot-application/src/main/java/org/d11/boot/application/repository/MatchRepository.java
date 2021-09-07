@@ -2,10 +2,12 @@ package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.jpa.Match;
 import org.d11.boot.application.model.jpa.Status;
+import org.d11.boot.application.model.jpa.projection.EntityId;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +21,7 @@ public interface MatchRepository extends D11EntityRepository<Match> {
      * Gets match ids for a specific team and a specific season ordered by datetime.
      * It's tricky to do (? or ?) and ? with the brackets by defining the query in the method name so we'll use JPQL.
      *
-     * @param teamId Id for the team for which match ids will be looked up.
+     * @param teamId   Id for the team for which match ids will be looked up.
      * @param seasonId Id for the season for which match ids will be looked up.
      * @return Match ids for the team and the season.
      */
@@ -32,7 +34,7 @@ public interface MatchRepository extends D11EntityRepository<Match> {
      * Gets matches for a specific team and a specific season ordered by datetime.
      * It's tricky to do (? or ?) and ? with the brackets by defining the query in the method name so we'll use JPQL.
      *
-     * @param teamId Id for the team for which match ids will be looked up.
+     * @param teamId   Id for the team for which match ids will be looked up.
      * @param seasonId Id for the season for which match ids will be looked up.
      * @return Match ids for the team and the season.
      */
@@ -45,9 +47,21 @@ public interface MatchRepository extends D11EntityRepository<Match> {
      * Finds matches for a specific match week or that have one of a set of statuses.
      *
      * @param matchWeekId Id for the match week for which matches will be looked up.
-     * @param status Set of statuses for which matches will be looked up.
+     * @param status      Set of statuses for which matches will be looked up.
      * @return List of matches for the match week and statuses, ordered by datetime.
      */
     List<Match> findByMatchWeekIdOrStatusInOrderByDatetime(@Param("matchWeekId") Long matchWeekId, @Param("status") Set<Status> status);
+
+    /**
+     * Finds matches with kickoff time earlier than a specific time and a status included in a specific set.
+     *
+     * @param dateTime Matches with kickoff time earlier than this datetime will be found.
+     * @param status   Matches with status included in this set will be found.
+     * @return List of match ids with kickoff time earlier than the provided time and status included in the provided set.
+     */
+    List<EntityId> findByDatetimeLessThanAndStatusInOrderByDatetimeAscIdAsc(
+            @Param("datetime") LocalDateTime dateTime,
+            @Param("status") Set<Status> status
+    );
 
 }

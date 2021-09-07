@@ -30,6 +30,7 @@ public enum JmsQueue {
     /**
      * Prefix for all JMS queues.
      */
+    @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
     private static final String PREFIX = "D11::";
 
     /**

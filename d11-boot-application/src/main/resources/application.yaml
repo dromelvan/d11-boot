@@ -1,6 +1,11 @@
 app:
   camel.endpoint.activemq: activemq:queue:%s
   download.selenium.remoteUrl: http://host:4444/wd/hub
+  schedule:
+    #updateMatchStats: 0 40 * * * ?
+    updateMatchStats: "-"
+    #finishMatchStats: 0 14 * * * ?
+    finishMatchStats: "-"
 
 spring:
   flyway:

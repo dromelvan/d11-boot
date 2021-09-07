@@ -466,6 +466,9 @@ public class UpdateMatchService extends CamelService {
         for(final PlayerMatchData playerMatchData : updateMatchContext.getMatchData().getPlayers()) {
             final PlayerMatchStat playerMatchStat = match.getPlayerMatchStatByPlayerId(playerMatchData.getPlayerId()).orElseThrow(NotFoundException::new);
 
+            // Need to set team in case there's a player who's moved from one team in the match to the other since we
+            // will not create a new player match stat for the player if he's still playing in the same match.
+            playerMatchStat.setTeam(match.getTeamByWhoscoredId(playerMatchData.getTeamWhoscoredId()));
             playerMatchStat.setPlayedPosition(playerMatchData.getPlayedPosition());
             playerMatchStat.setLineup(playerMatchData.isStartingLineup() ? Lineup.STARTING_LINEUP : Lineup.SUBSTITUTE);
             playerMatchStat.setSubstitutionOnTime(Math.min(playerMatchData.getSubstitutionOnTime(), Substitution.MAX_MATCH_EVENT_TIME));
