@@ -2,9 +2,11 @@ app:
   camel.endpoint.activemq: activemq:queue:%s
   download.selenium.remoteUrl: http://host:4444/wd/hub
   schedule:
-    #updateMatchStats: 0 40 * * * ?
+    #updateMatchDatetimes: 0 13 * * * ?
+    updateMatchDatetimes: "-"
+    #updateMatchStats: 0 52 * * * ?
     updateMatchStats: "-"
-    #finishMatchStats: 0 14 * * * ?
+    #finishMatchStats: 0 19 * * * ?
     finishMatchStats: "-"
 
 spring:
@@ -22,4 +24,4 @@ spring:
         generate_statistics: false
     open-in-view: false
   activemq:
-    broker-url: tcp://localhost:61616
+    broker-url: tcp://artemis:61616
