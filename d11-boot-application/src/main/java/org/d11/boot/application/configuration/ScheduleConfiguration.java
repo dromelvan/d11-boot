@@ -29,6 +29,14 @@ public class ScheduleConfiguration {
     }
 
     /**
+     * Schedule for updating match datetimes.
+     */
+    @Scheduled(cron = "${app.schedule.updateMatchDatetimes}")
+    public void updateMatchDatetimes() {
+        this.scheduleService.updateMatchDatetimes();
+    }
+
+    /**
      * Schedule for updating match stats.
      */
     @Scheduled(cron = "${app.schedule.updateMatchStats}")

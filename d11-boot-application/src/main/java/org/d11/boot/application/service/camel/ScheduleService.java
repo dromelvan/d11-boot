@@ -3,14 +3,19 @@ package org.d11.boot.application.service.camel;
 import org.d11.boot.application.camel.CamelObjectMapper;
 import org.d11.boot.application.camel.JmsQueue;
 import org.d11.boot.application.model.jms.UpdateMatchRequestMessage;
+import org.d11.boot.application.model.jpa.Match;
+import org.d11.boot.application.model.jpa.MatchWeek;
 import org.d11.boot.application.model.jpa.Status;
 import org.d11.boot.application.model.jpa.projection.EntityId;
 import org.d11.boot.application.repository.MatchRepository;
+import org.d11.boot.application.repository.MatchWeekRepository;
+import org.d11.boot.application.util.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -27,13 +32,21 @@ public class ScheduleService {
      */
     private static final Set<Status> UPDATE_STATUSES = Set.of(Status.PENDING, Status.ACTIVE);
     /**
-     * Set of statuses tht means a match should be finished.
+     * Set of statuses that means a match should be finished.
      */
     private static final Set<Status> FINISH_STATUSES = Set.of(Status.FULL_TIME);
+    /**
+     * Set of statuses that means a match is finished.
+     */
+    private static final Set<Status> POSTPONED_STATUSES = Set.of(Status.POSTPONED);
     /**
      * Match repository.
      */
     private final MatchRepository matchRepository;
+    /**
+     * Match week repository.
+     */
+    private final MatchWeekRepository matchWeekRepository;
     /**
      * JMS template for posting update request to ActiveMQ.
      */
@@ -42,17 +55,30 @@ public class ScheduleService {
     /**
      * Creates a new service.
      *
-     * @param matchRepository The match repository the service will use.
-     * @param jmsTemplate     The JMS template the service will use.
+     * @param matchRepository     The match repository the service will use.
+     * @param matchWeekRepository The match week repository the service will use.
+     * @param jmsTemplate         The JMS template the service will use.
      */
     @Autowired
-    public ScheduleService(final MatchRepository matchRepository, final JmsTemplate jmsTemplate) {
+    public ScheduleService(final MatchRepository matchRepository, final MatchWeekRepository matchWeekRepository, final JmsTemplate jmsTemplate) {
         this.matchRepository = matchRepository;
+        this.matchWeekRepository = matchWeekRepository;
         this.jmsTemplate = jmsTemplate;
 
         final MappingJackson2MessageConverter mappingJackson2MessageConverter = new MappingJackson2MessageConverter();
         mappingJackson2MessageConverter.setObjectMapper(new CamelObjectMapper());
         this.jmsTemplate.setMessageConverter(mappingJackson2MessageConverter);
+    }
+
+    public void updateMatchDatetimes() {
+        final MatchWeek currentMatchWeek =
+                this.matchWeekRepository.findFirstByDateLessThanEqualOrderByDateDesc(LocalDate.now()).orElseThrow(NotFoundException::new);
+        final List<Match> matches = this.matchRepository.findByMatchWeekIdOrStatusInOrderByDatetime(currentMatchWeek.getId() + 1L, POSTPONED_STATUSES);
+        for(final Match match : matches) {
+            final UpdateMatchRequestMessage updateMatchRequestMessage = new UpdateMatchRequestMessage();
+            updateMatchRequestMessage.setMatchId(match.getId());
+            this.jmsTemplate.convertAndSend(JmsQueue.UPDATE_MATCH_REQUEST.getName(), updateMatchRequestMessage);
+        }
     }
 
     /**
