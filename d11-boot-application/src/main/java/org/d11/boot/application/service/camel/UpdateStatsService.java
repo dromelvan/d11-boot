@@ -48,18 +48,21 @@ public class UpdateStatsService extends CamelService {
      */
     @Transactional
     public void updateStats(final MatchData matchData) {
-        log.debug("Updating player season stats.");
-        updatePlayerSeasonStats(matchData);
-        log.debug("Updating team match week stats.");
-        updateTeamMatchWeekStats(matchData);
-        log.debug("Updating team season stats.");
-        updateTeamSeasonStats(matchData);
-        log.debug("Updating D11 team match week stats.");
-        updateD11TeamMatchWeekStats(matchData);
-        log.debug("Updating D11 team season stats.");
-        updateD11TeamSeasonStats(matchData);
-        log.debug("Updating match week winners.");
-        updateMatchWeekWinners(matchData);
+        if(!matchData.isPending() && !matchData.isPostponed()) {
+            log.info("Updating player and team stats.");
+            log.debug("Updating player season stats.");
+            updatePlayerSeasonStats(matchData);
+            log.debug("Updating team match week stats.");
+            updateTeamMatchWeekStats(matchData);
+            log.debug("Updating team season stats.");
+            updateTeamSeasonStats(matchData);
+            log.debug("Updating D11 team match week stats.");
+            updateD11TeamMatchWeekStats(matchData);
+            log.debug("Updating D11 team season stats.");
+            updateD11TeamSeasonStats(matchData);
+            log.debug("Updating match week winners.");
+            updateMatchWeekWinners(matchData);
+        }
     }
 
     /**
