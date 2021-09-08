@@ -399,6 +399,12 @@ public class UpdateMatchService extends CamelService {
         final MatchData matchData = updateMatchContext.getMatchData();
 
         final String fullTimeElapsed = "FT";
+        if(!match.getDatetime().equals(matchData.getDatetime())) {
+            log.info(String.format("Changing kickoff time for %s vs %s (%d) to %s.", match.getHomeTeam().getName(),
+                                                                                     match.getAwayTeam().getName(),
+                                                                                     match.getId(),
+                                                                                     match.getDatetime()));
+        }
         match.setDatetime(matchData.getDatetime());
         if(finish) {
             match.setStatus(Status.FINISHED);
