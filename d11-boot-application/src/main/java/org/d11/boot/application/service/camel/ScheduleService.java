@@ -70,6 +70,9 @@ public class ScheduleService {
         this.jmsTemplate.setMessageConverter(mappingJackson2MessageConverter);
     }
 
+    /**
+     * Updates match datetimes for matches belonging to the match week after the current one and all postponed matches.
+     */
     public void updateMatchDatetimes() {
         final MatchWeek currentMatchWeek =
                 this.matchWeekRepository.findFirstByDateLessThanEqualOrderByDateDesc(LocalDate.now()).orElseThrow(NotFoundException::new);

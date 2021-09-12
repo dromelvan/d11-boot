@@ -1,13 +1,10 @@
 app:
   camel.endpoint.activemq: activemq:queue:%s
-  download.selenium.remoteUrl: http://host:4444/wd/hub
+  download.selenium.remoteUrl: http://host.docker.internal:4444/wd/hub
   schedule:
-    #updateMatchDatetimes: 0 13 * * * ?
-    updateMatchDatetimes: "-"
-    #updateMatchStats: 0 52 * * * ?
-    updateMatchStats: "-"
-    #finishMatchStats: 0 19 * * * ?
-    finishMatchStats: "-"
+    updateMatchDatetimes: 0 0 9 * * ?
+    updateMatchStats: 0 0,5,10,15,20,25,30,35,40,45,50,55 * * * ?
+    finishMatchStats: 0 0 18 * * ?
 
 spring:
   flyway:

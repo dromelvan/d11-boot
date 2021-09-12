@@ -1,5 +1,9 @@
 app:
   download.selenium.remoteUrl: http://localhost:4444/wd/hub
+  schedule:
+    updateMatchDatetimes: "-"
+    updateMatchStats: "-"
+    finishMatchStats: "-"
 
 d11:
   security:
