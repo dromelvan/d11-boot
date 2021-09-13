@@ -41,6 +41,10 @@ public class Type {
      */
     public static final int TYPE_CARD_YELLOW = 31;
     /**
+     * Second yellow card type value.
+     */
+    public static final int TYPE_CARD_SECOND_YELLOW = 32;
+    /**
      * Red card type value.
      */
     public static final int TYPE_CARD_RED = 33;

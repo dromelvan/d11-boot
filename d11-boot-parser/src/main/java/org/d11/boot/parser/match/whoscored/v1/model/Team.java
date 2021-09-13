@@ -96,6 +96,11 @@ public class Team {
             playerMatchData.setGoalsConceded(goalsConceded);
             playerMatchData.setYellowCardTime(getIncidentEventHelper().getYellowCardTime(player.getPlayerId()));
             playerMatchData.setRedCardTime(getIncidentEventHelper().getRedCardTime(player.getPlayerId()));
+            if(playerMatchData.getRedCardTime() == 0) {
+                // If a player gets sent off for two yellow cards, it has a different incident event type.
+                // Check that only if we haven't already set red card time from the red card incident event type.
+                playerMatchData.setRedCardTime(getIncidentEventHelper().getSecondYellowCardTime(player.getPlayerId()));
+            }
             playerMatchData.setManOfTheMatch(false);
             playerMatchData.setSharedManOfTheMatch(false);
             playerMatchData.setRating(player.getRating());

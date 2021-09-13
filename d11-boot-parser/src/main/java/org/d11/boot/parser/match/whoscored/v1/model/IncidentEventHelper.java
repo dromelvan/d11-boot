@@ -135,6 +135,17 @@ public class IncidentEventHelper {
     }
 
     /**
+     * Gets the second yellow card time for a player.
+     *
+     * @param playerId The player the second yellow card time will be looked up for.
+     * @return The second yellow card time for a player.
+     */
+    public int getSecondYellowCardTime(final long playerId) {
+        final IncidentEvent incidentEvent = getIncidentEvent(Type.TYPE_CARD, Type.TYPE_CARD_SECOND_YELLOW, playerId);
+        return incidentEvent == null ? 0 : incidentEvent.getMinute() + 1;
+    }
+
+    /**
      * Gets the red card time for a player.
      *
      * @param playerId The player the red card time will be looked up for.
