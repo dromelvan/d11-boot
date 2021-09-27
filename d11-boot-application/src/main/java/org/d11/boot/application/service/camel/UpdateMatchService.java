@@ -9,7 +9,6 @@ import org.d11.boot.application.model.jms.DownloadWhoscoredMatchMessage;
 import org.d11.boot.application.model.jpa.Card;
 import org.d11.boot.application.model.jpa.D11Match;
 import org.d11.boot.application.model.jpa.D11Team;
-import org.d11.boot.application.model.jpa.D11TeamSeasonStat;
 import org.d11.boot.application.model.jpa.Goal;
 import org.d11.boot.application.model.jpa.Lineup;
 import org.d11.boot.application.model.jpa.Match;
@@ -17,13 +16,12 @@ import org.d11.boot.application.model.jpa.MatchWeek;
 import org.d11.boot.application.model.jpa.Player;
 import org.d11.boot.application.model.jpa.PlayerMatchStat;
 import org.d11.boot.application.model.jpa.PlayerSeasonStat;
+import org.d11.boot.application.model.jpa.Season;
 import org.d11.boot.application.model.jpa.Status;
 import org.d11.boot.application.model.jpa.Substitution;
 import org.d11.boot.application.model.jpa.Team;
-import org.d11.boot.application.model.jpa.TeamSeasonStat;
 import org.d11.boot.application.model.jpa.util.PlayerMatchStatPointsCalculator;
 import org.d11.boot.application.repository.D11MatchRepository;
-import org.d11.boot.application.repository.D11TeamSeasonStatRepository;
 import org.d11.boot.application.repository.GoalRepository;
 import org.d11.boot.application.repository.MatchLogMessageRepository;
 import org.d11.boot.application.repository.MatchRepository;
@@ -31,8 +29,8 @@ import org.d11.boot.application.repository.MatchWeekRepository;
 import org.d11.boot.application.repository.PlayerMatchStatRepository;
 import org.d11.boot.application.repository.PlayerRepository;
 import org.d11.boot.application.repository.PlayerSeasonStatRepository;
+import org.d11.boot.application.repository.SeasonRepository;
 import org.d11.boot.application.repository.TeamRepository;
-import org.d11.boot.application.repository.TeamSeasonStatRepository;
 import org.d11.boot.application.service.api.PlayerAdminService;
 import org.d11.boot.application.util.NotFoundException;
 import org.d11.boot.application.util.Parameterizer;
@@ -122,6 +120,8 @@ public class UpdateMatchService extends CamelService {
 
                 updateMatchLogMessages(updateMatchContext);
                 updateMatchWeek(updateMatchContext);
+
+                updateStats(updateMatchContext);
             }
         }
     }
@@ -177,19 +177,7 @@ public class UpdateMatchService extends CamelService {
             matchWeek.setStatus(Status.ACTIVE);
             getRepository(MatchWeekRepository.class).save(matchWeek);
 
-            final TeamSeasonStatRepository teamSeasonStatRepository = getRepository(TeamSeasonStatRepository.class);
-            final List<TeamSeasonStat> teamSeasonStats = teamSeasonStatRepository.findBySeasonIdOrderByRanking(matchWeek.getSeason().getId());
-            for(final TeamSeasonStat teamSeasonStat : teamSeasonStats) {
-                teamSeasonStat.setPreviousRanking(teamSeasonStat.getRanking());
-            }
-            teamSeasonStatRepository.saveAll(teamSeasonStats);
-
-            final D11TeamSeasonStatRepository d11TeamSeasonStatRepository = getRepository(D11TeamSeasonStatRepository.class);
-            final List<D11TeamSeasonStat> d11TeamSeasonStats = d11TeamSeasonStatRepository.findBySeasonIdOrderByRanking(matchWeek.getSeason().getId());
-            for(final D11TeamSeasonStat d11TeamSeasonStat : d11TeamSeasonStats) {
-                d11TeamSeasonStat.setPreviousRanking(d11TeamSeasonStat.getRanking());
-            }
-            d11TeamSeasonStatRepository.saveAll(d11TeamSeasonStats);
+            getRepository(MatchWeekRepository.class).updatePreviousRankingsByMatchWeekId(matchWeek.getId());
         }
     }
 
@@ -549,6 +537,17 @@ public class UpdateMatchService extends CamelService {
             matchWeek.setStatus(Status.FULL_TIME);
         }
         getRepository(MatchWeekRepository.class).save(matchWeek);
+    }
+
+    /**
+     * Updates season stats for players, teams, D11 teams etc.
+     *
+     * @param updateMatchContext Context containing data that will be updated.
+     */
+    private void updateStats(final UpdateMatchContext updateMatchContext) {
+        final Season season = updateMatchContext.getMatch().getMatchWeek().getSeason();
+
+        getRepository(SeasonRepository.class).updateStatsBySeasonId(season.getId());
     }
 
     /**

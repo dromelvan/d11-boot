@@ -52,7 +52,7 @@ public class PlayerAdminService extends ApiService {
             playerSeasonStat.setPlayer(player);
             playerSeasonStat = getRepository(PlayerSeasonStatRepository.class).save(playerSeasonStat);
 
-            getRepository(PlayerSeasonStatRepository.class).updateRankingsBySeasonId(playerSeasonStat.getSeason().getId());
+            getRepository(SeasonRepository.class).updateStatsBySeasonId(playerSeasonStat.getSeason().getId());
         }
         return new InsertPlayerResultDTO()
                 .playerId(player.getId())
@@ -90,7 +90,7 @@ public class PlayerAdminService extends ApiService {
                 player = getRepository(PlayerRepository.class).save(player);
             }
             playerSeasonStat = getRepository(PlayerSeasonStatRepository.class).save(playerSeasonStat);
-            getRepository(PlayerSeasonStatRepository.class).updateRankingsBySeasonId(playerSeasonStat.getSeason().getId());
+            getRepository(SeasonRepository.class).updateStatsBySeasonId(playerSeasonStat.getSeason().getId());
         }
 
         return new UpdatePlayerResultDTO()

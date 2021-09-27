@@ -2,11 +2,9 @@ package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.jpa.PlayerSeasonStat;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -139,16 +137,5 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
             "JOIN PlayerSeasonStat playerSeasonStat ON playerSeasonStat.season = matchWeek.season AND playerSeasonStat.player = playerMatchStat.player " +
             "WHERE match.id = :matchId")
     List<PlayerSeasonStat> findByMatchId(@Param("matchId") Long matchId);
-
-    /**
-     * Updates rankings for all player season stats for a specific season.
-     *
-     * @param seasonId Id for the season for which player season stat rankings will be updated.
-     */
-    // We have to do a @Query instead of a @Procedure as longs as we're using dev/prod schemas in the same database.
-    @Modifying
-    @Transactional
-    @Query(value = "CALL {h-schema}update_player_season_stat_ranking(:seasonId)", nativeQuery = true)
-    void updateRankingsBySeasonId(@Param("seasonId") Long seasonId);
 
 }

@@ -37,33 +37,13 @@ public interface MatchWeekRepository extends D11EntityRepository<MatchWeek> {
     List<MatchWeek> findBySeasonIdOrderByDate(@Param("seasonId") Long seasonId);
 
     /**
-     * Updates Premier League leader for a match week.
+     * Updates previous rankings for a match week and its season.
      *
-     * @param matchWeekId Id for the match week for which Premier League leader will be updated.
+     * @param matchWeekId Id for the match week for which previous rankings will be updated.
      */
     @Modifying
     @Transactional
-    @Query(value = "CALL {h-schema}update_match_week_premier_league_leader(:matchWeekId)", nativeQuery = true)
-    void updatePremierLeagueLeaderByMatchWeekId(@Param("matchWeekId") Long matchWeekId);
-
-    /**
-     * Updates D11 League leader for a match week.
-     *
-     * @param matchWeekId Id for the match week for which D11 League leader will be updated.
-     */
-    @Modifying
-    @Transactional
-    @Query(value = "CALL {h-schema}update_match_week_d11_league_leader(:matchWeekId)", nativeQuery = true)
-    void updateD11LeagueLeaderByMatchWeekId(@Param("matchWeekId") Long matchWeekId);
-
-    /**
-     * Updates most valuable player for a match week.
-     *
-     * @param matchWeekId Id for the match week for which most valuable player will be updated.
-     */
-    @Modifying
-    @Transactional
-    @Query(value = "CALL {h-schema}update_match_week_most_valuable_player(:matchWeekId)", nativeQuery = true)
-    void updateMostValuablePlayerByMatchWeekId(@Param("matchWeekId") Long matchWeekId);
+    @Query(value = "CALL {h-schema}update_previous_rankings_by_match_week_id(:matchWeekId)", nativeQuery = true)
+    void updatePreviousRankingsByMatchWeekId(@Param("matchWeekId") Long matchWeekId);
 
 }
