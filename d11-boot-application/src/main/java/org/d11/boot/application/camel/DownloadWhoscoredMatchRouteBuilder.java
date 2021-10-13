@@ -6,6 +6,7 @@ import org.d11.boot.application.camel.processor.DownloadWhoscoredMatchProcessor;
 import org.d11.boot.application.camel.processor.MatchDataProcessor;
 import org.d11.boot.application.camel.processor.WebPageProcessor;
 import org.d11.boot.download.whoscored.WhoscoredMatchDownloader;
+import org.d11.boot.jms.JmsQueue;
 import org.d11.boot.parser.match.MatchParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

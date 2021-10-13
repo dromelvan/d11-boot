@@ -2,8 +2,8 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.TransferListingDTO;
 import org.d11.boot.api.service.TransferListingApiService;
-import org.d11.boot.application.model.jpa.TransferDay;
-import org.d11.boot.application.model.jpa.TransferListing;
+import org.d11.boot.application.model.TransferDay;
+import org.d11.boot.application.model.TransferListing;
 import org.d11.boot.application.repository.TransferListingRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.D11LeagueDTO;
-import org.d11.boot.application.model.jpa.D11League;
+import org.d11.boot.application.model.D11League;
 import org.d11.boot.application.repository.D11LeagueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

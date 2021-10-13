@@ -1,7 +1,7 @@
 package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.CountryDTO;
-import org.d11.boot.application.model.jpa.Country;
+import org.d11.boot.application.model.Country;
 import org.d11.boot.application.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

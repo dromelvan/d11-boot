@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.spi.DataFormat;
+import org.d11.boot.jms.JmsQueue;
 import org.springframework.beans.factory.annotation.Value;
 
 /**

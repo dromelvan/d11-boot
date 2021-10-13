@@ -2,12 +2,12 @@ package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.TransferDayDTO;
 import org.d11.boot.api.model.UpdateTransferDayResultDTO;
-import org.d11.boot.application.model.jpa.PlayerSeasonStat;
-import org.d11.boot.application.model.jpa.Season;
-import org.d11.boot.application.model.jpa.Status;
-import org.d11.boot.application.model.jpa.TransferDay;
-import org.d11.boot.application.model.jpa.TransferListing;
-import org.d11.boot.application.model.jpa.TransferWindow;
+import org.d11.boot.application.model.PlayerSeasonStat;
+import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.Status;
+import org.d11.boot.application.model.TransferDay;
+import org.d11.boot.application.model.TransferListing;
+import org.d11.boot.application.model.TransferWindow;
 import org.d11.boot.application.repository.PlayerSeasonStatRepository;
 import org.d11.boot.application.repository.TransferDayRepository;
 import org.d11.boot.application.repository.TransferListingRepository;

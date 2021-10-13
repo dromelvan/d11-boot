@@ -1,7 +1,7 @@
 package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.TransferListingDTO;
-import org.d11.boot.application.model.jpa.TransferListing;
+import org.d11.boot.application.model.TransferListing;
 import org.d11.boot.application.repository.TransferListingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;

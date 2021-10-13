@@ -28,6 +28,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     implementation project(':d11-boot-api')
+	implementation project(':d11-boot-jms')
 	implementation project(':d11-boot-download')
 	implementation project(':d11-boot-parser')
     implementation 'org.springframework.boot:spring-boot-starter-web'

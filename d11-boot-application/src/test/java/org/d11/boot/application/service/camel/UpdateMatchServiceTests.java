@@ -1,10 +1,10 @@
 package org.d11.boot.application.service.camel;
 
-import org.d11.boot.application.model.jms.DownloadWhoscoredMatchMessage;
-import org.d11.boot.application.model.jpa.Match;
+import org.d11.boot.application.model.Match;
 import org.d11.boot.application.repository.MatchRepository;
 import org.d11.boot.application.service.ServiceTests;
 import org.d11.boot.application.util.NotFoundException;
+import org.d11.boot.jms.message.DownloadWhoscoredMatchMessage;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

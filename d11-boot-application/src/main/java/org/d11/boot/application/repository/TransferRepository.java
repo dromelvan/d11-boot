@@ -1,6 +1,6 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.jpa.Transfer;
+import org.d11.boot.application.model.Transfer;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 

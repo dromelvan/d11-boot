@@ -1,7 +1,7 @@
 package org.d11.boot.application.configuration;
 
-import org.d11.boot.application.model.jpa.util.PlayerMatchStatPointsCalculator;
-import org.d11.boot.application.model.jpa.util.PlayerMatchStatPointsCalculatorV1;
+import org.d11.boot.application.model.util.PlayerMatchStatPointsCalculator;
+import org.d11.boot.application.model.util.PlayerMatchStatPointsCalculatorV1;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

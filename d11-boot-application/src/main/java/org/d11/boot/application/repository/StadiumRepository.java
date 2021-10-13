@@ -1,6 +1,6 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.jpa.Stadium;
+import org.d11.boot.application.model.Stadium;
 import org.springframework.stereotype.Repository;
 
 /**

@@ -1,8 +1,8 @@
 package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.PlayerMatchStatDTO;
-import org.d11.boot.application.model.jpa.Lineup;
-import org.d11.boot.application.model.jpa.PlayerMatchStat;
+import org.d11.boot.application.model.Lineup;
+import org.d11.boot.application.model.PlayerMatchStat;
 import org.d11.boot.application.repository.PlayerMatchStatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.TransferBidDTO;
-import org.d11.boot.application.model.jpa.TransferBid;
+import org.d11.boot.application.model.TransferBid;
 import org.d11.boot.application.repository.TransferBidRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

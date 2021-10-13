@@ -2,7 +2,7 @@ package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.model.TeamPlayerSeasonStatsDTO;
-import org.d11.boot.application.model.jpa.PlayerSeasonStat;
+import org.d11.boot.application.model.PlayerSeasonStat;
 import org.d11.boot.application.repository.PlayerSeasonStatRepository;
 import org.d11.boot.application.util.NotFoundException;
 import org.d11.boot.application.util.PlayerSeasonStatsToTeamPlayerSeasonStatsMapConverter;

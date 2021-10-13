@@ -2,7 +2,7 @@ package org.d11.boot.application.service.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.d11.boot.api.model.DTOClassMapper;
-import org.d11.boot.application.model.jpa.D11Entity;
+import org.d11.boot.application.model.D11Entity;
 import org.d11.boot.application.repository.D11EntityRepository;
 import org.d11.boot.application.util.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

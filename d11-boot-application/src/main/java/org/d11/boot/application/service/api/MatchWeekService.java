@@ -1,7 +1,7 @@
 package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.MatchWeekDTO;
-import org.d11.boot.application.model.jpa.MatchWeek;
+import org.d11.boot.application.model.MatchWeek;
 import org.d11.boot.application.repository.MatchWeekRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

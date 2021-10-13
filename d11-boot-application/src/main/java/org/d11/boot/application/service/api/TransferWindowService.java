@@ -1,7 +1,7 @@
 package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.TransferWindowDTO;
-import org.d11.boot.application.model.jpa.TransferWindow;
+import org.d11.boot.application.model.TransferWindow;
 import org.d11.boot.application.repository.TransferWindowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

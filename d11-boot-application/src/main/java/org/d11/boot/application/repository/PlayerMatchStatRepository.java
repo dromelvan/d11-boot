@@ -1,7 +1,7 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.jpa.Lineup;
-import org.d11.boot.application.model.jpa.PlayerMatchStat;
+import org.d11.boot.application.model.Lineup;
+import org.d11.boot.application.model.PlayerMatchStat;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,6 @@
 package org.d11.boot.application.model;
 
-import org.d11.boot.application.model.jpa.D11Entity;
-import org.d11.boot.application.model.jpa.validation.D11EntityValidator;
+import org.d11.boot.application.model.validation.D11EntityValidator;
 import org.junit.jupiter.api.Test;
 
 import javax.validation.ConstraintValidatorContext;

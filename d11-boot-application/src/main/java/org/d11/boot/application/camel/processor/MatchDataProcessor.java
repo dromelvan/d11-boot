@@ -2,8 +2,8 @@ package org.d11.boot.application.camel.processor;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.d11.boot.application.model.jms.UpdateMatchMessage;
-import org.d11.boot.parser.model.MatchData;
+import org.d11.boot.jms.message.UpdateMatchMessage;
+import org.d11.boot.jms.model.MatchData;
 
 /**
  * Processes a match data JMS message by setting matchId, dataFileName and finish properties in the Camel exchange and

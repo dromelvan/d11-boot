@@ -2,8 +2,8 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.TransferBidDTO;
 import org.d11.boot.api.service.TransferBidApiService;
-import org.d11.boot.application.model.jpa.TransferBid;
-import org.d11.boot.application.model.jpa.TransferDay;
+import org.d11.boot.application.model.TransferBid;
+import org.d11.boot.application.model.TransferDay;
 import org.d11.boot.application.repository.TransferBidRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

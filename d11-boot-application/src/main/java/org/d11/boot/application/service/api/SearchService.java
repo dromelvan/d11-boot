@@ -2,7 +2,7 @@ package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.PlayerSearchResultDTO;
 import org.d11.boot.api.model.SearchResultDTO;
-import org.d11.boot.application.model.jpa.projection.PlayerSearchResult;
+import org.d11.boot.application.model.projection.PlayerSearchResult;
 import org.d11.boot.application.repository.PlayerRepository;
 import org.d11.boot.application.util.Parameterizer;
 import org.springframework.beans.factory.annotation.Autowired;

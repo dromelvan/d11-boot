@@ -2,7 +2,7 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.UserDTO;
 import org.d11.boot.api.service.UserApiService;
-import org.d11.boot.application.model.jpa.User;
+import org.d11.boot.application.model.User;
 import org.d11.boot.application.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 

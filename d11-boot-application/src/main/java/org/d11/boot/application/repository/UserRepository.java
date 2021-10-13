@@ -1,6 +1,6 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.jpa.User;
+import org.d11.boot.application.model.User;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 

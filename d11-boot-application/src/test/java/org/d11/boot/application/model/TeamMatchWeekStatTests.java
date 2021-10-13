@@ -1,9 +1,6 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.TeamMatchWeekStatDTO;
-import org.d11.boot.application.model.jpa.MatchWeek;
-import org.d11.boot.application.model.jpa.Team;
-import org.d11.boot.application.model.jpa.TeamMatchWeekStat;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

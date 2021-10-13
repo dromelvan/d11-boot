@@ -2,8 +2,8 @@ package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.SeasonDTO;
 import org.d11.boot.api.model.SeasonSummaryDTO;
-import org.d11.boot.application.model.jpa.Season;
-import org.d11.boot.application.model.jpa.projection.EntityId;
+import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.projection.EntityId;
 import org.d11.boot.application.repository.SeasonRepository;
 import org.d11.boot.application.util.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

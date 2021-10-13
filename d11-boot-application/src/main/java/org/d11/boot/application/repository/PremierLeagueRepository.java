@@ -1,6 +1,6 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.jpa.PremierLeague;
+import org.d11.boot.application.model.PremierLeague;
 import org.springframework.stereotype.Repository;
 
 /**

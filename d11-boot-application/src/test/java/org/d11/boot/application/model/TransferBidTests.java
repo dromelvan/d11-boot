@@ -1,10 +1,6 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.TransferBidDTO;
-import org.d11.boot.application.model.jpa.D11Team;
-import org.d11.boot.application.model.jpa.Player;
-import org.d11.boot.application.model.jpa.TransferBid;
-import org.d11.boot.application.model.jpa.TransferDay;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

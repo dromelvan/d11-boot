@@ -1,6 +1,6 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.jpa.Card;
+import org.d11.boot.application.model.Card;
 import org.springframework.stereotype.Repository;
 
 /**

@@ -2,9 +2,9 @@ package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.D11MatchDTO;
 import org.d11.boot.api.model.D11MatchesByDateDTO;
-import org.d11.boot.application.model.jpa.D11Match;
-import org.d11.boot.application.model.jpa.MatchWeek;
-import org.d11.boot.application.model.jpa.Status;
+import org.d11.boot.application.model.D11Match;
+import org.d11.boot.application.model.MatchWeek;
+import org.d11.boot.application.model.Status;
 import org.d11.boot.application.repository.D11MatchRepository;
 import org.d11.boot.application.repository.MatchWeekRepository;
 import org.d11.boot.application.util.D11MatchesByDateMapperConverter;

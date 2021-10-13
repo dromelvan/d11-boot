@@ -3,11 +3,11 @@ package org.d11.boot.application.api;
 import org.d11.boot.api.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.model.TeamPlayerSeasonStatsDTO;
 import org.d11.boot.api.service.PlayerSeasonStatApiService;
-import org.d11.boot.application.model.jpa.D11Team;
-import org.d11.boot.application.model.jpa.Player;
-import org.d11.boot.application.model.jpa.PlayerSeasonStat;
-import org.d11.boot.application.model.jpa.Season;
-import org.d11.boot.application.model.jpa.Team;
+import org.d11.boot.application.model.D11Team;
+import org.d11.boot.application.model.Player;
+import org.d11.boot.application.model.PlayerSeasonStat;
+import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.Team;
 import org.d11.boot.application.repository.PlayerSeasonStatRepository;
 import org.junit.jupiter.api.Test;
 

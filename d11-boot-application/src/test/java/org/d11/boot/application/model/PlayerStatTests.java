@@ -1,6 +1,5 @@
 package org.d11.boot.application.model;
 
-import org.d11.boot.application.model.jpa.PlayerStat;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

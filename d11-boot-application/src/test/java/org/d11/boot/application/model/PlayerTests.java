@@ -1,8 +1,6 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.PlayerDTO;
-import org.d11.boot.application.model.jpa.Country;
-import org.d11.boot.application.model.jpa.Player;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

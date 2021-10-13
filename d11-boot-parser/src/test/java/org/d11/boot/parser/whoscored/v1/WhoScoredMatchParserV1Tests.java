@@ -1,10 +1,10 @@
 package org.d11.boot.parser.whoscored.v1;
 
+import org.d11.boot.jms.model.MatchData;
+import org.d11.boot.jms.model.Status;
 import org.d11.boot.parser.ParserException;
 import org.d11.boot.parser.match.whoscored.v1.WhoScoredMatchParserV1;
 import org.d11.boot.parser.match.whoscored.v1.model.MatchHeader;
-import org.d11.boot.parser.model.MatchData;
-import org.d11.boot.parser.model.Status;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

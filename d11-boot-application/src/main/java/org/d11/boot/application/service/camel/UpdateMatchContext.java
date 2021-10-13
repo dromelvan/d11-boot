@@ -2,13 +2,13 @@ package org.d11.boot.application.service.camel;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.d11.boot.application.model.jpa.Match;
-import org.d11.boot.application.model.jpa.MatchLogMessage;
-import org.d11.boot.application.model.jpa.MatchLogMessageType;
-import org.d11.boot.application.model.jpa.Player;
-import org.d11.boot.application.model.jpa.PlayerMatchStat;
-import org.d11.boot.application.model.jpa.PlayerSeasonStat;
-import org.d11.boot.parser.model.MatchData;
+import org.d11.boot.application.model.Match;
+import org.d11.boot.application.model.MatchLogMessage;
+import org.d11.boot.application.model.MatchLogMessageType;
+import org.d11.boot.application.model.Player;
+import org.d11.boot.application.model.PlayerMatchStat;
+import org.d11.boot.application.model.PlayerSeasonStat;
+import org.d11.boot.jms.model.MatchData;
 
 import java.util.ArrayList;
 import java.util.HashMap;

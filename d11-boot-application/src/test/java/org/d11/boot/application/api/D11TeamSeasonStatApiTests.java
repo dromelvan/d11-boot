@@ -2,9 +2,9 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.D11TeamSeasonStatDTO;
 import org.d11.boot.api.service.D11TeamSeasonStatApiService;
-import org.d11.boot.application.model.jpa.D11TeamSeasonStat;
-import org.d11.boot.application.model.jpa.Season;
-import org.d11.boot.application.model.jpa.TableStat;
+import org.d11.boot.application.model.D11TeamSeasonStat;
+import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.TableStat;
 import org.d11.boot.application.repository.D11TeamSeasonStatRepository;
 import org.junit.jupiter.api.Test;
 

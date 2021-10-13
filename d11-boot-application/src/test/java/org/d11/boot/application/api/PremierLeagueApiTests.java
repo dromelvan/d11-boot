@@ -3,7 +3,7 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.PremierLeagueDTO;
 import org.d11.boot.api.service.PremierLeagueApiService;
-import org.d11.boot.application.model.jpa.PremierLeague;
+import org.d11.boot.application.model.PremierLeague;
 import org.d11.boot.application.repository.PremierLeagueRepository;
 import org.junit.jupiter.api.Test;
 

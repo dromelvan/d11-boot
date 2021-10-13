@@ -2,9 +2,6 @@ package org.d11.boot.application.model;
 
 
 import org.d11.boot.api.model.D11TeamSeasonStatDTO;
-import org.d11.boot.application.model.jpa.D11Team;
-import org.d11.boot.application.model.jpa.D11TeamSeasonStat;
-import org.d11.boot.application.model.jpa.Season;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

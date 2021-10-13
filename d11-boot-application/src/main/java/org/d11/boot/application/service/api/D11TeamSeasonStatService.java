@@ -1,7 +1,7 @@
 package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.D11TeamSeasonStatDTO;
-import org.d11.boot.application.model.jpa.D11TeamSeasonStat;
+import org.d11.boot.application.model.D11TeamSeasonStat;
 import org.d11.boot.application.repository.D11TeamSeasonStatRepository;
 import org.springframework.stereotype.Service;
 

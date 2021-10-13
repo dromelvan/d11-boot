@@ -1,7 +1,7 @@
 package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.PositionDTO;
-import org.d11.boot.application.model.jpa.Position;
+import org.d11.boot.application.model.Position;
 import org.d11.boot.application.repository.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

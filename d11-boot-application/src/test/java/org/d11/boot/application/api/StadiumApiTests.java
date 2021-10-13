@@ -2,7 +2,7 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.StadiumDTO;
 import org.d11.boot.api.service.StadiumApiService;
-import org.d11.boot.application.model.jpa.Stadium;
+import org.d11.boot.application.model.Stadium;
 import org.d11.boot.application.repository.StadiumRepository;
 import org.junit.jupiter.api.Test;
 

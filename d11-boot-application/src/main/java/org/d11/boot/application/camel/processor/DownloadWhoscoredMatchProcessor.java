@@ -2,7 +2,7 @@ package org.d11.boot.application.camel.processor;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.d11.boot.application.model.jms.DownloadWhoscoredMatchMessage;
+import org.d11.boot.jms.message.DownloadWhoscoredMatchMessage;
 
 /**
  * Processes a download whoscored match JMS message by setting matchId, matchWeekDirectory and finish properties in the

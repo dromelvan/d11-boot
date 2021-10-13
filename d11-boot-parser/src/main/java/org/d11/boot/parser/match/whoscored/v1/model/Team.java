@@ -1,9 +1,9 @@
 package org.d11.boot.parser.match.whoscored.v1.model;
 
 import lombok.Data;
-import org.d11.boot.parser.model.GoalData;
-import org.d11.boot.parser.model.Lineup;
-import org.d11.boot.parser.model.PlayerMatchData;
+import org.d11.boot.jms.model.GoalData;
+import org.d11.boot.jms.model.Lineup;
+import org.d11.boot.jms.model.PlayerMatchData;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -2,7 +2,7 @@ package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.TeamDTO;
 import org.d11.boot.api.model.TeamNameDTO;
-import org.d11.boot.application.model.jpa.Team;
+import org.d11.boot.application.model.Team;
 import org.d11.boot.application.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

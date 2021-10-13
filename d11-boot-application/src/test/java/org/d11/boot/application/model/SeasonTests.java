@@ -1,10 +1,6 @@
 package org.d11.boot.application.model;
 
 import org.d11.boot.api.model.SeasonDTO;
-import org.d11.boot.application.model.jpa.D11League;
-import org.d11.boot.application.model.jpa.PremierLeague;
-import org.d11.boot.application.model.jpa.Season;
-import org.d11.boot.application.model.jpa.Status;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

@@ -1,7 +1,7 @@
 package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.PlayerDTO;
-import org.d11.boot.application.model.jpa.Player;
+import org.d11.boot.application.model.Player;
 import org.d11.boot.application.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

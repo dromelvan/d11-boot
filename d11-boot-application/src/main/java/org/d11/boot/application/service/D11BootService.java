@@ -1,9 +1,9 @@
 package org.d11.boot.application.service;
 
 import org.apache.commons.lang3.StringUtils;
-import org.d11.boot.application.model.jpa.D11Entity;
-import org.d11.boot.application.model.jpa.D11Team;
-import org.d11.boot.application.model.jpa.Season;
+import org.d11.boot.application.model.D11Entity;
+import org.d11.boot.application.model.D11Team;
+import org.d11.boot.application.model.Season;
 import org.d11.boot.application.repository.D11EntityRepository;
 import org.d11.boot.application.repository.D11TeamRepository;
 import org.d11.boot.application.repository.SeasonRepository;

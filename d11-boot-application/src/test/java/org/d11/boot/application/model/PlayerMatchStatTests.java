@@ -1,14 +1,5 @@
 package org.d11.boot.application.model;
 
-import org.d11.boot.application.model.jpa.D11Match;
-import org.d11.boot.application.model.jpa.D11Team;
-import org.d11.boot.application.model.jpa.Lineup;
-import org.d11.boot.application.model.jpa.Match;
-import org.d11.boot.application.model.jpa.MatchEvent;
-import org.d11.boot.application.model.jpa.Player;
-import org.d11.boot.application.model.jpa.PlayerMatchStat;
-import org.d11.boot.application.model.jpa.Position;
-import org.d11.boot.application.model.jpa.Team;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

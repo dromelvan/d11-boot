@@ -1,12 +1,12 @@
 package org.d11.boot.parser.match.whoscored.v1;
 
 import lombok.extern.slf4j.Slf4j;
+import org.d11.boot.jms.model.MatchData;
 import org.d11.boot.parser.AbstractParser;
 import org.d11.boot.parser.ParserException;
 import org.d11.boot.parser.match.MatchParser;
 import org.d11.boot.parser.match.whoscored.v1.model.MatchCenterData;
 import org.d11.boot.parser.match.whoscored.v1.model.MatchHeader;
-import org.d11.boot.parser.model.MatchData;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

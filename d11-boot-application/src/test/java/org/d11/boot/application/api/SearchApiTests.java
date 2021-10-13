@@ -3,7 +3,7 @@ package org.d11.boot.application.api;
 import org.d11.boot.api.model.PlayerSearchResultDTO;
 import org.d11.boot.api.model.SearchResultDTO;
 import org.d11.boot.api.service.SearchApiService;
-import org.d11.boot.application.model.jpa.Player;
+import org.d11.boot.application.model.Player;
 import org.d11.boot.application.repository.PlayerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

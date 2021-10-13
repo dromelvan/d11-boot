@@ -1,6 +1,6 @@
 package org.d11.boot.application.repository;
 
-import org.d11.boot.application.model.jpa.MatchLogMessage;
+import org.d11.boot.application.model.MatchLogMessage;
 import org.springframework.stereotype.Repository;
 
 /**
