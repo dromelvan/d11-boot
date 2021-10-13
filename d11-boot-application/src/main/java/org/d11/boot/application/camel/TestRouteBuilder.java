@@ -1,5 +1,6 @@
 package org.d11.boot.application.camel;
 
+import org.d11.boot.camel.AbstractJmsRouteBuilder;
 import org.d11.boot.jms.JmsQueue;
 import org.springframework.stereotype.Component;
 

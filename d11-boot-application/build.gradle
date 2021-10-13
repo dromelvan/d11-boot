@@ -29,6 +29,7 @@ dependencies {
 
     implementation project(':d11-boot-api')
 	implementation project(':d11-boot-jms')
+	implementation project(':d11-boot-camel')
 	implementation project(':d11-boot-download')
 	implementation project(':d11-boot-parser')
     implementation 'org.springframework.boot:spring-boot-starter-web'

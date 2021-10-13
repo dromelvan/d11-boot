@@ -1,6 +1,5 @@
 package org.d11.boot.application.service.camel;
 
-import org.d11.boot.application.camel.CamelObjectMapper;
 import org.d11.boot.application.model.Match;
 import org.d11.boot.application.model.MatchWeek;
 import org.d11.boot.application.model.Status;
@@ -8,6 +7,7 @@ import org.d11.boot.application.model.projection.EntityId;
 import org.d11.boot.application.repository.MatchRepository;
 import org.d11.boot.application.repository.MatchWeekRepository;
 import org.d11.boot.application.util.NotFoundException;
+import org.d11.boot.camel.CamelObjectMapper;
 import org.d11.boot.jms.JmsQueue;
 import org.d11.boot.jms.message.UpdateMatchRequestMessage;
 import org.springframework.beans.factory.annotation.Autowired;

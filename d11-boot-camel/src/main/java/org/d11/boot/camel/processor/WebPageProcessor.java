@@ -1,4 +1,4 @@
-package org.d11.boot.application.camel.processor;
+package org.d11.boot.camel.processor;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;

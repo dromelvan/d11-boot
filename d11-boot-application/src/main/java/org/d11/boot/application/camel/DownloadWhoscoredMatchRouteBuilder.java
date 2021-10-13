@@ -2,9 +2,10 @@ package org.d11.boot.application.camel;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import org.apache.camel.LoggingLevel;
-import org.d11.boot.application.camel.processor.DownloadWhoscoredMatchProcessor;
-import org.d11.boot.application.camel.processor.MatchDataProcessor;
-import org.d11.boot.application.camel.processor.WebPageProcessor;
+import org.d11.boot.camel.AbstractJmsRouteBuilder;
+import org.d11.boot.camel.processor.DownloadWhoscoredMatchProcessor;
+import org.d11.boot.camel.processor.MatchDataProcessor;
+import org.d11.boot.camel.processor.WebPageProcessor;
 import org.d11.boot.download.whoscored.WhoscoredMatchDownloader;
 import org.d11.boot.jms.JmsQueue;
 import org.d11.boot.parser.match.MatchParser;

@@ -1,4 +1,4 @@
-package org.d11.boot.application.camel;
+package org.d11.boot.camel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import org.d11.boot.application.D11BootApplication;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,7 +16,10 @@ import java.time.format.DateTimeFormatter;
  */
 public class CamelObjectMapper extends ObjectMapper {
 
-    public static final long serialVersionUID = D11BootApplication.VERSION;
+    /**
+     * Serial version UID.
+     */
+    public static final long serialVersionUID = 1L;
 
     /**
      * Jackson date formatter.
