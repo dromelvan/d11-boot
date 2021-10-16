@@ -1,6 +1,6 @@
 package org.d11.boot.application.mock;
 
-import org.d11.boot.application.D11BootApplication;
+import org.d11.boot.D11BootApplication;
 import org.jeasy.random.EasyRandom;
 
 /**

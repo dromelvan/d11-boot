@@ -1,6 +1,6 @@
 package org.d11.boot.application.util;
 
-import org.d11.boot.application.D11BootApplication;
+import org.d11.boot.D11BootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
