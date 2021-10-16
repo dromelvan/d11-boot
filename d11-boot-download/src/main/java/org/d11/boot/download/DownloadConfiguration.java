@@ -1,4 +1,4 @@
-package org.d11.boot.application.configuration;
+package org.d11.boot.download;
 
 import org.d11.boot.download.browser.selenium.ChromeBrowser;
 import org.d11.boot.download.whoscored.WhoscoredMatchDownloader;
