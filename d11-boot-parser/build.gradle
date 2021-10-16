@@ -1,5 +1,7 @@
 plugins {
     id 'java-library'
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'checkstyle'
     id 'pmd'
 }
@@ -15,6 +17,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     implementation project(':d11-boot-jms')
+    implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.slf4j:slf4j-api:1.7.30'
     implementation 'com.google.code.gson:gson:2.8.7'
     implementation 'org.jsoup:jsoup:1.14.1'

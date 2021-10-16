@@ -1,4 +1,4 @@
-package org.d11.boot.application.configuration;
+package org.d11.boot.parser;
 
 import org.d11.boot.parser.match.MatchParser;
 import org.d11.boot.parser.match.whoscored.v1.WhoScoredMatchParserV1;
