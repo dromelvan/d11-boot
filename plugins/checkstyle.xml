@@ -162,9 +162,11 @@
     <!-- <module name="TodoComment"/> -->
     <module name="TrailingComment"/>
     <!-- <module name="Translation"/> -->
+    <!--
     <module name="UncommentedMain">
       <property name="excludedClasses" value="\.D11BootApplication$"/>
     </module>
+    -->
     <module name="UpperEll"/>
 
     <module name="ClassMemberImpliedModifier" />
