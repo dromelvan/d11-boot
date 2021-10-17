@@ -13,18 +13,38 @@ import java.util.regex.Pattern;
  */
 public class MatchFileProcessor implements Processor {
 
-    private final static Pattern FILE_NAME_PATTERN = Pattern.compile("(.*)/download/.*/(\\d{4}-\\d{4})/(\\d{2})/.*\\.htm.*");
+    /**
+     * Pattern for matching file names in match week directories.
+     */
+    private static final Pattern FILE_NAME_PATTERN = Pattern.compile("(.*)/download/.*/(\\d{4}-\\d{4})/(\\d{2})/.*\\.htm.*");
+
+    /**
+     * Group number for the parent directory of the file.
+     */
+    private static final int DIRECTORY_GROUP = 1;
+    /**
+     * Group number for the season name.
+     */
+    private static final int SEASON_GROUP = 2;
+    /**
+     * Group number for the match week number.
+     */
+    private static final int MATCH_WEEK_GROUP = 3;
 
     @Override
-    public void process(Exchange exchange) {
+    public void process(final Exchange exchange) {
         final File file = exchange.getIn().getBody(File.class);
+        String matchWeekDirectory = "files/unknown";
+
         final Matcher matcher = FILE_NAME_PATTERN.matcher(file.getAbsolutePath());
         if(matcher.matches()) {
-            final String matchWeekDirectory = String.format("%s/data/match/%s/%02d", matcher.group(1), matcher.group(2), Integer.parseInt(matcher.group(3)));
-            exchange.setProperty("matchWeekDirectory", matchWeekDirectory);
-        } else {
-            exchange.setProperty("matchWeekDirectory", "files/unknown");
+            matchWeekDirectory = String.format("%s/data/match/%s/%02d",
+                                               matcher.group(DIRECTORY_GROUP),
+                                               matcher.group(SEASON_GROUP),
+                                               Integer.parseInt(matcher.group(MATCH_WEEK_GROUP)));
         }
+
+        exchange.setProperty("matchWeekDirectory", matchWeekDirectory);
         exchange.setProperty("matchId", 0);
         exchange.setProperty("finish", false);
     }

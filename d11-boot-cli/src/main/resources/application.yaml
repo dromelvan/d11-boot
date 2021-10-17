@@ -1,0 +1,14 @@
+app:
+  route:
+    parse: direct:parse
+    upload: direct:upload
+  download.selenium.remoteUrl: http://localhost:4444/wd/hub
+  camel.endpoint.activemq: activemq:queue:%s
+
+# This will quit the application even if the command starts a route that does ActiveMQ stuff.
+camel.springboot.duration-max-messages: 1
+
+spring:
+  main.web-application-type: NONE
+  activemq:
+    broker-url: tcp://192.168.1.3:61616
