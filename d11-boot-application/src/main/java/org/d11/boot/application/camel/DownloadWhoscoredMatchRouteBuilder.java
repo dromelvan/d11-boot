@@ -50,8 +50,8 @@ public class DownloadWhoscoredMatchRouteBuilder extends AbstractJmsRouteBuilder 
                     .process(new WebPageProcessor())
                     // Body is String containing web page source
                     .log(LoggingLevel.INFO,
-                            "Saving file ${exchangeProperty.downloadFileName} to /files/download/${exchangeProperty.matchWeekDirectory}.")
-                    .toD("file://files/download/${exchangeProperty.matchWeekDirectory}?fileName=${exchangeProperty.downloadFileName}")
+                            "Saving file ${exchangeProperty.downloadFileName} to /files/download/whoscored.com/${exchangeProperty.matchWeekDirectory}.")
+                    .toD("file://files/download/whoscored.com/${exchangeProperty.matchWeekDirectory}?fileName=${exchangeProperty.downloadFileName}")
                     .bean(MatchParser.class, "parse(${body})")
                     // Body is MatchData
                     // Processor sets 'dataFileName' property and creates UpdateMatch from MatchData body and the 'finish' exchange property
@@ -60,8 +60,8 @@ public class DownloadWhoscoredMatchRouteBuilder extends AbstractJmsRouteBuilder 
                     .marshal(getDestinationDataFormat())
                     // Body is JSON String representation of the match update data
                     .log(LoggingLevel.INFO,
-                            "Saving file ${exchangeProperty.dataFileName} to /files/data/${exchangeProperty.matchWeekDirectory}.")
-                    .toD("file://files/data/${exchangeProperty.matchWeekDirectory}?fileName=${exchangeProperty.dataFileName}")
+                            "Saving file ${exchangeProperty.dataFileName} to /files/data/match/${exchangeProperty.matchWeekDirectory}.")
+                    .toD("file://files/data/match/${exchangeProperty.matchWeekDirectory}?fileName=${exchangeProperty.dataFileName}")
                     .log(LoggingLevel.DEBUG, "Forwarding message ${body} to " + getDestination() + ".")
                     .to(getDestination())
                     .log(LoggingLevel.DEBUG, "Message processing finished with result: ${body}")
