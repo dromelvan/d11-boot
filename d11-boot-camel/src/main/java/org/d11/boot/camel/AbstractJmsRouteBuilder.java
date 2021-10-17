@@ -1,11 +1,7 @@
 package org.d11.boot.camel;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.spi.DataFormat;
 import org.d11.boot.jms.JmsQueue;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 /**
  * Base class for JMS route builders.
  */
-public abstract class AbstractJmsRouteBuilder extends RouteBuilder {
+public abstract class AbstractJmsRouteBuilder extends AbstractRouteBuilder {
 
     /**
      * Endpoint for the ActiveMQ the route listens and posts to.
@@ -31,10 +27,6 @@ public abstract class AbstractJmsRouteBuilder extends RouteBuilder {
      * The queue the route posts to.
      */
     private final JmsQueue destinationJmsQueue;
-    /**
-     * Object mapper used to marshal/unmarshal JSON.
-     */
-    private final ObjectMapper objectMapper = new CamelObjectMapper();
 
     /**
      * Creates a new JMS route builder.
@@ -99,7 +91,7 @@ public abstract class AbstractJmsRouteBuilder extends RouteBuilder {
      * @return Data format for messages on the source JMS queue.
      */
     protected DataFormat getSourceDataFormat() {
-        return new JacksonDataFormat(this.objectMapper, this.sourceJmsQueue.getBodyClass());
+        return getDataFormat(this.sourceJmsQueue.getBodyClass(), false);
     }
 
     /**
@@ -108,10 +100,7 @@ public abstract class AbstractJmsRouteBuilder extends RouteBuilder {
      * @return Data format for messages on the destination JMS queue.
      */
     protected DataFormat getDestinationDataFormat() {
-        final JacksonDataFormat jacksonDataFormat = new JacksonDataFormat(this.objectMapper, this.sourceJmsQueue.getBodyClass());
-        // Pretty print output since humans try to read it sometimes
-        jacksonDataFormat.enableFeature(SerializationFeature.INDENT_OUTPUT);
-        return jacksonDataFormat;
+        return getDataFormat(this.destinationJmsQueue.getBodyClass(), true);
     }
 
 }
