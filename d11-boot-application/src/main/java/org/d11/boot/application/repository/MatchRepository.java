@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -16,6 +17,14 @@ import java.util.Set;
  */
 @Repository
 public interface MatchRepository extends D11EntityRepository<Match> {
+
+    /**
+     * Finds a match with a specific WhoScored id.
+     *
+     * @param whoscoredId WhoScored id of the match that will be looked up.
+     * @return Match with the specified WhoScored id.
+     */
+    Optional<Match> findByWhoscoredId(@Param("whoscoredId") Integer whoscoredId);
 
     /**
      * Gets match ids for a specific team and a specific season ordered by datetime.

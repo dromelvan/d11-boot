@@ -134,7 +134,8 @@ public class UpdateMatchService extends CamelService {
     private void validateMatch(final UpdateMatchContext updateMatchContext) {
         final MatchData matchData = updateMatchContext.getMatchData();
         try {
-            final Match match = getRepository(MatchRepository.class).findById(matchData.getMatchId()).orElseThrow(NotFoundException::new);
+            final Match match = getRepository(MatchRepository.class).findByWhoscoredId(matchData.getWhoscoredId().intValue())
+                    .orElseThrow(NotFoundException::new);
             updateMatchContext.setMatch(match);
 
             if(match.getHomeTeam().getWhoscoredId() != matchData.getHomeTeamWhoscoredId()) {
