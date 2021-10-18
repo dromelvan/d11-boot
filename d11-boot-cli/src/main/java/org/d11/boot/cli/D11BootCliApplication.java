@@ -1,4 +1,4 @@
-package org.d11.boot;
+package org.d11.boot.cli;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Main class of the D11 CLI application.
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "org.d11.boot")
 @SuppressWarnings("PMD.UseUtilityClass")
 public class D11BootCliApplication {
 

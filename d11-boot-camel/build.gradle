@@ -1,6 +1,5 @@
 plugins {
     id 'java-library'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'checkstyle'
     id 'pmd'
 }
@@ -11,20 +10,15 @@ configurations {
     }
 }
 
-dependencyManagement {
-    imports {
-        mavenBom("org.apache.camel.springboot:camel-spring-boot-bom:3.11.1")
-    }
-}
-
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     implementation project(':d11-boot-jms')
     implementation project(':d11-boot-download')
-    implementation 'org.apache.camel.springboot:camel-spring-boot-starter'
-    implementation 'org.apache.camel.springboot:camel-jackson-starter'
+    implementation 'org.springframework:spring-context:5.2.9.RELEASE'
+    implementation 'org.apache.camel:camel-core:3.11.1'
+    implementation 'org.apache.camel:camel-jackson:3.11.1'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2'
 }
 
