@@ -17,10 +17,10 @@ INSERT INTO stadium VALUES(1, 'StadiumA', 'CityA', 11111, 2020, '1.png', '2020-0
 INSERT INTO stadium VALUES(2, 'StadiumB', 'CityB', 22222, 2020, '2.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO team(
---     id, stadium_id, whoscored_id, name, short_name, code, nickname, established, motto, colour, dummy, photo_file_name, created_at, updated_at)
+--     id, stadium_id, whoscored_id, premier_league_id, name, short_name, code, nickname, established, motto, colour, dummy, photo_file_name, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-INSERT INTO team VALUES(1, 1, 11111, 'TeamA', 'ShortA', 'TMA', 'NicknameA', 2020, 'MottoA', 'ColourA', false, '1.png', 'http://test.com', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO team VALUES(2, 2, 22222, 'TeamB', 'ShortB', 'TMB', 'NicknameB', 2020, 'MottoB', 'ColourB', false, '2.png', 'http://test.com', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO team VALUES(1, 1, 11111, 1, 'TeamA', 'ShortA', 'TMA', 'NicknameA', 2020, 'MottoA', 'ColourA', false, '1.png', 'http://test.com', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO team VALUES(2, 2, 22222, 2, 'TeamB', 'ShortB', 'TMB', 'NicknameB', 2020, 'MottoB', 'ColourB', false, '2.png', 'http://test.com', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO d11_team(
 --     id, owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name, created_at, updated_at)
@@ -35,15 +35,15 @@ INSERT INTO position VALUES(1, 'Defender', 'D', 4, true, 1, '2020-01-01 00:00:00
 INSERT INTO position VALUES(2, 'Non Defender', 'ND', 4, false, 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO player(
---     id, country_id, whoscored_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified, created_at, updated_at)
+--     id, country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-INSERT INTO player VALUES(1, 1, 111111, 'FirstA', 'LastA', 'FullA', 'firsta-lasta', '2020-01-01', 111, '1.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO player VALUES(2, 2, 222222, 'FirstB', 'LastB', 'FullB', 'firstb-lastb', '2020-01-01', 222, '2.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO player VALUES(3, 1, 333333, 'FirstC', 'LastC', 'FullC', 'firstc-lastc', '2020-01-01', 333, '3.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(1, 1, 111111, 1, 'FirstA', 'LastA', 'FullA', 'firsta-lasta', '2020-01-01', 111, '1.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(2, 2, 222222, 2, 'FirstB', 'LastB', 'FullB', 'firstb-lastb', '2020-01-01', 222, '2.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(3, 1, 333333, 3, 'FirstC', 'LastC', 'FullC', 'firstc-lastc', '2020-01-01', 333, '3.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 -- Players used for search tests.
-INSERT INTO player VALUES(4, 1, 444444, 'Foo', 'Bar', null, 'foo-bar', '2020-01-01', 111, '4.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO player VALUES(5, 1, 555555, 'Bar', 'Foo', null, 'bar-foo', '2020-01-01', 111, '5.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO player VALUES(6, 1, 666666, 'Foo', '', null, 'foo', '2020-01-01', 111, '6.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(4, 1, 444444, 4, 'Foo', 'Bar', null, 'foo-bar', '2020-01-01', 111, '4.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(5, 1, 555555, 5, 'Bar', 'Foo', null, 'bar-foo', '2020-01-01', 111, '5.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player VALUES(6, 1, 666666, 6, 'Foo', '', null, 'foo', '2020-01-01', 111, '6.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO season(
 --     id, name, status, date, legacy, created_at, updated_at)

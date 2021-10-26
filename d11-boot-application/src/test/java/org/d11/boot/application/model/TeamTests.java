@@ -26,6 +26,10 @@ public class TeamTests extends D11EasyRandomTests {
         assertFalse(team.isValid(), "Too low whoscored id should not be valid.");
         team.setWhoscoredId(1);
 
+        team.setPremierLeagueId(-1);
+        assertFalse(team.isValid(), "Negative Premier League id should not be valid.");
+        team.setPremierLeagueId(1);
+
         team.setName("");
         assertFalse(team.isValid(), "Empty name should not be valid.");
         team.setName(null);

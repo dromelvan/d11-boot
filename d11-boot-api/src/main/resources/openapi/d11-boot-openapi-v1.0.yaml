@@ -2282,6 +2282,7 @@ components:
       required:
         - id
         - whoscoredId
+        - premierLeagueId
         - firstName
         - lastName
         - fullName
@@ -2298,6 +2299,9 @@ components:
           type: integer
           format: int64
         whoscoredId:
+          type: integer
+          format: int64
+        premierLeagueId:
           type: integer
           format: int64
         firstName:
@@ -2356,6 +2360,7 @@ components:
       required:
         - id
         - whoscoredId
+        - premierLeagueId
         - name
         - shortName
         - code
@@ -2365,6 +2370,9 @@ components:
           type: integer
           format: int64
         whoscoredId:
+          type: integer
+          format: int64
+        premierLeagueId:
           type: integer
           format: int64
         name:
@@ -2380,6 +2388,7 @@ components:
       required:
         - id
         - whoscoredId
+        - premierLeagueId
         - name
         - shortName
         - code
@@ -2395,6 +2404,9 @@ components:
           type: integer
           format: int64
         whoscoredId:
+          type: integer
+          format: int64
+        premierLeagueId:
           type: integer
           format: int64
         name:
@@ -2423,6 +2435,7 @@ components:
       required:
         - id
         - whoscoredId
+        - premierLeagueId
         - name
         - shortName
         - code
@@ -2439,6 +2452,9 @@ components:
           type: integer
           format: int64
         whoscoredId:
+          type: integer
+          format: int64
+        premierLeagueId:
           type: integer
           format: int64
         name:

@@ -47,6 +47,7 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
     public D11EntityRandomParameters() {
         randomize(FieldPredicates.named("id"), new LongRangeRandomizer(1L, MAX_ID));
         randomize(FieldPredicates.named("whoscoredId"), new IntegerRangeRandomizer(1, (int) MAX_ID));
+        randomize(FieldPredicates.named("premierLeagueId"), new IntegerRangeRandomizer(0, (int) MAX_ID));
         randomize(FieldPredicates.named("code"), new StringRandomizer(Team.CODE_LENGTH, Team.CODE_LENGTH, System.currentTimeMillis()));
         randomize(FieldPredicates.named("iso"), new StringRandomizer(Country.ISO_CODE_LENGTH, Country.ISO_CODE_LENGTH, System.currentTimeMillis()));
         randomize(FieldPredicates.named("maxCount"), new IntegerRangeRandomizer(0, Position.MAX_MAX_COUNT));

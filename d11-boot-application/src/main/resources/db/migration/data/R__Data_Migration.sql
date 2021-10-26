@@ -121,7 +121,7 @@ WHERE id > 1;
 
 -- Teams
 INSERT INTO team
-SELECT id, stadium_id, whoscored_id, name, short_name, code, nickname, established, motto, colour, dummy, club_crest_file_name, '' as url, created_at, updated_at FROM data.teams;
+SELECT id, stadium_id, whoscored_id, 0, name, short_name, code, nickname, established, motto, colour, dummy, club_crest_file_name, '' as url, created_at, updated_at FROM data.teams;
 SELECT setval('team_id_seq', (SELECT last_value FROM data.teams_id_seq));
 
 UPDATE team
@@ -171,6 +171,49 @@ UPDATE team SET url = 'https://www.afcb.co.uk/' WHERE id = 41;
 UPDATE team SET url = 'https://www.htafc.com/' WHERE id = 42;
 UPDATE team SET url = 'https://www.brightonandhovealbion.com/' WHERE id = 43;
 
+UPDATE team SET premier_league_id = 1 WHERE id = 2;
+UPDATE team SET premier_league_id = 2 WHERE id = 3;
+UPDATE team SET premier_league_id = 3 WHERE id = 4;
+UPDATE team SET premier_league_id = 27 WHERE id = 5;
+UPDATE team SET premier_league_id = 31 WHERE id = 6;
+UPDATE team SET premier_league_id = 4 WHERE id = 7;
+UPDATE team SET premier_league_id = 28 WHERE id = 8;
+UPDATE team SET premier_league_id = 7 WHERE id = 9;
+UPDATE team SET premier_league_id = 34 WHERE id = 10;
+UPDATE team SET premier_league_id = 8  WHERE id = 11;
+UPDATE team SET premier_league_id = 9 WHERE id = 12;
+UPDATE team SET premier_league_id = 26 WHERE id = 13;
+UPDATE team SET premier_league_id = 10 WHERE id = 14;
+UPDATE team SET premier_league_id = 12 WHERE id = 15;
+UPDATE team SET premier_league_id = 13 WHERE id = 16;
+UPDATE team SET premier_league_id = 23 WHERE id = 17;
+UPDATE team SET premier_league_id = 20 WHERE id = 18;
+UPDATE team SET premier_league_id = 29 WHERE id = 19;
+UPDATE team SET premier_league_id = 21 WHERE id = 20;
+UPDATE team SET premier_league_id = 25 WHERE id = 21;
+UPDATE team SET premier_league_id = 35 WHERE id = 22;
+UPDATE team SET premier_league_id = 36 WHERE id = 23;
+UPDATE team SET premier_league_id = 11 WHERE id = 24;
+UPDATE team SET premier_league_id = 37 WHERE id = 25;
+UPDATE team SET premier_league_id = 38 WHERE id = 26;
+UPDATE team SET premier_league_id = 14 WHERE id = 27;
+UPDATE team SET premier_league_id = 6 WHERE id = 28;
+UPDATE team SET premier_league_id = 130 WHERE id = 29;
+UPDATE team SET premier_league_id = 39 WHERE id = 30;
+UPDATE team SET premier_league_id = 18 WHERE id = 31;
+UPDATE team SET premier_league_id = 40 WHERE id = 32;
+UPDATE team SET premier_league_id = 33 WHERE id = 33;
+UPDATE team SET premier_league_id = 159 WHERE id = 34;
+UPDATE team SET premier_league_id = 42 WHERE id = 35;
+UPDATE team SET premier_league_id = 43 WHERE id = 36;
+UPDATE team SET premier_league_id = 44 WHERE id = 37;
+UPDATE team SET premier_league_id = 17 WHERE id = 38;
+UPDATE team SET premier_league_id = 45 WHERE id = 39;
+UPDATE team SET premier_league_id = 46 WHERE id = 40;
+UPDATE team SET premier_league_id = 127 WHERE id = 41;
+UPDATE team SET premier_league_id = 159 WHERE id = 42;
+UPDATE team SET premier_league_id = 131 WHERE id = 43;
+
 -- Users
 INSERT INTO application_user
 select id, name, email, encrypted_password, administrator, created_at, updated_at from data.users;
@@ -200,7 +243,7 @@ SELECT setval('country_id_seq', (SELECT last_value FROM data.countries_id_seq));
 
 -- Players
 INSERT INTO player
-SELECT id, country_id, (CASE WHEN whoscored_id IS NULL THEN 0 ELSE whoscored_id END), first_name, last_name, full_name, parameterized_name, date_of_birth, height, player_photo_file_name, true, created_at, updated_at FROM data.players;
+SELECT id, country_id, (CASE WHEN whoscored_id IS NULL THEN 0 ELSE whoscored_id END), 0, first_name, last_name, full_name, parameterized_name, date_of_birth, height, player_photo_file_name, true, created_at, updated_at FROM data.players;
 SELECT setval('player_id_seq', (SELECT last_value FROM data.players_id_seq));
 
 UPDATE player

@@ -32,6 +32,10 @@ public class PlayerTests extends D11EasyRandomTests {
         assertFalse(player.isValid(), "Negative WhoScored id should not be valid.");
         player.setWhoscoredId(1);
 
+        player.setPremierLeagueId(-1);
+        assertFalse(player.isValid(), "Negative Premier League id should not be valid.");
+        player.setPremierLeagueId(1);
+
         player.setFirstName(null);
         assertFalse(player.isValid(), "Null first name should not be valid.");
         player.setFirstName("");

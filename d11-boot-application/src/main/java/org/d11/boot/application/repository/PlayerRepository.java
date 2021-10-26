@@ -25,6 +25,14 @@ public interface PlayerRepository extends D11EntityRepository<Player> {
     Optional<Player> findByWhoscoredId(@Param("whoscoredId") Integer whoscoredId);
 
     /**
+     * Finds a player with a specific Premier League id.
+     *
+     * @param premierLeagueId Premier League id of the player that will be looked up.
+     * @return Player with the specified Premier League id.
+     */
+    Optional<Player> findByPremierLeagueId(@Param("premierLeagueId") Integer premierLeagueId);
+
+    /**
      * Finds players belonging to a specific team a specific season matching a specific parameterized name.
      *
      * @param teamId            Id of the team players looked up should belong to.

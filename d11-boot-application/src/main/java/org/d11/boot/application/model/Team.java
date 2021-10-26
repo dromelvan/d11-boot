@@ -12,6 +12,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 /**
@@ -43,6 +44,11 @@ public class Team extends D11Entity {
      */
     @Min(1)
     private int whoscoredId;
+    /**
+     * Team id on premierleague.com.
+     */
+    @PositiveOrZero
+    private int premierLeagueId;
     /**
      * Team name.
      */

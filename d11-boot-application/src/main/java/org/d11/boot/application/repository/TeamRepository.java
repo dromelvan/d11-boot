@@ -28,4 +28,12 @@ public interface TeamRepository extends D11EntityRepository<Team> {
      */
     Optional<Team> findByWhoscoredId(@Param("whoscoredId") Integer whoscoredId);
 
+    /**
+     * Finds a team with a specific Premier League id.
+     *
+     * @param premierLeagueId Premier League id of the team that will be looked up.
+     * @return Team with the specified Premier League id.
+     */
+    Optional<Team> findByPremierLeagueId(@Param("premierLeagueId") Integer premierLeagueId);
+
 }

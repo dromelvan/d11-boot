@@ -33,6 +33,11 @@ public class Player extends D11Entity {
     @PositiveOrZero
     private int whoscoredId;
     /**
+     * Player id on premierleague.com.
+     */
+    @PositiveOrZero
+    private int premierLeagueId;
+    /**
      * Player first name.
      */
     @NotNull
