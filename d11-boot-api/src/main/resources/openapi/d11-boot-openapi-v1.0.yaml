@@ -3368,6 +3368,7 @@ components:
       type: object
       required:
         - id
+        - shirtNumber
         - winCount
         - ranking
         - points
@@ -3380,6 +3381,9 @@ components:
         id:
           type: integer
           format: int64
+        shirtNumber:
+          type: integer
+          format: int32
         winCount:
           type: integer
           format: int32
@@ -3404,6 +3408,7 @@ components:
       type: object
       required:
         - id
+        - shirtNumber
         - winCount
         - value
         - ranking
@@ -3431,6 +3436,9 @@ components:
         id:
           type: integer
           format: int64
+        shirtNumber:
+          type: integer
+          format: int32
         winCount:
           type: integer
           format: int32
@@ -3506,6 +3514,7 @@ components:
       type: object
       required:
         - id
+        - shirtNumber
         - winCount
         - value
         - ranking
@@ -3538,6 +3547,9 @@ components:
         id:
           type: integer
           format: int64
+        shirtNumber:
+          type: integer
+          format: int32
         winCount:
           type: integer
           format: int32

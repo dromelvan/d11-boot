@@ -23,6 +23,12 @@ public class PlayerSeasonStatTests extends D11EasyRandomTests {
 
         assertTrue(playerSeasonStat.isValid(), "New player season stat should be valid.");
 
+        playerSeasonStat.setShirtNumber(-1);
+        assertFalse(playerSeasonStat.isValid(), "Negative shirt number should not be valid.");
+        playerSeasonStat.setShirtNumber(0);
+        assertFalse(playerSeasonStat.isValid(), "Non positive shirt number should not be valid.");
+        playerSeasonStat.setShirtNumber(1);
+
         playerSeasonStat.setValue(-1);
         assertFalse(playerSeasonStat.isValid(), "Negative value should not be valid.");
         playerSeasonStat.setValue(1);

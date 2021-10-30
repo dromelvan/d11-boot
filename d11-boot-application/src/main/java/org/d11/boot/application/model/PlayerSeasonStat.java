@@ -23,6 +23,12 @@ import java.util.List;
 public class PlayerSeasonStat extends PlayerStatSummary {
 
     /**
+     * Player shirt number.
+     */
+    @Positive
+    private Integer shirtNumber;
+
+    /**
      * Current fee paid for the player by a D11 team.
      */
     @PositiveOrZero

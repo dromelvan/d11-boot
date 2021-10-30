@@ -383,7 +383,7 @@ ORDER BY season_id, ranking
 
 -- Player season stats
 INSERT INTO player_season_stat
-SELECT psi.id, psi.player_id, psi.season_id - 1, team_id, d11_team_id, position_id, CAST(null AS INTEGER) win_count, value, ranking, points, form_points, form_match_points, points_per_appearance,
+SELECT psi.id, psi.player_id, psi.season_id - 1, team_id, d11_team_id, position_id, CAST(null AS INTEGER) shirt_number, CAST(null AS INTEGER) win_count, value, ranking, points, form_points, form_match_points, points_per_appearance,
        goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match, rating,
        games_started, games_substitute, games_did_not_participate, minutes_played, psi.created_at, psi.updated_at
        FROM data.player_season_infos psi JOIN data.player_season_stats pss ON psi.player_id = pss.player_id AND psi.season_id = pss.season_id

@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS player_season_stat(
     team_id INTEGER NOT NULL REFERENCES team,
     d11_team_id INTEGER NOT NULL REFERENCES d11_team,
     position_id INTEGER NOT NULL REFERENCES position,
+    shirt_number INTEGER,
     win_count INTEGER,
     value INTEGER NOT NULL DEFAULT 0,
     ranking INTEGER NOT NULL DEFAULT 0,
