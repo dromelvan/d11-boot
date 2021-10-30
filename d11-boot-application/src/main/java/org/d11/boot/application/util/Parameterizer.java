@@ -24,6 +24,7 @@ public final class Parameterizer {
         final String space = " ";
         String parameterizedName = string.toLowerCase(Locale.getDefault());
         parameterizedName = parameterizedName.replaceAll("['-]", space);
+        parameterizedName = parameterizedName.replaceAll("ß", "ss");
         parameterizedName = Normalizer.normalize(parameterizedName, Normalizer.Form.NFD);
         parameterizedName = parameterizedName.replaceAll("[^a-z ]", "").trim();
         parameterizedName = parameterizedName.replace(space, "-");
