@@ -2,12 +2,11 @@ package org.d11.boot.parser.match.whoscored.v1;
 
 import lombok.extern.slf4j.Slf4j;
 import org.d11.boot.jms.model.MatchData;
-import org.d11.boot.parser.AbstractParser;
+import org.d11.boot.parser.AbstractJsoupParser;
 import org.d11.boot.parser.ParserException;
 import org.d11.boot.parser.match.MatchParser;
 import org.d11.boot.parser.match.whoscored.v1.model.MatchCenterData;
 import org.d11.boot.parser.match.whoscored.v1.model.MatchHeader;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -18,13 +17,11 @@ import java.util.regex.Matcher;
  * V1 implementation of WhoScored match page parser.
  */
 @Slf4j
-public class WhoScoredMatchParserV1 extends AbstractParser<MatchData> implements MatchParser {
+public class WhoScoredMatchParserV1 extends AbstractJsoupParser<MatchData> implements MatchParser {
 
     @Override
     @SuppressWarnings("checkstyle:MagicNumber")
-    protected MatchData doParse(final String input) throws ParserException {
-        final Document document = Jsoup.parse(input);
-
+    protected MatchData doParse(final Document document) throws ParserException {
         final Elements elements = document.getElementsByTag("script");
         log.debug("Found {} script elements.", elements.size());
 
