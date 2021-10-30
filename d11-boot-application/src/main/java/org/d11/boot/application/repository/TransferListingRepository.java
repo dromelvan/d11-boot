@@ -22,4 +22,13 @@ public interface TransferListingRepository extends D11EntityRepository<TransferL
      */
     List<TransferListing> findByTransferDayIdOrderByRanking(@Param("transferDayId") Long transferDayId, Pageable pageable);
 
+    /**
+     * Finds transfer listings for a specific season and player.
+     *
+     * @param seasonId Id for the season for which transfer listings will be looked up.
+     * @param playerId Id for the player for which transfer listings will be looked up.
+     * @return Transfer listings for the season and player.
+     */
+    List<TransferListing> findByTransferDayTransferWindowMatchWeekSeasonIdAndPlayerId(@Param("seasonId") Long seasonId, @Param("playerId") Long playerId);
+
 }
