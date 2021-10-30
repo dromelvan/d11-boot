@@ -19,4 +19,14 @@ public class ParserException extends Exception {
         super(message);
     }
 
+    /**
+     * Creates a new parser exception by formatting the message.
+     *
+     * @param message Exception message that will be formatted.
+     * @param args    Arguments that will be formatted into the message.
+     */
+    public ParserException(final String message, final Object... args) {
+        super(String.format(message, args));
+    }
+
 }
