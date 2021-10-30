@@ -4,9 +4,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.d11.boot.application.model.D11Entity;
 import org.d11.boot.application.model.D11Team;
 import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.Team;
 import org.d11.boot.application.repository.D11EntityRepository;
 import org.d11.boot.application.repository.D11TeamRepository;
 import org.d11.boot.application.repository.SeasonRepository;
+import org.d11.boot.application.repository.TeamRepository;
 import org.d11.boot.application.util.MappingProvider;
 import org.d11.boot.application.util.NotFoundException;
 import org.springframework.context.ApplicationContext;
@@ -53,6 +55,15 @@ public class D11BootService extends MappingProvider implements ApplicationContex
      */
     protected D11Team getDummyD11Team() {
         return getRepository(D11TeamRepository.class).findById(D11Team.DUMMY_D11_TEAM_ID).orElseThrow(NotFoundException::new);
+    }
+
+    /**
+     * Gets the dummy team.
+     *
+     * @return The dummy team.
+     */
+    protected Team getDummyTeam() {
+        return getRepository(TeamRepository.class).findById(Team.DUMMY_TEAM_ID).orElseThrow(NotFoundException::new);
     }
 
     /**
