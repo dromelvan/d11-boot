@@ -33,6 +33,14 @@ public interface PlayerRepository extends D11EntityRepository<Player> {
     Optional<Player> findByPremierLeagueId(@Param("premierLeagueId") Integer premierLeagueId);
 
     /**
+     * Finds players with a specific parameterized named.
+     *
+     * @param parameterizedName Parameterized name of players that will be looked up.
+     * @return Players with the specified parameterized name.
+     */
+    List<Player> findByParameterizedName(@Param("parameterizedName") String parameterizedName);
+
+    /**
      * Finds players belonging to a specific team a specific season matching a specific parameterized name.
      *
      * @param teamId            Id of the team players looked up should belong to.
@@ -99,6 +107,6 @@ public interface PlayerRepository extends D11EntityRepository<Player> {
             "                    WHERE player_id = ps.id AND season_id = (SELECT MAX(id) FROM {h-schema}season)) " +
             "ORDER BY name",
             nativeQuery = true)
-    List<PlayerSearchResult> findByParameterizedName(@Param("parameterizedName")String parameterizedName);
+    List<PlayerSearchResult> findByParameterizedNameExact(@Param("parameterizedName")String parameterizedName);
 
 }

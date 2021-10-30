@@ -50,7 +50,7 @@ public class SearchService extends ApiService {
         final Matcher exactPatternMatcher = EXACT_SEARCH_PATTERN.matcher(name);
         if(exactPatternMatcher.matches()) {
             final String parameterizedName = Parameterizer.parameterize(exactPatternMatcher.group(2));
-            playerSearchResults = this.playerRepository.findByParameterizedName(parameterizedName);
+            playerSearchResults = this.playerRepository.findByParameterizedNameExact(parameterizedName);
         } else {
             final String sqlLike = "%";
             final StringBuilder stringBuilder = new StringBuilder(sqlLike);
