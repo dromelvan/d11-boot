@@ -21,7 +21,9 @@ public class WebPageProcessor implements Processor {
     public void process(final Exchange exchange) {
         final WebPage webPage = exchange.getIn().getBody(WebPage.class);
 
-        final String fileName = String.format("%s-%s.html", webPage.getTitle().replace("/", "-"), LocalDateTime.now().format(DATE_TIME_FORMATTER));
+        final String fileName = String.format("%s-%s.html",
+                                              webPage.getTitle().replace("/", "-").replace("&", "and"),
+                                              LocalDateTime.now().format(DATE_TIME_FORMATTER));
         exchange.setProperty("downloadFileName", fileName);
 
         exchange.getIn().setBody(webPage.getPageSource());
