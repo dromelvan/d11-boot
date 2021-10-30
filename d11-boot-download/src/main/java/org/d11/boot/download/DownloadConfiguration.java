@@ -1,6 +1,10 @@
 package org.d11.boot.download;
 
+import org.d11.boot.download.browser.htmlunit.HtmlUnitBrowser;
 import org.d11.boot.download.browser.selenium.ChromeBrowser;
+import org.d11.boot.download.premierleague.PremierLeagueClubsDownloader;
+import org.d11.boot.download.premierleague.PremierLeaguePlayerDownloader;
+import org.d11.boot.download.premierleague.PremierLeagueSquadDownloader;
 import org.d11.boot.download.whoscored.WhoscoredMatchDownloader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +34,39 @@ public class DownloadConfiguration {
             return chromeBrowser;
         };
         return new WhoscoredMatchDownloader<>(callable);
+    }
+
+    /**
+     * Provides the downloader we want to use to download PremierLeague.com clubs page files.
+     *
+     * @return The downloader we want to use to download PremierLeague.com clubs page files.
+     */
+    @Bean
+    public PremierLeagueClubsDownloader<HtmlUnitBrowser> premierLeagueClubsDownloader() {
+        final Callable<HtmlUnitBrowser> callable = HtmlUnitBrowser::new;
+        return new PremierLeagueClubsDownloader<>(callable);
+    }
+
+    /**
+     * Provides the downloader we want to use to download PremierLeague.com squad page files.
+     *
+     * @return The downloader we want to use to download PremierLeague.com squad page files.
+     */
+    @Bean
+    public PremierLeagueSquadDownloader<HtmlUnitBrowser> premierLeagueSquadDownloader() {
+        final Callable<HtmlUnitBrowser> callable = HtmlUnitBrowser::new;
+        return new PremierLeagueSquadDownloader<>(callable);
+    }
+
+    /**
+     * Provides the downloader we want to use to download PremierLeague.com player page files.
+     *
+     * @return The downloader we want to use to download PremierLeague.com player page files.
+     */
+    @Bean
+    public PremierLeaguePlayerDownloader<HtmlUnitBrowser> premierLeaguePlayerDownloader() {
+        final Callable<HtmlUnitBrowser> callable = HtmlUnitBrowser::new;
+        return new PremierLeaguePlayerDownloader<>(callable);
     }
 
 }

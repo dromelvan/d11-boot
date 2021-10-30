@@ -50,6 +50,37 @@ public class UrlRegistry extends Properties {
     }
 
     /**
+     * Gets the url.premierleague.clubs property.
+     *
+     * @return Premier League clubs URL.
+     */
+    public URL getPremierLeagueClubsUrl() {
+        return getUrl(getProperty("url.premierleague.clubs"));
+    }
+
+    /**
+     * Gets the url.premierleague.squad property.
+     *
+     * @param id   Id of the Premier League team.
+     * @param name Name of the Premier League team.
+     * @return Premier League team squad url.
+     */
+    public URL getPremierLeagueSquadUrl(final int id, final String name) {
+        return getUrl(String.format(getProperty("url.premierleague.squad"), id, name.replace(" ", "-")));
+    }
+
+    /**
+     * Gets the url.premierleague.player property.
+     *
+     * @param id   Id of the Premier League player.
+     * @param name Name of the Premier League player.
+     * @return Premier League player url.
+     */
+    public URL getPremierLeaguePlayerUrl(final int id, final String name) {
+        return getUrl(String.format(getProperty("url.premierleague.player"), id, name.replace(" ", "-")));
+    }
+
+    /**
      * Creates a new URL from a string.
      *
      * @param urlString String representing a URL.
