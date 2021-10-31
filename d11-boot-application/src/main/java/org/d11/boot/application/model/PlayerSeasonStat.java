@@ -2,6 +2,7 @@ package org.d11.boot.application.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.d11.boot.application.model.converter.FormMatchPointsConverter;
 
@@ -20,6 +21,7 @@ import java.util.List;
  */
 @Data
 @Entity
+@NoArgsConstructor
 public class PlayerSeasonStat extends PlayerStatSummary {
 
     /**
@@ -100,6 +102,23 @@ public class PlayerSeasonStat extends PlayerStatSummary {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Position position;
+
+    /**
+     * Creates a new player season stat with the provided entities.
+     *
+     * @param player   The player season stat player.
+     * @param season   The player season stat season.
+     * @param team     The team the player belongs to.
+     * @param d11Team  The D11 team the player belongs to.
+     * @param position The position the player plays.
+     */
+    public PlayerSeasonStat(final Player player, final Season season, final Team team, final D11Team d11Team, final Position position) {
+        setPlayer(player);
+        setSeason(season);
+        setTeam(team);
+        setD11Team(d11Team);
+        setPosition(position);
+    }
 
     @Override
     public void reset() {

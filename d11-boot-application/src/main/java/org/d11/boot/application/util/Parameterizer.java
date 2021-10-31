@@ -16,11 +16,16 @@ public final class Parameterizer {
      */
     private static final Map<String, String> REPLACE_ALL_MAP = new HashMap<>();
 
+    /**
+     * One space character string.
+     */
+    private static final String SPACE = " ";
+
     static {
         REPLACE_ALL_MAP.put("ß", "ss");
         REPLACE_ALL_MAP.put("ø", "o");
         REPLACE_ALL_MAP.put("æ", "ae");
-        REPLACE_ALL_MAP.put("['’-]", " ");
+        REPLACE_ALL_MAP.put("['’-]", SPACE);
     }
 
     /**
@@ -35,14 +40,13 @@ public final class Parameterizer {
      * @return The parameterized string.
      */
     public static String parameterize(final String string) {
-        final String space = " ";
         String parameterizedName = string.toLowerCase(Locale.getDefault());
         for(final Map.Entry<String, String> entry : REPLACE_ALL_MAP.entrySet()) {
             parameterizedName = parameterizedName.replaceAll(entry.getKey(), entry.getValue());
         }
         parameterizedName = Normalizer.normalize(parameterizedName, Normalizer.Form.NFD);
         parameterizedName = parameterizedName.replaceAll("[^a-z ]", "").trim();
-        parameterizedName = parameterizedName.replace(space, "-");
+        parameterizedName = parameterizedName.replace(SPACE, "-");
         return parameterizedName;
     }
 
