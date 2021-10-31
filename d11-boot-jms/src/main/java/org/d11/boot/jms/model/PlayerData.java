@@ -1,5 +1,6 @@
 package org.d11.boot.jms.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -57,6 +58,7 @@ public class PlayerData extends JmsModel {
      *
      * @return Player first name or an empty string if no first name could be derived.
      */
+    @JsonIgnore
     public String getFirstName() {
         final int lastIndex = this.name.lastIndexOf(NAME_DELIMITER);
         if(lastIndex > 0) {
@@ -70,6 +72,7 @@ public class PlayerData extends JmsModel {
      *
      * @return Player last name or the player name if no last name could be derived.
      */
+    @JsonIgnore
     public String getLastName() {
         final int lastIndex = this.name.lastIndexOf(NAME_DELIMITER);
         if(lastIndex > 0) {

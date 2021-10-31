@@ -4,6 +4,7 @@ import org.d11.boot.jms.message.DownloadWhoscoredMatchMessage;
 import org.d11.boot.jms.message.TestMessage;
 import org.d11.boot.jms.message.UpdateMatchMessage;
 import org.d11.boot.jms.message.UpdateMatchRequestMessage;
+import org.d11.boot.jms.message.UpdateSquadMessage;
 
 /**
  * JMS queue definitions.
@@ -25,7 +26,11 @@ public enum JmsQueue {
     /**
      * Update match requests to trigger match updates when we only know the D11 id of the match.
      */
-    UPDATE_MATCH_REQUEST(UpdateMatchRequestMessage.class);
+    UPDATE_MATCH_REQUEST(UpdateMatchRequestMessage.class),
+    /**
+     * Update squad queue to trigger squad updates.
+     */
+    UPDATE_SQUAD(UpdateSquadMessage.class);
 
     /**
      * Prefix for all JMS queues.
