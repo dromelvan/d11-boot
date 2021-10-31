@@ -18,6 +18,10 @@ public class Country extends D11Entity {
      * ISO code length.
      */
     public static final int ISO_CODE_LENGTH = 2;
+    /**
+     * Id for the dummy country.
+     */
+    public static final long DUMMY_COUNTRY_ID = 1;
 
     /**
      * Country name.

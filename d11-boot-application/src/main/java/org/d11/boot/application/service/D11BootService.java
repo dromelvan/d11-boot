@@ -1,10 +1,12 @@
 package org.d11.boot.application.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.d11.boot.application.model.Country;
 import org.d11.boot.application.model.D11Entity;
 import org.d11.boot.application.model.D11Team;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Team;
+import org.d11.boot.application.repository.CountryRepository;
 import org.d11.boot.application.repository.D11EntityRepository;
 import org.d11.boot.application.repository.D11TeamRepository;
 import org.d11.boot.application.repository.SeasonRepository;
@@ -64,6 +66,15 @@ public class D11BootService extends MappingProvider implements ApplicationContex
      */
     protected Team getDummyTeam() {
         return getRepository(TeamRepository.class).findById(Team.DUMMY_TEAM_ID).orElseThrow(NotFoundException::new);
+    }
+
+    /**
+     * Gets the dummy country.
+     *
+     * @return The dummy country.
+     */
+    protected Country getDummyCountry() {
+        return getRepository(CountryRepository.class).findById(Country.DUMMY_COUNTRY_ID).orElseThrow(NotFoundException::new);
     }
 
     /**
