@@ -93,6 +93,12 @@ public class PlayerTests extends D11EasyRandomTests {
         player.setLastName("Wright-Phillips");
         player.prePersist();
         assertEquals(player.getParameterizedName(), "shaun-wright-phillips", "Shaun Wright-Phillips parameterized should be shaun-wright-phillips");
+
+        player.setFirstName("Martin");
+        player.setLastName("Ødegaard");
+        player.prePersist();
+        assertEquals(player.getParameterizedName(), "martin-odegaard", "Martin Ødegaard parameterized should be martin-odegaard");
+
     }
 
     /**
