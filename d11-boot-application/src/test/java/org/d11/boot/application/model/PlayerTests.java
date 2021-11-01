@@ -16,7 +16,7 @@ public class PlayerTests extends D11EasyRandomTests {
      * Tests player validity.
      */
     @Test
-    @SuppressWarnings({ "checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS" })
+    @SuppressWarnings({ "PMD.NcssCount", "checkstyle:ExecutableStatementCount", "checkstyle:JavaNCSS" })
     public void isValid() {
         final Player player = generate(Player.class);
 

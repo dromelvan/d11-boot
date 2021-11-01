@@ -17,6 +17,7 @@ public class TeamTests extends D11EasyRandomTests {
      * Tests team validity.
      */
     @Test
+    @SuppressWarnings("checkstyle:JavaNCSS")
     public void isValid() {
         final Team team = generate(Team.class);
 
