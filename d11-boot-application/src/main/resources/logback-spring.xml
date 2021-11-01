@@ -30,6 +30,23 @@
         </rollingPolicy>
     </appender>
 
+    <appender name="Player"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG}/d11boot-player.log</file>
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d %p %m%n</Pattern>
+        </encoder>
+
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG}/d11boot-player-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
     <!-- LOG everything at INFO level -->
     <root level="info">
         <appender-ref ref="RollingFile" />
@@ -39,6 +56,10 @@
     <logger name="org.d11" level="info" additivity="false">
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
+    </logger>
+
+    <logger name="org.d11.boot.application.service.camel.UpdateSquadService" level="info" additivity="true">
+        <appender-ref ref="Player" />
     </logger>
 
 </configuration>
