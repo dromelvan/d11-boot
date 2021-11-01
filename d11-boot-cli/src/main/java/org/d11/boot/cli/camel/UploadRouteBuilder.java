@@ -2,6 +2,7 @@ package org.d11.boot.cli.camel;
 
 import org.apache.camel.LoggingLevel;
 import org.d11.boot.camel.AbstractJmsRouteBuilder;
+import org.d11.boot.cli.camel.processor.ShutdownProcessor;
 import org.d11.boot.jms.JmsQueue;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,7 @@ public class UploadRouteBuilder extends AbstractJmsRouteBuilder {
                 .convertBodyTo(String.class)
                 // Body is JSON String representation of the match update data.
                 .to(getDestination())
-                .log(LoggingLevel.INFO, "File uploaded to " + getDestination() + " at {{spring.activemq.broker-url}}.");
+                .log(LoggingLevel.INFO, "File uploaded to " + getDestination() + " at {{spring.activemq.broker-url}}.")
+                .process(new ShutdownProcessor());
     }
 }
