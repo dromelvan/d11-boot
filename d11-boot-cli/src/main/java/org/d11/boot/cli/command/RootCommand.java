@@ -9,7 +9,11 @@ import java.util.concurrent.Callable;
  * CLI root command.
  */
 @Component
-@Command(name = "d11", version = "4.0.0", mixinStandardHelpOptions = true, subcommands = { ParseCommand.class, UploadCommand.class })
+@Command(name = "d11", version = "4.0.0", mixinStandardHelpOptions = true, subcommands = {
+        ParseCommand.class,
+        UploadCommand.class,
+        UpdateSquadsCommand.class
+})
 public class RootCommand implements Callable<Integer> {
 
     @Override
