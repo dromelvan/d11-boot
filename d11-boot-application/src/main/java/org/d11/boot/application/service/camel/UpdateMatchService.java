@@ -209,8 +209,8 @@ public class UpdateMatchService extends CamelService {
         try {
             Player player = findPlayer(playerMatchData);
             if(player.getWhoscoredId() != playerMatchData.getPlayerWhoscoredId()) {
-                // If we've found a player with the wrong WhoScored id but the right name in the right team, change
-                // the WhoScored id and save the player.
+                // If we've found a player with the wrong WhoScored id but the right name, change the WhoScored id and
+                // save the player.
                 player.setWhoscoredId(playerMatchData.getPlayerWhoscoredId());
                 player = getRepository(PlayerRepository.class).save(player);
                 updateMatchContext.addInfo("Changed WhoScored id for %s (%d) to %d.", player.getName(), player.getId(), player.getWhoscoredId());
@@ -241,6 +241,8 @@ public class UpdateMatchService extends CamelService {
     /**
      * Finds a player by first looking the player up by WhoScored id. If no player is found this way, try to find one
      * by looking up a player with the same parameterized name in the same team as the provided player match data.
+     * If there is still no match check if there's a single player with the same parameterized name, no matter which
+     * team he plays for, if any.
      *
      * @param playerMatchData Player match data with id, name and team id that will be used to find a player.
      * @return Player with either matching WhoScored id or matching parameterized name and team.
@@ -257,7 +259,15 @@ public class UpdateMatchService extends CamelService {
                     Parameterizer.parameterize(playerMatchData.getPlayerName())
             );
             return players.isEmpty() ? Optional.empty() : Optional.of(players.get(0));
-        }).orElseThrow(NotFoundException::new);
+        }).or(() -> {
+            // If we find exactly one player with the parameterized name, use that one. This might mean we pick an old
+            // existing player but that's generally less likely than getting duplicates of new existing ones if we don't
+            // do this.
+            final List<Player> players =
+                    playerRepository.findByParameterizedName(Parameterizer.parameterize(playerMatchData.getPlayerName()));
+            return players.size() == 1 ? Optional.of(players.get(0)) : Optional.empty();
+        })
+       .orElseThrow(NotFoundException::new);
     }
 
     /**
