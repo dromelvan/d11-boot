@@ -96,4 +96,41 @@ public class WhoScoredMatchParserV1Tests {
                 "Match data player match stats should not be empty.");
     }
 
+    /**
+     * Tests parsing a "green" full time WhoScored match file.
+     *
+     * @throws IOException     If something goes wrong.
+     * @throws ParserException If something goes wrong.
+     */
+    @Test
+    public void parse90PlusMatch() throws IOException, ParserException {
+        final WhoScoredMatchParserV1 whoScoredMatchParserV1 = new WhoScoredMatchParserV1();
+        final File finishedMatchFile = new File("src/test/resources/whoscored/v1/match/90+.html");
+        final MatchData matchData = whoScoredMatchParserV1.parse(finishedMatchFile);
+
+        assertEquals(Long.valueOf(1_549_638), matchData.getWhoscoredId(),
+                "Match data whoscoredId should equal finished file matchId.");
+
+        assertEquals(MatchHeader.ELAPSED_90_PLUS_TIME, matchData.getElapsed(),
+                "Match data elapsed should be 90+.");
+        assertEquals(Status.ACTIVE, matchData.getStatus(), "Match data status should be active.");
+
+        assertNotNull(matchData.getHomeTeamWhoscoredId(), "90+ file match data home team should not be null.");
+        assertEquals(Long.valueOf(161), matchData.getHomeTeamWhoscoredId(),
+                "Match data home team id should equal 90+ file home team id.");
+
+        assertNotNull(matchData.getAwayTeamWhoscoredId(), "90+ file match data away team should not be null.");
+        assertEquals(Long.valueOf(31), matchData.getAwayTeamWhoscoredId(),
+                "Match data away team id should equal 90+ file away team id.");
+
+        assertEquals(LocalDateTime.of(2021, 11, 01, 22, 0, 0), matchData.getDatetime(),
+                "Match data datetime should equal 90+ file datetime.");
+
+        assertFalse(matchData.getGoals().isEmpty(),
+                "Match data goals should not be empty.");
+
+        assertFalse(matchData.getPlayers().isEmpty(),
+                "Match data player match stats should not be empty.");
+    }
+
 }

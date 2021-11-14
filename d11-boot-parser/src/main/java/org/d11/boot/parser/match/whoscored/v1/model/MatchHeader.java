@@ -11,19 +11,19 @@ import java.util.regex.Pattern;
 
 /**
  * Represents a match header in a WhoScored match page script element.
- *
+ * <p>
  * Example pending match:
- *
+ * <p>
  * require.config.params['matchheader'] = {
- *     input: [189,13,'Brentford','Arsenal','13/08/2021 20:00:00','13/08/2021 00:00:00',1,,,,,,'vs','England','England'],
- *     matchId: 1549539
+ * input: [189,13,'Brentford','Arsenal','13/08/2021 20:00:00','13/08/2021 00:00:00',1,,,,,,'vs','England','England'],
+ * matchId: 1549539
  * };
- *
+ * <p>
  * Example finished match:
- *
+ * <p>
  * require.config.params['matchheader'] = {
- *     input: [189,13,'Brentford','Arsenal','13/08/2021 20:00:00','13/08/2021 00:00:00',6,'FT','1 : 2','1 : 2',,,'1 : 2','England','England'],
- *     matchId: 1549539
+ * input: [189,13,'Brentford','Arsenal','13/08/2021 20:00:00','13/08/2021 00:00:00',6,'FT','1 : 2','1 : 2',,,'1 : 2','England','England'],
+ * matchId: 1549539
  * };
  */
 @Data
@@ -42,6 +42,10 @@ public class MatchHeader {
      * String for full time match elapsed time.
      */
     public static final String ELAPSED_FULL_TIME = "FT";
+    /**
+     * String for added full time elapsed time.
+     */
+    public static final String ELAPSED_90_PLUS_TIME = "90+";
 
     /**
      * Input array index for home team id.
@@ -67,6 +71,10 @@ public class MatchHeader {
      * Input array index for elapsed.
      */
     private static final int ELAPSED_INDEX = 7;
+    /**
+     * Input array index for full time score.
+     */
+    private static final int FULL_TIME_SCORE_INDEX = 12;
 
     /**
      * Date formatter for match header datetime string.
@@ -151,6 +159,13 @@ public class MatchHeader {
     public String getElapsed() {
         if(this.input != null) {
             final String elapsed = (String) this.input.get(ELAPSED_INDEX);
+            // If elapsed is "FT" but the score has a '*'in front then it's still 'green'.
+            // Return 90+ so we update it once more in that case.
+            if(ELAPSED_FULL_TIME.equals(elapsed)
+                    && this.input.size() > FULL_TIME_SCORE_INDEX
+                    && this.input.get(FULL_TIME_SCORE_INDEX).toString().startsWith("*")) {
+                return ELAPSED_90_PLUS_TIME;
+            }
             if(elapsed != null) {
                 // We want to change 32' to 32.
                 return elapsed.replace("'", "");
