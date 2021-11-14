@@ -87,16 +87,17 @@ public class UpdateSquadService extends CamelService {
         currentSquad.forEach(playerSeasonStat -> {
             if(inputSquadMap.containsKey(playerSeasonStat.getPlayer().getPremierLeagueId())) {
                 final PlayerData playerData = inputSquadMap.get(playerSeasonStat.getPlayer().getPremierLeagueId());
+                playerSeasonStat.setShirtNumber(playerData.getShirtNumber());
                 updatePosition(playerSeasonStat, playerData);
             } else {
                 if(playerSeasonStat.getD11Team().isDummy()) {
                     playerSeasonStat.setTeam(dummyTeam);
                     log.info("Removed player {} from team {}.", playerSeasonStat.getPlayer().getName(), team.getName());
                 } else {
-                    log.info("Player {} belongs to D11 team {} and could not be removed from team {}.",
-                            playerSeasonStat.getPlayer().getName(),
-                            playerSeasonStat.getD11Team().getName(),
-                            team.getName());
+                    log.warn("Player {} belongs to D11 team {} and could not be removed from team {}.",
+                             playerSeasonStat.getPlayer().getName(),
+                             playerSeasonStat.getD11Team().getName(),
+                             team.getName());
                 }
             }
         });
@@ -157,7 +158,8 @@ public class UpdateSquadService extends CamelService {
                     final PlayerSeasonStat playerSeasonStat = new PlayerSeasonStat(player, season, team, dummyD11Team, position);
                     playerSeasonStat.setShirtNumber(playerData.getShirtNumber());
                     player.getPlayerSeasonStats().add(playerSeasonStat);
-                    log.info("Added season stats for player {} in team {} with position {}.", player.getName(), team.getName(), position.getName());
+                    log.info("Moved player {} to team {} with position {} and added player season stats.",
+                             player.getName(), team.getName(), position.getName());
                 }
             } else {
                 // If two or more players with the same name exist we'll need manual handling.
@@ -183,10 +185,10 @@ public class UpdateSquadService extends CamelService {
                 playerSeasonStat.setPosition(position);
                 log.info("Changed position for player {} to {}.", playerSeasonStat.getPlayer().getName(), position.getName());
             } else {
-                log.info("Previously available for transfer player {} position could not be changed from {} to {}.",
-                        playerSeasonStat.getPlayer().getName(),
-                        playerSeasonStat.getPosition().getName(),
-                        position.getName());
+                log.warn("Previously available for transfer player {} position could not be changed from {} to {}.",
+                         playerSeasonStat.getPlayer().getName(),
+                         playerSeasonStat.getPosition().getName(),
+                         position.getName());
             }
         }
     }
