@@ -2,6 +2,7 @@ package org.d11.boot.cli.command;
 
 import org.apache.camel.Produce;
 import org.apache.camel.ProducerTemplate;
+import org.d11.boot.jms.message.UpdateSquadsRequestMessage;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 
@@ -22,8 +23,7 @@ public class UpdateSquadsCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        // The route just needs a dummy body to start.
-        this.producerTemplate.sendBody(true);
+        this.producerTemplate.sendBody(new UpdateSquadsRequestMessage());
         return 0;
     }
 

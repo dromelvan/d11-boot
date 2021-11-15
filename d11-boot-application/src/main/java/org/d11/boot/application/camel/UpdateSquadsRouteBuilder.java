@@ -38,7 +38,7 @@ public class UpdateSquadsRouteBuilder extends AbstractJmsRouteBuilder {
                 .split().body()
                     .to("direct:updateSquad")
                 .end()
-                .log(LoggingLevel.INFO, "Team squad updates completed.");
+                .log(LoggingLevel.INFO, "Team squad downloads completed.");
 
         from("direct:updateSquad")
                 .routeId("UPDATE_SQUAD")

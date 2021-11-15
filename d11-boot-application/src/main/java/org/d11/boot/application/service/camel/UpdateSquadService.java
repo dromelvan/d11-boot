@@ -166,6 +166,7 @@ public class UpdateSquadService extends CamelService {
                 log.info("Found {} matches for player {}.", players.size(), playerData.getName());
             }
         });
+        log.info("Squad update for team {} completed.", teamData.getName());
     }
 
     /**
