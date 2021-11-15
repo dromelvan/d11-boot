@@ -5,6 +5,7 @@ import org.d11.boot.jms.message.TestMessage;
 import org.d11.boot.jms.message.UpdateMatchMessage;
 import org.d11.boot.jms.message.UpdateMatchRequestMessage;
 import org.d11.boot.jms.message.UpdateSquadMessage;
+import org.d11.boot.jms.message.UpdateSquadsRequestMessage;
 
 /**
  * JMS queue definitions.
@@ -30,7 +31,11 @@ public enum JmsQueue {
     /**
      * Update squad queue to trigger squad updates.
      */
-    UPDATE_SQUAD(UpdateSquadMessage.class);
+    UPDATE_SQUAD(UpdateSquadMessage.class),
+    /**
+     * Update squad request queue to trigger squad updates.
+     */
+    UPDATE_SQUADS_REQUEST(UpdateSquadsRequestMessage.class);
 
     /**
      * Prefix for all JMS queues.
