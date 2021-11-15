@@ -5,6 +5,7 @@ app:
     updateMatchDatetimes: 0 0 9 * * ?
     updateMatchStats: 0 0,5,10,15,20,25,30,35,40,45,50,55 * * * ?
     finishMatchStats: 0 0 18 * * ?
+    updateSquads: 0 0 10 * * ?
 
 spring:
   flyway:

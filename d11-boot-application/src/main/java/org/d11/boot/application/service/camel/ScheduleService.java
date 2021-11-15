@@ -10,6 +10,7 @@ import org.d11.boot.application.util.NotFoundException;
 import org.d11.boot.camel.CamelObjectMapper;
 import org.d11.boot.jms.JmsQueue;
 import org.d11.boot.jms.message.UpdateMatchRequestMessage;
+import org.d11.boot.jms.message.UpdateSquadsRequestMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
@@ -111,6 +112,13 @@ public class ScheduleService {
             updateMatchRequestMessage.setFinish(true);
             this.jmsTemplate.convertAndSend(JmsQueue.UPDATE_MATCH_REQUEST.getName(), updateMatchRequestMessage);
         }
+    }
+
+    /**
+     * Triggers a squad update by posting to the UPDATE_SQUADS_REQUEST JMS queue.
+     */
+    public void updateSquads() {
+        this.jmsTemplate.convertAndSend(JmsQueue.UPDATE_SQUADS_REQUEST.getName(), new UpdateSquadsRequestMessage());
     }
 
 }

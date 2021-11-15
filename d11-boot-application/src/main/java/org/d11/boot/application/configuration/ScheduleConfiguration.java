@@ -52,4 +52,12 @@ public class ScheduleConfiguration {
         this.scheduleService.finishMatchStats();
     }
 
+    /**
+     * Schedule for updating team squads.
+     */
+    @Scheduled(cron = "${app.schedule.updateSquads}")
+    public void updateSquads() {
+        this.scheduleService.updateSquads();
+    }
+
 }
