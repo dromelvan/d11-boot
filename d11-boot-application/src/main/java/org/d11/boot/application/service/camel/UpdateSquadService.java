@@ -19,6 +19,7 @@ import org.d11.boot.application.util.NotFoundException;
 import org.d11.boot.application.util.Parameterizer;
 import org.d11.boot.jms.model.PlayerData;
 import org.d11.boot.jms.model.TeamData;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
  * Service for updating a team squad from parsed team data.
  */
 @Slf4j
+@Service
 public class UpdateSquadService extends CamelService {
 
     /**
