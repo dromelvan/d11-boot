@@ -4,6 +4,7 @@ import org.d11.boot.download.browser.htmlunit.HtmlUnitBrowser;
 import org.d11.boot.download.browser.selenium.ChromeBrowser;
 import org.d11.boot.download.premierleague.PremierLeagueClubsDownloader;
 import org.d11.boot.download.premierleague.PremierLeaguePlayerDownloader;
+import org.d11.boot.download.premierleague.PremierLeaguePlayerPhotoDownloader;
 import org.d11.boot.download.premierleague.PremierLeagueSquadDownloader;
 import org.d11.boot.download.whoscored.WhoscoredMatchDownloader;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,6 +68,16 @@ public class DownloadConfiguration {
     public PremierLeaguePlayerDownloader<HtmlUnitBrowser> premierLeaguePlayerDownloader() {
         final Callable<HtmlUnitBrowser> callable = HtmlUnitBrowser::new;
         return new PremierLeaguePlayerDownloader<>(callable);
+    }
+
+    /**
+     * Provides the downloader we want to use to download PremierLeague.com player photos.
+     *
+     * @return The downloader we want to use to download PremierLeague.com player photos.
+     */
+    @Bean
+    public PremierLeaguePlayerPhotoDownloader<HtmlUnitBrowser> premierLeaguePlayerPhotoDownloader() {
+        return new PremierLeaguePlayerPhotoDownloader<>(HtmlUnitBrowser::new);
     }
 
 }

@@ -81,6 +81,16 @@ public class UrlRegistry extends Properties {
     }
 
     /**
+     * Gets the url.premierleague.playerPhoto property.
+     *
+     * @param photoId Id of the Premier League player photo.
+     * @return Premier League player photo URL.
+     */
+    public URL getPremierLeaguePlayerPhotoUrl(final String photoId) {
+        return getUrl(String.format(getProperty("url.premierleague.playerPhoto"), photoId));
+    }
+
+    /**
      * Creates a new URL from a string.
      *
      * @param urlString String representing a URL.

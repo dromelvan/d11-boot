@@ -3,6 +3,8 @@ package org.d11.boot.download;
 import lombok.extern.slf4j.Slf4j;
 import org.d11.boot.download.browser.Browser;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.Callable;
 
@@ -56,6 +58,20 @@ public class Downloader<T extends Browser> {
      */
     public WebPage download(final URL url) {
         return getBrowser().getWebPage(url);
+    }
+
+    /**
+     * Downloads a provided URL as bytes.
+     *
+     * @param url URL for the resource that will be downloaded.
+     * @return Byte array representing the data from the URL.
+     */
+    public byte[] downloadBytes(final URL url) {
+        try(InputStream inputStream = url.openStream()) {
+            return inputStream.readAllBytes();
+        } catch(final IOException e) {
+            throw new DownloadException("Could not download image " + url + ".", e);
+        }
     }
 
 }
