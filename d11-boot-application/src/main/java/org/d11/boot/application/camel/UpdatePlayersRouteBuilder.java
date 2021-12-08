@@ -1,7 +1,7 @@
 package org.d11.boot.application.camel;
 
 import org.apache.camel.LoggingLevel;
-import org.d11.boot.application.service.camel.UpdatePlayersService;
+import org.d11.boot.application.service.camel.UpdatePlayerService;
 import org.d11.boot.camel.AbstractJmsRouteBuilder;
 import org.d11.boot.jms.JmsQueue;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ public class UpdatePlayersRouteBuilder extends AbstractJmsRouteBuilder {
                 .routeId(getRouteId())
                 .log(LoggingLevel.DEBUG, "Processing message: ${body}")
                 .unmarshal(getSourceDataFormat())
-                .bean(UpdatePlayersService.class, "updatePlayers(${body.players})");
+                .bean(UpdatePlayerService.class, "updatePlayers(${body.players})");
     }
 
 }

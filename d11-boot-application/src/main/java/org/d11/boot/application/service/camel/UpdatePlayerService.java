@@ -1,6 +1,7 @@
 package org.d11.boot.application.service.camel;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.d11.boot.application.model.Player;
 import org.d11.boot.application.repository.PlayerRepository;
 import org.d11.boot.application.util.NotFoundException;
@@ -17,7 +18,12 @@ import java.util.Optional;
  */
 @Slf4j
 @Service
-public class UpdatePlayersService extends CamelService {
+public class UpdatePlayerService extends CamelService {
+
+    /**
+     * Number of matching players in a search that means correct name -> player match.
+     */
+    private static final int CORRECT_MATCH_COUNT = 1;
 
     /**
      * Updates player info from PremierLeague.com.
@@ -33,9 +39,9 @@ public class UpdatePlayersService extends CamelService {
             try {
                 final Player player = playerRepository.findByPremierLeagueId(playerData.getId()).or(() -> {
                     final List<Player> players = playerRepository.findByParameterizedName(Parameterizer.parameterize(playerData.getName()));
-                    if(players.size() == 1) {
+                    if(players.size() == CORRECT_MATCH_COUNT) {
                         return Optional.of(players.get(0));
-                    } else if(players.size() > 1) {
+                    } else if(players.size() > CORRECT_MATCH_COUNT) {
                         log.warn("Found {} matches for player {}.", players.size(), playerData.getName());
                     }
                     return Optional.empty();
@@ -59,6 +65,28 @@ public class UpdatePlayersService extends CamelService {
             }
         }
         log.info("Player info updated.");
+    }
+
+    /**
+     * Updates player photo file name if the provided player data matches with a player and has a photo file name.
+     *
+     * @param playerData Player data that will be updated.
+     */
+    @Transactional
+    public void updatePlayerPhotoFileName(final PlayerData playerData) {
+        if(!StringUtils.isBlank(playerData.getPhotoId())) {
+            try {
+                final Player player = getRepository(PlayerRepository.class)
+                        .findByPremierLeagueId(playerData.getId()).orElseThrow(NotFoundException::new);
+                if(StringUtils.isBlank(player.getPhotoFileName())) {
+                    final String photoFileName = String.format("%s-%d.png", player.getParameterizedName(), player.getId());
+                    log.info("Changing {} photo file name to {}.", player.getName(), photoFileName);
+                    player.setPhotoFileName(photoFileName);
+                }
+            } catch(final NotFoundException e) {
+                log.warn("Could not find player {} with Premier League id {}.", playerData.getName(), playerData.getId());
+            }
+        }
     }
 
 }

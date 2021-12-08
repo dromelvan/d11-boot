@@ -4,6 +4,7 @@ import org.d11.boot.jms.message.DownloadWhoscoredMatchMessage;
 import org.d11.boot.jms.message.TestMessage;
 import org.d11.boot.jms.message.UpdateMatchMessage;
 import org.d11.boot.jms.message.UpdateMatchRequestMessage;
+import org.d11.boot.jms.message.UpdatePlayerPhotosRequestMessage;
 import org.d11.boot.jms.message.UpdatePlayersMessage;
 import org.d11.boot.jms.message.UpdateSquadMessage;
 import org.d11.boot.jms.message.UpdateSquadsRequestMessage;
@@ -40,7 +41,11 @@ public enum JmsQueue {
     /**
      * Update players queue to trigger player info updates.
      */
-    UPDATE_PLAYERS(UpdatePlayersMessage.class);
+    UPDATE_PLAYERS(UpdatePlayersMessage.class),
+    /**
+     * Update player photo request queue to trigger player photo updates.
+     */
+    UPDATE_PLAYER_PHOTOS_REQUEST(UpdatePlayerPhotosRequestMessage.class);
 
     /**
      * Prefix for all JMS queues.
