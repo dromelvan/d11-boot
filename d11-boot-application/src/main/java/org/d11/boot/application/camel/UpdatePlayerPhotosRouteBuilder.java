@@ -2,6 +2,7 @@ package org.d11.boot.application.camel;
 
 import org.apache.camel.LoggingLevel;
 import org.d11.boot.application.camel.processor.PlayerDataPhotoProcessor;
+import org.d11.boot.application.camel.processor.PlayerPhotoProcessor;
 import org.d11.boot.application.repository.PlayerRepository;
 import org.d11.boot.application.service.camel.UpdatePlayerService;
 import org.d11.boot.camel.AbstractJmsRouteBuilder;
@@ -76,7 +77,13 @@ public class UpdatePlayerPhotosRouteBuilder extends AbstractJmsRouteBuilder {
                 .bean(UpdatePlayerService.class, "updatePlayerPhotoFileName(${body})")
                 .process(new PlayerDataPhotoProcessor(this.playerRepository))
                 .bean(PremierLeaguePlayerPhotoDownloader.class, "downloadPlayerPhoto(${body.photoId})")
-                .toD("file://files/download/premierleague.com/player/photo?fileName=${exchangeProperty.photoFileName}");
+                .process(new PlayerPhotoProcessor())
+                .choice()
+                    .when(simple("${exchangeProperty.savePhotoFile} == true"))
+                        .log(LoggingLevel.DEBUG, "Saving photo file.")
+                        .toD("file://files/download/premierleague.com/player/photo?fileName=${exchangeProperty.photoFileName}")
+                    .otherwise()
+                        .log(LoggingLevel.DEBUG, "Player photo already exists.");
     }
 
 }
