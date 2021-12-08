@@ -12,7 +12,8 @@ import java.util.concurrent.Callable;
 @Command(name = "d11", version = "4.0.0", mixinStandardHelpOptions = true, subcommands = {
         ParseCommand.class,
         UploadCommand.class,
-        UpdateSquadsCommand.class
+        SquadsCommand.class,
+        PhotosCommand.class
 })
 public class RootCommand implements Callable<Integer> {
 

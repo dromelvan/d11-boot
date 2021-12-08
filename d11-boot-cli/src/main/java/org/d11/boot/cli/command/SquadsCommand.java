@@ -13,7 +13,7 @@ import java.util.concurrent.Callable;
  */
 @Component
 @Command(name = "squads", mixinStandardHelpOptions = true)
-public class UpdateSquadsCommand implements Callable<Integer> {
+public class SquadsCommand implements Callable<Integer> {
 
     /**
      * Producer template for sending a file to the update squads route.

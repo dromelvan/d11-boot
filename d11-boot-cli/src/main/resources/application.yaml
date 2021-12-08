@@ -3,6 +3,7 @@ app:
     parse: direct:parse
     upload: direct:upload
     updateSquads: direct:updateSquads
+    updatePhotos: direct:updatePhotos
   download.selenium.remoteUrl: http://localhost:4444/wd/hub
   camel.endpoint.activemq: activemq:queue:%s
 
