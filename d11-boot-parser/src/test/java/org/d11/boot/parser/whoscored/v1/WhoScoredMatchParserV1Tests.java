@@ -53,10 +53,10 @@ public class WhoScoredMatchParserV1Tests {
                 "Match data datetime should equal pending file datetime.");
 
         assertTrue(matchData.getGoals().isEmpty(),
-                "Match data goals should not empty.");
+                "Pending match data goals should be empty.");
 
         assertTrue(matchData.getPlayers().isEmpty(),
-                "Match data player match stats should be empty.");
+                "Pending match data player match stats should be empty.");
     }
 
     /**
@@ -72,7 +72,7 @@ public class WhoScoredMatchParserV1Tests {
         final MatchData matchData = whoScoredMatchParserV1.parse(finishedMatchFile);
 
         assertEquals(Long.valueOf(1_485_563), matchData.getWhoscoredId(),
-                "Match data whoscoredId should equal finished file matchId.");
+                "Match data whoscoredId should equal full time file matchId.");
 
         assertEquals(MatchHeader.ELAPSED_FULL_TIME, matchData.getElapsed(),
                 "Match data elapsed should be FT.");
@@ -90,10 +90,10 @@ public class WhoScoredMatchParserV1Tests {
                 "Match data datetime should equal finished file datetime.");
 
         assertFalse(matchData.getGoals().isEmpty(),
-                "Match data goals should not be empty.");
+                "Full time match data goals should not be empty.");
 
         assertFalse(matchData.getPlayers().isEmpty(),
-                "Match data player match stats should not be empty.");
+                "Full time match data player match stats should not be empty.");
     }
 
     /**
@@ -109,7 +109,7 @@ public class WhoScoredMatchParserV1Tests {
         final MatchData matchData = whoScoredMatchParserV1.parse(finishedMatchFile);
 
         assertEquals(Long.valueOf(1_549_638), matchData.getWhoscoredId(),
-                "Match data whoscoredId should equal finished file matchId.");
+                "Match data whoscoredId should equal 90+ file matchId.");
 
         assertEquals(MatchHeader.ELAPSED_90_PLUS_TIME, matchData.getElapsed(),
                 "Match data elapsed should be 90+.");
@@ -127,10 +127,84 @@ public class WhoScoredMatchParserV1Tests {
                 "Match data datetime should equal 90+ file datetime.");
 
         assertFalse(matchData.getGoals().isEmpty(),
-                "Match data goals should not be empty.");
+                "90+ match data goals should not be empty.");
 
         assertFalse(matchData.getPlayers().isEmpty(),
-                "Match data player match stats should not be empty.");
+                "90+ match data player match stats should not be empty.");
+    }
+
+    /**
+     * Tests parsing another version of "green" full time WhoScored match file.
+     *
+     * @throws IOException     If something goes wrong.
+     * @throws ParserException If something goes wrong.
+     */
+    @Test
+    public void parse90PlusMatch2() throws IOException, ParserException {
+        final WhoScoredMatchParserV1 whoScoredMatchParserV1 = new WhoScoredMatchParserV1();
+        final File finishedMatchFile = new File("src/test/resources/whoscored/v1/match/90+2.html");
+        final MatchData matchData = whoScoredMatchParserV1.parse(finishedMatchFile);
+
+        assertEquals(Long.valueOf(1_549_719), matchData.getWhoscoredId(),
+                "Match data whoscoredId should equal 90+2 file matchId.");
+
+        assertEquals(MatchHeader.ELAPSED_90_PLUS_TIME, matchData.getElapsed(),
+                "Match data elapsed should be 90+.");
+        assertEquals(Status.ACTIVE, matchData.getStatus(), "Match data status should be active.");
+
+        assertNotNull(matchData.getHomeTeamWhoscoredId(), "90+ file match data home team should not be null.");
+        assertEquals(Long.valueOf(24), matchData.getHomeTeamWhoscoredId(),
+                "Match data home team id should equal 90+ file home team id.");
+
+        assertNotNull(matchData.getAwayTeamWhoscoredId(), "90+ file match data away team should not be null.");
+        assertEquals(Long.valueOf(15), matchData.getAwayTeamWhoscoredId(),
+                "Match data away team id should equal 90+ file away team id.");
+
+        assertEquals(LocalDateTime.of(2021, 12, 26, 19, 30, 0), matchData.getDatetime(),
+                "Match data datetime should equal 90+ file datetime.");
+
+        assertFalse(matchData.getGoals().isEmpty(),
+                "90+2 match data goals should not be empty.");
+
+        assertFalse(matchData.getPlayers().isEmpty(),
+                "90+2 match data player match stats should not be empty.");
+    }
+
+    /**
+     * Tests parsing a postponed match.
+     *
+     * @throws IOException     If something goes wrong.
+     * @throws ParserException If something goes wrong.
+     */
+    @Test
+    public void parsePostponedMatch() throws IOException, ParserException {
+        final WhoScoredMatchParserV1 whoScoredMatchParserV1 = new WhoScoredMatchParserV1();
+        final File finishedMatchFile = new File("src/test/resources/whoscored/v1/match/postponed.html");
+        final MatchData matchData = whoScoredMatchParserV1.parse(finishedMatchFile);
+
+        assertEquals(Long.valueOf(1_549_728), matchData.getWhoscoredId(),
+                "Match data whoscoredId should equal postponed file matchId.");
+
+        assertEquals(MatchHeader.ELAPSED_POSTPONED, matchData.getElapsed(),
+                "Match data elapsed should be PP.");
+        assertEquals(Status.POSTPONED, matchData.getStatus(), "Match data status should be postponed.");
+
+        assertNotNull(matchData.getHomeTeamWhoscoredId(), "Postponed file match data home team should not be null.");
+        assertEquals(Long.valueOf(161), matchData.getHomeTeamWhoscoredId(),
+                "Match data home team id should equal postponed file home team id.");
+
+        assertNotNull(matchData.getAwayTeamWhoscoredId(), "Postponed file match data away team should not be null.");
+        assertEquals(Long.valueOf(27), matchData.getAwayTeamWhoscoredId(),
+                "Match data away team id should equal postponed file away team id.");
+
+        assertEquals(LocalDateTime.of(2021, 12, 26, 14, 30, 0), matchData.getDatetime(),
+                "Match data datetime should equal postponed file datetime.");
+
+        assertTrue(matchData.getGoals().isEmpty(),
+                "Postponed match data goals should be empty.");
+
+        assertTrue(matchData.getPlayers().isEmpty(),
+                "Postponed match data player match stats should be empty.");
     }
 
 }

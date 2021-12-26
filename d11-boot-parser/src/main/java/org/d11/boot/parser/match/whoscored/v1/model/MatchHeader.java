@@ -46,6 +46,14 @@ public class MatchHeader {
      * String for added full time elapsed time.
      */
     public static final String ELAPSED_90_PLUS_TIME = "90+";
+    /**
+     * String for postponed elapsed time.
+     */
+    public static final String ELAPSED_POSTPONED = "PP";
+    /**
+     * String for postponed match elapsed time in WhoScored file.
+     */
+    public static final String WHOSCORED_ELAPSED_POSTPONED = "Post";
 
     /**
      * Input array index for home team id.
@@ -159,12 +167,15 @@ public class MatchHeader {
     public String getElapsed() {
         if(this.input != null) {
             final String elapsed = (String) this.input.get(ELAPSED_INDEX);
-            // If elapsed is "FT" but the score has a '*'in front then it's still 'green'.
+            // If elapsed is "FT" but the score contains a '*' then it's still 'green'.
             // Return 90+ so we update it once more in that case.
             if(ELAPSED_FULL_TIME.equals(elapsed)
                     && this.input.size() > FULL_TIME_SCORE_INDEX
-                    && this.input.get(FULL_TIME_SCORE_INDEX).toString().startsWith("*")) {
+                    && this.input.get(FULL_TIME_SCORE_INDEX).toString().contains("*")) {
                 return ELAPSED_90_PLUS_TIME;
+            }
+            if(WHOSCORED_ELAPSED_POSTPONED.equals(elapsed)) {
+                return ELAPSED_POSTPONED;
             }
             if(elapsed != null) {
                 // We want to change 32' to 32.
@@ -185,6 +196,8 @@ public class MatchHeader {
                 return Status.PENDING;
             case ELAPSED_FULL_TIME:
                 return Status.FULL_TIME;
+            case ELAPSED_POSTPONED:
+                return Status.POSTPONED;
             default:
                 return Status.ACTIVE;
         }
