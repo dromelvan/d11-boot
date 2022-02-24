@@ -116,6 +116,15 @@ public class MatchWeek extends D11Entity {
     private List<D11Match> d11Matches = new ArrayList<>();
 
     /**
+     * Get if the match week is started or not.
+     *
+     * @return True if the match week is started.
+     */
+    public boolean isStarted() {
+        return !this.status.equals(Status.PENDING) && !this.status.equals(Status.POSTPONED);
+    }
+
+    /**
      * Gets the match the team participates in this match week.
      *
      * @param teamId Id of the team whose match will be looked up.

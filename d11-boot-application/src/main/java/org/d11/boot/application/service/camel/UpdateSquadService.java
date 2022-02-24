@@ -3,13 +3,18 @@ package org.d11.boot.application.service.camel;
 import lombok.extern.slf4j.Slf4j;
 import org.d11.boot.application.model.Country;
 import org.d11.boot.application.model.D11Team;
+import org.d11.boot.application.model.Lineup;
+import org.d11.boot.application.model.Match;
 import org.d11.boot.application.model.Player;
+import org.d11.boot.application.model.PlayerMatchStat;
 import org.d11.boot.application.model.PlayerSeasonStat;
 import org.d11.boot.application.model.Position;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Team;
 import org.d11.boot.application.model.TransferListing;
 import org.d11.boot.application.repository.CountryRepository;
+import org.d11.boot.application.repository.MatchRepository;
+import org.d11.boot.application.repository.PlayerMatchStatRepository;
 import org.d11.boot.application.repository.PlayerRepository;
 import org.d11.boot.application.repository.PlayerSeasonStatRepository;
 import org.d11.boot.application.repository.PositionRepository;
@@ -137,6 +142,27 @@ public class UpdateSquadService extends CamelService {
                 final Position position = getPosition(playerData.getPosition());
                 final PlayerSeasonStat playerSeasonStat = new PlayerSeasonStat(player, season, team, dummyD11Team, position);
                 getRepository(PlayerSeasonStatRepository.class).save(playerSeasonStat);
+
+                // We need to add player match stats with dummy D11 team for postponed matches. If not, we could end up
+                // with one D11 team having 12 or more players in a match, depending on how players are transferred and
+                // timing of the matches.
+                final MatchRepository matchRepository = getRepository(MatchRepository.class);
+                final PlayerMatchStatRepository playerMatchStatRepository = getRepository(PlayerMatchStatRepository.class);
+                for (final Match match : matchRepository.findByTeamIdAndMatchWeekSeasonId(team.getId(), season.getId())) {
+                    if (match.getMatchWeek().isStarted() && !match.isStarted()) {
+                        final PlayerMatchStat playerMatchStat = new PlayerMatchStat();
+                        playerMatchStat.setPlayer(playerSeasonStat.getPlayer());
+                        playerMatchStat.setMatch(match);
+                        playerMatchStat.setD11Match(null);
+                        playerMatchStat.setTeam(team);
+                        playerMatchStat.setD11Team(dummyD11Team);
+                        playerMatchStat.setPosition(position);
+                        playerMatchStat.setLineup(Lineup.DID_NOT_PARTICIPATE);
+                        playerMatchStat.setPlayedPosition("NA");
+                        playerMatchStat.reset();
+                        playerMatchStatRepository.save(playerMatchStat);
+                    }
+                }
 
                 log.info("Created new player {} for team {} with position {}.", playerData.getName(), team.getName(), position.getName());
             } else if(players.size() == 1) {
