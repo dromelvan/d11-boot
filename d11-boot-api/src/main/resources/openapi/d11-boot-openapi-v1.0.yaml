@@ -1912,6 +1912,65 @@ paths:
         '500':
           $ref: '#/components/responses/Unexpected'
 
+  /administration/updateSquads:
+    post:
+      summary: Updates Premier League team squads.
+      operationId: updateSquads
+      tags:
+        - administration
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdministrationRequestResult"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /administration/updatePhotos:
+    post:
+      summary: Updates Premier League player photos.
+      operationId: updatePhotos
+      tags:
+        - administration
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdministrationRequestResult"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /administration/uploadMatchStats:
+    post:
+      summary: Upload Premier League match stats.
+      operationId: uploadMatchStats
+      tags:
+        - administration
+      requestBody:
+        description: Match stats.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadMatchStats'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdministrationRequestResult"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
 components:
   responses:
     Unauthorized:
@@ -5314,6 +5373,22 @@ components:
           $ref: '#/components/schemas/PlayerBase'
         d11Team:
           $ref: '#/components/schemas/D11TeamBase'
+
+    AdministrationRequestResult:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
+    UploadMatchStats:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: string
 
   securitySchemes:
     BearerAuth:

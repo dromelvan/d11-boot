@@ -2,11 +2,13 @@ package org.d11.boot.cli;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * Main class of the D11 CLI application.
  */
 @SpringBootApplication(scanBasePackages = "org.d11.boot")
+@EnableFeignClients
 @SuppressWarnings("PMD.UseUtilityClass")
 public class D11BootCliApplication {
 
