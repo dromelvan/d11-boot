@@ -1,7 +1,7 @@
 package org.d11.boot.application.api;
 
+import feign.FeignException;
 import org.d11.boot.api.model.PlayerMatchStatDTO;
-import org.d11.boot.api.service.PlayerMatchStatApiService;
 import org.d11.boot.application.model.D11Match;
 import org.d11.boot.application.model.Lineup;
 import org.d11.boot.application.model.Match;
@@ -10,6 +10,7 @@ import org.d11.boot.application.model.Player;
 import org.d11.boot.application.model.PlayerMatchStat;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.repository.PlayerMatchStatRepository;
+import org.d11.boot.client.api.PlayerMatchStatApi;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -23,28 +24,30 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Player match stat API tests.
  */
-public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMatchStat, PlayerMatchStatRepository, PlayerMatchStatApiService> {
+public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMatchStat, PlayerMatchStatRepository> {
 
     /**
      * Tests the findPlayerMatchStatById API operation.
      */
     @Test
     public void findPlayerMatchStatById() {
+        final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
         for(final PlayerMatchStat playerMatchStat : getRepository().findAll()) {
-            final PlayerMatchStatDTO result = getApiService().findPlayerMatchStatById(playerMatchStat.getId());
+            final PlayerMatchStatDTO result = playerMatchStatApi.findPlayerMatchStatById(playerMatchStat.getId());
             final PlayerMatchStatDTO playerMatchStatDTO = map(playerMatchStat, PlayerMatchStatDTO.class);
 
             assertNotNull(result, "Player match stat by id should not be null.");
             assertEquals(playerMatchStatDTO, result, "Player match stat by id should equal PlayerMatchStat.");
         }
 
-        assertNull(getApiService().findPlayerMatchStatById(-1L), "Player match stat not found should return null.");
-        assertBadRequest(get("BAD_REQUEST"));
+        assertThrows(FeignException.NotFound.class,
+                     () -> playerMatchStatApi.findPlayerMatchStatById(-1L),
+                     "Player match stat not found should throw NotFound exception.");
     }
 
     /**
@@ -52,13 +55,14 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
      */
     @Test
     public void findPlayerMatchStatByMatchId() {
+        final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
         for(final Match match : getRepository().findAll().stream().map(PlayerMatchStat::getMatch).collect(Collectors.toSet())) {
             final List<PlayerMatchStat> matchPlayerMatchStats = match.getPlayerMatchStats();
             matchPlayerMatchStats.sort(Comparator.comparing(playerMatchStat -> playerMatchStat.getPosition().getSortOrder()));
             assertFalse(matchPlayerMatchStats.isEmpty(), "Match player match stats is empty. " +
                     "This means the match player match stat test data is not set up properly.");
 
-            final List<PlayerMatchStatDTO> playerMatchStats = getApiService().findPlayerMatchStatByMatchId(match.getId());
+            final List<PlayerMatchStatDTO> playerMatchStats = playerMatchStatApi.findPlayerMatchStatByMatchId(match.getId());
             assertFalse(playerMatchStats.isEmpty(), "Match player match stats is empty.");
 
             assertEquals(map(matchPlayerMatchStats, PlayerMatchStatDTO.class), playerMatchStats,
@@ -85,14 +89,15 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
                             playerMatchStat.getTeam().equals(match.getAwayTeam()) && !playerMatchStat.getLineup().equals(Lineup.DID_NOT_PARTICIPATE))
                     .collect(Collectors.toList());
 
+            final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
             final List<PlayerMatchStatDTO> homeTeamPlayerMatchStatDTOs
-                    = getApiService().findActivePlayerMatchStatByMatchIdAndTeamId(match.getId(), match.getHomeTeam().getId());
+                    = playerMatchStatApi.findActivePlayerMatchStatByMatchIdAndTeamId(match.getId(), match.getHomeTeam().getId());
             assertFalse(homeTeamPlayerMatchStatDTOs.isEmpty(), "Home team player match stats is empty.");
             assertEquals(map(homeTeamPlayerMatchStats, PlayerMatchStatDTO.class), homeTeamPlayerMatchStatDTOs,
                     "Active player match stats by match id and team id should equal active home team player match stats.");
 
             final List<PlayerMatchStatDTO> awayTeamPlayerMatchStatDTOs
-                    = getApiService().findActivePlayerMatchStatByMatchIdAndTeamId(match.getId(), match.getAwayTeam().getId());
+                    = playerMatchStatApi.findActivePlayerMatchStatByMatchIdAndTeamId(match.getId(), match.getAwayTeam().getId());
             assertFalse(awayTeamPlayerMatchStatDTOs.isEmpty(), "Away team player match stats is empty.");
             assertEquals(map(awayTeamPlayerMatchStats, PlayerMatchStatDTO.class), awayTeamPlayerMatchStatDTOs,
                     "Active player match stats by match id and team id should equal active away team player match stats.");
@@ -110,7 +115,8 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
             assertFalse(d11MatchPlayerMatchStats.isEmpty(), "D11 match player match stats is empty. " +
                     "This means the D11 match player match stat test data is not set up properly.");
 
-            final List<PlayerMatchStatDTO> playerMatchStats = getApiService().findPlayerMatchStatByD11MatchId(d11Match.getId());
+            final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
+            final List<PlayerMatchStatDTO> playerMatchStats = playerMatchStatApi.findPlayerMatchStatByD11MatchId(d11Match.getId());
             assertFalse(playerMatchStats.isEmpty(), "D11 match player match stats is empty.");
 
             assertEquals(map(d11MatchPlayerMatchStats, PlayerMatchStatDTO.class), playerMatchStats,
@@ -133,14 +139,15 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
                     .filter(playerMatchStat -> playerMatchStat.getD11Team().equals(d11Match.getAwayD11Team()))
                     .collect(Collectors.toList());
 
+            final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
             final List<PlayerMatchStatDTO> homeD11TeamPlayerMatchStatDTOs
-                    = getApiService().findPlayerMatchStatByD11MatchIdAndD11TeamId(d11Match.getId(), d11Match.getHomeD11Team().getId());
+                    = playerMatchStatApi.findPlayerMatchStatByD11MatchIdAndD11TeamId(d11Match.getId(), d11Match.getHomeD11Team().getId());
             assertFalse(homeD11TeamPlayerMatchStatDTOs.isEmpty(), "Home D11 team player match stats is empty.");
             assertEquals(map(homeD11TeamPlayerMatchStats, PlayerMatchStatDTO.class), homeD11TeamPlayerMatchStatDTOs,
                     "Player match stats by D11 match id and D11 team id should equal home D11 team player match stats.");
 
             final List<PlayerMatchStatDTO> awayD11TeamPlayerMatchStatDTOs
-                    = getApiService().findPlayerMatchStatByD11MatchIdAndD11TeamId(d11Match.getId(), d11Match.getAwayD11Team().getId());
+                    = playerMatchStatApi.findPlayerMatchStatByD11MatchIdAndD11TeamId(d11Match.getId(), d11Match.getAwayD11Team().getId());
             assertFalse(awayD11TeamPlayerMatchStatDTOs.isEmpty(), "Away D11 team player match stats is empty.");
             assertEquals(map(awayTeamPlayerMatchStats, PlayerMatchStatDTO.class), awayD11TeamPlayerMatchStatDTOs,
                     "Player match stats by D11 match id and D11 team id should equal away D11 team player match stats.");
@@ -163,6 +170,7 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
         assertFalse(playerMatchStatMap.isEmpty(), "Player match stat map is empty. " +
                 "This means the player match stat test data is not set up properly.");
 
+        final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
         for(final Map.Entry<Player, Map<Season, List<PlayerMatchStat>>> playerEntry : playerMatchStatMap.entrySet()) {
             final Player player = playerEntry.getKey();
             final Map<Season, List<PlayerMatchStat>> seasonMap = playerEntry.getValue();
@@ -173,7 +181,7 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
                 assertFalse(playerSeasonPlayerMatchStats.isEmpty(), "Player season player match stats is empty. " +
                         "This means the player season player match stat test data is not set up properly.");
 
-                final List<PlayerMatchStatDTO> playerMatchStats = getApiService().findPlayerMatchStatByPlayerIdAndSeasonId(player.getId(), season.getId());
+                final List<PlayerMatchStatDTO> playerMatchStats = playerMatchStatApi.findPlayerMatchStatByPlayerIdAndSeasonId(player.getId(), season.getId());
                 assertFalse(playerMatchStats.isEmpty(), "Player and season player match stats is empty.");
 
                 assertEquals(map(playerSeasonPlayerMatchStats, PlayerMatchStatDTO.class), playerMatchStats,
@@ -195,11 +203,12 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
                 matchWeekList.add(playerMatchStat);
             }
         }
+        final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
         for(final Map.Entry<MatchWeek, List<PlayerMatchStat>> entry : playerMatchStatMap.entrySet()) {
             final List<PlayerMatchStat> matchWeekPlayerMatchStats = entry.getValue();
             Collections.sort(matchWeekPlayerMatchStats);
 
-            final List<PlayerMatchStatDTO> playerMatchStats = getApiService().findTop5PlayerMatchStatByMatchWeek(entry.getKey().getId());
+            final List<PlayerMatchStatDTO> playerMatchStats = playerMatchStatApi.findTop5PlayerMatchStatByMatchWeek(entry.getKey().getId());
 
             assertEquals(matchWeekPlayerMatchStats.size(), playerMatchStats.size(),
                     "Top 5 match week player match stats and player match stats sizes are not equal. " +
@@ -223,12 +232,14 @@ public class PlayerMatchStatApiTests extends AbstractRepositoryApiTests<PlayerMa
                 matchWeekList.add(playerMatchStat);
             }
         }
+
+        final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
         for(final Map.Entry<MatchWeek, List<PlayerMatchStat>> entry : playerMatchStatMap.entrySet()) {
             final List<PlayerMatchStat> matchWeekPlayerMatchStats = entry.getValue();
             Collections.sort(matchWeekPlayerMatchStats);
             Collections.reverse(matchWeekPlayerMatchStats);
 
-            final List<PlayerMatchStatDTO> playerMatchStats = getApiService().findBottom5PlayerMatchStatByMatchWeek(entry.getKey().getId());
+            final List<PlayerMatchStatDTO> playerMatchStats = playerMatchStatApi.findBottom5PlayerMatchStatByMatchWeek(entry.getKey().getId());
 
             assertEquals(matchWeekPlayerMatchStats.size(), playerMatchStats.size(),
                     "Bottom 5 match week player match stats and player match stats sizes are not equal. " +

@@ -2,11 +2,10 @@ package org.d11.boot.application.api;
 
 import org.d11.boot.api.model.PlayerSearchResultDTO;
 import org.d11.boot.api.model.SearchResultDTO;
-import org.d11.boot.api.service.SearchApiService;
 import org.d11.boot.application.model.Player;
 import org.d11.boot.application.repository.PlayerRepository;
+import org.d11.boot.client.api.SearchApi;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -19,47 +18,42 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Search API tests.
  */
-public class SearchApiTests extends AbstractApiTests<SearchApiService> {
-
-    /**
-     * Player repository.
-     */
-    @Autowired
-    private PlayerRepository playerRepository;
+public class SearchApiTests extends AbstractApiTests<PlayerRepository> {
 
     /**
      * Tests the search operation.
      */
     @Test
     public void searchPlayer() {
-        SearchResultDTO searchResultDTO = getApiService().search("NOT_FOUND");
+        final SearchApi searchApi = getApi(SearchApi.class);
+        SearchResultDTO searchResultDTO = searchApi.search("NOT_FOUND");
 
         assertNotNull(searchResultDTO, "Not found search result should not be null.");
         assertNotNull(searchResultDTO.getPlayers(), "Not found search result players should not be null.");
         assertTrue(searchResultDTO.getPlayers().isEmpty(), "Not found search result players should be empty.");
 
         // There are players named Bar Foo, Foo and Foo Bar available for this
-        final List<Player> players = this.playerRepository.findAll(Sort.by("firstName").and(Sort.by("lastName"))).stream()
+        final List<Player> players = getRepository().findAll(Sort.by("firstName").and(Sort.by("lastName"))).stream()
                 .filter(player -> player.getParameterizedName().matches(".*foo.*"))
                 .collect(Collectors.toList());
 
-        searchResultDTO = getApiService().search("Foo");
+        searchResultDTO = searchApi.search("Foo");
         assertEquals(players.size(), searchResultDTO.getPlayers().size(), "'Foo' should return 3 players.");
         for(int i = 0; i < players.size(); ++i) {
             assertPlayerEquals(players.get(i), searchResultDTO.getPlayers().get(i));
         }
 
-        searchResultDTO = getApiService().search("Bar");
+        searchResultDTO = searchApi.search("Bar");
         assertEquals(2, searchResultDTO.getPlayers().size(), "'Bar' should return 2 players.");
         assertPlayerEquals(players.get(0), searchResultDTO.getPlayers().get(0));
         assertPlayerEquals(players.get(2), searchResultDTO.getPlayers().get(1));
 
-        searchResultDTO = getApiService().search("Foo Bar");
+        searchResultDTO = searchApi.search("Foo Bar");
         assertEquals(1, searchResultDTO.getPlayers().size(), "'Foo Bar' should return 1 player.");
         assertPlayerEquals(players.get(2), searchResultDTO.getPlayers().get(0));
 
         // Exact match search test
-        searchResultDTO = getApiService().search("\"Foo\"");
+        searchResultDTO = searchApi.search("\"Foo\"");
         assertEquals(1, searchResultDTO.getPlayers().size(), "'\"Foo\"' should return 1 player.");
         assertPlayerEquals(players.get(1), searchResultDTO.getPlayers().get(0));
     }

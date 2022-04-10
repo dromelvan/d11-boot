@@ -1,10 +1,11 @@
 package org.d11.boot.application.api;
 
+import feign.FeignException;
 import org.d11.boot.api.model.TransferWindowDTO;
-import org.d11.boot.api.service.TransferWindowApiService;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.TransferWindow;
 import org.d11.boot.application.repository.TransferWindowRepository;
+import org.d11.boot.client.api.TransferWindowApi;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -18,13 +19,13 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Transfer window API tests.
  */
-public class TransferWindowApiTests extends AbstractRepositoryApiTests<TransferWindow, TransferWindowRepository, TransferWindowApiService> {
+public class TransferWindowApiTests extends AbstractRepositoryApiTests<TransferWindow, TransferWindowRepository> {
 
     /**
      * Sets up transfer windows for the tests to use.
@@ -42,15 +43,17 @@ public class TransferWindowApiTests extends AbstractRepositoryApiTests<TransferW
      */
     @Test
     public void findTransferWindowById() {
+        final TransferWindowApi transferWindowApi = getApi(TransferWindowApi.class);
         for(final TransferWindow transferWindow : getRepository().findAll()) {
-            final TransferWindowDTO result = getApiService().findTransferWindowById(transferWindow.getId());
+            final TransferWindowDTO result = transferWindowApi.findTransferWindowById(transferWindow.getId());
             final TransferWindowDTO transferWindowDTO = map(transferWindow, TransferWindowDTO.class);
             assertNotNull(result, "Transfer window by id should not be null.");
             assertEquals(transferWindowDTO, result, "Transfer window by id should equal TransferWindow.");
         }
 
-        assertNull(getApiService().findTransferWindowById(-1L), "Transfer window not found should return null.");
-        assertBadRequest(get("BAD_TRANSFER_WINDOW_REQUEST"));
+        assertThrows(FeignException.NotFound.class,
+                     () -> transferWindowApi.findTransferWindowById(-1L),
+                     "Transfer window not found should throw NotFound exception.");
     }
 
     /**
@@ -61,7 +64,8 @@ public class TransferWindowApiTests extends AbstractRepositoryApiTests<TransferW
         final TransferWindow currentTransferWindow = getEntities().get(0);
         final TransferWindowDTO transferWindowDTO = map(currentTransferWindow, TransferWindowDTO.class);
 
-        final TransferWindowDTO result = getApiService().findCurrentTransferWindow();
+        final TransferWindowApi transferWindowApi = getApi(TransferWindowApi.class);
+        final TransferWindowDTO result = transferWindowApi.findCurrentTransferWindow();
         assertNotNull(result, "Current transfer window should not be null.");
         assertEquals(transferWindowDTO, result, "Current transfer window result should equal current transfer window.");
     }
@@ -77,20 +81,21 @@ public class TransferWindowApiTests extends AbstractRepositoryApiTests<TransferW
             transferWindows.add(transferWindow);
         }
 
+        final TransferWindowApi transferWindowApi = getApi(TransferWindowApi.class);
         for(final Map.Entry<Season, List<TransferWindow>> entry : seasonMap.entrySet()) {
             final Season season = entry.getKey();
             final List<TransferWindow> transferWindows = entry.getValue();
 
             transferWindows.sort(Comparator.comparing(TransferWindow::getDatetime).reversed());
 
-            final List<TransferWindowDTO> result = getApiService().findTransferWindowBySeasonId(season.getId());
+            final List<TransferWindowDTO> result = transferWindowApi.findTransferWindowBySeasonId(season.getId());
 
             assertNotNull(result, "Transfer window by season id should not be null.");
             assertEquals(map(transferWindows, TransferWindowDTO.class), result,
                     "Transfer windows by season id should equal transfer windows.");
         }
 
-        assertTrue(getApiService().findTransferWindowBySeasonId(-1L).isEmpty(),
+        assertTrue(transferWindowApi.findTransferWindowBySeasonId(-1L).isEmpty(),
                 "Transfer window by season id not found should be empty.");
     }
 

@@ -1,9 +1,9 @@
 package org.d11.boot.application.api;
 
+import feign.FeignException;
 import org.d11.boot.api.model.MatchDTO;
 import org.d11.boot.api.model.MatchWeekDTO;
 import org.d11.boot.api.model.MatchesByDateDTO;
-import org.d11.boot.api.service.MatchApiService;
 import org.d11.boot.application.model.Goal;
 import org.d11.boot.application.model.Match;
 import org.d11.boot.application.model.Season;
@@ -12,6 +12,7 @@ import org.d11.boot.application.model.Team;
 import org.d11.boot.application.repository.MatchRepository;
 import org.d11.boot.application.service.api.MatchWeekService;
 import org.d11.boot.application.util.MatchesByDateMapperConverter;
+import org.d11.boot.client.api.MatchApi;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,12 +26,12 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Match API tests.
  */
-public class MatchApiTests extends AbstractRepositoryApiTests<Match, MatchRepository, MatchApiService> {
+public class MatchApiTests extends AbstractRepositoryApiTests<Match, MatchRepository> {
 
     /**
      * Used to get current match week for findCurrentMatches test.
@@ -43,8 +44,9 @@ public class MatchApiTests extends AbstractRepositoryApiTests<Match, MatchReposi
      */
     @Test
     public void findMatchById() {
+        final MatchApi matchApi = getApi(MatchApi.class);
         for(final Match match : getRepository().findAll()) {
-            final MatchDTO result = getApiService().findMatchById(match.getId());
+            final MatchDTO result = matchApi.findMatchById(match.getId());
             final MatchDTO matchDTO = map(match, MatchDTO.class);
 
             assertNotNull(result, "Match by id should not be null.");
@@ -58,8 +60,9 @@ public class MatchApiTests extends AbstractRepositoryApiTests<Match, MatchReposi
             }
         }
 
-        assertNull(getApiService().findMatchById(-1L), "Match not found should return null.");
-        assertBadRequest(get("matches", "BAD_REQUEST"));
+        assertThrows(FeignException.NotFound.class,
+                     () -> matchApi.findMatchById(-1L),
+                     "Match not found should throw NotFound exception.");
     }
 
     /**
@@ -92,6 +95,7 @@ public class MatchApiTests extends AbstractRepositoryApiTests<Match, MatchReposi
             matches.add(match);
         }
 
+        final MatchApi matchApi = getApi(MatchApi.class);
         for(final Map.Entry<Team, Map<Season, List<Match>>> teamEntry : matchMap.entrySet()) {
             final Team team = teamEntry.getKey();
             for(final Map.Entry<Season, List<Match>> seasonEntry : teamEntry.getValue().entrySet()) {
@@ -101,7 +105,7 @@ public class MatchApiTests extends AbstractRepositoryApiTests<Match, MatchReposi
                         .map(Match::getId)
                         .collect(Collectors.toList());
 
-                final List<Long> result = getApiService().findMatchByTeamIdAndSeasonId(team.getId(), season.getId());
+                final List<Long> result = matchApi.findMatchByTeamIdAndSeasonId(team.getId(), season.getId());
 
                 assertNotNull(result, "Result should not be null.");
                 assertEquals(matchIds.size(), result.size(),
@@ -131,7 +135,8 @@ public class MatchApiTests extends AbstractRepositoryApiTests<Match, MatchReposi
         final MatchesByDateDTO matchesByDateDTO = new MatchesByDateDTO()
                 .matches(new MatchesByDateMapperConverter().convert(matches));
 
-        final MatchesByDateDTO result = getApiService().findCurrentMatches();
+        final MatchApi matchApi = getApi(MatchApi.class);
+        final MatchesByDateDTO result = matchApi.findCurrentMatches();
         assertEquals(matchesByDateDTO, result, "Current matches should equal result.");
     }
 

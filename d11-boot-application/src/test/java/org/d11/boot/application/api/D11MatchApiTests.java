@@ -1,9 +1,9 @@
 package org.d11.boot.application.api;
 
+import feign.FeignException;
 import org.d11.boot.api.model.D11MatchDTO;
 import org.d11.boot.api.model.D11MatchesByDateDTO;
 import org.d11.boot.api.model.MatchWeekDTO;
-import org.d11.boot.api.service.D11MatchApiService;
 import org.d11.boot.application.model.D11Match;
 import org.d11.boot.application.model.D11Team;
 import org.d11.boot.application.model.Season;
@@ -11,6 +11,7 @@ import org.d11.boot.application.model.Status;
 import org.d11.boot.application.repository.D11MatchRepository;
 import org.d11.boot.application.service.api.MatchWeekService;
 import org.d11.boot.application.util.D11MatchesByDateMapperConverter;
+import org.d11.boot.client.api.D11MatchApi;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,12 +24,12 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * D11 match API tests.
  */
-public class D11MatchApiTests extends AbstractRepositoryApiTests<D11Match, D11MatchRepository, D11MatchApiService> {
+public class D11MatchApiTests extends AbstractRepositoryApiTests<D11Match, D11MatchRepository> {
 
     /**
      * Used to get current match week for findCurrentMatches test.
@@ -41,16 +42,18 @@ public class D11MatchApiTests extends AbstractRepositoryApiTests<D11Match, D11Ma
      */
     @Test
     public void findD11MatchById() {
+        final D11MatchApi d11MatchApi = getApi(D11MatchApi.class);
         for(final D11Match d11Match : getEntities()) {
-            final D11MatchDTO result = getApiService().findD11MatchById(d11Match.getId());
+            final D11MatchDTO result = d11MatchApi.findD11MatchById(d11Match.getId());
             final D11MatchDTO d11MatchDTO = map(d11Match, D11MatchDTO.class);
 
             assertNotNull(result, "D11 Match by id should not be null.");
             assertEquals(d11MatchDTO, result, "D11 Match by id should equal D11 Match.");
         }
 
-        assertNull(getApiService().findD11MatchById(-1L), "D11 match not found should return null.");
-        assertBadRequest(get("d11-matches", "BAD_REQUEST"));
+        assertThrows(FeignException.NotFound.class,
+                     () -> d11MatchApi.findD11MatchById(-1L),
+                     "D11 match not found should throw NotFound exception.");
     }
 
     /**
@@ -68,6 +71,7 @@ public class D11MatchApiTests extends AbstractRepositoryApiTests<D11Match, D11Ma
             d11Matches.add(d11Match);
         }
 
+        final D11MatchApi d11MatchApi = getApi(D11MatchApi.class);
         for(final Map.Entry<D11Team, Map<Season, List<D11Match>>> d11TeamEntry : d11MatchMap.entrySet()) {
             final D11Team d11Team = d11TeamEntry.getKey();
             for(final Map.Entry<Season, List<D11Match>> seasonEntry : d11TeamEntry.getValue().entrySet()) {
@@ -77,7 +81,7 @@ public class D11MatchApiTests extends AbstractRepositoryApiTests<D11Match, D11Ma
                         .map(D11Match::getId)
                         .collect(Collectors.toList());
 
-                final List<Long> result = getApiService().findD11MatchByD11TeamIdAndSeasonId(d11Team.getId(), season.getId());
+                final List<Long> result = d11MatchApi.findD11MatchByD11TeamIdAndSeasonId(d11Team.getId(), season.getId());
 
                 assertNotNull(result, "Result should not be null.");
                 assertEquals(d11MatchIds.size(), result.size(),
@@ -107,7 +111,8 @@ public class D11MatchApiTests extends AbstractRepositoryApiTests<D11Match, D11Ma
         final D11MatchesByDateDTO d11MatchesByDateDTO = new D11MatchesByDateDTO()
                 .d11Matches(new D11MatchesByDateMapperConverter().convert(d11Matches));
 
-        final D11MatchesByDateDTO result = getApiService().findCurrentD11Matches();
+        final D11MatchApi d11MatchApi = getApi(D11MatchApi.class);
+        final D11MatchesByDateDTO result = d11MatchApi.findCurrentD11Matches();
         assertEquals(d11MatchesByDateDTO, result, "Current D11 matches should equal result.");
     }
 

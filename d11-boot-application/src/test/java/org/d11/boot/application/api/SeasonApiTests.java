@@ -1,17 +1,18 @@
 package org.d11.boot.application.api;
 
+import feign.FeignException;
 import org.d11.boot.api.model.D11TeamSeasonStatStubDTO;
 import org.d11.boot.api.model.PlayerSeasonStatStubDTO;
 import org.d11.boot.api.model.SeasonDTO;
 import org.d11.boot.api.model.SeasonSummaryDTO;
 import org.d11.boot.api.model.TeamSeasonStatStubDTO;
-import org.d11.boot.api.service.SeasonApiService;
 import org.d11.boot.application.model.D11TeamSeasonStat;
 import org.d11.boot.application.model.PlayerSeasonStat;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.TeamSeasonStat;
 import org.d11.boot.application.model.projection.EntityId;
 import org.d11.boot.application.repository.SeasonRepository;
+import org.d11.boot.client.api.SeasonApi;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -23,13 +24,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Season API tests.
  */
-public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRepository, SeasonApiService> {
+public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRepository> {
 
     /**
      * Sets up seasons for the tests to use.
@@ -47,8 +48,9 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
      */
     @Test
     public void findSeasonById() {
+        final SeasonApi seasonApi = getApi(SeasonApi.class);
         for(final Season season : getRepository().findAll()) {
-            final SeasonDTO result = getApiService().findSeasonById(season.getId());
+            final SeasonDTO result = seasonApi.findSeasonById(season.getId());
             final SeasonDTO seasonDTO = map(season, SeasonDTO.class);
             assertNotNull(result, "Season by id should not be null.");
             assertEquals(seasonDTO, result, "Season by id should equal Season.");
@@ -56,8 +58,9 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
                     "Season by id player season stat count should equal season player season stat count.");
         }
 
-        assertNull(getApiService().findSeasonById(-1L), "Season not found should return null.");
-        assertBadRequest(get("BAD_SEASON_REQUEST"));
+        assertThrows(FeignException.NotFound.class,
+                     () -> seasonApi.findSeasonById(-1L),
+                     "Season not found should throw NotFound exception.");
     }
 
     /**
@@ -65,8 +68,9 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
      */
     @Test
     public void findSeasonSummaryById() {
+        final SeasonApi seasonApi = getApi(SeasonApi.class);
         for(final Season season : getRepository().findAll()) {
-            final SeasonSummaryDTO result = getApiService().findSeasonSummaryById(season.getId());
+            final SeasonSummaryDTO result = seasonApi.findSeasonSummaryById(season.getId());
             final SeasonSummaryDTO seasonSummaryDTO = map(season, SeasonSummaryDTO.class);
             assertNotNull(result, "Season summary by id should not be null.");
             assertEquals(seasonSummaryDTO, result, "Season summary by id should equal Season summary.");
@@ -92,8 +96,9 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
             assertEquals(map(d11TeamSeasonStats, D11TeamSeasonStatStubDTO.class), result.getTop3D11TeamSeasonStats(),
                     "Season summary by id top 3 D11 team season stats should equal season top 3 D11 team season stats");
         }
-        assertNull(getApiService().findSeasonSummaryById(-1L), "Season summary not found should return null.");
-        assertBadRequest(get("BAD_SEASON_SUMMARY_REQUEST"));
+        assertThrows(FeignException.NotFound.class,
+                     () -> seasonApi.findSeasonSummaryById(-1L),
+                     "Season summary not found should throw NotFound exception.");
     }
 
     /**
@@ -101,10 +106,11 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
      */
     @Test
     public void findAllSeasons() {
-        final List<Long> ids = getApiService().findAllSeasons();
+        final SeasonApi seasonApi = getApi(SeasonApi.class);
+        final List<Long> ids = seasonApi.findAllSeasons();
         final List<SeasonDTO> result = new ArrayList<>();
 
-        ids.forEach(id -> result.add(getApiService().findSeasonById(id)));
+        ids.forEach(id -> result.add(seasonApi.findSeasonById(id)));
 
         final List<Season> seasons = new ArrayList<>();
         for(final EntityId entityId : getRepository().findByOrderByDateDesc()) {
@@ -122,7 +128,8 @@ public class SeasonApiTests extends AbstractRepositoryApiTests<Season, SeasonRep
      */
     @Test
     public void findCurrentSeason() {
-        final SeasonDTO result = getApiService().findCurrentSeason();
+        final SeasonApi seasonApi = getApi(SeasonApi.class);
+        final SeasonDTO result = seasonApi.findCurrentSeason();
 
         final EntityId entityId = getRepository().findByOrderByDateDesc().get(0);
         final Optional<Season> optional = getRepository().findById(entityId.getId());

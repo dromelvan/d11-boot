@@ -1,9 +1,10 @@
 package org.d11.boot.application.api;
 
+import feign.FeignException;
 import org.d11.boot.api.model.PositionDTO;
-import org.d11.boot.api.service.PositionApiService;
 import org.d11.boot.application.model.Position;
 import org.d11.boot.application.repository.PositionRepository;
+import org.d11.boot.client.api.PositionApi;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -12,12 +13,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Position API tests.
  */
-public class PositionApiTests extends AbstractRepositoryApiTests<Position, PositionRepository, PositionApiService> {
+public class PositionApiTests extends AbstractRepositoryApiTests<Position, PositionRepository> {
 
     /**
      * Sets up positions for the tests to use.
@@ -34,15 +35,17 @@ public class PositionApiTests extends AbstractRepositoryApiTests<Position, Posit
      */
     @Test
     public void findPositionById() {
+        final PositionApi positionApi = getApi(PositionApi.class);
         for(final Position position : getEntities()) {
-            final PositionDTO result = getApiService().findPositionById(position.getId());
+            final PositionDTO result = positionApi.findPositionById(position.getId());
             final PositionDTO positionDTO = map(position, PositionDTO.class);
             assertNotNull(result, "Position by id should not be null.");
             assertEquals(positionDTO, result, "Position by id should equal Position.");
         }
 
-        assertNull(getApiService().findPositionById(-1L), "Position not found should return null.");
-        assertBadRequest(get("BAD_REQUEST"));
+        assertThrows(FeignException.NotFound.class,
+                     () -> positionApi.findPositionById(-1L),
+                     "Position not found should throw NotFound exception.");
     }
 
     /**
@@ -50,7 +53,8 @@ public class PositionApiTests extends AbstractRepositoryApiTests<Position, Posit
      */
     @Test
     public void findAllPositions() {
-        final List<PositionDTO> result = getApiService().findAllPositions();
+        final PositionApi positionApi = getApi(PositionApi.class);
+        final List<PositionDTO> result = positionApi.findAllPositions();
 
         final List<PositionDTO> positionDTOs = map(getEntities(), PositionDTO.class);
 

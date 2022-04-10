@@ -1,18 +1,17 @@
 package org.d11.boot.application.api;
 
+import feign.FeignException;
 import org.d11.boot.api.model.InsertPlayerDTO;
 import org.d11.boot.api.model.InsertPlayerResultDTO;
 import org.d11.boot.api.model.PlayerDTO;
 import org.d11.boot.api.model.UpdatePlayerDTO;
-import org.d11.boot.api.service.D11ApiServiceException;
-import org.d11.boot.api.service.PlayerApiService;
 import org.d11.boot.application.model.Player;
 import org.d11.boot.application.model.PlayerSeasonStat;
 import org.d11.boot.application.repository.PlayerRepository;
 import org.d11.boot.application.repository.PlayerSeasonStatRepository;
+import org.d11.boot.client.api.PlayerApi;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 
@@ -26,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Player API tests.
  */
-public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRepository, PlayerApiService> {
+public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRepository> {
 
     /**
      * Player repository used for player admin operation tests.
@@ -44,16 +43,18 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
      */
     @Test
     public void findPlayerById() {
+        final PlayerApi playerApi = getApi(PlayerApi.class);
         for(final Player player : getRepository().findAll()) {
-            final PlayerDTO result = getApiService().findPlayerById(player.getId());
+            final PlayerDTO result = playerApi.findPlayerById(player.getId());
             final PlayerDTO playerDTO = map(player, PlayerDTO.class);
 
             assertNotNull(result, "Player by id should not be null.");
             assertEquals(playerDTO, result, "Player by id should equal Player.");
         }
 
-        assertNull(getApiService().findPlayerById(-1L), "Player not found should return null.");
-        assertBadRequest(get("BAD_REQUEST"));
+        assertThrows(FeignException.NotFound.class,
+                     () -> playerApi.findPlayerById(-1L),
+                     "Player not found should throw NotFound exception.");
     }
 
     /**
@@ -61,11 +62,11 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
      */
     @Test
     public void insertPlayer() {
+        final PlayerApi playerApi = getApi(PlayerApi.class);
         final InsertPlayerDTO insertPlayerDTO = new InsertPlayerDTO();
-        final D11ApiServiceException d11ApiServiceException =
-                assertThrows(D11ApiServiceException.class, () -> getApiService().insertPlayer(insertPlayerDTO));
-        assertEquals(HttpStatus.BAD_REQUEST, d11ApiServiceException.getStatusCode(),
-                "Insert player request with missing properties should result in BAD_REQUEST.");
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerApi.insertPlayer(insertPlayerDTO),
+                     "Insert player request with missing properties should result in BAD_REQUEST.");
 
         insertPlayerDTO
                 .firstName("")
@@ -77,7 +78,7 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
                 .whoscoredId(1L)
                 .dateOfBirth(LocalDate.now())
                 .height(1);
-        InsertPlayerResultDTO insertPlayerResultDTO = getApiService().insertPlayer(insertPlayerDTO);
+        InsertPlayerResultDTO insertPlayerResultDTO = playerApi.insertPlayer(insertPlayerDTO);
 
         assertNotNull(insertPlayerResultDTO, "Invalid input result should not be null.");
         assertNull(insertPlayerResultDTO.getPlayerId(), "Invalid input result player id should be null.");
@@ -89,7 +90,7 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
                 .firstName("FirstName")
                 .lastName("LastName");
 
-        insertPlayerResultDTO = getApiService().insertPlayer(insertPlayerDTO);
+        insertPlayerResultDTO = playerApi.insertPlayer(insertPlayerDTO);
 
         assertNotNull(insertPlayerResultDTO, "Valid input result should not be null.");
         assertNotNull(insertPlayerResultDTO.getPlayerId(), "Valid input result player id should not be null.");
@@ -112,11 +113,11 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
      */
     @Test
     public void updatePlayer() {
+        final PlayerApi playerApi = getApi(PlayerApi.class);
         final UpdatePlayerDTO updatePlayerDTO = new UpdatePlayerDTO();
-        final D11ApiServiceException d11ApiServiceException =
-                assertThrows(D11ApiServiceException.class, () -> getApiService().updatePlayer(updatePlayerDTO));
-        assertEquals(HttpStatus.BAD_REQUEST, d11ApiServiceException.getStatusCode(),
-                "Update player request with missing properties should result in BAD_REQUEST.");
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerApi.updatePlayer(updatePlayerDTO),
+                     "Update player request with missing properties should result in BAD_REQUEST.");
 
         // Add successful tests when we can be bothered figuring out how to not mess up other tests with new data.
     }
