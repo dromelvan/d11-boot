@@ -21,3 +21,23 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         generate_statistics: false
     open-in-view: false
+
+# Hawtio related settings
+management:
+  server:
+    port: 8161
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        hawtio: hawtio
+      exposure:
+        include: hawtio,jolokia
+
+server:
+  error:
+    whitelabel:
+      enabled: false
+
+hawtio:
+  authenticationEnabled: false
