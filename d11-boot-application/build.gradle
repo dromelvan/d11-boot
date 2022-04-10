@@ -45,6 +45,8 @@ dependencies {
 	implementation 'org.apache.camel.springboot:camel-activemq-starter'
 	implementation 'org.apache.camel.springboot:camel-jackson-starter'
 
+	implementation 'org.apache.activemq:artemis-jms-server'
+
 	implementation 'com.auth0:java-jwt:3.11.0'
 	implementation 'com.google.guava:guava:29.0-jre'
 	// Java 8 requires Caffeine 2.x instead of 3.x

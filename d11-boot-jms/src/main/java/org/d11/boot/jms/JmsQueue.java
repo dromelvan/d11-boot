@@ -48,12 +48,6 @@ public enum JmsQueue {
     UPDATE_PLAYER_PHOTOS_REQUEST(UpdatePlayerPhotosRequestMessage.class);
 
     /**
-     * Prefix for all JMS queues.
-     */
-    @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
-    private static final String PREFIX = "D11::";
-
-    /**
      * Class of the message body for a route.
      */
     private final Class<?> bodyClass;
@@ -82,7 +76,7 @@ public enum JmsQueue {
      * @return The name of the queue
      */
     public String getName() {
-        return PREFIX + toString();
+        return toString();
     }
 
 }
