@@ -19,6 +19,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,11 @@ public class Season extends D11Entity implements Comparable<Season> {
     @Positive
     @Column(name = "d11_team_budget")
     private int d11TeamBudget;
+    /**
+     * The maximum number of transfers a D11 team is allowed to make this season. 0 means unlimited.
+     */
+    @PositiveOrZero
+    private int maxTransfers;
     /**
      * Season status.
      */

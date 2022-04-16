@@ -2649,6 +2649,7 @@ components:
         - id
         - name
         - d11TeamBudget
+        - maxTransfers
         - shortName
         - status
         - date
@@ -2665,6 +2666,9 @@ components:
           type: string
           pattern: \d{4}-\d{4}
         d11TeamBudget:
+          type: integer
+          format: int32
+        maxTransfers:
           type: integer
           format: int32
         shortName:

@@ -40,6 +40,10 @@ public class SeasonTests extends D11EasyRandomTests {
         assertFalse(season.isValid(), "Non positive D11 team budget should not be valid.");
         season.setD11TeamBudget(1);
 
+        season.setMaxTransfers(-1);
+        assertFalse(season.isValid(), "Negative max transfers should not be valid.");
+        season.setMaxTransfers(1);
+
         season.setStatus(null);
         assertFalse(season.isValid(), "Null status should not be valid.");
         season.setStatus(Status.PENDING);

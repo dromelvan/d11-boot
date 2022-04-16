@@ -87,7 +87,7 @@ SELECT setval('application_user_id_seq', 1);
 -- We need the old data to be in a 'data' schema.
 -- Seasons
 INSERT INTO season
-SELECT id - 1, name, 500, status, date, legacy, created_at, updated_at FROM data.seasons;
+SELECT id - 1, name, 500, 0, status, date, legacy, created_at, updated_at FROM data.seasons;
 SELECT setval('season_id_seq', (SELECT last_value -1 FROM data.seasons_id_seq));
 
 UPDATE season SET status = 99 WHERE status = 3;
@@ -99,6 +99,9 @@ UPDATE season SET d11_team_budget = 300 WHERE id = 3;
 UPDATE season SET d11_team_budget = 250  WHERE id = 4;
 UPDATE season SET d11_team_budget = 600 WHERE id = 17;
 UPDATE season SET d11_team_budget = 600 WHERE id = 18;
+
+UPDATE season SET max_transfers = 13 WHERE id = 17;
+UPDATE season SET max_transfers = 13 WHERE id = 18;
 
 -- Premier Leagues
 INSERT INTO premier_league

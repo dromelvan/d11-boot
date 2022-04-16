@@ -69,6 +69,7 @@ public class D11EntityRandomParameters extends EasyRandomParameters {
 
         randomize(FieldPredicates.named("name").and(FieldPredicates.inClass(Season.class)), new YearIntervalRandomizer());
         randomize(FieldPredicates.named("d11TeamBudget"), new IntegerRangeRandomizer(1, MAX_POSITIVE));
+        randomize(FieldPredicates.named("maxTransfers"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
 
         randomize(FieldPredicates.named("shirtNumber"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
         randomize(FieldPredicates.named("goals"), new IntegerRangeRandomizer(0, MAX_POSITIVE));
