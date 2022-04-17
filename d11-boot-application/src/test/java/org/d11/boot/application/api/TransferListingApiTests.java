@@ -1,13 +1,19 @@
 package org.d11.boot.application.api;
 
 import feign.FeignException;
+import org.d11.boot.api.model.InsertTransferListingDTO;
+import org.d11.boot.api.model.InsertTransferListingResultDTO;
 import org.d11.boot.api.model.TransferListingDTO;
+import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.TransferDay;
 import org.d11.boot.application.model.TransferListing;
+import org.d11.boot.application.repository.SeasonRepository;
 import org.d11.boot.application.repository.TransferListingRepository;
+import org.d11.boot.application.util.NotFoundException;
 import org.d11.boot.client.api.TransferListingApi;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +32,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Transfer listing API tests.
  */
 public class TransferListingApiTests extends AbstractRepositoryApiTests<TransferListing, TransferListingRepository> {
+
+    /**
+     * Repository used to lookup the current season.
+     */
+    @Autowired
+    private SeasonRepository seasonRepository;
 
     /**
      * Sets up transfer days for the tests to use.
@@ -83,6 +95,46 @@ public class TransferListingApiTests extends AbstractRepositoryApiTests<Transfer
 
         assertTrue(transferListingApi.findTransferListingByTransferDayId(-1L, 1).isEmpty(),
                 "Transfer listings by transfer day id not found should be empty.");
+    }
+
+    /**
+     * Tests the insertTransferListing API operation.
+     */
+    @Test
+    public void insertTransferListing() {
+        final InsertTransferListingDTO insertTransferListingDTO = new InsertTransferListingDTO();
+        assertThrows(FeignException.BadRequest.class,
+                () -> getApi(TransferListingApi.class).insertTransferListing(insertTransferListingDTO),
+                "Insert transfer listing with invalid request throw BadRequest exception.");
+
+        insertTransferListingDTO.setPlayerId(2L);
+
+        assertThrows(FeignException.Forbidden.class,
+                () -> getApi(TransferListingApi.class).insertTransferListing(insertTransferListingDTO),
+                "Insert transfer listing not logged in should throw Forbidden exception.");
+
+        assertThrows(FeignException.Forbidden.class,
+                () -> getUserApi(TransferListingApi.class).insertTransferListing(insertTransferListingDTO),
+                "Insert transfer listing as non admin for not owned D11 team should throw Forbidden exception.");
+
+        insertTransferListingDTO.setPlayerId(1L);
+
+        final InsertTransferListingResultDTO result = getUserApi(TransferListingApi.class).insertTransferListing(insertTransferListingDTO);
+
+        assertNotNull(result, "Transfer listing as non admin should not return null.");
+        assertEquals(insertTransferListingDTO.getPlayerId(), result.getPlayerId(),
+                "Transfer listing as non admin result player id should equal input player id.");
+
+        final Season season = this.seasonRepository.findFirstByOrderByDateDesc().orElseThrow(NotFoundException::new);
+        final int count = getRepository().findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId(2L, 1L).size();
+        assertEquals(season.getMaxTransfers() - count, result.getRemainingTransfers(),
+                "Result remaining transfers should equal season max transfers - current transfer listing count.");
+
+        assertThrows(FeignException.BadRequest.class,
+                () -> getUserApi(TransferListingApi.class).insertTransferListing(insertTransferListingDTO),
+                "Insert transfer listing as non admin for already transfer listed player should throw BadRequest exception.");
+
+        getRepository().deleteById(result.getTransferListingId());
     }
 
 }

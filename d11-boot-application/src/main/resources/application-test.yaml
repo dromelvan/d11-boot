@@ -1,3 +1,10 @@
+app:
+  schedule:
+    updateMatchDatetimes: "-"
+    updateMatchStats: "-"
+    finishMatchStats: "-"
+    updateSquads: "-"
+
 d11:
   api:
     basePath: http://localhost:%d

@@ -10,9 +10,9 @@ import org.d11.boot.application.service.api.PlayerAdminService;
 import org.d11.boot.application.service.api.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 /**
@@ -44,13 +44,13 @@ public class PlayerController extends AbstractRepositoryServiceController<Player
     }
 
     @Override
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<InsertPlayerResultDTO> insertPlayer(@Valid final InsertPlayerDTO insertPlayerDTO) {
         return ResponseEntity.ok(this.playerAdminService.insertPlayer(insertPlayerDTO));
     }
 
     @Override
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<UpdatePlayerResultDTO> updatePlayer(@Valid final UpdatePlayerDTO updatePlayerDTO) {
         return ResponseEntity.ok(this.playerAdminService.updatePlayer(updatePlayerDTO, false));
     }

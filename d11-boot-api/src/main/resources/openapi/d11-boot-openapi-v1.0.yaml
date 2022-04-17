@@ -2281,9 +2281,13 @@ components:
     InsertTransferListingResult:
       type: object
       required:
+        - transferListingId
         - playerId
         - remainingTransfers
       properties:
+        transferListingId:
+          type: integer
+          format: int64
         playerId:
           type: integer
           format: int64

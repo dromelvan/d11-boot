@@ -48,8 +48,8 @@ INSERT INTO player VALUES(6, 1, 666666, 6, 'Foo', '', null, 'foo', '2020-01-01',
 -- INSERT INTO season(
 --     id, name, d11_team_budget, max_transfers, status, date, legacy, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?);
-INSERT INTO season VALUES(1, '2020-2021', 600, 2, 3, '2020-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO season VALUES(2, '2021-2022', 600, 2, 1, '2021-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO season VALUES(1, '2020-2021', 600, 13, 3, '2020-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO season VALUES(2, '2021-2022', 600, 13, 1, '2021-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO premier_league(
 --     id, season_id, name, created_at, updated_at)
@@ -254,8 +254,8 @@ INSERT INTO transfer_day VALUES(3, 2, 1, 3, CURRENT_DATE - 4, '2020-01-01 00:00:
 INSERT INTO transfer_day VALUES(4, 2, 2, 3, CURRENT_DATE - 3, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO transfer_day VALUES(5, 3, 1, 3, CURRENT_DATE - 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO transfer_day VALUES(6, 3, 2, 3, CURRENT_DATE - 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO transfer_day VALUES(7, 4, 1, 2, CURRENT_DATE - 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO transfer_day VALUES(8, 4, 2, 1, CURRENT_DATE + 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO transfer_day VALUES(7, 4, 1, 1, CURRENT_DATE - 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO transfer_day VALUES(8, 4, 2, 0, CURRENT_DATE + 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO transfer_listing(
 --     id, transfer_day_id, player_id, team_id, d11_team_id, position_id, ranking, points, form_points, form_match_points, points_per_appearance, goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, new_player, created_at, updated_at

@@ -21,7 +21,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -79,7 +78,6 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
      * @param insertTransferListingDTO DTO providing id of the player that will be transfer listed.
      * @return Insert transfer listing result with remaining transfer count.
      */
-    @Transactional
     public InsertTransferListingResultDTO insertTransferListing(final InsertTransferListingDTO insertTransferListingDTO) {
         // Get the current transfer day and check that it is pending.
         final TransferDay transferDay = this.transferDayRepository.findFirstByOrderByDatetimeDesc().orElseThrow(NotFoundException::new);
@@ -111,12 +109,13 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
                     });
 
             // Create and save new transfer listing.
-            final TransferListing transferListing = new TransferListing();
+            TransferListing transferListing = new TransferListing();
             transferListing.init(playerSeasonStat);
             transferListing.setTransferDay(transferDay);
-            getJpaRepository().save(transferListing);
+            transferListing = getJpaRepository().save(transferListing);
 
             return new InsertTransferListingResultDTO()
+                    .transferListingId(transferListing.getId())
                     .playerId(transferListing.getPlayer().getId())
                     .remainingTransfers(season.getMaxTransfers() - transferListings.size() - 1);
         }

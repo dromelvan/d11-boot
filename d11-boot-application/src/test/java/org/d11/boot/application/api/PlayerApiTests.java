@@ -62,10 +62,9 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
      */
     @Test
     public void insertPlayer() {
-        final PlayerApi playerApi = getApi(PlayerApi.class);
         final InsertPlayerDTO insertPlayerDTO = new InsertPlayerDTO();
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerApi.insertPlayer(insertPlayerDTO),
+                     () -> getApi(PlayerApi.class).insertPlayer(insertPlayerDTO),
                      "Insert player request with missing properties should result in BAD_REQUEST.");
 
         insertPlayerDTO
@@ -78,6 +77,16 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
                 .whoscoredId(1L)
                 .dateOfBirth(LocalDate.now())
                 .height(1);
+
+        assertThrows(FeignException.Forbidden.class,
+                     () -> getApi(PlayerApi.class).insertPlayer(insertPlayerDTO),
+                     "Insert player request without authorization should result in FORBIDDEN.");
+
+        assertThrows(FeignException.Forbidden.class,
+                     () -> getUserApi(PlayerApi.class).insertPlayer(insertPlayerDTO),
+                     "Insert player request with user authorization should result in FORBIDDEN.");
+
+        final PlayerApi playerApi = getAdministratorApi(PlayerApi.class);
         InsertPlayerResultDTO insertPlayerResultDTO = playerApi.insertPlayer(insertPlayerDTO);
 
         assertNotNull(insertPlayerResultDTO, "Invalid input result should not be null.");
@@ -113,11 +122,31 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
      */
     @Test
     public void updatePlayer() {
-        final PlayerApi playerApi = getApi(PlayerApi.class);
         final UpdatePlayerDTO updatePlayerDTO = new UpdatePlayerDTO();
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerApi.updatePlayer(updatePlayerDTO),
+                     () -> getApi(PlayerApi.class).updatePlayer(updatePlayerDTO),
                      "Update player request with missing properties should result in BAD_REQUEST.");
+
+        updatePlayerDTO
+                .id(1L)
+                .firstName("Firstname")
+                .lastName("Lastname")
+                .fullName("")
+                .teamId(1L)
+                .d11TeamId(1L)
+                .countryId(1L)
+                .positionId(1L)
+                .whoscoredId(1L)
+                .dateOfBirth(LocalDate.now())
+                .height(1);
+
+        assertThrows(FeignException.Forbidden.class,
+                     () -> getApi(PlayerApi.class).updatePlayer(updatePlayerDTO),
+                     "Update player request without authorization should result in FORBIDDEN.");
+
+        assertThrows(FeignException.Forbidden.class,
+                     () -> getUserApi(PlayerApi.class).updatePlayer(updatePlayerDTO),
+                     "Update player request with user authorization should result in FORBIDDEN.");
 
         // Add successful tests when we can be bothered figuring out how to not mess up other tests with new data.
     }

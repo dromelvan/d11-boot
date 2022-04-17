@@ -78,7 +78,7 @@ public class D11BootService extends MappingProvider implements ApplicationContex
     }
 
     /**
-     * Gets a D11 entity repository of a spcific class.
+     * Gets a D11 entity repository of a specific class.
      *
      * @param repositoryClass The repository class we want an instance of.
      * @param <T> The type of repository class we want an instance of.
