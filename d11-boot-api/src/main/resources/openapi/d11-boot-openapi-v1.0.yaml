@@ -1715,6 +1715,36 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /transfer-listings:
+    post:
+      summary: Insert a new transfer listing.
+      security:
+        - BearerAuth: []
+      operationId: insertTransferListing
+      tags:
+        - transferListing
+      requestBody:
+        description: The transfer listing that will be inserted.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsertTransferListing'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InsertTransferListingResult"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /transfer-bids/{transferBidId}:
     get:
       summary: Find a transfer bid by id.
@@ -2239,6 +2269,27 @@ components:
           type: array
           items:
             type: string
+
+    InsertTransferListing:
+      type: object
+      required:
+        - playerId
+      properties:
+        playerId:
+          type: integer
+          format: int64
+    InsertTransferListingResult:
+      type: object
+      required:
+        - playerId
+        - remainingTransfers
+      properties:
+        playerId:
+          type: integer
+          format: int64
+        remainingTransfers:
+          type: integer
+          format: int32
 
     UpdateTransferDay:
       type: object

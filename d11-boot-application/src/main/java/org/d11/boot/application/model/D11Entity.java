@@ -90,7 +90,8 @@ public class D11Entity {
     @Override
     public boolean equals(final Object object) {
         return object != null
-                && object.getClass().equals(getClass())
+                // Hibernate creates proxy objects so can't use equals.
+                && getClass().isAssignableFrom(object.getClass())
                 && ((D11Entity) object).getId().equals(getId());
     }
 

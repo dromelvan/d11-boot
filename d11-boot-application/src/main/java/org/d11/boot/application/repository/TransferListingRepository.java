@@ -6,12 +6,22 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository for transfer listing entities.
  */
 @Repository
 public interface TransferListingRepository extends D11EntityRepository<TransferListing> {
+
+    /**
+     * Finds a transfer listing for a specific transfer day and player.
+     *
+     * @param transferDayId Id for the transfer day for which transfer listing will be looked up.
+     * @param playerId Id for the player for which transfer listing will be looked up.
+     * @return Transfer listing for the transfer day and player.
+     */
+    Optional<TransferListing> findByTransferDayIdAndPlayerId(@Param("transferDayId") Long transferDayId, @Param("playerId") Long playerId);
 
     /**
      * Finds transfer listings for a specific transfer day ordered by ranking, descending.
@@ -30,5 +40,14 @@ public interface TransferListingRepository extends D11EntityRepository<TransferL
      * @return Transfer listings for the season and player.
      */
     List<TransferListing> findByTransferDayTransferWindowMatchWeekSeasonIdAndPlayerId(@Param("seasonId") Long seasonId, @Param("playerId") Long playerId);
+
+    /**
+     * Finds transfer listings for a specific season and D11 team.
+     *
+     * @param seasonId  Id for the season for which transfer listings will be looked up.
+     * @param d11TeamId Id for the D11 team for which transfer listings will be looked up.
+     * @return Transfer listings for the season and D11 team.
+     */
+    List<TransferListing> findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId(@Param("seasonId") Long seasonId, @Param("d11TeamId") Long d11TeamId);
 
 }

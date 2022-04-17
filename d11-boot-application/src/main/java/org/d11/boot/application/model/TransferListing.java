@@ -85,5 +85,22 @@ public class TransferListing extends PlayerStatSummary {
     @EqualsAndHashCode.Exclude
     private Position position;
 
+    /**
+     * Initializes a transfer listing from a player season stat.
+     *
+     * @param playerSeasonStat The player season stat with values that will be copied to this one.
+     */
+    public void init(final PlayerSeasonStat playerSeasonStat) {
+        super.init(playerSeasonStat);
+
+        this.formPoints = playerSeasonStat.getFormPoints();
+        this.formMatchPoints = playerSeasonStat.getFormMatchPoints();
+
+        this.player = playerSeasonStat.getPlayer();
+        this.team = playerSeasonStat.getTeam();
+        this.d11Team = playerSeasonStat.getD11Team();
+        this.position = playerSeasonStat.getPosition();
+    }
+
 }
 

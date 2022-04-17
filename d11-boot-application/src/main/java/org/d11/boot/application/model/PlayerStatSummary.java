@@ -96,6 +96,29 @@ public class PlayerStatSummary extends PlayerStat {
         this.minutesPlayed = 0;
     }
 
+    /**
+     * Initializes a player stat summary from another player stat summary.
+     *
+     * @param playerStatSummary The player stat summary with values that will be copied to this one.
+     */
+    public void init(final PlayerStatSummary playerStatSummary) {
+        super.init(playerStatSummary);
+
+        this.ranking = playerStatSummary.getRanking();
+        this.pointsPerAppearance = playerStatSummary.getPointsPerAppearance();
+        this.cleanSheets = playerStatSummary.getCleanSheets();
+        this.yellowCards = playerStatSummary.getYellowCards();
+        this.redCards = playerStatSummary.getRedCards();
+        this.substitutionsOn = playerStatSummary.getSubstitutionsOn();
+        this.substitutionsOff = playerStatSummary.getSubstitutionsOff();
+        this.manOfTheMatch = playerStatSummary.getManOfTheMatch();
+        this.sharedManOfTheMatch = playerStatSummary.getSharedManOfTheMatch();
+        this.gamesStarted = playerStatSummary.getGamesStarted();
+        this.gamesSubstitute = playerStatSummary.getGamesSubstitute();
+        this.gamesDidNotParticipate = playerStatSummary.getGamesDidNotParticipate();
+        this.minutesPlayed = playerStatSummary.getMinutesPlayed();
+    }
+
     @Override
     @SuppressWarnings({ "PMD.CyclomaticComplexity", "PMD.NPathComplexity",
                         "checkstyle:CyclomaticComplexity", "checkstyle:NPathComplexity" })

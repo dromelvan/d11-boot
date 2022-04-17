@@ -56,6 +56,20 @@ public class PlayerStat extends D11Entity implements Comparable<PlayerStat> {
     }
 
     /**
+     * Initializes a player stat from another player stat.
+     *
+     * @param playerStat The player stat with values that will be copied to this one.
+     */
+    protected void init(final PlayerStat playerStat) {
+        this.goals = playerStat.getGoals();
+        this.goalAssists = playerStat.getGoalAssists();
+        this.ownGoals = playerStat.getOwnGoals();
+        this.goalsConceded = playerStat.getGoalsConceded();
+        this.rating = playerStat.getRating();
+        this.points = playerStat.getPoints();
+    }
+
+    /**
      * Sets stats from the provided player match stat.
      *
      * @param playerMatchStat The player match stats that will be set in this player stat.
