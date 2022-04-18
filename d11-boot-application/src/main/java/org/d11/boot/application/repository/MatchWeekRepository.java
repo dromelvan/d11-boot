@@ -28,6 +28,14 @@ public interface MatchWeekRepository extends D11EntityRepository<MatchWeek> {
     Optional<MatchWeek> findFirstByDateLessThanEqualOrderByDateDesc(LocalDate date);
 
     /**
+     * Gets the first match week with starting date after a given date.
+     *
+     * @param date The match week starting date cutoff date.
+     * @return Optional with the first match week with starting date after the given cutoff date.
+     */
+    Optional<MatchWeek> findFirstByDateGreaterThanOrderByDateAsc(LocalDate date);
+
+    /**
      * Gets match weeks for a specific season ordered by date.
      *
      * @param seasonId Id for the season for which match weeks will be looked up.

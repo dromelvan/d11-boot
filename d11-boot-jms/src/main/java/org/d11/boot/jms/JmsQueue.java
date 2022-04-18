@@ -1,6 +1,7 @@
 package org.d11.boot.jms;
 
 import org.d11.boot.jms.message.DownloadWhoscoredMatchMessage;
+import org.d11.boot.jms.message.InsertTransferWindowMessage;
 import org.d11.boot.jms.message.TestMessage;
 import org.d11.boot.jms.message.UpdateMatchMessage;
 import org.d11.boot.jms.message.UpdateMatchRequestMessage;
@@ -45,7 +46,11 @@ public enum JmsQueue {
     /**
      * Update player photo request queue to trigger player photo updates.
      */
-    UPDATE_PLAYER_PHOTOS_REQUEST(UpdatePlayerPhotosRequestMessage.class);
+    UPDATE_PLAYER_PHOTOS_REQUEST(UpdatePlayerPhotosRequestMessage.class),
+    /**
+     * Insert transfer window queue to trigger transfer window creation.
+     */
+    INSERT_TRANSFER_WINDOW(InsertTransferWindowMessage.class);
 
     /**
      * Class of the message body for a route.
