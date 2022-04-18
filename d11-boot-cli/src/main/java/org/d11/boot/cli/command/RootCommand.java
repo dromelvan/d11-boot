@@ -13,7 +13,8 @@ import java.util.concurrent.Callable;
         ParseCommand.class,
         UploadCommand.class,
         SquadsCommand.class,
-        PhotosCommand.class
+        PhotosCommand.class,
+        TransferWindowCommand.class
 })
 public class RootCommand implements Callable<Integer> {
 
