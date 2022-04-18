@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.d11.boot.api.AdministrationApi;
 import org.d11.boot.api.model.AdministrationRequestResultDTO;
+import org.d11.boot.api.model.InsertTransferWindowDTO;
 import org.d11.boot.api.model.UploadMatchStatsDTO;
 import org.d11.boot.camel.CamelObjectMapper;
 import org.d11.boot.jms.JmsQueue;
+import org.d11.boot.jms.message.InsertTransferWindowMessage;
 import org.d11.boot.jms.message.UpdateMatchMessage;
 import org.d11.boot.jms.message.UpdatePlayerPhotosRequestMessage;
 import org.d11.boot.jms.message.UpdateSquadsRequestMessage;
@@ -22,6 +24,11 @@ import javax.annotation.security.RolesAllowed;
  */
 @RestController
 public class AdministrationController implements AdministrationApi {
+
+    /**
+     * Administrator role name.
+     */
+    private static final String ADMIN_ROLE = "ADMIN";
 
     /**
      * JMS template used to put messages on the ActiveMQ queues.
@@ -43,14 +50,14 @@ public class AdministrationController implements AdministrationApi {
     }
 
     @Override
-    @RolesAllowed("ADMIN")
+    @RolesAllowed(ADMIN_ROLE)
     public ResponseEntity<AdministrationRequestResultDTO> updateSquads() {
         sendMessage(JmsQueue.UPDATE_SQUADS_REQUEST, new UpdateSquadsRequestMessage());
         return ResponseEntity.ok(new AdministrationRequestResultDTO().message("Premier League squad update started."));
     }
 
     @Override
-    @RolesAllowed("ADMIN")
+    @RolesAllowed(ADMIN_ROLE)
     public ResponseEntity<AdministrationRequestResultDTO> updatePhotos() {
         sendMessage(JmsQueue.UPDATE_PLAYER_PHOTOS_REQUEST, new UpdatePlayerPhotosRequestMessage());
         return ResponseEntity.ok(new AdministrationRequestResultDTO()
@@ -58,7 +65,7 @@ public class AdministrationController implements AdministrationApi {
     }
 
     @Override
-    @RolesAllowed("ADMIN")
+    @RolesAllowed(ADMIN_ROLE)
     public ResponseEntity<AdministrationRequestResultDTO> uploadMatchStats(final UploadMatchStatsDTO uploadMatchStatsDTO) {
         try {
             final UpdateMatchMessage updateMatchMessage = this.objectMapper.readValue(uploadMatchStatsDTO.getData(),
@@ -69,6 +76,15 @@ public class AdministrationController implements AdministrationApi {
             return ResponseEntity.ok(new AdministrationRequestResultDTO()
                     .message("Could not map uploaded match stats to update match JMS message."));
         }
+    }
+
+    @Override
+    @RolesAllowed(ADMIN_ROLE)
+    public ResponseEntity<AdministrationRequestResultDTO> insertTransferWindow(final InsertTransferWindowDTO insertTransferWindowDTO) {
+        final InsertTransferWindowMessage insertTransferWindowMessage =
+                new InsertTransferWindowMessage(insertTransferWindowDTO.getDatetime(), insertTransferWindowDTO.getTransferDayDelay());
+        sendMessage(JmsQueue.INSERT_TRANSFER_WINDOW, insertTransferWindowMessage);
+        return ResponseEntity.ok(new AdministrationRequestResultDTO().message("Transfer window insert started."));
     }
 
     /**

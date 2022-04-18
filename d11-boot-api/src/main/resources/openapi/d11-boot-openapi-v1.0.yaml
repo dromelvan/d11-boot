@@ -2000,6 +2000,30 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+  /administration/insertTransferWindow:
+    post:
+      summary: Insert a new transfer window.
+      operationId: insertTransferWindow
+      tags:
+        - administration
+      requestBody:
+        description: Transfer window.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsertTransferWindow'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdministrationRequestResult"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
 
 components:
   responses:
@@ -5448,6 +5472,19 @@ components:
       properties:
         data:
           type: string
+
+    InsertTransferWindow:
+      type: object
+      required:
+        - datetime
+        - transferDayDelay
+      properties:
+        datetime:
+          type: string
+          format: date-time
+        transferDayDelay:
+          type: integer
+          format: int32
 
   securitySchemes:
     BearerAuth:
