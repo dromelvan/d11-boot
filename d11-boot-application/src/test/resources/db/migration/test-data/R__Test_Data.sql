@@ -46,10 +46,10 @@ INSERT INTO player VALUES(5, 1, 555555, 5, 'Bar', 'Foo', null, 'bar-foo', '2020-
 INSERT INTO player VALUES(6, 1, 666666, 6, 'Foo', '', null, 'foo', '2020-01-01', 111, '6.png', true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO season(
---     id, name, d11_team_budget, max_transfers, status, date, legacy, created_at, updated_at)
+--     id, name, d11_team_budget, status, date, legacy, created_at, updated_at, max_transfers)
 --     VALUES (?, ?, ?, ?, ?, ?, ?);
-INSERT INTO season VALUES(1, '2020-2021', 600, 13, 3, '2020-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO season VALUES(2, '2021-2022', 600, 13, 1, '2021-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO season VALUES(1, '2020-2021', 600, 3, '2020-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000', 13);
+INSERT INTO season VALUES(2, '2021-2022', 600, 1, '2021-01-01', false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000', 13);
 
 -- INSERT INTO premier_league(
 --     id, season_id, name, created_at, updated_at)
