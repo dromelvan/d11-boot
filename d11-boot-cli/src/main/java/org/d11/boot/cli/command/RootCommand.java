@@ -11,6 +11,7 @@ import java.util.concurrent.Callable;
 @Component
 @Command(name = "d11", version = "4.0.0", mixinStandardHelpOptions = true, subcommands = {
         ParseCommand.class,
+        FixturesCommand.class,
         UploadCommand.class,
         SquadsCommand.class,
         PhotosCommand.class,

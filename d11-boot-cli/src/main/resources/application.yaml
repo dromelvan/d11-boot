@@ -1,6 +1,7 @@
 app:
   route:
     parse: direct:parse
+    fixtures: direct:fixtures
   download.selenium.remoteUrl: http://localhost:4444/wd/hub
 
 spring:
