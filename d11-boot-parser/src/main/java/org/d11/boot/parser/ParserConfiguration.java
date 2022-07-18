@@ -1,5 +1,7 @@
 package org.d11.boot.parser;
 
+import org.d11.boot.parser.fixtures.FixturesParser;
+import org.d11.boot.parser.fixtures.whoscored.v1.WhoScoredFixturesParserV1;
 import org.d11.boot.parser.match.MatchParser;
 import org.d11.boot.parser.match.whoscored.v1.WhoScoredMatchParserV1;
 import org.d11.boot.parser.player.PlayerParser;
@@ -25,6 +27,16 @@ public class ParserConfiguration {
     @Bean
     public MatchParser matchParser() {
         return new WhoScoredMatchParserV1();
+    }
+
+    /**
+     * Provides the fixtures parser implementation used to parse fixtures pages.
+     *
+     * @return The fixtures parser implementation used to parse fixtures pages.
+     */
+    @Bean
+    public FixturesParser fixturesParser() {
+        return new WhoScoredFixturesParserV1();
     }
 
     /**
