@@ -2,6 +2,7 @@ package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.MatchWeekDTO;
 import org.d11.boot.application.model.MatchWeek;
+import org.d11.boot.application.model.Status;
 import org.d11.boot.application.repository.MatchWeekRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,9 @@ public class MatchWeekService extends ApiRepositoryService<MatchWeek, MatchWeekD
      */
     public MatchWeekDTO findCurrentMatchWeek() {
         final LocalDate localDate = LocalDate.now();
-        final Optional<MatchWeek> optional = getJpaRepository().findFirstByDateLessThanEqualOrderByDateDesc(localDate);
+        final Optional<MatchWeek> optional = getJpaRepository().findFirstBySeasonStatusOrderByDateAsc(Status.PENDING)
+                .or(() -> getJpaRepository().findFirstByDateLessThanEqualOrderByDateDesc(localDate));
+
         return mapIfFound(optional.orElse(null));
     }
 

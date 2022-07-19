@@ -1,6 +1,7 @@
 package org.d11.boot.application.repository;
 
 import org.d11.boot.application.model.MatchWeek;
+import org.d11.boot.application.model.Status;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +21,7 @@ public interface MatchWeekRepository extends D11EntityRepository<MatchWeek> {
 
     /**
      * Gets the first match week with starting date before or on a given date.
-     * If the date is today, this match week is the current match week.
+     * If the date is today, this match week is the current match week for an active season.
      *
      * @param date The match week starting date cutoff date.
      * @return Optional with the first match week with starting date before or on the given cutoff date.
@@ -34,6 +35,15 @@ public interface MatchWeekRepository extends D11EntityRepository<MatchWeek> {
      * @return Optional with the first match week with starting date after the given cutoff date.
      */
     Optional<MatchWeek> findFirstByDateGreaterThanOrderByDateAsc(LocalDate date);
+
+    /**
+     * Gets the first match week of a season with the provided status.
+     * This match week is the current match week for a pending season.
+     *
+     * @param status The status of the season.
+     * @return Optional with the first match week of a season with the provided status.
+     */
+    Optional<MatchWeek> findFirstBySeasonStatusOrderByDateAsc(Status status);
 
     /**
      * Gets match weeks for a specific season ordered by date.
