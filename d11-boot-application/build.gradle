@@ -46,7 +46,6 @@ dependencies {
 	implementation 'org.apache.camel.springboot:camel-jackson-starter'
 
 	implementation 'org.apache.activemq:artemis-jms-server'
-	implementation 'io.hawt:hawtio-springboot:2.14.5'
 
 	implementation 'com.auth0:java-jwt:3.11.0'
 	implementation 'com.google.guava:guava:29.0-jre'
