@@ -13,7 +13,7 @@ import java.util.Optional;
  * Repository for player season stat entities.
  */
 @Repository
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "checkstyle:LineLength" })
 public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSeasonStat> {
 
     /**
@@ -101,13 +101,13 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
 
     /**
      * Gets player season stats for a specific team and a specific season ordered by player position sort order,
-     * games started, descending, substitutions on, descending and games as substitute, descending.
+     * games started, descending, substitutions on, descending and games as substitute, last name and first name.
      *
      * @param teamId   Id for the team for which player season stats will be looked up.
      * @param seasonId Id for the season for which player season stats will be looked up.
      * @return Player season stats for the team and the season.
      */
-    List<PlayerSeasonStat> findByTeamIdAndSeasonIdOrderByPositionSortOrderAscGamesStartedDescSubstitutionsOnDescGamesSubstituteDescPointsDesc(
+    List<PlayerSeasonStat> findByTeamIdAndSeasonIdOrderByPositionSortOrderAscGamesStartedDescSubstitutionsOnDescGamesSubstituteDescPointsDescPlayerLastNameAscPlayerFirstNameAsc(
             @Param("teamId") Long teamId,
             @Param("seasonId") Long seasonId
     );
@@ -129,7 +129,7 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
      * @param seasonId  Id for the season for which player season stats will be looked up.
      * @return Player season stats for the team and the season.
      */
-    List<PlayerSeasonStat> findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscGamesStartedDescSubstitutionsOnDescGamesSubstituteDescPointsDesc(
+    List<PlayerSeasonStat> findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscGamesStartedDescSubstitutionsOnDescGamesSubstituteDescPointsDescPlayerLastNameAscPlayerFirstNameAsc(
             @Param("d11TeamId") Long d11TeamId,
             @Param("seasonId") Long seasonId
     );

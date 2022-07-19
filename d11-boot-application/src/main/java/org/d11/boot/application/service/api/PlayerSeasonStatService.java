@@ -21,6 +21,7 @@ import java.util.Optional;
  * Provides player season stat services.
  */
 @Service
+@SuppressWarnings("checkstyle:LineLength")
 public class PlayerSeasonStatService extends ApiRepositoryService<PlayerSeasonStat, PlayerSeasonStatDTO, PlayerSeasonStatRepository> {
 
     /**
@@ -57,7 +58,7 @@ public class PlayerSeasonStatService extends ApiRepositoryService<PlayerSeasonSt
      * @return Player season stats for the season, in pages of size 25.
      */
     public List<PlayerSeasonStatDTO> findPlayerSeasonStatBySeasonId(final long seasonId, final int page) {
-        final Pageable pageable = PageRequest.of(page, PlayerSeasonStatService.PAGE_SIZE, Sort.by("ranking"));
+        final Pageable pageable = PageRequest.of(page, PlayerSeasonStatService.PAGE_SIZE, Sort.by("ranking", "playerLastName", "playerFirstName"));
         final List<PlayerSeasonStat> playerSeasonStats = getJpaRepository().findBySeasonId(seasonId, pageable);
         return map(playerSeasonStats);
     }
@@ -84,7 +85,7 @@ public class PlayerSeasonStatService extends ApiRepositoryService<PlayerSeasonSt
      */
     public List<PlayerSeasonStatDTO> findPlayerSeasonStatByTeamIdAndSeasonId(final long teamId, final long seasonId) {
         final List<PlayerSeasonStat> playerSeasonStats = getJpaRepository()
-                .findByTeamIdAndSeasonIdOrderByPositionSortOrderAscGamesStartedDescSubstitutionsOnDescGamesSubstituteDescPointsDesc(teamId, seasonId);
+                .findByTeamIdAndSeasonIdOrderByPositionSortOrderAscGamesStartedDescSubstitutionsOnDescGamesSubstituteDescPointsDescPlayerLastNameAscPlayerFirstNameAsc(teamId, seasonId);
         return map(playerSeasonStats);
     }
 
@@ -98,7 +99,7 @@ public class PlayerSeasonStatService extends ApiRepositoryService<PlayerSeasonSt
      */
     public List<PlayerSeasonStatDTO> findPlayerSeasonStatByD11TeamIdAndSeasonId(final long d11TeamId, final long seasonId) {
         final List<PlayerSeasonStat> playerSeasonStats = getJpaRepository()
-                .findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscGamesStartedDescSubstitutionsOnDescGamesSubstituteDescPointsDesc(d11TeamId, seasonId);
+                .findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscGamesStartedDescSubstitutionsOnDescGamesSubstituteDescPointsDescPlayerLastNameAscPlayerFirstNameAsc(d11TeamId, seasonId);
         return map(playerSeasonStats);
     }
 
