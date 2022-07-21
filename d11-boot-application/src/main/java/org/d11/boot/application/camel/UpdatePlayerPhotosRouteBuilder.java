@@ -7,6 +7,7 @@ import org.d11.boot.application.repository.PlayerRepository;
 import org.d11.boot.application.service.camel.UpdatePlayerService;
 import org.d11.boot.camel.AbstractJmsRouteBuilder;
 import org.d11.boot.camel.processor.WebPageProcessor;
+import org.d11.boot.download.DownloadException;
 import org.d11.boot.download.premierleague.PremierLeagueClubsDownloader;
 import org.d11.boot.download.premierleague.PremierLeaguePlayerPhotoDownloader;
 import org.d11.boot.download.premierleague.PremierLeagueSquadDownloader;
@@ -71,10 +72,13 @@ public class UpdatePlayerPhotosRouteBuilder extends AbstractJmsRouteBuilder {
                 .end();
 
         from("direct:updatePlayerPhoto")
+                .onException(DownloadException.class)
+                    .log(LoggingLevel.ERROR, "Could not download photo for player ${body.name}.")
+                    .handled(true)
+                .end()
                 .routeId("UPDATE_PLAYER_PHOTO")
                 .throttle(1).timePeriodMillis(THROTTLE_DELAY)
                 .log(LoggingLevel.INFO, "Downloading ${body.name} player photo.")
-                .bean(UpdatePlayerService.class, "updatePlayerPhotoFileName(${body})")
                 .process(new PlayerDataPhotoProcessor(this.playerRepository))
                 .bean(PremierLeaguePlayerPhotoDownloader.class, "downloadPlayerPhoto(${body.photoId})")
                 .process(new PlayerPhotoProcessor())
@@ -82,6 +86,7 @@ public class UpdatePlayerPhotosRouteBuilder extends AbstractJmsRouteBuilder {
                     .when(simple("${exchangeProperty.savePhotoFile} == true"))
                         .log(LoggingLevel.DEBUG, "Saving photo file.")
                         .toD("file://files/download/premierleague.com/player/photo?fileName=${exchangeProperty.photoFileName}")
+                        .bean(UpdatePlayerService.class, "updatePlayerPhotoFileName(${exchangeProperty.playerData})")
                     .otherwise()
                         .log(LoggingLevel.DEBUG, "Player photo already exists.");
     }

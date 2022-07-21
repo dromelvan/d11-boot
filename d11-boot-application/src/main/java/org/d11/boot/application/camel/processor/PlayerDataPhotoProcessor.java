@@ -36,6 +36,7 @@ public class PlayerDataPhotoProcessor implements Processor {
     @Override
     public void process(final Exchange exchange) {
         final PlayerData playerData = exchange.getIn().getBody(PlayerData.class);
+        exchange.setProperty("playerData", playerData);
         exchange.setProperty("photoFileCrc", 0L);
 
         try {
