@@ -41,4 +41,13 @@ public interface D11TeamRepository extends D11EntityRepository<D11Team> {
      */
     Optional<D11Team> findByOwnerEmail(@Param("email") String email);
 
+    /**
+     * Gets D11 team owned or co-owned by a specific user.
+     *
+     * @param ownerEmail   Email/username of the owner for which D11 team will be looked up.
+     * @param coOwnerEmail Email/username of the co-owner for which D11 team will be looked up.
+     * @return Optional of D11 team owned or co-owned by the user.
+     */
+    Optional<D11Team> findByOwnerEmailOrCoOwnerEmail(@Param("ownerEmail") String ownerEmail,
+                                                     @Param("coOwnerEmail") String coOwnerEmail);
 }
