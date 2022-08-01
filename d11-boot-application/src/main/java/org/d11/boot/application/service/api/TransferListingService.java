@@ -1,5 +1,7 @@
 package org.d11.boot.application.service.api;
 
+import org.d11.boot.api.model.DeleteTransferListingDTO;
+import org.d11.boot.api.model.DeleteTransferListingResultDTO;
 import org.d11.boot.api.model.InsertTransferListingDTO;
 import org.d11.boot.api.model.InsertTransferListingResultDTO;
 import org.d11.boot.api.model.TransferListingDTO;
@@ -63,7 +65,7 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
      * Gets transfer listings for a specific transfer day.
      *
      * @param transferDayId Id for the transfer day for which transfer listings will be looked up.
-     * @param page Page number (25 per page) for the search result page that will be returned.
+     * @param page          Page number (25 per page) for the search result page that will be returned.
      * @return Transfer listings for the transfer day, in pages of size 25.
      */
     public List<TransferListingDTO> findByTransferDayId(final long transferDayId, final int page) {
@@ -87,8 +89,8 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
 
         final Season season = getCurrentSeason();
         final PlayerSeasonStat playerSeasonStat = this.playerSeasonStatRepository.findByPlayerIdAndSeasonId(
-                    insertTransferListingDTO.getPlayerId(),
-                    season.getId())
+                insertTransferListingDTO.getPlayerId(),
+                season.getId())
                 .orElseThrow(NotFoundException::new);
         final D11Team d11Team = playerSeasonStat.getD11Team();
         final User user = getCurrentUser();
@@ -121,6 +123,47 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
         }
 
         throw new ForbiddenException("User is not owner of player D11 team.");
+    }
+
+    /**
+     * Deletes a transfer listing, provided it exists.
+     *
+     * @param deleteTransferListingDTO DTO providing id of the player that will be un-transfer listed.
+     * @return Delete transfer listing result with remaining transfer count.
+     */
+    public DeleteTransferListingResultDTO deleteTransferListing(final DeleteTransferListingDTO deleteTransferListingDTO) {
+        // Get the current transfer day and check that it is pending.
+        final TransferDay transferDay = this.transferDayRepository.findFirstByOrderByDatetimeDesc().orElseThrow(NotFoundException::new);
+        if(!Status.PENDING.equals(transferDay.getStatus())) {
+            // We'll only get here by trying to cheat. Provide a deliberately vague error message to avoid giving the
+            // perpetrator hints about the transfer listed status of the player.
+            throw new BadRequestException();
+        }
+
+        // Get the transfer listing for the player
+        final TransferListing transferListing =
+                getJpaRepository().findByTransferDayIdAndPlayerId(transferDay.getId(), deleteTransferListingDTO.getPlayerId())
+                        .orElseThrow(BadRequestException::new);
+
+        final User user = getCurrentUser();
+        final D11Team d11Team = transferListing.getD11Team();
+
+        // Check that the current user is authorized to transfer list the player.
+        if(user.isAdministrator()
+            || user.equals(d11Team.getOwner())
+            || user.equals(d11Team.getCoOwner())) {
+            getJpaRepository().delete(transferListing);
+
+            final Season season = getCurrentSeason();
+            final List<TransferListing> transferListings =
+                    getJpaRepository().findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId(season.getId(), d11Team.getId());
+
+            return new DeleteTransferListingResultDTO()
+                    .playerId(deleteTransferListingDTO.getPlayerId())
+                    .remainingTransfers(season.getMaxTransfers() - transferListings.size());
+        }
+
+        throw new BadRequestException();
     }
 
 }

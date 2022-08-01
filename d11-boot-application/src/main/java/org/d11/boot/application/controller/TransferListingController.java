@@ -1,6 +1,8 @@
 package org.d11.boot.application.controller;
 
 import org.d11.boot.api.TransferListingsApi;
+import org.d11.boot.api.model.DeleteTransferListingDTO;
+import org.d11.boot.api.model.DeleteTransferListingResultDTO;
 import org.d11.boot.api.model.InsertTransferListingDTO;
 import org.d11.boot.api.model.InsertTransferListingResultDTO;
 import org.d11.boot.api.model.TransferListingDTO;
@@ -43,6 +45,13 @@ public class TransferListingController extends AbstractRepositoryServiceControll
     public ResponseEntity<InsertTransferListingResultDTO> insertTransferListing(@Valid final InsertTransferListingDTO insertTransferListingDTO) {
         final InsertTransferListingResultDTO insertTransferListingResultDTO = getRepositoryService().insertTransferListing(insertTransferListingDTO);
         return ResponseEntity.ok(insertTransferListingResultDTO);
+    }
+
+    @Override
+    @RolesAllowed({"ADMIN", "USER"})
+    public ResponseEntity<DeleteTransferListingResultDTO> deleteTransferListing(@Valid final DeleteTransferListingDTO deleteTransferListingDTO) {
+        final DeleteTransferListingResultDTO deleteTransferListingResultDTO = getRepositoryService().deleteTransferListing(deleteTransferListingDTO);
+        return ResponseEntity.ok(deleteTransferListingResultDTO);
     }
 
 }

@@ -29,10 +29,12 @@ INSERT INTO d11_team VALUES(1, 1, null, 'D11TeamA', 'ShortA', 'DTA', true, '1.pn
 INSERT INTO d11_team VALUES(2, 2, null, 'D11TeamB', 'ShortB', 'DTB', false, '2.png', '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO "position"(
---     id, name, code, defender, sort_order, created_at, updated_at)
+--     id, name, code, defender, max_count, sort_order, created_at, updated_at)
 --     VALUES (?, ?, ?, ?, ?, ?, ?);
 INSERT INTO position VALUES(1, 'Defender', 'D', 4, true, 1, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO position VALUES(2, 'Non Defender', 'ND', 4, false, 2, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO position VALUES(3, 'Non Defender 2', 'N2', 4, false, 3, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO position VALUES(4, 'Non Defender 3', 'N3', 4, false, 3, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO player(
 --     id, country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified, created_at, updated_at)
@@ -192,6 +194,8 @@ INSERT INTO player_season_stat VALUES (1, 1, 1, 1, 1, 1, 1, 1, 50, 1, 100, 50, '
 INSERT INTO player_season_stat VALUES (2, 2, 1, 2, 2, 2, null, null, 50, 2, 50, 25, '', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 732, 1, 1, 0, 90, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO player_season_stat VALUES (3, 1, 2, 1, 1, 1, 2, 1, 50, 2, 50, 50, '2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 632, 1, 1, 0, 90, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO player_season_stat VALUES (4, 2, 2, 2, 2, 2, 3, 1, 50, 1, 55, 25, '1,2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player_season_stat VALUES (5, 3, 2, 2, 2, 3, 4, 1, 50, 3, 45, 25, '1,2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO player_season_stat VALUES (6, 4, 2, 2, 1, 4, 5, 1, 50, 4, 40, 25, '1,2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO team_match_week_stat(
 --     id, team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points, form_match_points, ranking, previous_ranking, home_matches_played, home_matches_won, home_matches_drawn, home_matches_lost, home_goals_for, home_goals_against, home_goal_difference, home_points, home_ranking, away_matches_played, away_matches_won, away_matches_drawn, away_matches_lost, away_goals_for, away_goals_against, away_goal_difference, away_points, away_ranking, created_at, updated_at)

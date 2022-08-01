@@ -1,6 +1,8 @@
 package org.d11.boot.application.api;
 
 import feign.FeignException;
+import org.d11.boot.api.model.DeleteTransferListingDTO;
+import org.d11.boot.api.model.DeleteTransferListingResultDTO;
 import org.d11.boot.api.model.InsertTransferListingDTO;
 import org.d11.boot.api.model.InsertTransferListingResultDTO;
 import org.d11.boot.api.model.TransferListingDTO;
@@ -22,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -135,6 +138,55 @@ public class TransferListingApiTests extends AbstractRepositoryApiTests<Transfer
                 "Insert transfer listing as non admin for already transfer listed player should throw BadRequest exception.");
 
         getRepository().deleteById(result.getTransferListingId());
+    }
+
+    /**
+     * Tests the deleteTransferListing API operation.
+     */
+    @Test
+    public void deleteTransferListing() {
+        final long notOwnedPlayerId = 3L;
+
+        final DeleteTransferListingDTO deleteTransferListingDTO = new DeleteTransferListingDTO();
+        assertThrows(FeignException.BadRequest.class,
+                () -> getApi(TransferListingApi.class).deleteTransferListing(deleteTransferListingDTO),
+                "Delete transfer listing with invalid request throw BadRequest exception.");
+
+        deleteTransferListingDTO.setPlayerId(notOwnedPlayerId);
+
+        assertThrows(FeignException.Forbidden.class,
+                () -> getApi(TransferListingApi.class).deleteTransferListing(deleteTransferListingDTO),
+                "Delete transfer listing not logged in should throw Forbidden exception.");
+
+        assertThrows(FeignException.BadRequest.class,
+                () -> getUserApi(TransferListingApi.class).deleteTransferListing(deleteTransferListingDTO),
+                "Delete transfer listing not transfer listed player should throw bad request exception.");
+
+        final InsertTransferListingDTO insertTransferListingDTO = new InsertTransferListingDTO().playerId(notOwnedPlayerId);
+        getAdministratorApi(TransferListingApi.class).insertTransferListing(insertTransferListingDTO);
+
+        assertThrows(FeignException.BadRequest.class,
+                () -> getUserApi(TransferListingApi.class).deleteTransferListing(deleteTransferListingDTO),
+                "Delete transfer listing as non admin for not owned D11 team should throw bad request exception.");
+
+        assertDoesNotThrow(() -> getAdministratorApi(TransferListingApi.class).deleteTransferListing(deleteTransferListingDTO),
+                "Delete transfer listing as admin for not owned D11 team should not throw exception.");
+
+        final long ownedPlayerId = 4L;
+        insertTransferListingDTO.setPlayerId(ownedPlayerId);
+        getUserApi(TransferListingApi.class).insertTransferListing(insertTransferListingDTO);
+
+        deleteTransferListingDTO.setPlayerId(ownedPlayerId);
+
+        final DeleteTransferListingResultDTO result = getUserApi(TransferListingApi.class).deleteTransferListing(deleteTransferListingDTO);
+        assertNotNull(result, "Delete transfer listing as non admin should not return null.");
+        assertEquals(deleteTransferListingDTO.getPlayerId(), result.getPlayerId(),
+                "Delete transfer listing as non admin result player id should equal input player id.");
+
+        final Season season = this.seasonRepository.findFirstByOrderByDateDesc().orElseThrow(NotFoundException::new);
+        final int count = getRepository().findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId(season.getId(), 1L).size();
+        assertEquals(season.getMaxTransfers() - count, result.getRemainingTransfers(),
+                "Delete result remaining transfers should equal season max transfers - current transfer listing count.");
     }
 
 }

@@ -1745,6 +1745,35 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/Unexpected'
+    delete:
+      summary: Deletes a transfer listing.
+      security:
+        - BearerAuth: []
+      operationId: deleteTransferListing
+      tags:
+        - transferListing
+      requestBody:
+        description: The transfer listing that will be deleted.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteTransferListing'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteTransferListingResult"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /transfer-bids/{transferBidId}:
     get:
       summary: Find a transfer bid by id.
@@ -2312,6 +2341,27 @@ components:
         transferListingId:
           type: integer
           format: int64
+        playerId:
+          type: integer
+          format: int64
+        remainingTransfers:
+          type: integer
+          format: int32
+
+    DeleteTransferListing:
+      type: object
+      required:
+        - playerId
+      properties:
+        playerId:
+          type: integer
+          format: int64
+    DeleteTransferListingResult:
+      type: object
+      required:
+        - playerId
+        - remainingTransfers
+      properties:
         playerId:
           type: integer
           format: int64
