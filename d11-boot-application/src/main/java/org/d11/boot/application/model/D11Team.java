@@ -8,7 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -60,7 +60,7 @@ public class D11Team extends D11Entity {
     /**
      * The owner of the D11 team.
      */
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name="owner_id", nullable=false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -70,7 +70,7 @@ public class D11Team extends D11Entity {
      * The co owner of the D11 team, if there is one.
      */
     // We need fetch typ LAZY to find D11 teams with null co owners.
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name="co_owner_id", nullable=false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

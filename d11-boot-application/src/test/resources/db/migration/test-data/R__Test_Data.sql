@@ -287,7 +287,7 @@ INSERT INTO transfer_bid VALUES(12, 6, 2, 1, 2, 1, 200, 50, false, '2020-01-01 0
 INSERT INTO transfer_bid VALUES(13, 7, 1, 1, 1, 1, 100, 100, true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO transfer_bid VALUES(14, 7, 2, 1, 2, 1, 200, 50, false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 INSERT INTO transfer_bid VALUES(15, 8, 1, 1, 1, 1, 100, 100, true, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
-INSERT INTO transfer_bid VALUES(16, 8, 2, 1, 2, 1, 200, 50, false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
+INSERT INTO transfer_bid VALUES(16, 8, 2, 2, 2, 1, 200, 50, false, '2020-01-01 00:00:00.000000', '2020-01-01 00:00:00.000000');
 
 -- INSERT INTO transfer(
 --     id, transfer_day_id, player_id, d11_team_id, fee, created_at, updated_at

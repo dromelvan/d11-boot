@@ -1,6 +1,8 @@
 package org.d11.boot.application.api;
 
 import feign.FeignException;
+import org.d11.boot.api.model.InsertTransferBidDTO;
+import org.d11.boot.api.model.InsertTransferBidResultDTO;
 import org.d11.boot.api.model.TransferBidDTO;
 import org.d11.boot.application.model.TransferBid;
 import org.d11.boot.application.model.TransferDay;
@@ -83,6 +85,57 @@ public class TransferBidApiTests extends AbstractRepositoryApiTests<TransferBid,
 
         assertTrue(transferBidApi.findTransferBidByTransferDayId(-1L).isEmpty(),
                 "Transfer bids by transfer day id not found should be empty.");
+    }
+
+    /**
+     * Tests the insertTransferBid API operation.
+     */
+    @Test
+    public void insertTransferBid() {
+        final InsertTransferBidDTO insertTransferBidDTO = new InsertTransferBidDTO();
+        assertThrows(FeignException.BadRequest.class,
+                () -> getApi(TransferBidApi.class).insertTransferBid(insertTransferBidDTO),
+                "Insert transfer bid with invalid request throw BadRequest exception.");
+
+        insertTransferBidDTO.setPlayerId(1L);
+        insertTransferBidDTO.setFee(1);
+
+        assertThrows(FeignException.Forbidden.class,
+                () -> getApi(TransferBidApi.class).insertTransferBid(insertTransferBidDTO),
+                "Insert transfer bid not logged in should throw Forbidden exception.");
+
+        assertThrows(FeignException.BadRequest.class,
+                () -> getUserApi(TransferBidApi.class).insertTransferBid(insertTransferBidDTO),
+                "Insert transfer bid non transfer listed player in should throw BadRequest exception.");
+
+        final int validFee = 10;
+
+        insertTransferBidDTO.setPlayerId(2L);
+        insertTransferBidDTO.setFee(validFee * validFee * validFee);
+
+        assertThrows(FeignException.BadRequest.class,
+                () -> getUserApi(TransferBidApi.class).insertTransferBid(insertTransferBidDTO),
+                "Insert transfer bid too high fee should throw BadRequest exception.");
+
+        insertTransferBidDTO.setFee(1);
+
+        assertThrows(FeignException.BadRequest.class,
+                () -> getUserApi(TransferBidApi.class).insertTransferBid(insertTransferBidDTO),
+                "Insert transfer bid invalid fee should throw BadRequest exception.");
+
+        insertTransferBidDTO.setFee(validFee);
+
+        final InsertTransferBidResultDTO result = getUserApi(TransferBidApi.class).insertTransferBid(insertTransferBidDTO);
+
+        assertNotNull(result, "Transfer bid as non admin should not return null.");
+        assertEquals(insertTransferBidDTO.getPlayerId(), result.getPlayerId(),
+                "Transfer bid as non admin result player id should equal input player id.");
+        assertEquals(insertTransferBidDTO.getFee(), result.getFee(),
+                "Transfer bid as non admin result fee should equal input fee.");
+
+        assertThrows(FeignException.BadRequest.class,
+                () -> getUserApi(TransferBidApi.class).insertTransferBid(insertTransferBidDTO),
+                "Insert transfer bid where bid already exists should throw BadRequest exception.");
     }
 
 }

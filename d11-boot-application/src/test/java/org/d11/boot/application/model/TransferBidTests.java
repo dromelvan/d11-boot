@@ -17,7 +17,11 @@ public class TransferBidTests extends D11EasyRandomTests {
      */
     @Test
     public void isValid() {
+        final int validFee = 25;
+        final int invalidFee = 23;
+
         final TransferBid transferBid = generate(TransferBid.class);
+        transferBid.setFee(validFee);
 
         assertTrue(transferBid.isValid(), "New transfer bid should be valid.");
 
@@ -29,9 +33,11 @@ public class TransferBidTests extends D11EasyRandomTests {
         assertFalse(transferBid.isValid(), "Non positive D11 team ranking should not be valid.");
         transferBid.setD11TeamRanking(1);
 
-        transferBid.setFee(0);
+        transferBid.setFee(-1);
         assertFalse(transferBid.isValid(), "Non positive fee should not be valid.");
-        transferBid.setFee(1);
+        transferBid.setFee(invalidFee);
+        assertFalse(transferBid.isValid(), "Non divisible by 0.5 fee should not be valid.");
+        transferBid.setFee(validFee);
 
         transferBid.setActiveFee(-1);
         assertFalse(transferBid.isValid(), "Negative active fee should not be valid.");
