@@ -18,6 +18,11 @@ import javax.validation.constraints.Positive;
 public class Transfer extends D11Entity {
 
     /**
+     * Number the fee has to be evenly dividable with.
+     */
+    public static final int FEE_DIVISOR = 5;
+
+    /**
      * The fee of the transfer.
      */
     @Positive

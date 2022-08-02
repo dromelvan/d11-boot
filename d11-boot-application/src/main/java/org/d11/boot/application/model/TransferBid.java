@@ -3,6 +3,7 @@ package org.d11.boot.application.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.d11.boot.application.model.validation.TransferFee;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,7 +36,7 @@ public class TransferBid extends D11Entity {
     /**
      * The original fee of the bid.
      */
-    @Positive
+    @TransferFee
     private int fee;
 
     /**
@@ -78,6 +79,12 @@ public class TransferBid extends D11Entity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private D11Team d11Team;
+
+    @Override
+    public void prePersist() {
+        super.prePersist();
+        this.activeFee = this.fee;
+    }
 
 }
 
