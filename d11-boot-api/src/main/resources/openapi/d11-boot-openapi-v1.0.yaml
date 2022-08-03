@@ -2778,6 +2778,7 @@ components:
         - code
         - dummy
         - photoFileName
+        - maxBid
         - owner
         - coOwner
       properties:
@@ -2794,6 +2795,9 @@ components:
           type: boolean
         photoFileName:
           type: string
+        maxBid:
+          type: integer
+          format: int32
         owner:
           $ref: '#/components/schemas/User'
         coOwner:

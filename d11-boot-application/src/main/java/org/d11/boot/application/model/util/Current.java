@@ -59,4 +59,13 @@ public final class Current implements ApplicationContextAware {
         Current.applicationContext = applicationContext;
     }
 
+    /**
+     * Checks if the component is initialized.
+     *
+     * @return True if the component is initialized, false otherwise.
+     */
+    public static boolean isInitialized() {
+        return Current.applicationContext != null;
+    }
+
 }

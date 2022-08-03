@@ -154,8 +154,10 @@ public class D11Team extends D11Entity {
      *
      * @return The max bid the D11 team can make.
      */
+    @SuppressWarnings("PMD.UselessParentheses")
     public int getMaxBid() {
-        if(this.owner == null && this.coOwner == null) {
+        if(!Current.isInitialized()
+            || (this.owner == null && this.coOwner == null)) {
             return 0;
         }
         final int missingPlayers = 11 - (int) getCurrentPlayerSeasonStats().count();
