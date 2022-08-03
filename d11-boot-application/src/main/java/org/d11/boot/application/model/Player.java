@@ -3,6 +3,7 @@ package org.d11.boot.application.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.d11.boot.application.model.util.Current;
 import org.d11.boot.application.util.Parameterizer;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -19,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A Premier League player.
@@ -88,11 +90,20 @@ public class Player extends D11Entity {
     /**
      * Player season stats sorted by ranking for this season.
      */
-    @OneToMany(mappedBy ="player", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.EXTRA)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<PlayerSeasonStat> playerSeasonStats;
+
+    /**
+     * Transfer bids for this player.
+     */
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<TransferBid> transferBids;
 
     /**
      * Returns the player first name plus last name.
@@ -109,11 +120,25 @@ public class Player extends D11Entity {
      * @return The player last name plus the first letter in the first name.
      */
     public String getShortName() {
-        if (getFirstName().isEmpty()) {
+        if(getFirstName().isEmpty()) {
             return getLastName();
         } else {
             return String.format("%s %c", getLastName(), getFirstName().charAt(0)).trim();
         }
+    }
+
+    /**
+     * Gets a transfer bid for the current transfer day made by a specific D11 team, if such a transfer bid exists.
+     *
+     * @param d11TeamId Id of the D11 team for which a transfer bid will be looked up.
+     * @return Optional of the transfer bid if it exists, empty optional if not.
+     */
+    public Optional<TransferBid> getCurrentTransferBidByD11TeamId(final long d11TeamId) {
+        final TransferDay currentTransferDay = Current.getTransferDay();
+        return this.transferBids.stream()
+                .filter(transferBid -> transferBid.getTransferDay().equals(currentTransferDay)
+                                       && transferBid.getD11Team().getId() == d11TeamId)
+                .findFirst();
     }
 
     /**
