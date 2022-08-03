@@ -26,6 +26,7 @@ dependencyManagement {
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
+	compileOnly 'com.google.code.findbugs:findbugs-annotations:3.0.1'
 
     implementation project(':d11-boot-api')
 	implementation project(':d11-boot-jms')
