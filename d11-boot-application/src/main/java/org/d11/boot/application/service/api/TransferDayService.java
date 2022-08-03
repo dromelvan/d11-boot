@@ -125,4 +125,16 @@ public class TransferDayService extends ApiRepositoryService<TransferDay, Transf
                 .errors(errors);
     }
 
+    /**
+     * Updates the status of the current transfer day. Only intended for use in the integration tests.
+     *
+     * @param status The status the current transfer day will be given.
+     */
+    @Transactional
+    public void updateCurrentTransferDayStatusForTest(final Status status) {
+        final TransferDay transferDay = getJpaRepository().findFirstByOrderByDatetimeDesc()
+                .orElseThrow(NotFoundException::new);
+        getJpaRepository().updateStatus(transferDay.getId(), status);
+    }
+
 }

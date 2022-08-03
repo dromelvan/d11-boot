@@ -1,6 +1,9 @@
 package org.d11.boot.application.repository;
 
+import org.d11.boot.application.model.Status;
 import org.d11.boot.application.model.TransferDay;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -27,5 +30,15 @@ public interface TransferDayRepository extends D11EntityRepository<TransferDay> 
      * @return Transfer days for the transfer window.
      */
     List<TransferDay> findByTransferWindowIdOrderByDatetimeDesc(@Param("transferWindowId") Long transferWindowId);
+
+    /**
+     * Upates the status of a transfer day.
+     *
+     * @param transferDayId Id of the transfer day that will be updated.
+     * @param status        The status the transfer day will be given.
+     */
+    @Modifying
+    @Query("update TransferDay transferDay set transferDay.status = ?2 where transferDay.id = ?1")
+    void updateStatus(long transferDayId, Status status);
 
 }

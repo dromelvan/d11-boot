@@ -17,7 +17,18 @@ public class TransferFeeValidator implements ConstraintValidator<TransferFee, In
 
     @Override
     public boolean isValid(final Integer transferFee, final ConstraintValidatorContext constraintValidatorContext) {
-        return transferFee > 0
+        return isValid(transferFee);
+    }
+
+    /**
+     * Checks if an integer is a valid fee.
+     *
+     * @param transferFee The fee that will be validated.
+     * @return True if the fee is valid, false otherwise.
+     */
+    public boolean isValid(final Integer transferFee) {
+        return transferFee != null
+                && transferFee > 0
                 && transferFee % Transfer.FEE_DIVISOR == 0;
     }
 
