@@ -9,6 +9,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.util.Optional;
 
 /**
  * A user than can log in and administer a D11 team, or the whole site if they're an administrator.
@@ -55,5 +56,21 @@ public class User extends D11Entity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private D11Team coOwnedD11Team;
+
+    /**
+     * Gets the D11 team currently owned or co-owned by the user.
+     *
+     * @return Optional of a D11 team if the user owns or co-owns one, empty optional if not.
+     */
+    @SuppressWarnings("PMD.ConfusingTernary")
+    public Optional<D11Team> getD11Team() {
+        if(this.ownedD11Team != null) {
+            return Optional.of(this.ownedD11Team);
+        } else if(this.coOwnedD11Team != null) {
+            return Optional.of(this.coOwnedD11Team);
+        } else {
+            return Optional.empty();
+        }
+    }
 
 }
