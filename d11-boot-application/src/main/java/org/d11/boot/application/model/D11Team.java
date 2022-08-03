@@ -3,16 +3,23 @@ package org.d11.boot.application.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.d11.boot.application.model.util.Current;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * A D11 team.
@@ -75,5 +82,87 @@ public class D11Team extends D11Entity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private User coOwner;
+
+    /**
+     * Player season stats for this D11 team.
+     */
+    @OneToMany(mappedBy = "d11Team", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<PlayerSeasonStat> playerSeasonStats;
+
+    /**
+     * D11 team season stats for this D11 team.
+     */
+    @OneToMany(mappedBy = "d11Team", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<D11TeamSeasonStat> d11TeamSeasonStats;
+
+    /**
+     * Gets the D11 team season stat for this D11 team and the current season.
+     *
+     * @return The current season D11 team season stat.
+     */
+    public Optional<D11TeamSeasonStat> getCurrentD11TeamSeasonStat() {
+        final Season currentSeason = Current.getSeason();
+        return this.d11TeamSeasonStats.stream()
+                .filter(d11TeamSeasonStat -> d11TeamSeasonStat.getSeason().equals(currentSeason))
+                .findFirst();
+    }
+
+    /**
+     * Gets player season stats for this D11 team and the current season.
+     *
+     * @return Player season stats for the current season.
+     */
+    private Stream<PlayerSeasonStat> getCurrentPlayerSeasonStats() {
+        final Season currentSeason = Current.getSeason();
+        return this.playerSeasonStats.stream()
+                .filter(playerSeasonStat -> playerSeasonStat.getSeason().equals(currentSeason));
+    }
+
+    /**
+     * Checks if this D11 team can make a transfer bid for a player with a specific position.
+     *
+     * @param position The position that will be checked.
+     * @return True if the D11 team can make a transfer bid for the position, false otherwise.
+     */
+    public boolean isBiddablePosition(final Position position) {
+        final long positionCount = getCurrentPlayerSeasonStats()
+                .filter(playerSeasonStat -> playerSeasonStat.getPosition().equals(position))
+                .count();
+
+        return positionCount < position.getMaxCount();
+    }
+
+    /**
+     * Gets the current value of the D11 team player squad.
+     *
+     * @return The current value of the D11 team player squad.
+     */
+    public int getValue() {
+        return getCurrentPlayerSeasonStats()
+                .mapToInt(PlayerSeasonStat::getValue)
+                .sum();
+    }
+
+    /**
+     * Gets the max bid the D11 team can make based on the current value of the squad and number of empty spots.
+     *
+     * @return The max bid the D11 team can make.
+     */
+    public int getMaxBid() {
+        if(this.owner == null && this.coOwner == null) {
+            return 0;
+        }
+        final int missingPlayers = 11 - (int) getCurrentPlayerSeasonStats().count();
+
+        return missingPlayers <= 0
+                ? 0
+                : Current.getSeason().getD11TeamBudget() - getValue() - Transfer.FEE_DIVISOR * (missingPlayers - 1);
+    }
 
 }
