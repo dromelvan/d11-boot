@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A transfer day in a transfer window, containing transfer listings, bids and transfers.
@@ -65,6 +66,18 @@ public class TransferDay extends D11Entity implements Comparable<TransferDay> {
     @Override
     public int compareTo(final TransferDay transferDay) {
         return Comparator.comparing(TransferDay::getDatetime).reversed().compare(this, transferDay);
+    }
+
+    /**
+     * Gets a transfer listing for a specific player, if such a transfer listing exists.
+     *
+     * @param playerId Id of the player for which a transfer listing will be looked up.
+     * @return Optional of the transfer listing if it exists, empty optional if not.
+     */
+    public Optional<TransferListing> getTransferListingByPlayerId(final long playerId) {
+        return this.transferListings.stream()
+                .filter(transferListing -> transferListing.getPlayer().getId() == playerId)
+                .findFirst();
     }
 
 }
