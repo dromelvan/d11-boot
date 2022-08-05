@@ -1,5 +1,7 @@
 package org.d11.boot.application.service.api;
 
+import org.d11.boot.api.model.DeleteTransferBidDTO;
+import org.d11.boot.api.model.DeleteTransferBidResultDTO;
 import org.d11.boot.api.model.InsertTransferBidDTO;
 import org.d11.boot.api.model.InsertTransferBidResultDTO;
 import org.d11.boot.api.model.TransferBidDTO;
@@ -14,6 +16,7 @@ import org.d11.boot.application.model.util.Current;
 import org.d11.boot.application.model.validation.TransferFeeValidator;
 import org.d11.boot.application.repository.TransferBidRepository;
 import org.d11.boot.application.util.BadRequestException;
+import org.d11.boot.application.util.ForbiddenException;
 import org.d11.boot.application.util.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -102,6 +105,29 @@ public class TransferBidService extends ApiRepositoryService<TransferBid, Transf
                 .transferBidId(transferBid.getId())
                 .playerId(transferBid.getPlayer().getId())
                 .fee(transferBid.getFee());
+    }
+
+    /**
+     * Deletes a transfer bid.
+     *
+     * @param deleteTransferBidDTO The transfer bid that will be deleted.
+     * @return Delete transfer bid result.
+     */
+    public DeleteTransferBidResultDTO deleteTransferBid(final DeleteTransferBidDTO deleteTransferBidDTO) {
+        final TransferBid transferBid = getJpaRepository().findById(deleteTransferBidDTO.getTransferBidId())
+                .orElseThrow(NotFoundException::new);
+
+        if(!Status.ACTIVE.equals(transferBid.getTransferDay().getStatus())) {
+            throw new BadRequestException("Transfer day is not active.");
+        }
+
+        if(!transferBid.getD11Team().isAdministrator(getCurrentUser())) {
+            throw new ForbiddenException();
+        }
+
+        getJpaRepository().delete(transferBid);
+
+        return map(deleteTransferBidDTO, DeleteTransferBidResultDTO.class);
     }
 
 }

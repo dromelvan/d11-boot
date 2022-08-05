@@ -102,6 +102,18 @@ public class D11Team extends D11Entity {
     private List<D11TeamSeasonStat> d11TeamSeasonStats;
 
     /**
+     * Checks if a user is either an administrator or the owner/co-owner of the D11 team.
+     *
+     * @param user The user that will be checked.
+     * @return True if the user is allowed to administer the team, false if not.
+     */
+    public boolean isAdministrator(final User user) {
+        return user.isAdministrator()
+                || user.equals(getOwner())
+                || user.equals(getCoOwner());
+    }
+
+    /**
      * Gets the D11 team season stat for this D11 team and the current season.
      *
      * @return The current season D11 team season stat.

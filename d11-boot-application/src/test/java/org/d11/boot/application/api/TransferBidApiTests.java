@@ -1,6 +1,8 @@
 package org.d11.boot.application.api;
 
 import feign.FeignException;
+import org.d11.boot.api.model.DeleteTransferBidDTO;
+import org.d11.boot.api.model.DeleteTransferBidResultDTO;
 import org.d11.boot.api.model.InsertTransferBidDTO;
 import org.d11.boot.api.model.InsertTransferBidResultDTO;
 import org.d11.boot.api.model.TransferBidDTO;
@@ -157,6 +159,47 @@ public class TransferBidApiTests extends AbstractRepositoryApiTests<TransferBid,
         assertThrows(FeignException.BadRequest.class,
                 () -> getUserApi(TransferBidApi.class).insertTransferBid(insertTransferBidDTO),
                 "Insert transfer bid where bid already exists should throw BadRequest exception.");
+    }
+
+    /**
+     * Tests the deleteTransferBid API operation.
+     */
+    @Test
+    public void deleteTransferBid() {
+        final long forbiddenTransferBidId = 14;
+        final long validTransferBidId = 13;
+
+        final DeleteTransferBidDTO deleteTransferBidDTO = new DeleteTransferBidDTO();
+        assertThrows(FeignException.BadRequest.class,
+                () -> getApi(TransferBidApi.class).deleteTransferBid(deleteTransferBidDTO),
+                "Delete transfer bid with invalid request throw BadRequest exception.");
+
+        deleteTransferBidDTO.setTransferBidId(0L);
+        assertThrows(FeignException.NotFound.class,
+                () -> getUserApi(TransferBidApi.class).deleteTransferBid(deleteTransferBidDTO),
+                "Delete non existent transfer bid should throw NotFound exception.");
+
+        deleteTransferBidDTO.setTransferBidId(1L);
+        assertThrows(FeignException.BadRequest.class,
+                () -> getUserApi(TransferBidApi.class).deleteTransferBid(deleteTransferBidDTO),
+                "Delete transfer bid for non active transfer day should throw BadRequest exception.");
+
+        deleteTransferBidDTO.setTransferBidId(forbiddenTransferBidId);
+        assertThrows(FeignException.Forbidden.class,
+                () -> getUserApi(TransferBidApi.class).deleteTransferBid(deleteTransferBidDTO),
+                "Delete transfer bid for non administered team should throw Forbidden exception.");
+
+        deleteTransferBidDTO.setTransferBidId(validTransferBidId);
+
+        final DeleteTransferBidResultDTO result = getUserApi(TransferBidApi.class).deleteTransferBid(deleteTransferBidDTO);
+
+        assertNotNull(result, "Delete transfer bid as non admin should not return null.");
+        assertEquals(deleteTransferBidDTO.getTransferBidId(), result.getTransferBidId(),
+                "Delete transfer bid as non admin result transfer bid id should equal input transfer bid id.");
+
+        assertThrows(FeignException.NotFound.class,
+                () -> getUserApi(TransferBidApi.class).deleteTransferBid(deleteTransferBidDTO),
+                "Delete already deleted transfer bid should throw NotFound exception.");
     }
 
 }

@@ -1,6 +1,8 @@
 package org.d11.boot.application.controller;
 
 import org.d11.boot.api.TransferBidsApi;
+import org.d11.boot.api.model.DeleteTransferBidDTO;
+import org.d11.boot.api.model.DeleteTransferBidResultDTO;
 import org.d11.boot.api.model.InsertTransferBidDTO;
 import org.d11.boot.api.model.InsertTransferBidResultDTO;
 import org.d11.boot.api.model.TransferBidDTO;
@@ -43,6 +45,13 @@ public class TransferBidController extends AbstractRepositoryServiceController<T
     public ResponseEntity<InsertTransferBidResultDTO> insertTransferBid(@Valid final InsertTransferBidDTO insertTransferBidDTO) {
         final InsertTransferBidResultDTO insertTransferBidResultDTO = getRepositoryService().insertTransferBid(insertTransferBidDTO);
         return ResponseEntity.ok(insertTransferBidResultDTO);
+    }
+
+    @Override
+    @RolesAllowed({"ADMIN", "USER"})
+    public ResponseEntity<DeleteTransferBidResultDTO> deleteTransferBid(@Valid final DeleteTransferBidDTO deleteTransferBidDTO) {
+        final DeleteTransferBidResultDTO deleteTransferBidResultDTO = getRepositoryService().deleteTransferBid(deleteTransferBidDTO);
+        return ResponseEntity.ok(deleteTransferBidResultDTO);
     }
 
 }

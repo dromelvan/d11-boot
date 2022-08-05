@@ -1875,6 +1875,33 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/Unexpected'
+    delete:
+      summary: Delete a transfer bid.
+      security:
+        - BearerAuth: []
+      operationId: deleteTransferBid
+      tags:
+        - transferBid
+      requestBody:
+        description: The transfer bid that will be deleted.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteTransferBid'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteTransferBidResult"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /transfers/{transferId}:
     get:
       summary: Find a transfer by id.
@@ -2442,6 +2469,23 @@ components:
         fee:
           type: integer
           format: int32
+
+    DeleteTransferBid:
+      type: object
+      required:
+        - transferBidId
+      properties:
+        transferBidId:
+          type: integer
+          format: int64
+    DeleteTransferBidResult:
+      type: object
+      required:
+        - transferBidId
+      properties:
+        transferBidId:
+          type: integer
+          format: int64
 
     UpdateTransferDay:
       type: object
