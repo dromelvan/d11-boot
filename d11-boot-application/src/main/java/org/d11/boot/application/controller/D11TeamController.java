@@ -38,6 +38,12 @@ public class D11TeamController extends AbstractRepositoryServiceController<D11Te
     }
 
     @Override
+    public ResponseEntity<List<D11TeamDTO>> findD11TeamsByCurrentSeason() {
+        final List<D11TeamDTO> d11Teams = getRepositoryService().findD11TeamsByCurrentSeason();
+        return ResponseEntity.ok(d11Teams);
+    }
+
+    @Override
     public ResponseEntity<List<D11TeamDTO>> findD11TeamBySeasonId(final Long seasonId) {
         final List<D11TeamDTO> d11Teams = getRepositoryService().findD11TeamBySeasonId(seasonId);
         return ResponseEntity.ok(d11Teams);

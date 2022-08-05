@@ -35,6 +35,14 @@ public class D11TeamService extends ApiRepositoryService<D11Team, D11TeamDTO, D1
         return map(d11Teams, D11TeamNameDTO.class);
     }
 
+    /**
+     * Gets D11 teams participating in the current season.
+     *
+     * @return D11 team DTOs participating in the current season.
+     */
+    public List<D11TeamDTO> findD11TeamsByCurrentSeason() {
+        return findD11TeamBySeasonId(getCurrentSeason().getId());
+    }
 
     /**
      * Gets D11 teams participating in a specific season.

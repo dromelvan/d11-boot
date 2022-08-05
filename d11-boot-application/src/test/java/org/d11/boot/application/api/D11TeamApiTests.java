@@ -8,6 +8,8 @@ import org.d11.boot.application.model.D11TeamSeasonStat;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.repository.D11TeamRepository;
 import org.d11.boot.application.repository.D11TeamSeasonStatRepository;
+import org.d11.boot.application.repository.SeasonRepository;
+import org.d11.boot.application.util.NotFoundException;
 import org.d11.boot.client.api.D11TeamApi;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -33,6 +36,11 @@ public class D11TeamApiTests extends AbstractRepositoryApiTests<D11Team, D11Team
      */
     @Autowired
     private D11TeamSeasonStatRepository d11TeamSeasonStatRepository;
+    /**
+     * Repository for looking up the current season.
+     */
+    @Autowired
+    private SeasonRepository seasonRepository;
 
     /**
      * Tests the findD11TeamById API operation.
@@ -94,6 +102,26 @@ public class D11TeamApiTests extends AbstractRepositoryApiTests<D11Team, D11Team
             assertTrue(d11TeamApi.findD11TeamBySeasonId(-1L).isEmpty(),
                     "D11 teams by invalid season id should be empty.");
         }
+    }
+
+    /**
+     * Tests the findD11TeamsByCurrentSeason API operation.
+     */
+    @Test
+    public void findD11TeamsByCurrentSeason() {
+        final Season season = this.seasonRepository.findFirstByOrderByDateDesc().orElseThrow(NotFoundException::new);
+        final List<D11Team> d11Teams = this.d11TeamSeasonStatRepository.findAll().stream()
+                .filter(d11TeamSeasonStat -> d11TeamSeasonStat.getSeason().equals(season))
+                .map(D11TeamSeasonStat::getD11Team)
+                .sorted(Comparator.comparing(D11Team::getName))
+                .collect(Collectors.toList());
+
+        final D11TeamApi d11TeamApi = getApi(D11TeamApi.class);
+        final List<D11TeamDTO> result = d11TeamApi.findD11TeamBySeasonId(season.getId());
+
+        assertNotNull(result, "D11 teams by current season should not be null.");
+        assertEquals(map(d11Teams, D11TeamDTO.class), result,
+                "D11 teams by current season should equal D11 teams.");
     }
 
 }

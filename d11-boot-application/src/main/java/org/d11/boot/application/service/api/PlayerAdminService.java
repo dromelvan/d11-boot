@@ -40,7 +40,7 @@ public class PlayerAdminService extends ApiService {
 
         PlayerSeasonStat playerSeasonStat = new PlayerSeasonStat();
         playerSeasonStat.setPlayer(player);
-        playerSeasonStat.setSeason(getRepository(SeasonRepository.class).findFirstByOrderByDateDesc().orElse(null));
+        playerSeasonStat.setSeason(getCurrentSeason());
         playerSeasonStat.setTeam(getRepository(TeamRepository.class).findById(insertPlayerDTO.getTeamId()).orElse(null));
         playerSeasonStat.setD11Team(getRepository(D11TeamRepository.class).findById(D11Team.DUMMY_D11_TEAM_ID).orElse(null));
         playerSeasonStat.setPosition(getRepository(PositionRepository.class).findById(insertPlayerDTO.getPositionId()).orElse(null));
@@ -74,7 +74,7 @@ public class PlayerAdminService extends ApiService {
             map(updatePlayerDTO, player);
         }
 
-        final Season season = getRepository(SeasonRepository.class).findFirstByOrderByDateDesc().orElseThrow(NotFoundException::new);
+        final Season season = getCurrentSeason();
         PlayerSeasonStat playerSeasonStat = getRepository(PlayerSeasonStatRepository.class).findByPlayerIdAndSeasonId(player.getId(), season.getId())
                 .orElse(new PlayerSeasonStat());
 

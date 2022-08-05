@@ -351,6 +351,23 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /d11-teams/current:
+    get:
+      summary: Finds all D11 teams for the current season.
+      operationId: findD11TeamsByCurrentSeason
+      tags:
+        - d11Team
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/D11Team"
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /d11-teams/season/{seasonId}:
     get:
       summary: Find D11 teams by season id.
