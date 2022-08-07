@@ -68,7 +68,7 @@ public class TransferBidService extends ApiRepositoryService<TransferBid, Transf
             throw new BadRequestException("Current transfer day is not active. Transfer bids not allowed.");
         }
 
-        final User user = getCurrentUser();
+        final User user = getCurrentUser().orElseThrow(NotFoundException::new);
 
         final D11Team d11Team = user.getD11Team()
                 .orElseThrow(() -> new BadRequestException("User does not own a D11 team."));
@@ -121,7 +121,8 @@ public class TransferBidService extends ApiRepositoryService<TransferBid, Transf
             throw new BadRequestException("Transfer day is not active.");
         }
 
-        if(!transferBid.getD11Team().isAdministrator(getCurrentUser())) {
+        final User user = getCurrentUser().orElseThrow(ForbiddenException::new);
+        if(!transferBid.getD11Team().isAdministratedBy(user)) {
             throw new ForbiddenException();
         }
 

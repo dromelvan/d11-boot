@@ -3,10 +3,11 @@ package org.d11.boot.application.service.api;
 import org.d11.boot.application.model.User;
 import org.d11.boot.application.repository.UserRepository;
 import org.d11.boot.application.service.D11BootService;
-import org.d11.boot.application.util.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
+
+import java.util.Optional;
 
 /**
  * Base class for API services.
@@ -24,11 +25,14 @@ public class ApiService extends D11BootService {
      *
      * @return The user authenticated in the current security context.
      */
-    protected User getCurrentUser() {
+    protected Optional<User> getCurrentUser() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final Jwt jwt = (Jwt) authentication.getPrincipal();
-        final UserRepository userRepository = getRepository(UserRepository.class);
-        return userRepository.findByEmail(jwt.getClaimAsString(USERNAME_CLAIM)).orElseThrow(NotFoundException::new);
+        if(authentication.getPrincipal() instanceof Jwt) {
+            final Jwt jwt = (Jwt) authentication.getPrincipal();
+            final UserRepository userRepository = getRepository(UserRepository.class);
+            return userRepository.findByEmail(jwt.getClaimAsString(USERNAME_CLAIM));
+        }
+        return Optional.empty();
     }
 
 }

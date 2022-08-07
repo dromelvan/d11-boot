@@ -93,7 +93,7 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
                 season.getId())
                 .orElseThrow(NotFoundException::new);
         final D11Team d11Team = playerSeasonStat.getD11Team();
-        final User user = getCurrentUser();
+        final User user = getCurrentUser().orElseThrow(NotFoundException::new);
 
         // Check that the current user is authorized to transfer list the player.
         if(user.isAdministrator() || user.equals(d11Team.getOwner()) || user.equals(d11Team.getCoOwner())) {
@@ -145,7 +145,7 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
                 getJpaRepository().findByTransferDayIdAndPlayerId(transferDay.getId(), deleteTransferListingDTO.getPlayerId())
                         .orElseThrow(BadRequestException::new);
 
-        final User user = getCurrentUser();
+        final User user = getCurrentUser().orElseThrow(NotFoundException::new);
         final D11Team d11Team = transferListing.getD11Team();
 
         // Check that the current user is authorized to transfer list the player.
