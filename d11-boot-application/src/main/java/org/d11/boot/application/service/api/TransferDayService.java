@@ -130,11 +130,10 @@ public class TransferDayService extends ApiRepositoryService<TransferDay, Transf
      *
      * @param status The status the current transfer day will be given.
      */
-    @Transactional
     public void updateCurrentTransferDayStatusForTest(final Status status) {
-        final TransferDay transferDay = getJpaRepository().findFirstByOrderByDatetimeDesc()
-                .orElseThrow(NotFoundException::new);
-        getJpaRepository().updateStatus(transferDay.getId(), status);
+        final TransferDay transferDay = getCurrentSeason().getCurrentTransferDay();
+        transferDay.setStatus(status);
+        getJpaRepository().save(transferDay);
     }
 
 }

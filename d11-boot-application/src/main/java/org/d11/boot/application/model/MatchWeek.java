@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Data
 @Entity
-public class MatchWeek extends D11Entity {
+public class MatchWeek extends D11Entity implements Comparable<MatchWeek> {
 
     /**
      * Max match week number.
@@ -69,6 +69,14 @@ public class MatchWeek extends D11Entity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Season season;
+
+    /**
+     * The transfer window associated with this match week.
+     */
+    @OneToOne(mappedBy = "matchWeek")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private TransferWindow transferWindow;
 
     /**
      * The team that was at the top of the league table at the time of this match week.
@@ -155,6 +163,11 @@ public class MatchWeek extends D11Entity {
             }
         }
         return null;
+    }
+
+    @Override
+    public int compareTo(final MatchWeek matchWeek) {
+        return getMatchWeekNumber() - matchWeek.getMatchWeekNumber();
     }
 
 }

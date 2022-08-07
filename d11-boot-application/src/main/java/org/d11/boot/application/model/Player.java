@@ -97,10 +97,17 @@ public class Player extends D11Entity {
     private List<PlayerSeasonStat> playerSeasonStats;
 
     /**
+     * Transfer listings for this player.
+     */
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<TransferListing> transferListings;
+
+    /**
      * Transfer bids for this player.
      */
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.EXTRA)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<TransferBid> transferBids;
@@ -125,6 +132,30 @@ public class Player extends D11Entity {
         } else {
             return String.format("%s %c", getLastName(), getFirstName().charAt(0)).trim();
         }
+    }
+
+    /**
+     * Gets the player season stat for the player and the current season, if such a player season stat exists.
+     *
+     * @return Optional of the player season stat if it exists, empty optional if not.
+     */
+    public Optional<PlayerSeasonStat> getCurrentPlayerSeasonStat() {
+        final Season currentSeason = Current.getSeason();
+        return this.playerSeasonStats.stream()
+                .filter(playerSeasonStat -> playerSeasonStat.getSeason().equals(currentSeason))
+                .findFirst();
+    }
+
+    /**
+     * Checks if the player currently belongs to a D11 team owned or co-owned by a specific user.
+     *
+     * @param user The user that will be checked.
+     * @return True if the player is administrated by the user, false if not.
+     */
+    public boolean isAdministratedBy(final User user) {
+        return getCurrentPlayerSeasonStat()
+                .map(playerSeasonStat -> playerSeasonStat.getD11Team().isAdministratedBy(user))
+                .orElse(false);
     }
 
     /**

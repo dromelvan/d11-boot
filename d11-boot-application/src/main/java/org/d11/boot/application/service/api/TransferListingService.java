@@ -149,7 +149,7 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
         final D11Team d11Team = transferListing.getD11Team();
 
         // Check that the current user is authorized to transfer list the player.
-        if(d11Team.isAdministrator(user)) {
+        if(d11Team.isAdministratedBy(user)) {
             getJpaRepository().delete(transferListing);
 
             final Season season = getCurrentSeason();

@@ -107,7 +107,7 @@ public class D11Team extends D11Entity {
      * @param user The user that will be checked.
      * @return True if the user is allowed to administer the team, false if not.
      */
-    public boolean isAdministrator(final User user) {
+    public boolean isAdministratedBy(final User user) {
         return user.isAdministrator()
                 || user.equals(getOwner())
                 || user.equals(getCoOwner());

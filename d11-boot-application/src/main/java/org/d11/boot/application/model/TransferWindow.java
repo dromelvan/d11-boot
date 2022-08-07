@@ -9,8 +9,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
@@ -52,7 +53,7 @@ public class TransferWindow extends D11Entity implements Comparable<TransferWind
     /**
      * The match week the transfers made in this transfer window will be active from.
      */
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "match_week_id")
     @NotNull
     @ToString.Exclude
@@ -63,6 +64,7 @@ public class TransferWindow extends D11Entity implements Comparable<TransferWind
      * List of transfer days in this transfer window.
      */
     @OneToMany(mappedBy = "transferWindow", cascade = CascadeType.ALL)
+    @OrderBy("transferDayNumber")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<TransferDay> transferDays = new ArrayList<>();
@@ -71,4 +73,5 @@ public class TransferWindow extends D11Entity implements Comparable<TransferWind
     public int compareTo(final TransferWindow transferWindow) {
         return Comparator.comparing(TransferWindow::getDatetime).reversed().compare(this, transferWindow);
     }
+
 }

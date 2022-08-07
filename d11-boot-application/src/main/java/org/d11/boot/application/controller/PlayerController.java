@@ -4,6 +4,7 @@ import org.d11.boot.api.PlayersApi;
 import org.d11.boot.api.model.InsertPlayerDTO;
 import org.d11.boot.api.model.InsertPlayerResultDTO;
 import org.d11.boot.api.model.PlayerDTO;
+import org.d11.boot.api.model.PlayerTransferStatusDTO;
 import org.d11.boot.api.model.UpdatePlayerDTO;
 import org.d11.boot.api.model.UpdatePlayerResultDTO;
 import org.d11.boot.application.service.api.PlayerAdminService;
@@ -41,6 +42,11 @@ public class PlayerController extends AbstractRepositoryServiceController<Player
     @Override
     public ResponseEntity<PlayerDTO> findPlayerById(final Long playerId) {
         return findById(playerId);
+    }
+
+    @Override
+    public ResponseEntity<PlayerTransferStatusDTO> findPlayerTransferStatusById(final Long playerId) {
+        return ResponseEntity.ok(getRepositoryService().findPlayerTransferStatusById(playerId));
     }
 
     @Override

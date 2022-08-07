@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.d11.boot.application.model.converter.StatusConverter;
 import org.d11.boot.application.model.validation.YearInterval;
+import org.d11.boot.application.util.NotFoundException;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Where;
@@ -22,6 +23,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -156,6 +158,23 @@ public class Season extends D11Entity implements Comparable<Season> {
             }
         }
         return null;
+    }
+
+    /**
+     * Gets the current transfer day for this season.
+     *
+     * @return The current transfer day for this season.
+     */
+    public TransferDay getCurrentTransferDay() {
+        return this.matchWeeks.stream()
+                .sorted(Collections.reverseOrder())
+                .filter(matchWeek -> matchWeek.getTransferWindow() != null)
+                .map(matchWeek -> {
+                    final List<TransferDay> transferDays = matchWeek.getTransferWindow().getTransferDays();
+                    return transferDays.get(transferDays.size() - 1);
+                })
+                .findFirst()
+                .orElseThrow(NotFoundException::new);
     }
 
     @Override

@@ -4,6 +4,7 @@ import feign.FeignException;
 import org.d11.boot.api.model.InsertPlayerDTO;
 import org.d11.boot.api.model.InsertPlayerResultDTO;
 import org.d11.boot.api.model.PlayerDTO;
+import org.d11.boot.api.model.PlayerTransferStatusDTO;
 import org.d11.boot.api.model.UpdatePlayerDTO;
 import org.d11.boot.application.model.Player;
 import org.d11.boot.application.model.PlayerSeasonStat;
@@ -149,6 +150,49 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
                      "Update player request with user authorization should result in FORBIDDEN.");
 
         // Add successful tests when we can be bothered figuring out how to not mess up other tests with new data.
+    }
+
+    /**
+     * Tests the findPlayerTransferStatusById operation.
+     */
+    @Test
+    public void findPlayerTransferStatusById() {
+        final long nonTransferListedPlayerId = 1L;
+        final long transferListedPlayerId = 2L;
+
+        assertThrows(FeignException.NotFound.class,
+                () -> getUserApi(PlayerApi.class).findPlayerTransferStatusById(0L),
+                "Find player transfer status non existent player should result in NOT_FOUND.");
+
+        PlayerTransferStatusDTO playerTransferStatusDTO = getApi(PlayerApi.class).findPlayerTransferStatusById(transferListedPlayerId);
+        assertNull(playerTransferStatusDTO.getId(), "Not logged in id should be null.");
+        assertFalse(playerTransferStatusDTO.isTransferListable(), "Not logged in transfer listable should be false.");
+        assertFalse(playerTransferStatusDTO.isTransferListRemovable(), "Not logged in transfer list removable should be false.");
+        assertFalse(playerTransferStatusDTO.isTransferBiddable(), "Not logged in transfer biddable should be false.");
+        assertFalse(playerTransferStatusDTO.isTransferBidRemovable(), "Not logged in transfer bid removable should be false.");
+
+        playerTransferStatusDTO = getUserApi(PlayerApi.class).findPlayerTransferStatusById(transferListedPlayerId);
+        assertEquals(transferListedPlayerId, playerTransferStatusDTO.getId(), "Non owner id should equal player id.");
+        assertFalse(playerTransferStatusDTO.isTransferListable(), "Non owner transfer listable should be false.");
+        assertFalse(playerTransferStatusDTO.isTransferListRemovable(), "Non owner transfer list removable should be false.");
+        assertFalse(playerTransferStatusDTO.isTransferBiddable(), "Non owner transfer biddable should be false.");
+        assertFalse(playerTransferStatusDTO.isTransferBidRemovable(), "Non owner transfer bid removable should be false.");
+
+        playerTransferStatusDTO = getUserApi(PlayerApi.class).findPlayerTransferStatusById(nonTransferListedPlayerId);
+        assertEquals(nonTransferListedPlayerId, playerTransferStatusDTO.getId(), "Not transfer listed id should equal player id.");
+        assertTrue(playerTransferStatusDTO.isTransferListable(), "Not transfer listed transfer listable should be true.");
+        assertFalse(playerTransferStatusDTO.isTransferListRemovable(), "Not transfer listed transfer list removable should be false.");
+        assertFalse(playerTransferStatusDTO.isTransferBiddable(), "Nnt transfer listed transfer biddable should be false.");
+        assertFalse(playerTransferStatusDTO.isTransferBidRemovable(), "Not transfer listed transfer bid removable should be false.");
+
+        playerTransferStatusDTO = getAdministratorApi(PlayerApi.class).findPlayerTransferStatusById(transferListedPlayerId);
+        assertEquals(transferListedPlayerId, playerTransferStatusDTO.getId(), "Transfer listed id should equal player id.");
+        assertFalse(playerTransferStatusDTO.isTransferListable(), "Transfer listed transfer listable should be false.");
+        assertTrue(playerTransferStatusDTO.isTransferListRemovable(), "Transfer listed transfer list removable should be true.");
+        assertFalse(playerTransferStatusDTO.isTransferBiddable(), "Transfer listed transfer biddable should be false.");
+        assertFalse(playerTransferStatusDTO.isTransferBidRemovable(), "Transfer listed transfer bid removable should be false.");
+
+        // TODO Add more tests when we figure out how to get proper test data
     }
 
 }

@@ -63,6 +63,14 @@ public class TransferDay extends D11Entity implements Comparable<TransferDay> {
     @EqualsAndHashCode.Exclude
     private List<TransferListing> transferListings = new ArrayList<>();
 
+    /**
+     * List of transfer bids in this transfer day.
+     */
+    @OneToMany(mappedBy = "transferDay", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<TransferBid> transferBids = new ArrayList<>();
+
     @Override
     public int compareTo(final TransferDay transferDay) {
         return Comparator.comparing(TransferDay::getDatetime).reversed().compare(this, transferDay);
@@ -78,6 +86,29 @@ public class TransferDay extends D11Entity implements Comparable<TransferDay> {
         return this.transferListings.stream()
                 .filter(transferListing -> transferListing.getPlayer().getId() == playerId)
                 .findFirst();
+    }
+
+    /**
+     * Checks if a player is transfer listed this transfer day.
+     *
+     * @param player The player that will be checked.
+     * @return True if the player is transfer listed this transfer day, false if not.
+     */
+    public boolean isTransferListed(final Player player) {
+        return getTransferListingByPlayerId(player.getId()).isPresent();
+    }
+
+    /**
+     * Checks if this transfer day contains a transfer bid for a player by a D11 team.
+     *
+     * @param player The player for which a transfer bid will be looked up.
+     * @param d11Team The D11 team for which a transfer bid will be looked up
+     * @return True if the transfer day contains a transfer bid for the player by the D11 team, false if not.
+     */
+    public boolean hasTransferBid(final Player player, final D11Team d11Team) {
+        return this.transferBids.stream()
+                .anyMatch(transferBid -> transferBid.getPlayer().equals(player)
+                                         && transferBid.getD11Team().equals(d11Team));
     }
 
 }
