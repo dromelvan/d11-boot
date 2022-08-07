@@ -147,7 +147,7 @@
     <module name="BooleanExpressionComplexity"/>
     <module name="ClassDataAbstractionCoupling"/>
     <module name="ClassFanOutComplexity">
-      <property name="max" value="22"/>
+      <property name="max" value="25"/>
     </module>
     <module name="CyclomaticComplexity"/>
     <module name="JavaNCSS"/>
