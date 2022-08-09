@@ -238,6 +238,8 @@ paths:
   /players/{playerId}/transfer-status:
     get:
       summary: Find transfer status of a player by id.
+      security:
+        - BearerAuth: []
       operationId: findPlayerTransferStatusById
       tags:
         - player

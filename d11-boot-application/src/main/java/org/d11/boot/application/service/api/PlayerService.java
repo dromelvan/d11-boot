@@ -35,10 +35,10 @@ public class PlayerService extends ApiRepositoryService<Player, PlayerDTO, Playe
     public PlayerTransferStatusDTO findPlayerTransferStatusById(final long playerId) {
         final PlayerTransferStatusDTO playerTransferStatusDTO = new PlayerTransferStatusDTO();
 
-        getCurrentUser().ifPresent(user -> user.getD11Team().ifPresent(d11Team -> {
-            final Player player = getJpaRepository().findById(playerId).orElseThrow(NotFoundException::new);
-            playerTransferStatusDTO.setId(playerId);
+        final Player player = getJpaRepository().findById(playerId).orElseThrow(NotFoundException::new);
+        playerTransferStatusDTO.setId(playerId);
 
+        getCurrentUser().ifPresent(user -> user.getD11Team().ifPresent(d11Team -> {
             final TransferDay transferDay = getCurrentSeason().getCurrentTransferDay();
 
             if(Status.PENDING.equals(transferDay.getStatus()) && player.isAdministratedBy(user)) {
