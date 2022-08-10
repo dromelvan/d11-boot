@@ -2437,12 +2437,16 @@ components:
       required:
         - transferListingId
         - playerId
+        - d11TeamId
         - remainingTransfers
       properties:
         transferListingId:
           type: integer
           format: int64
         playerId:
+          type: integer
+          format: int64
+        d11TeamId:
           type: integer
           format: int64
         remainingTransfers:
@@ -2461,9 +2465,13 @@ components:
       type: object
       required:
         - playerId
+        - d11TeamId
         - remainingTransfers
       properties:
         playerId:
+          type: integer
+          format: int64
+        d11TeamId:
           type: integer
           format: int64
         remainingTransfers:

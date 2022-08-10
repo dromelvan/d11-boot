@@ -119,6 +119,7 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
             return new InsertTransferListingResultDTO()
                     .transferListingId(transferListing.getId())
                     .playerId(transferListing.getPlayer().getId())
+                    .d11TeamId(transferListing.getD11Team().getId())
                     .remainingTransfers(season.getMaxTransfers() - transferListings.size() - 1);
         }
 
@@ -158,6 +159,7 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
 
             return new DeleteTransferListingResultDTO()
                     .playerId(deleteTransferListingDTO.getPlayerId())
+                    .d11TeamId(d11Team.getId())
                     .remainingTransfers(season.getMaxTransfers() - transferListings.size());
         }
 
