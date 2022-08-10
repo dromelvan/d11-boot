@@ -165,7 +165,7 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
                 "Find player transfer status non existent player should result in NOT_FOUND.");
 
         PlayerTransferStatusDTO playerTransferStatusDTO = getApi(PlayerApi.class).findPlayerTransferStatusById(transferListedPlayerId);
-        assertNull(playerTransferStatusDTO.getId(), "Not logged in id should be null.");
+        assertEquals(transferListedPlayerId, playerTransferStatusDTO.getId(), "Not logged in id should equal player id.");
         assertFalse(playerTransferStatusDTO.isTransferListable(), "Not logged in transfer listable should be false.");
         assertFalse(playerTransferStatusDTO.isTransferListRemovable(), "Not logged in transfer list removable should be false.");
         assertFalse(playerTransferStatusDTO.isTransferBiddable(), "Not logged in transfer biddable should be false.");
