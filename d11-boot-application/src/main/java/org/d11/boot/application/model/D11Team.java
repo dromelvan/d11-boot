@@ -102,6 +102,14 @@ public class D11Team extends D11Entity {
     private List<D11TeamSeasonStat> d11TeamSeasonStats;
 
     /**
+     * Transfer listings for this D11 team.
+     */
+    @OneToMany(mappedBy = "d11Team", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<TransferListing> transferListings;
+
+    /**
      * Checks if a user is either an administrator or the owner/co-owner of the D11 team.
      *
      * @param user The user that will be checked.
@@ -177,6 +185,18 @@ public class D11Team extends D11Entity {
         return missingPlayers <= 0
                 ? 0
                 : Current.getSeason().getD11TeamBudget() - getValue() - Transfer.FEE_DIVISOR * (missingPlayers - 1);
+    }
+
+    /**
+     * Gets the number of remaining transfers for the D11 team for a specific season.
+     *
+     * @param season The season remaining transfer count will be found for.
+     * @return The number of remaining transfers for the D11 team the specific season.
+     */
+    public int getRemainingTransfers(final Season season) {
+        return season.getMaxTransfers() - (int) this.transferListings.stream()
+                .filter(transferListing -> transferListing.getTransferDay().getTransferWindow().getMatchWeek().getSeason().equals(season))
+                .count();
     }
 
 }

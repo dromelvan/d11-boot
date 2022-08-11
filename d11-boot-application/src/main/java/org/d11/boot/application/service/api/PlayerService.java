@@ -43,7 +43,8 @@ public class PlayerService extends ApiRepositoryService<Player, PlayerDTO, Playe
 
             if(Status.PENDING.equals(transferDay.getStatus()) && player.isAdministratedBy(user)) {
                 playerTransferStatusDTO.setTransferListRemovable(transferDay.isTransferListed(player));
-                playerTransferStatusDTO.setTransferListable(!playerTransferStatusDTO.isTransferListRemovable());
+                playerTransferStatusDTO.setTransferListable(!playerTransferStatusDTO.isTransferListRemovable()
+                                                             && d11Team.getRemainingTransfers(getCurrentSeason()) > 0);
             } else if(Status.ACTIVE.equals(transferDay.getStatus())) {
                 playerTransferStatusDTO.setTransferBidRemovable(transferDay.hasTransferBid(player, d11Team));
                 playerTransferStatusDTO.setTransferBiddable(!playerTransferStatusDTO.isTransferBidRemovable());
