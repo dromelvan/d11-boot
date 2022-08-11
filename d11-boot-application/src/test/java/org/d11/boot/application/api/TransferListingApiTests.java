@@ -7,6 +7,7 @@ import org.d11.boot.api.model.InsertTransferListingDTO;
 import org.d11.boot.api.model.InsertTransferListingResultDTO;
 import org.d11.boot.api.model.TransferListingDTO;
 import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.Status;
 import org.d11.boot.application.model.TransferDay;
 import org.d11.boot.application.model.TransferListing;
 import org.d11.boot.application.repository.SeasonRepository;
@@ -98,6 +99,29 @@ public class TransferListingApiTests extends AbstractRepositoryApiTests<Transfer
 
         assertTrue(transferListingApi.findTransferListingByTransferDayId(-1L, 1).isEmpty(),
                 "Transfer listings by transfer day id not found should be empty.");
+    }
+
+    /**
+     * Tests the findPendingTransferListingByD11TeamId API operation.
+     */
+    @Test
+    public void findPendingTransferListingByD11TeamId() {
+        final long transferListingsD11TeamId = 1;
+        final long noTransferListingsD11TeamId = 2;
+
+        assertTrue(getApi(TransferListingApi.class).findPendingTransferListingByD11TeamId(transferListingsD11TeamId).isEmpty(),
+                "Not logged in transfer listings exist should be empty.");
+        assertTrue(getApi(TransferListingApi.class).findPendingTransferListingByD11TeamId(noTransferListingsD11TeamId).isEmpty(),
+                "Not logged in transfer listings do not exist should be empty.");
+
+        final List<TransferListingDTO> result =
+                getUserApi(TransferListingApi.class).findPendingTransferListingByD11TeamId(transferListingsD11TeamId);
+        assertFalse(result.isEmpty(), "Owner transfer listings exist should not be empty.");
+
+        final List<TransferListing> transferListings =
+                getRepository().findByTransferDayStatusAndD11TeamId(Status.PENDING, transferListingsD11TeamId);
+        assertEquals(result, map(transferListings, TransferListingDTO.class),
+                "Result should equal transfer listings for pending transfer day and owned D11 team id.");
     }
 
     /**

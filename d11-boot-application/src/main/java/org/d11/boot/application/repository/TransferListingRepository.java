@@ -1,5 +1,6 @@
 package org.d11.boot.application.repository;
 
+import org.d11.boot.application.model.Status;
 import org.d11.boot.application.model.TransferListing;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
@@ -22,6 +23,15 @@ public interface TransferListingRepository extends D11EntityRepository<TransferL
      * @return Transfer listing for the transfer day and player.
      */
     Optional<TransferListing> findByTransferDayIdAndPlayerId(@Param("transferDayId") Long transferDayId, @Param("playerId") Long playerId);
+
+    /**
+     * Finds transfer listings for a transfer day with a specific status and D11 team.
+     *
+     * @param status Status for the transfer day for which transfer listing will be looked up.
+     * @param d11TeamId Id for the D11 team for which transfer listing will be looked up.
+     * @return Transfer listings for the transfer day and D11 team.
+     */
+    List<TransferListing> findByTransferDayStatusAndD11TeamId(@Param("transferDayStatus") Status status, @Param("d11TeamId") Long d11TeamId);
 
     /**
      * Finds transfer listings for a specific transfer day ordered by ranking, descending.

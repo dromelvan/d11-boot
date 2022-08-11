@@ -1761,6 +1761,37 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /transfer-listings/pending/d11-team/{d11TeamId}:
+    get:
+      summary: Find pending transfer listings by D11 team id.
+      security:
+        - BearerAuth: []
+      operationId: findPendingTransferListingByD11TeamId
+      tags:
+        - transferListing
+      parameters:
+        - name: d11TeamId
+          in: path
+          required: true
+          description: The id of the D11 team that transfer listings will be found for.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TransferListing"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
   /transfer-listings:
     post:
       summary: Insert a new transfer listing.

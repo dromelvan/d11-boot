@@ -41,6 +41,12 @@ public class TransferListingController extends AbstractRepositoryServiceControll
     }
 
     @Override
+    public ResponseEntity<List<TransferListingDTO>> findPendingTransferListingByD11TeamId(final Long d11TeamId) {
+        final List<TransferListingDTO> transferListings = getRepositoryService().findPendingByD11TeamId(d11TeamId);
+        return ResponseEntity.ok(transferListings);
+    }
+
+    @Override
     @RolesAllowed({"ADMIN", "USER"})
     public ResponseEntity<InsertTransferListingResultDTO> insertTransferListing(@Valid final InsertTransferListingDTO insertTransferListingDTO) {
         final InsertTransferListingResultDTO insertTransferListingResultDTO = getRepositoryService().insertTransferListing(insertTransferListingDTO);

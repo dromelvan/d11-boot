@@ -12,6 +12,7 @@ import org.d11.boot.application.model.Status;
 import org.d11.boot.application.model.TransferDay;
 import org.d11.boot.application.model.TransferListing;
 import org.d11.boot.application.model.User;
+import org.d11.boot.application.repository.D11TeamRepository;
 import org.d11.boot.application.repository.PlayerSeasonStatRepository;
 import org.d11.boot.application.repository.TransferDayRepository;
 import org.d11.boot.application.repository.TransferListingRepository;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,25 +42,18 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
      * Repository for looking up current transfer day.
      */
     private final TransferDayRepository transferDayRepository;
-    /**
-     * Repository for looking up player season stats.
-     */
-    private final PlayerSeasonStatRepository playerSeasonStatRepository;
 
     /**
      * Creates a new service.
      *
      * @param transferListingRepository  The repository this service will use.
      * @param transferDayRepository      Repository for looking up current transfer day.
-     * @param playerSeasonStatRepository Repository for looking up player season stats.
      */
     @Autowired
     public TransferListingService(final TransferListingRepository transferListingRepository,
-                                  final TransferDayRepository transferDayRepository,
-                                  final PlayerSeasonStatRepository playerSeasonStatRepository) {
+                                  final TransferDayRepository transferDayRepository) {
         super(transferListingRepository);
         this.transferDayRepository = transferDayRepository;
-        this.playerSeasonStatRepository = playerSeasonStatRepository;
     }
 
     /**
@@ -75,6 +70,24 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
     }
 
     /**
+     * Gets pending transfer listings for a specific D11 team. This method will only produce a result if there is a
+     * current logged in user that can administer the D11 team.
+     *
+     * @param d11TeamId Id for the D11 team day for which transfer listings will be looked up.
+     * @return Pending transfer listings for the D11 team, if the D11 team can be administered by the current user.
+     */
+    public List<TransferListingDTO> findPendingByD11TeamId(final long d11TeamId) {
+        final List<TransferListingDTO> result = new ArrayList<>();
+        getCurrentUser().ifPresent(user -> {
+            final D11Team d11Team = getRepository(D11TeamRepository.class).findById(d11TeamId).orElseThrow(NotFoundException::new);
+            if(d11Team.isAdministratedBy(user)) {
+                result.addAll(map(getJpaRepository().findByTransferDayStatusAndD11TeamId(Status.PENDING, d11TeamId)));
+            }
+        });
+        return result;
+    }
+
+    /**
      * Inserts a new transfer listing, provided it is valid.
      *
      * @param insertTransferListingDTO DTO providing id of the player that will be transfer listed.
@@ -88,7 +101,7 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
         }
 
         final Season season = getCurrentSeason();
-        final PlayerSeasonStat playerSeasonStat = this.playerSeasonStatRepository.findByPlayerIdAndSeasonId(
+        final PlayerSeasonStat playerSeasonStat = getRepository(PlayerSeasonStatRepository.class).findByPlayerIdAndSeasonId(
                 insertTransferListingDTO.getPlayerId(),
                 season.getId())
                 .orElseThrow(NotFoundException::new);
