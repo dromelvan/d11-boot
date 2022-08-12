@@ -3,6 +3,7 @@ package org.d11.boot.application.api;
 import feign.FeignException;
 import org.d11.boot.api.model.D11TeamDTO;
 import org.d11.boot.api.model.D11TeamNameDTO;
+import org.d11.boot.api.model.D11TeamTransferStatusDTO;
 import org.d11.boot.application.model.D11Team;
 import org.d11.boot.application.model.D11TeamSeasonStat;
 import org.d11.boot.application.model.Season;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -122,6 +124,43 @@ public class D11TeamApiTests extends AbstractRepositoryApiTests<D11Team, D11Team
         assertNotNull(result, "D11 teams by current season should not be null.");
         assertEquals(map(d11Teams, D11TeamDTO.class), result,
                 "D11 teams by current season should equal D11 teams.");
+    }
+
+    /**
+     * Tests the findD11TeamTransferStatusById operation.
+     */
+    @Test
+    public void findD11TeamTransferStatusById() {
+        final long teamOneId = 1L;
+        final long teamTwoId = 2L;
+
+        final Season season = this.seasonRepository.findFirstByOrderByDateDesc().orElseThrow(NotFoundException::new);
+
+        final D11TeamTransferStatusDTO notOwnerTeamOne = getApi(D11TeamApi.class).findD11TeamTransferStatusById(teamOneId);
+        assertEquals(season.getMaxTransfers(), notOwnerTeamOne.getRemainingTransfers(),
+                "Not owner team one remaining transfers should equal season max transfers.");
+        assertTrue(notOwnerTeamOne.getPendingTransferListings().isEmpty(),
+                "Not owner team one transfer listings should be empty.");
+
+        final D11TeamTransferStatusDTO ownerTeamOne = getUserApi(D11TeamApi.class).findD11TeamTransferStatusById(teamOneId);
+        assertEquals(season.getMaxTransfers() - 1, ownerTeamOne.getRemainingTransfers(),
+                "Owner team one remaining transfers should equal season max transfers minus 1.");
+        assertFalse(ownerTeamOne.getPendingTransferListings().isEmpty(),
+                "Owner team one transfer listings should not be empty.");
+        assertEquals(ownerTeamOne.getPendingTransferListings().size(), 1,
+                "Owner team one remaining transfers size should equal 1.");
+
+        final D11TeamTransferStatusDTO notOwnerTeamTwo = getApi(D11TeamApi.class).findD11TeamTransferStatusById(teamTwoId);
+        assertEquals(season.getMaxTransfers() - 1, notOwnerTeamTwo.getRemainingTransfers(),
+                "Not owner team two remaining transfers should equal season max transfers minus 1.");
+        assertTrue(notOwnerTeamTwo.getPendingTransferListings().isEmpty(),
+                "Not owner team two transfer listings should be empty.");
+
+        final D11TeamTransferStatusDTO ownerTeamTwo = getAdministratorApi(D11TeamApi.class).findD11TeamTransferStatusById(teamTwoId);
+        assertEquals(season.getMaxTransfers() - 1, ownerTeamTwo.getRemainingTransfers(),
+                "Owner team two remaining transfers should equal season max transfers minus 1.");
+        assertTrue(ownerTeamTwo.getPendingTransferListings().isEmpty(),
+                "Owner team two transfer listings should be empty.");
     }
 
 }

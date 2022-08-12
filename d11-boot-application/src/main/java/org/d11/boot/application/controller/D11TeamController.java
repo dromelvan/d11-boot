@@ -3,6 +3,7 @@ package org.d11.boot.application.controller;
 import org.d11.boot.api.D11TeamsApi;
 import org.d11.boot.api.model.D11TeamDTO;
 import org.d11.boot.api.model.D11TeamNameDTO;
+import org.d11.boot.api.model.D11TeamTransferStatusDTO;
 import org.d11.boot.application.service.api.D11TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,12 @@ public class D11TeamController extends AbstractRepositoryServiceController<D11Te
     public ResponseEntity<List<D11TeamDTO>> findD11TeamBySeasonId(final Long seasonId) {
         final List<D11TeamDTO> d11Teams = getRepositoryService().findD11TeamBySeasonId(seasonId);
         return ResponseEntity.ok(d11Teams);
+    }
+
+    @Override
+    public ResponseEntity<D11TeamTransferStatusDTO> findD11TeamTransferStatusById(final Long d11TeamId) {
+        final D11TeamTransferStatusDTO d11TeamTransferStatusDTO = getRepositoryService().findD11TeamTransferStatusById(d11TeamId);
+        return ResponseEntity.ok(d11TeamTransferStatusDTO);
     }
 
 }

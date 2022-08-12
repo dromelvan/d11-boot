@@ -19,6 +19,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -185,6 +186,30 @@ public class D11Team extends D11Entity {
         return missingPlayers <= 0
                 ? 0
                 : Current.getSeason().getD11TeamBudget() - getValue() - Transfer.FEE_DIVISOR * (missingPlayers - 1);
+    }
+
+    /**
+     * Gets transfer listings made by the D11 team for non pending transfer days a specific season.
+     *
+     * @param season The season for which transfer listings will be looked up.
+     * @return List of pending transfer listings for the D11 team.
+     */
+    public List<TransferListing> getTransferListings(final Season season) {
+        return this.transferListings.stream()
+                .filter(transferListing -> transferListing.getTransferDay().getTransferWindow().getMatchWeek().getSeason().equals(season)
+                                           && !Status.PENDING.equals(transferListing.getTransferDay().getStatus()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets transfer listings made by the D11 team for transfer days with status PENDING.
+     *
+     * @return List of pending transfer listings for the D11 team.
+     */
+    public List<TransferListing> getPendingTransferListings() {
+        return this.transferListings.stream()
+                .filter(transferListing -> Status.PENDING.equals(transferListing.getTransferDay().getStatus()))
+                .collect(Collectors.toList());
     }
 
     /**

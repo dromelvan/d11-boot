@@ -2,8 +2,13 @@ package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.D11TeamDTO;
 import org.d11.boot.api.model.D11TeamNameDTO;
+import org.d11.boot.api.model.D11TeamTransferStatusDTO;
+import org.d11.boot.api.model.TransferListingDTO;
 import org.d11.boot.application.model.D11Team;
+import org.d11.boot.application.model.Season;
+import org.d11.boot.application.model.TransferListing;
 import org.d11.boot.application.repository.D11TeamRepository;
+import org.d11.boot.application.util.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +58,34 @@ public class D11TeamService extends ApiRepositoryService<D11Team, D11TeamDTO, D1
     public List<D11TeamDTO> findD11TeamBySeasonId(final long seasonId) {
         final List<D11Team> d11Teams = getJpaRepository().findByD11TeamSeasonStatSeasonIdOrderByName(seasonId);
         return map(d11Teams);
+    }
+
+    /**
+     * Finds D11 team transfer status for a specific D11 team.
+     *
+     * @param d11TeamId Id of the D11 team for which transfer status will be looked up.
+     * @return Current transfer status for the D11 team.
+     */
+    public D11TeamTransferStatusDTO findD11TeamTransferStatusById(final Long d11TeamId) {
+        final D11TeamTransferStatusDTO d11TeamTransferStatusDTO = new D11TeamTransferStatusDTO();
+
+        final D11Team d11Team = getJpaRepository().findById(d11TeamId).orElseThrow(NotFoundException::new);
+        d11TeamTransferStatusDTO.setId(d11Team.getId());
+
+        final Season season = getCurrentSeason();
+
+        final List<TransferListing> transferListings = d11Team.getTransferListings(season);
+        d11TeamTransferStatusDTO.setRemainingTransfers(season.getMaxTransfers() - transferListings.size());
+
+        getCurrentUser().ifPresent(user -> {
+            if(d11Team.isAdministratedBy(user)) {
+                final List<TransferListing> pendingTransferListings = d11Team.getPendingTransferListings();
+                d11TeamTransferStatusDTO.setPendingTransferListings(map(pendingTransferListings, TransferListingDTO.class));
+                final int remainingTransfers = season.getMaxTransfers() - transferListings.size() - pendingTransferListings.size();
+                d11TeamTransferStatusDTO.setRemainingTransfers(remainingTransfers);
+            }
+        });
+        return d11TeamTransferStatusDTO;
     }
 
 }
