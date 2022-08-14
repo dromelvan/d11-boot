@@ -9,6 +9,7 @@ import org.d11.boot.client.ApiClient;
 import org.d11.boot.client.api.AdministrationApi;
 import org.d11.boot.client.api.AuthenticationApi;
 import org.d11.boot.client.auth.HttpBearerAuth;
+import org.springframework.beans.factory.annotation.Value;
 import picocli.CommandLine.Option;
 
 import java.net.ConnectException;
@@ -30,14 +31,19 @@ public abstract class AbstractFeignCommand extends AbstractCliCommand {
     /**
      * The username that will be used when authenticating.
      */
-    @Option(names = {"-u", "--username"}, description = "The username that will be used when authenticating.")
+    @Option(names = {"-u", "--username"}, description = "The username that will be used when authenticating.", required = true)
     private String username;
     /**
      * The password that will be used when authenticating.
      */
-    @Option(names = {"-p", "--password"}, description = "The password that will be used when authenticating.",
+    @Option(names = {"-p", "--password"}, description = "The password that will be used when authenticating.", required = true,
             interactive = true, prompt = PASSWORD_PROMPT)
     private String password;
+    /**
+     * Base path of the API uri.
+     */
+    @Value("${api.basePath}")
+    private String basePath;
     /**
      * Api client.
      */
@@ -53,6 +59,7 @@ public abstract class AbstractFeignCommand extends AbstractCliCommand {
 
     @Override
     public Integer call() {
+        this.apiClient.setBasePath(this.basePath);
         try {
             final AuthenticationApi authenticationApi = getClient(AuthenticationApi.class);
             final AuthenticationDTO authenticationDTO = new AuthenticationDTO()

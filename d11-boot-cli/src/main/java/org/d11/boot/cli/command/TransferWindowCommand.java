@@ -34,7 +34,7 @@ public class TransferWindowCommand extends AbstractFeignCommand {
     /**
      * The username that will be used when authenticating.
      */
-    @Option(names = {"-de", "--delay"}, description = "Transfer window transfer listing deadline.")
+    @Option(names = {"-y", "--delay"}, description = "Transfer window transfer listing deadline.")
     private int transferDayDelay;
 
     @Override
