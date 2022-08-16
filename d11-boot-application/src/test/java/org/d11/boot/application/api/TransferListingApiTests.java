@@ -76,7 +76,7 @@ public class TransferListingApiTests extends AbstractRepositoryApiTests<Transfer
      * Tests the findTransferListingByTransferDayId API operation.
      */
     @Test
-    public void findTransferDayByTransferWindowId() {
+    public void findTransferListingByTransferDayId() {
         final Map<TransferDay, List<TransferListing>> transferDayMap = new HashMap<>();
         for(final TransferListing transferListing : getEntities()) {
             final List<TransferListing> transferListings = transferDayMap.computeIfAbsent(transferListing.getTransferDay(), p -> new ArrayList<>());
@@ -93,8 +93,12 @@ public class TransferListingApiTests extends AbstractRepositoryApiTests<Transfer
             final List<TransferListingDTO> result = transferListingApi.findTransferListingByTransferDayId(transferDay.getId(), 0);
 
             assertNotNull(result, "Transfer listings by transfer day id should not be null.");
-            assertEquals(map(transferListings, TransferListingDTO.class), result,
-                    "Transfer listings by transfer day id should equal transfer listings.");
+            if(Status.PENDING.equals(transferDay.getStatus())) {
+                assertTrue(result.isEmpty(), "Pending transfer day transfer listings should be empty.");
+            } else {
+                assertEquals(map(transferListings, TransferListingDTO.class), result,
+                        "Transfer listings by transfer day id should equal transfer listings.");
+            }
         }
 
         assertTrue(transferListingApi.findTransferListingByTransferDayId(-1L, 1).isEmpty(),

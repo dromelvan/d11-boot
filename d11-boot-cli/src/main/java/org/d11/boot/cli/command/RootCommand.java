@@ -16,7 +16,8 @@ import java.util.concurrent.Callable;
         UploadCommand.class,
         SquadsCommand.class,
         PhotosCommand.class,
-        TransferWindowCommand.class
+        TransferWindowCommand.class,
+        TransferDayCommand.class
 })
 public class RootCommand implements Callable<Integer> {
 

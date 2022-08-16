@@ -2,7 +2,7 @@ package org.d11.boot.application.service.api;
 
 import org.d11.boot.api.model.TransferDayDTO;
 import org.d11.boot.api.model.UpdateTransferDayResultDTO;
-import org.d11.boot.application.model.PlayerSeasonStat;
+import org.d11.boot.application.model.D11Team;
 import org.d11.boot.application.model.Season;
 import org.d11.boot.application.model.Status;
 import org.d11.boot.application.model.TransferDay;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -90,6 +91,7 @@ public class TransferDayService extends ApiRepositoryService<TransferDay, Transf
     @Transactional
     public UpdateTransferDayResultDTO activateTransferDayByTransferDayId(final long transferDayId) {
         final TransferDay transferDay = getJpaRepository().findById(transferDayId).orElseThrow(NotFoundException::new);
+
         final TransferWindow transferWindow = transferDay.getTransferWindow();
 
         final List<String> errors = new ArrayList<>();
@@ -98,16 +100,26 @@ public class TransferDayService extends ApiRepositoryService<TransferDay, Transf
             transferDay.setStatus(Status.ACTIVE);
             transferWindow.setStatus(Status.ACTIVE);
 
+            final Map<Long, TransferListing> transferListingMap = transferDay.getTransferListings().stream()
+                    .collect(Collectors.toMap(transferListing -> transferListing.getPlayer().getId(),
+                                              transferListing -> transferListing));
             final Season season = transferWindow.getMatchWeek().getSeason();
-            final List<PlayerSeasonStat> playerSeasonStats =
-                    this.playerSeasonStatRepository.findBySeasonIdAndD11TeamDummyOrderByRankingAsc(season.getId(), true);
+            final D11Team dummyD11team = getDummyD11Team();
 
-            final List<TransferListing> transferListings = playerSeasonStats
-                    .stream()
+            final List<TransferListing> transferListings = this.playerSeasonStatRepository.findBySeasonId(season.getId()).stream()
+                    .filter(playerSeasonStat -> playerSeasonStat.getD11Team().isDummy()
+                                                || transferListingMap.containsKey(playerSeasonStat.getPlayer().getId()))
                     .map(playerSeasonStat -> {
-                        final TransferListing transferListing = map(playerSeasonStat, new TransferListing());
-                        transferListing.setId(null);
-                        transferListing.setTransferDay(transferDay);
+                        final TransferListing transferListing;
+                        if(transferListingMap.containsKey(playerSeasonStat.getPlayer().getId())) {
+                            transferListing = transferListingMap.get(playerSeasonStat.getPlayer().getId());
+                            transferListing.init(playerSeasonStat);
+                            playerSeasonStat.setD11Team(dummyD11team);
+                        } else {
+                            transferListing = map(playerSeasonStat, TransferListing.class);
+                            transferListing.setId(null);
+                            transferListing.setTransferDay(transferDay);
+                        }
                         return transferListing;
                     })
                     .collect(Collectors.toList());

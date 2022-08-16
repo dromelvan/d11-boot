@@ -64,8 +64,8 @@ public class TransferListingService extends ApiRepositoryService<TransferListing
      * @return Transfer listings for the transfer day, in pages of size 25.
      */
     public List<TransferListingDTO> findByTransferDayId(final long transferDayId, final int page) {
-        final TransferDay transferDay = this.transferDayRepository.findById(transferDayId).orElseThrow(NotFoundException::new);
-        if(Status.PENDING.equals(transferDay.getStatus())) {
+        final TransferDay transferDay = this.transferDayRepository.findById(transferDayId).orElse(null);
+        if(transferDay == null || Status.PENDING.equals(transferDay.getStatus())) {
             return new ArrayList<>();
         }
         final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("ranking"));

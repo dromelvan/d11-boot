@@ -59,6 +59,7 @@ public abstract class AbstractFeignCommand extends AbstractCliCommand {
 
     @Override
     public Integer call() {
+        preCall();
         this.apiClient.setBasePath(this.basePath);
         try {
             final AuthenticationApi authenticationApi = getClient(AuthenticationApi.class);
@@ -78,6 +79,7 @@ public abstract class AbstractFeignCommand extends AbstractCliCommand {
         } catch(FeignException.Unauthorized | FeignException.Forbidden e) {
             log.error("Authentication failed.");
         }
+        postCall();
         return 0;
     }
 
@@ -87,6 +89,20 @@ public abstract class AbstractFeignCommand extends AbstractCliCommand {
      * @param administrationApi Administration api that will be used in the call.
      */
     protected abstract void call(AdministrationApi administrationApi);
+
+    /**
+     * Called before the actual call method.
+     */
+    protected void preCall() {
+        log.info("Starting {}.", getClass().getSimpleName());
+    }
+
+    /**
+     * Called after the actual call method.
+     */
+    protected void postCall() {
+        log.info("Finished {}}.", getClass().getSimpleName());
+    }
 
     /**
      * Gets a Feign client of a specific class.

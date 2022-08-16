@@ -28,6 +28,14 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
      * Gets player season stats for a season.
      *
      * @param seasonId Id for the season for which player season stats will be looked up.
+     * @return Player season stats for the season.
+     */
+    List<PlayerSeasonStat> findBySeasonId(@Param("seasonId") Long seasonId);
+
+    /**
+     * Gets player season stats for a season.
+     *
+     * @param seasonId Id for the season for which player season stats will be looked up.
      * @param pageable Pageable that defines page number, page size and sorting of the result.
      * @return Player season stats for the season ordered and paged by the pageable.
      */
