@@ -1910,6 +1910,8 @@ paths:
   /transfer-bids/transfer-day/{transferDayId}:
     get:
       summary: Find transfer bids by transfer day id.
+      security:
+        - BearerAuth: []
       operationId: findTransferBidByTransferDayId
       tags:
         - transferBid
@@ -2556,6 +2558,7 @@ components:
         - transferBidId
         - playerId
         - fee
+        - transferDayId
       properties:
         transferBidId:
           type: integer
@@ -2566,6 +2569,9 @@ components:
         fee:
           type: integer
           format: int32
+        transferDayId:
+          type: integer
+          format: int64
 
     DeleteTransferBid:
       type: object
@@ -2579,8 +2585,12 @@ components:
       type: object
       required:
         - transferBidId
+        - transferDayId
       properties:
         transferBidId:
+          type: integer
+          format: int64
+        transferDayId:
           type: integer
           format: int64
 
@@ -2739,6 +2749,7 @@ components:
         - transferListRemovable
         - transferBiddable
         - transferBidRemovable
+        - maxBid
       properties:
         id:
           type: integer
@@ -2755,6 +2766,9 @@ components:
         transferBidRemovable:
           type: boolean
           default: false
+        maxBid:
+          type: integer
+          format: int32
 
     Stadium:
       type: object

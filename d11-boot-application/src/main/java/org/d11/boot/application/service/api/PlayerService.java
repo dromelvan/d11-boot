@@ -6,6 +6,7 @@ import org.d11.boot.application.model.Player;
 import org.d11.boot.application.model.Status;
 import org.d11.boot.application.model.TransferDay;
 import org.d11.boot.application.repository.PlayerRepository;
+import org.d11.boot.application.repository.PlayerSeasonStatRepository;
 import org.d11.boot.application.util.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,13 +18,21 @@ import org.springframework.stereotype.Service;
 public class PlayerService extends ApiRepositoryService<Player, PlayerDTO, PlayerRepository> {
 
     /**
+     * Repository for looking up player season stats.
+     */
+    private final PlayerSeasonStatRepository playerSeasonStatRepository;
+
+    /**
      * Creates a new service.
      *
      * @param playerRepository The repository this service will use.
+     * @param playerSeasonStatRepository The player season stat repository this service will use.
      */
     @Autowired
-    public PlayerService(final PlayerRepository playerRepository) {
+    public PlayerService(final PlayerRepository playerRepository,
+                         final PlayerSeasonStatRepository playerSeasonStatRepository) {
         super(playerRepository);
+        this.playerSeasonStatRepository = playerSeasonStatRepository;
     }
 
     /**
@@ -36,20 +45,26 @@ public class PlayerService extends ApiRepositoryService<Player, PlayerDTO, Playe
         final PlayerTransferStatusDTO playerTransferStatusDTO = new PlayerTransferStatusDTO();
 
         final Player player = getJpaRepository().findById(playerId).orElseThrow(NotFoundException::new);
-        playerTransferStatusDTO.setId(playerId);
 
-        getCurrentUser().ifPresent(user -> user.getD11Team().ifPresent(d11Team -> {
-            final TransferDay transferDay = getCurrentSeason().getCurrentTransferDay();
+        this.playerSeasonStatRepository.findByPlayerIdAndSeasonId(playerId, getCurrentSeason().getId()).ifPresent(playerSeasonStat -> {
+            playerTransferStatusDTO.setId(playerId);
 
-            if(Status.PENDING.equals(transferDay.getStatus()) && player.isAdministratedBy(user)) {
-                playerTransferStatusDTO.setTransferListRemovable(transferDay.isTransferListed(player));
-                playerTransferStatusDTO.setTransferListable(!playerTransferStatusDTO.isTransferListRemovable()
-                                                             && d11Team.getRemainingTransfers(getCurrentSeason()) > 0);
-            } else if(Status.ACTIVE.equals(transferDay.getStatus())) {
-                playerTransferStatusDTO.setTransferBidRemovable(transferDay.hasTransferBid(player, d11Team));
-                playerTransferStatusDTO.setTransferBiddable(!playerTransferStatusDTO.isTransferBidRemovable());
-            }
-        }));
+            getCurrentUser().ifPresent(user -> user.getD11Team().ifPresent(d11Team -> {
+                final TransferDay transferDay = getCurrentSeason().getCurrentTransferDay();
+
+                if(Status.PENDING.equals(transferDay.getStatus()) && player.isAdministratedBy(user)) {
+                    playerTransferStatusDTO.setTransferListRemovable(transferDay.isTransferListed(player));
+                    playerTransferStatusDTO.setTransferListable(!playerTransferStatusDTO.isTransferListRemovable()
+                                                                 && d11Team.getRemainingTransfers(getCurrentSeason()) > 0);
+                } else if(Status.ACTIVE.equals(transferDay.getStatus())
+                        && playerSeasonStat.getD11Team().isDummy()
+                        && d11Team.isBiddablePosition(playerSeasonStat.getPosition())) {
+                    playerTransferStatusDTO.setTransferBidRemovable(transferDay.hasTransferBid(player, d11Team));
+                    playerTransferStatusDTO.setTransferBiddable(!playerTransferStatusDTO.isTransferBidRemovable());
+                    playerTransferStatusDTO.setMaxBid(d11Team.getMaxBid());
+                }
+            }));
+        });
 
         return playerTransferStatusDTO;
     }

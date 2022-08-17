@@ -15,6 +15,7 @@ import org.d11.boot.application.model.User;
 import org.d11.boot.application.model.util.Current;
 import org.d11.boot.application.model.validation.TransferFeeValidator;
 import org.d11.boot.application.repository.TransferBidRepository;
+import org.d11.boot.application.repository.TransferDayRepository;
 import org.d11.boot.application.util.BadRequestException;
 import org.d11.boot.application.util.ForbiddenException;
 import org.d11.boot.application.util.NotFoundException;
@@ -30,13 +31,20 @@ import java.util.List;
 public class TransferBidService extends ApiRepositoryService<TransferBid, TransferBidDTO, TransferBidRepository> {
 
     /**
+     * Repository for looking up current transfer day.
+     */
+    private final TransferDayRepository transferDayRepository;
+
+    /**
      * Creates a new service.
      *
      * @param transferBidRepository The repository this service will use.
+     * @param transferDayRepository Repository for looking up current transfer day.
      */
     @Autowired
-    public TransferBidService(final TransferBidRepository transferBidRepository) {
+    public TransferBidService(final TransferBidRepository transferBidRepository, final TransferDayRepository transferDayRepository) {
         super(transferBidRepository);
+        this.transferDayRepository = transferDayRepository;
     }
 
     /**
@@ -46,7 +54,16 @@ public class TransferBidService extends ApiRepositoryService<TransferBid, Transf
      * @return Transfer bids for the transfer day.
      */
     public List<TransferBidDTO> findByTransferDayId(final long transferDayId) {
+        final TransferDay transferDay = this.transferDayRepository.findById(transferDayId).orElseThrow(NotFoundException::new);
         final List<TransferBid> transferBids = getJpaRepository().findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(transferDayId);
+
+        if(!Status.FINISHED.equals(transferDay.getStatus())) {
+            getCurrentUser().ifPresentOrElse(
+                    user -> transferBids.removeIf(transferBid -> !transferBid.getD11Team().isAdministratedBy(user)),
+                    transferBids::clear
+            );
+        }
+
         return map(transferBids);
     }
 
@@ -104,7 +121,8 @@ public class TransferBidService extends ApiRepositoryService<TransferBid, Transf
         return new InsertTransferBidResultDTO()
                 .transferBidId(transferBid.getId())
                 .playerId(transferBid.getPlayer().getId())
-                .fee(transferBid.getFee());
+                .fee(transferBid.getFee())
+                .transferDayId(transferDay.getId());
     }
 
     /**
@@ -128,7 +146,9 @@ public class TransferBidService extends ApiRepositoryService<TransferBid, Transf
 
         getJpaRepository().delete(transferBid);
 
-        return map(deleteTransferBidDTO, DeleteTransferBidResultDTO.class);
+        return new DeleteTransferBidResultDTO()
+                .transferBidId(transferBid.getId())
+                .transferDayId(transferBid.getTransferDay().getId());
     }
 
 }

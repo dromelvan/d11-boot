@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Transfer listing API tests.
@@ -94,6 +93,10 @@ public class TransferBidApiTests extends AbstractRepositoryApiTests<TransferBid,
             final TransferDay transferDay = entry.getKey();
             final List<TransferBid> transferBids = entry.getValue();
 
+            if(!Status.FINISHED.equals(transferDay.getStatus())) {
+                transferBids.clear();
+            }
+
             transferBids.sort(Comparator.comparing(TransferBid::getPlayerRanking)
                     .thenComparing(TransferBid::getActiveFee, (fee1, fee2) -> fee2 - fee1)
                     .thenComparing(TransferBid::getD11TeamRanking, (d11TeamRanking1, d11TeamRanking2) -> d11TeamRanking2 - d11TeamRanking1));
@@ -105,8 +108,9 @@ public class TransferBidApiTests extends AbstractRepositoryApiTests<TransferBid,
                     "Transfer bids by transfer day id should equal transfer bids.");
         }
 
-        assertTrue(transferBidApi.findTransferBidByTransferDayId(-1L).isEmpty(),
-                "Transfer bids by transfer day id not found should be empty.");
+        assertThrows(FeignException.NotFound.class,
+                     () -> transferBidApi.findTransferBidByTransferDayId(-1L),
+                     "Transfer bids by transfer day id not found should be empty.");
     }
 
     /**
