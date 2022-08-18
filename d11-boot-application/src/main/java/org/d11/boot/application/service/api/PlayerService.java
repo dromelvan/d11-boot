@@ -62,6 +62,8 @@ public class PlayerService extends ApiRepositoryService<Player, PlayerDTO, Playe
                     playerTransferStatusDTO.setTransferBidRemovable(transferDay.hasTransferBid(player, d11Team));
                     playerTransferStatusDTO.setTransferBiddable(!playerTransferStatusDTO.isTransferBidRemovable());
                     playerTransferStatusDTO.setMaxBid(d11Team.getMaxBid());
+                    transferDay.getTransferBid(player, d11Team)
+                            .ifPresent(transferBid -> playerTransferStatusDTO.setTransferBidId(transferBid.getId()));
                 }
             }));
         });

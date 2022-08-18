@@ -111,4 +111,18 @@ public class TransferDay extends D11Entity implements Comparable<TransferDay> {
                                          && transferBid.getD11Team().equals(d11Team));
     }
 
+    /**
+     * Gets a transfer bid for a player by a D11 team in this transfer day.
+     *
+     * @param player The player for which a transfer bid will be looked up.
+     * @param d11Team The D11 team for which a transfer bid will be looked up
+     * @return Transfer bid for the player by the D11 team.
+     */
+    public Optional<TransferBid> getTransferBid(final Player player, final D11Team d11Team) {
+        return this.transferBids.stream()
+                .filter(transferBid -> transferBid.getPlayer().equals(player)
+                                       && transferBid.getD11Team().equals(d11Team))
+                .findFirst();
+    }
+
 }

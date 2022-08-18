@@ -2749,6 +2749,7 @@ components:
         - transferListRemovable
         - transferBiddable
         - transferBidRemovable
+        - transferBidId
         - maxBid
       properties:
         id:
@@ -2766,6 +2767,9 @@ components:
         transferBidRemovable:
           type: boolean
           default: false
+        transferBidId:
+          type: integer
+          format: int64
         maxBid:
           type: integer
           format: int32
