@@ -18,6 +18,7 @@ import org.d11.boot.application.repository.PlayerMatchStatRepository;
 import org.d11.boot.application.repository.PlayerRepository;
 import org.d11.boot.application.repository.PlayerSeasonStatRepository;
 import org.d11.boot.application.repository.PositionRepository;
+import org.d11.boot.application.repository.SeasonRepository;
 import org.d11.boot.application.repository.TeamRepository;
 import org.d11.boot.application.repository.TransferListingRepository;
 import org.d11.boot.application.util.NotFoundException;
@@ -194,6 +195,9 @@ public class UpdateSquadService extends CamelService {
                 log.info("Found {} matches for player {}.", players.size(), playerData.getName());
             }
         });
+        // Update stats to set proper rankings for newly added players
+        getRepository(SeasonRepository.class).updateStatsBySeasonId(season.getId());
+
         log.info("Squad update for team {} completed.", teamData.getName());
     }
 
