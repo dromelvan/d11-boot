@@ -1163,6 +1163,27 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: available
+          in: query
+          required: false
+          description: Include available players.
+          schema:
+            type: boolean
+        - name: unavailable
+          in: query
+          required: false
+          description: Include unavailable players.
+          schema:
+            type: boolean
+        - name: positionIds
+          in: query
+          required: false
+          description: Include players with these positions.
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
       responses:
         '200':
           description: OK

@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -96,12 +97,19 @@ public class PlayerSeasonStatApiTests extends AbstractRepositoryApiTests<PlayerS
 
             playerSeasonStats.sort(Comparator.comparingInt(PlayerSeasonStat::getRanking));
 
-            final List<PlayerSeasonStatDTO> result = playerSeasonStatApi.findPlayerSeasonStatBySeasonId(season.getId(), 0);
+            final Map<String, Object> queryParams = new HashMap<>();
+            queryParams.put("available", true);
+            queryParams.put("unavailable", true);
+            queryParams.put("positionIds", getEntities().stream()
+                    .map(playerSeasonStat -> playerSeasonStat.getPosition().getId())
+                    .collect(Collectors.toList()));
+
+            final List<PlayerSeasonStatDTO> result = playerSeasonStatApi.findPlayerSeasonStatBySeasonId(season.getId(), 0, queryParams);
 
             assertNotNull(result, "Player season stat by season id should not be null.");
             assertEquals(map(playerSeasonStats, PlayerSeasonStatDTO.class), result,
                     "Player season stats by season id should equal player season stat.");
-            assertTrue(playerSeasonStatApi.findPlayerSeasonStatBySeasonId(season.getId(), 1).isEmpty(),
+            assertTrue(playerSeasonStatApi.findPlayerSeasonStatBySeasonId(season.getId(), 1, queryParams).isEmpty(),
                     "Player season stat by season id and too high page number should be empty.");
         }
     }

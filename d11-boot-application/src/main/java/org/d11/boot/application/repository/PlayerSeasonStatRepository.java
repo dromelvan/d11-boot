@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Repository for player season stat entities.
@@ -40,6 +41,20 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
      * @return Player season stats for the season ordered and paged by the pageable.
      */
     List<PlayerSeasonStat> findBySeasonId(@Param("seasonId") Long seasonId, Pageable pageable);
+
+    /**
+     * Gets filtered player season stats for a season.
+     *
+     * @param seasonId     Id for the season for which player season stats will be looked up.
+     * @param positionId   Position ids that will be included.
+     * @param d11TeamDummy D11 team dummy statuses that will be included.
+     * @param pageable     Pageable that defines page number, page size and sorting of the result.
+     * @return Player season stats for the season ordered and paged by the pageable.
+     */
+    List<PlayerSeasonStat> findBySeasonIdAndPositionIdInAndD11TeamDummyIn(@Param("seasonId") long seasonId,
+                                                                          @Param("positionId") Set<Long> positionId,
+                                                                          @Param("d11TeamDummy") Set<Boolean> d11TeamDummy,
+                                                                          Pageable pageable);
 
     /**
      * Gets player season stats for a season.

@@ -7,6 +7,7 @@ import org.d11.boot.application.service.api.PlayerSeasonStatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,8 +37,17 @@ public class PlayerSeasonStatController extends AbstractRepositoryServiceControl
     }
 
     @Override
-    public ResponseEntity<List<PlayerSeasonStatDTO>> findPlayerSeasonStatBySeasonId(final Long seasonId, final Integer page) {
-        final List<PlayerSeasonStatDTO> playerSeasonStats = getRepositoryService().findPlayerSeasonStatBySeasonId(seasonId, page);
+    public ResponseEntity<List<PlayerSeasonStatDTO>> findPlayerSeasonStatBySeasonId(final Long seasonId,
+                                                                                    final Integer page,
+                                                                                    final Boolean available,
+                                                                                    final Boolean unavailable,
+                                                                                    final List<Long> positionIds) {
+        final List<PlayerSeasonStatDTO> playerSeasonStats =
+                getRepositoryService().findPlayerSeasonStatBySeasonId(seasonId,
+                                                                      page,
+                                                                      available == null || available,
+                                                                      unavailable == null || unavailable,
+                                                                      positionIds == null ? new ArrayList<>() : positionIds);
         return ResponseEntity.ok(playerSeasonStats);
     }
 

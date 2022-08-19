@@ -13,9 +13,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Provides player season stat services.
@@ -53,13 +58,27 @@ public class PlayerSeasonStatService extends ApiRepositoryService<PlayerSeasonSt
     /**
      * Gets player season stats for a season.
      *
-     * @param seasonId Id for the season for which player season stats will be looked up.
-     * @param page     Page number (25 per page) for the search result page that will be returned.
+     * @param seasonId    Id for the season for which player season stats will be looked up.
+     * @param page        Page number (25 per page) for the search result page that will be returned.
+     * @param available   Include available players.
+     * @param unavailable Include unavailable players.
+     * @param positionIds Include players with these positions.
      * @return Player season stats for the season, in pages of size 25.
      */
-    public List<PlayerSeasonStatDTO> findPlayerSeasonStatBySeasonId(final long seasonId, final int page) {
+    public List<PlayerSeasonStatDTO> findPlayerSeasonStatBySeasonId(final long seasonId,
+                                                                    final int page,
+                                                                    final Boolean available,
+                                                                    final Boolean unavailable,
+                                                                    final List<Long> positionIds) {
         final Pageable pageable = PageRequest.of(page, PlayerSeasonStatService.PAGE_SIZE, Sort.by("ranking", "playerLastName", "playerFirstName"));
-        final List<PlayerSeasonStat> playerSeasonStats = getJpaRepository().findBySeasonId(seasonId, pageable);
+
+        final Set<Boolean> availability = available || unavailable
+                ? Stream.of(available, !unavailable).collect(Collectors.toSet())
+                : Collections.emptySet();
+        final Set<Long> positionIdSet = new HashSet<>(positionIds);
+
+        final List<PlayerSeasonStat> playerSeasonStats =
+                getJpaRepository().findBySeasonIdAndPositionIdInAndD11TeamDummyIn(seasonId, positionIdSet, availability, pageable);
         return map(playerSeasonStats);
     }
 
