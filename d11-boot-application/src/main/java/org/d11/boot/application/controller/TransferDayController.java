@@ -52,6 +52,8 @@ public class TransferDayController extends AbstractRepositoryServiceController<T
         // Later on we might want to flip to other statuses.
         if(StatusDTO.ACTIVE.equals(updateTransferDayDTO.getStatus())) {
             return ResponseEntity.ok(getRepositoryService().activateTransferDayByTransferDayId(updateTransferDayDTO.getId()));
+        } else if(StatusDTO.FINISHED.equals(updateTransferDayDTO.getStatus())) {
+            return ResponseEntity.ok(getRepositoryService().finishTransferDayByTransferDayId(updateTransferDayDTO.getId()));
         }
         throw new BadRequestException();
     }

@@ -139,7 +139,7 @@ public class D11Team extends D11Entity {
      *
      * @return Player season stats for the current season.
      */
-    private Stream<PlayerSeasonStat> getCurrentPlayerSeasonStats() {
+    public Stream<PlayerSeasonStat> getCurrentPlayerSeasonStats() {
         final Season currentSeason = Current.getSeason();
         return this.playerSeasonStats.stream()
                 .filter(playerSeasonStat -> playerSeasonStat.getSeason().equals(currentSeason));

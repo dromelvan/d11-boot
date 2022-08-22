@@ -3,7 +3,7 @@
 environments=("production" "development")
 environment="production"
 
-authenticationCommands=("photos" "squads" "transferwindow" "upload")
+authenticationCommands=("photos" "squads" "transferwindow" "transferday" "upload")
 
 username={username}
 
@@ -12,7 +12,7 @@ shift
 
 args=""
 
-while getopts ":e:u:d:y:" option; do
+while getopts ":e:u:d:y:s:" option; do
   case $option in
   e)
     if [[ " ${environments[*]} " =~ $OPTARG ]]; then
@@ -30,6 +30,9 @@ while getopts ":e:u:d:y:" option; do
     ;;
   y)
     args+=" -y=$OPTARG"
+    ;;
+  s)
+    args+=" -s=$OPTARG"
     ;;
   :)
     echo "Option -$OPTARG needs an argument."
