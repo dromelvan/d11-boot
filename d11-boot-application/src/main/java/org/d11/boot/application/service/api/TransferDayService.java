@@ -194,7 +194,10 @@ public class TransferDayService extends ApiRepositoryService<TransferDay, Transf
                     if(transferBid.getActiveFee() > 0) {
                         transferBid.setSuccessful(true);
                         if(i < playerBids.size() - 2) {
-                            transferBid.setActiveFee(playerBids.get(i + 1).getActiveFee() + minBid);
+                            final TransferBid nextTransferBid = playerBids.get(i + 1);
+                            if(transferBid.getActiveFee() > nextTransferBid.getActiveFee()) {
+                                transferBid.setActiveFee(playerBids.get(i + 1).getActiveFee() + minBid);
+                            }
                         } else {
                             transferBid.setActiveFee(minBid);
                         }
