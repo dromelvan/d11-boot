@@ -193,7 +193,8 @@ public class TransferDayService extends ApiRepositoryService<TransferDay, Transf
                     final TransferBid transferBid = playerBids.get(i);
                     if(transferBid.getActiveFee() > 0) {
                         transferBid.setSuccessful(true);
-                        if(i < playerBids.size() - 2) {
+
+                        if(playerBids.size() > i + 1) {
                             final TransferBid nextTransferBid = playerBids.get(i + 1);
                             if(transferBid.getActiveFee() > nextTransferBid.getActiveFee()) {
                                 transferBid.setActiveFee(playerBids.get(i + 1).getActiveFee() + minBid);
@@ -208,7 +209,7 @@ public class TransferDayService extends ApiRepositoryService<TransferDay, Transf
 
                         final D11TeamTransferProperties d11TeamTransferProperties = d11TeamTransferPropertiesMap.get(transferBid.getD11Team().getId());
 
-                        d11TeamTransferProperties.decrementMaxBid(transferBid.getActiveFee());
+                        d11TeamTransferProperties.decrementMaxBid(transferBid.getActiveFee() - minBid);
                         d11TeamTransferProperties.incrementPositionCount(playerSeasonStat.getPosition());
 
                         d11TeamBidMap.get(transferBid.getD11Team().getId()).forEach(d11TeamTransferBid -> {
