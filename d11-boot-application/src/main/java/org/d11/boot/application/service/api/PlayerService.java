@@ -36,6 +36,18 @@ public class PlayerService extends ApiRepositoryService<Player, PlayerDTO, Playe
     }
 
     /**
+     * Finds a player by Premier League id.
+     *
+     * @param premierLeagueId Premier League id of the player.
+     * @return Player data for the player.
+     */
+    public PlayerDTO findPlayerByPremierLeagueId(final int premierLeagueId) {
+        final Player player = getJpaRepository().findByPremierLeagueId(premierLeagueId)
+            .orElseThrow(NotFoundException::new);
+        return map(player, PlayerDTO.class);
+    }
+
+    /**
      * Finds player transfer status for a specific player.
      *
      * @param playerId Id of the player for which transfer status will be looked up.

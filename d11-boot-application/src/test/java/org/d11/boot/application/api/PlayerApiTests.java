@@ -59,6 +59,25 @@ public class PlayerApiTests extends AbstractRepositoryApiTests<Player, PlayerRep
     }
 
     /**
+     * Tests the findPlayerByPremierLeagueId API operation.
+     */
+    @Test
+    public void findPlayerByPremierLeagueId() {
+        final PlayerApi playerApi = getApi(PlayerApi.class);
+        for(final Player player : getRepository().findAll()) {
+            final PlayerDTO result = playerApi.findPlayerByPremierLeagueId(player.getPremierLeagueId());
+            final PlayerDTO playerDTO = map(player, PlayerDTO.class);
+
+            assertNotNull(result, "Player by Premier League id should not be null.");
+            assertEquals(playerDTO, result, "Player by Premier League id should equal Player.");
+        }
+
+        assertThrows(FeignException.NotFound.class,
+                     () -> playerApi.findPlayerByPremierLeagueId(-1),
+                     "Player by Premier League id not found should throw NotFound exception.");
+    }
+
+    /**
      * Tests the insertPlayer operation.
      */
     @Test

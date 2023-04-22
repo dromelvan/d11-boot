@@ -45,6 +45,11 @@ public class PlayerController extends AbstractRepositoryServiceController<Player
     }
 
     @Override
+    public ResponseEntity<PlayerDTO> findPlayerByPremierLeagueId(final Integer premierLeagueId) {
+        return ResponseEntity.ok(getRepositoryService().findPlayerByPremierLeagueId(premierLeagueId));
+    }
+
+    @Override
     public ResponseEntity<PlayerTransferStatusDTO> findPlayerTransferStatusById(final Long playerId) {
         return ResponseEntity.ok(getRepositoryService().findPlayerTransferStatusById(playerId));
     }

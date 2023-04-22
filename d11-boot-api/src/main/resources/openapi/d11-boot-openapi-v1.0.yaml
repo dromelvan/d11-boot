@@ -177,6 +177,32 @@ paths:
         '500':
           $ref: '#/components/responses/Unexpected'
   /players:
+    get:
+      summary: Find a player by Premier League id.
+      operationId: findPlayerByPremierLeagueId
+      tags:
+        - player
+      parameters:
+        - name: premierLeagueId
+          in: query
+          required: true
+          description: The Premier League id of the player to find.
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
     post:
       summary: Insert a new player.
       security:
