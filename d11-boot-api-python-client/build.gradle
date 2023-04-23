@@ -1,0 +1,23 @@
+/**
+ * D11 Boot API Python client.
+ */
+
+plugins {
+    id 'base'
+    id "org.openapi.generator" version "4.2.3"
+}
+
+openApiGenerate() {
+    generatorName = "python"
+    inputSpec = project(':d11-boot-api').inputSpecFile.toString()
+    outputDir = "$buildDir/generated"
+    configOptions = [
+            generateSourceCodeOnly: "false",
+            packageName: "d11_python_client",
+            packageVersion: "1.0.0"
+    ]
+}
+
+build {
+    dependsOn tasks.openApiGenerate
+}

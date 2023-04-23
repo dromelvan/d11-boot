@@ -2673,7 +2673,6 @@ components:
         - name
         - shortName
         - parameterizedName
-        - photoFileName
       properties:
         id:
           type: integer
@@ -2700,13 +2699,10 @@ components:
         - whoscoredId
         - firstName
         - lastName
-        - fullName
         - name
         - shortName
         - parameterizedName
-        - dateOfBirth
         - height
-        - photoFileName
         - verified
       properties:
         id:
@@ -2745,13 +2741,10 @@ components:
         - premierLeagueId
         - firstName
         - lastName
-        - fullName
         - name
         - shortName
         - parameterizedName
-        - dateOfBirth
         - height
-        - photoFileName
         - verified
         - country
       properties:
@@ -2856,7 +2849,6 @@ components:
         - name
         - shortName
         - code
-        - photoFileName
       properties:
         id:
           type: integer
@@ -2889,7 +2881,6 @@ components:
         - motto
         - colour
         - dummy
-        - photoFileName
         - url
       properties:
         id:
@@ -2936,7 +2927,6 @@ components:
         - motto
         - colour
         - dummy
-        - photoFileName
         - url
         - stadium
       properties:
@@ -2980,7 +2970,6 @@ components:
         - name
         - shortName
         - code
-        - photoFileName
       properties:
         id:
           type: integer
@@ -3001,7 +2990,6 @@ components:
         - shortName
         - code
         - dummy
-        - photoFileName
       properties:
         id:
           type: integer
@@ -3024,7 +3012,6 @@ components:
         - shortName
         - code
         - dummy
-        - photoFileName
         - maxBid
         - owner
         - coOwner
@@ -3895,7 +3882,6 @@ components:
       required:
         - id
         - shirtNumber
-        - winCount
         - ranking
         - points
         - goals
@@ -3935,7 +3921,6 @@ components:
       required:
         - id
         - shirtNumber
-        - winCount
         - value
         - ranking
         - points
@@ -4041,7 +4026,6 @@ components:
       required:
         - id
         - shirtNumber
-        - winCount
         - value
         - ranking
         - points
