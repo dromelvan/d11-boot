@@ -5,11 +5,11 @@ import org.d11.boot.parser.fixtures.whoscored.v1.WhoScoredFixturesParserV1;
 import org.d11.boot.parser.match.MatchParser;
 import org.d11.boot.parser.match.whoscored.v1.WhoScoredMatchParserV1;
 import org.d11.boot.parser.player.PlayerParser;
-import org.d11.boot.parser.player.premierleague.v1.PremierLeaguePlayerParserV1;
+import org.d11.boot.parser.player.premierleague.v2.PremierLeaguePlayerParserV2;
 import org.d11.boot.parser.team.TeamParser;
 import org.d11.boot.parser.team.TeamsParser;
-import org.d11.boot.parser.team.premierleague.v1.PremierLeagueClubsParserV1;
-import org.d11.boot.parser.team.premierleague.v1.PremierLeagueSquadParserV1;
+import org.d11.boot.parser.team.premierleague.v2.PremierLeagueClubsParserV2;
+import org.d11.boot.parser.team.premierleague.v2.PremierLeagueSquadParserV2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -46,7 +46,7 @@ public class ParserConfiguration {
      */
     @Bean
     public TeamsParser teamsParser() {
-        return new PremierLeagueClubsParserV1();
+        return new PremierLeagueClubsParserV2();
     }
 
     /**
@@ -56,7 +56,7 @@ public class ParserConfiguration {
      */
     @Bean
     public TeamParser teamParser() {
-        return new PremierLeagueSquadParserV1();
+        return new PremierLeagueSquadParserV2();
     }
 
     /**
@@ -66,7 +66,7 @@ public class ParserConfiguration {
      */
     @Bean
     public PlayerParser playerParser() {
-        return new PremierLeaguePlayerParserV1();
+        return new PremierLeaguePlayerParserV2();
     }
 
 }
