@@ -1,0 +1,18 @@
+d11:
+  security:
+    keystore:
+      # Create keystore with: keytool -genkey -alias <alias> -keyalg RSA -keystore <profile>-keystore.jks -keysize 2048
+      location: keys/test-keystore.jks
+      password: password
+      keyAlias: test
+      privateKeyPassphrase: password
+    allowedOrigins: # We don't have to provide allowed origins for the test configuration.
+  download.selenium:
+    remoteUrl: http://localhost:4444/wd/hub
+    # Provide user data dir only if using a standalone application Selenium
+    userDataDir: .chrome
+
+spring:
+  main.banner-mode: "off"
+  flyway:
+    locations: classpath:db/migration/table,classpath:db/migration/procedure/h2,classpath:db/migration/test-data

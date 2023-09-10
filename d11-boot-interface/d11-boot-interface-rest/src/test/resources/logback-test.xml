@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- We don't need any logging at all when running tests -->
+
+</configuration>
