@@ -1,0 +1,463 @@
+openapi: 3.0.3
+info:
+  version: 2.0.0
+  title: D11 API
+  description: API for the D11 Spring Boot application
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8080
+
+
+# Paths ----------------------------------------------------------------------------------------------------------------
+
+paths:
+
+  # Security -----------------------------------------------------------------------------------------------------------
+
+  /v2/security/authenticate:
+    post:
+      tags:
+        - security
+      summary: Authenticate a user by username/password.
+      operationId: authenticate
+      requestBody:
+        description: User authentication properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthenticationRequestBody"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v2/security/authorize:
+    post:
+      tags:
+        - security
+      summary: Authorize a user by refresh token.
+      operationId: authorize
+      parameters:
+        - in: cookie
+          name: refreshToken
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizationResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v2/security/unauthorize:
+    post:
+      tags:
+        - security
+      summary: Unauthorize a user by invalidating the refresh token and removing the cookie.
+      operationId: unauthorize
+      parameters:
+        - in: cookie
+          name: refreshToken
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizationResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v2/security/request-password-reset:
+    post:
+      tags:
+        - security
+      summary: Request a password reset for a user.
+      operationId: requestPasswordReset
+      requestBody:
+        description: User request password reset properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestPasswordResetRequestBody"
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v2/security/reset-password:
+    post:
+      tags:
+        - security
+      summary: Reset a password for a user.
+      operationId: resetPassword
+      requestBody:
+        description: Reset user password properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordRequestBody"
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  # Season -------------------------------------------------------------------------------------------------------------
+
+  /v2/seasons:
+    get:
+      tags:
+        - season
+      summary: Gets all seasons.
+      operationId: getSeasons
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeasonsResponseBody"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v2/seasons/{seasonId}:
+    get:
+      tags:
+        - season
+      summary: Get a season by id.
+      operationId: getSeasonById
+      parameters:
+        - name: seasonId
+          in: path
+          required: true
+          description: Id of the season.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeasonResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v2/seasons/current:
+    get:
+      tags:
+        - season
+      summary: Gets the current season.
+      operationId: getCurrentSeason
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeasonResponseBody"
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+# Components -----------------------------------------------------------------------------------------------------------
+
+components:
+
+  # Responses ----------------------------------------------------------------------------------------------------------
+
+  responses:
+
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/D11ApiError'
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/D11ApiError'
+
+    Forbidden:
+      description: Forbiden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/D11ApiError'
+
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/D11ApiError'
+
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/D11ApiError'
+
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/D11ApiError'
+
+  # Schemas ------------------------------------------------------------------------------------------------------------
+
+  schemas:
+
+    # General request/response bodies ----------------------------------------------------------------------------------
+
+    D11ApiError:
+      type: object
+      required:
+        - uuid
+        - timestamp
+        - status
+        - error
+        - message
+        - path
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        timestamp:
+          type: string
+          format: date-time
+          description: Date and time the error happened.
+          example: "1970-01-01T00:00:00Z"
+        status:
+          type: integer
+          format: int32
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
+
+    # Base DTOs --------------------------------------------------------------------------------------------------------
+
+    Id:
+      type: integer
+      format: int64
+
+    Status:
+      type: string
+      enum:
+        - 'Pending'
+        - 'Active'
+        - 'Full Time'
+        - 'Finished'
+        - 'Postponed'
+
+    # Security ---------------------------------------------------------------------------------------------------------
+
+    AuthenticationRequestBody:
+      type: object
+      required:
+        - username
+        - password
+        - persistent
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        persistent:
+          type: boolean
+          default: false
+
+    AuthenticationResponseBody:
+      type: object
+      required:
+        - user
+        - jwt
+        - expiresAt
+        - persistent
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        jwt:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+        persistent:
+          type: boolean
+
+    AuthorizationResponseBody:
+      required:
+        - user
+        - jwt
+        - expiresAt
+        - persistent
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        jwt:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+        persistent:
+          type: boolean
+
+    UnauthorizationResponseBody:
+      required:
+        - loggedOut
+      properties:
+        loggedOut:
+          type: boolean
+
+    RequestPasswordResetRequestBody:
+      required:
+        - email
+        - link
+      properties:
+        email:
+          type: string
+          format: email
+        link:
+          type: string
+
+    ResetPasswordRequestBody:
+      required:
+        - email
+        - password
+        - resetPasswordToken
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        resetPasswordToken:
+          type: string
+          format: uuid
+
+    # User -------------------------------------------------------------------------------------------------------------
+
+    User:
+      type: object
+      required:
+        - name
+        - administrator
+      properties:
+        name:
+          type: string
+        administrator:
+          type: boolean
+
+    # Season -----------------------------------------------------------------------------------------------------------
+
+    Season:
+      type: object
+      required:
+        - id
+        - name
+        - shortName
+        - d11TeamBudget
+        - d11TeamMaxTransfers
+        - status
+        - date
+        - legacy
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          type: string
+          pattern: \d{4}-\d{4}
+        shortName:
+          type: string
+          pattern: \d{2}-\d{2}
+        d11TeamBudget:
+          type: integer
+          format: int32
+        d11TeamMaxTransfers:
+          type: integer
+          format: int32
+        status:
+          $ref: '#/components/schemas/Status'
+        date:
+          type: string
+          format: date
+        legacy:
+          type: boolean
+
+    SeasonResponseBody:
+      type: object
+      required:
+        - season
+      properties:
+        season:
+          $ref: '#/components/schemas/Season'
+
+    SeasonsResponseBody:
+      type: object
+      required:
+        - seasons
+      properties:
+        seasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Season'
+
+  # Security schemes ---------------------------------------------------------------------------------------------------
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer

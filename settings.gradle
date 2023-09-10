@@ -1,5 +1,6 @@
 rootProject.name = 'd11-boot'
 
+include 'd11-boot-api'
 include 'd11-boot-download'
 include 'd11-boot-parser'
 include 'd11-boot-util'
