@@ -2,12 +2,22 @@
  * D11 Boot Root Project.
  */
 subprojects {
-	repositories {
-	    mavenLocal()
-		mavenCentral()
-	    jcenter()
-	}
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
 
-	group = "org.d11.boot";
-    version = "4.0.0-SNAPSHOT";
+    group = "org.d11.boot"
+    version = "${d11BootVersion}".toString()
+
 }
+
+subprojects {
+    pluginManager.withPlugin("java") {
+        java {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
+        }
+    }
+}
+

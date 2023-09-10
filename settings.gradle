@@ -1,3 +1,1 @@
 rootProject.name = 'd11-boot'
-
-rootProject.projectDir.listFiles({ it.name.startsWith(rootProject.name) } as FileFilter).each {include it.name}
