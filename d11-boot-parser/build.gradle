@@ -1,0 +1,59 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+    id 'checkstyle'
+    id 'pmd'
+    id "com.github.spotbugs" version "${spotBugsPluginVersion}"
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    implementation project(':d11-boot-util')
+
+    implementation 'org.slf4j:slf4j-api'
+    implementation "org.jsoup:jsoup:${jsoupVersion}"
+    implementation 'com.google.code.gson:gson'
+    implementation 'org.apache.commons:commons-lang3'
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonDatatypeJsr310Version}"
+    implementation "com.github.spotbugs:spotbugs-annotations:${spotBugsVersion}"
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+checkstyle {
+    toolVersion "${checkstyleVersion}"
+}
+
+pmd {
+    ruleSets = []
+    ruleSetFiles = rootProject.files("config/pmd/pmd.xml")
+}
+
+spotbugs {
+    toolVersion = "${spotBugsVersion}"
+    excludeFilter.set(file("${project.rootProject.rootDir}/config/spotbugs/exclude.xml"))
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
