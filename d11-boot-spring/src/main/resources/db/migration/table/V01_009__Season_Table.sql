@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS season (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(64) UNIQUE NOT NULL,
+    d11_team_budget INTEGER NOT NULL,
+    d11_team_max_transfers INTEGER NOT NULL DEFAULT 0,
+    status INTEGER NOT NULL DEFAULT 0,
+    date DATE NOT NULL,
+    legacy BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp
+);

@@ -1,0 +1,10 @@
+spring:
+  main.banner-mode: "off"
+  flyway:
+    locations: classpath:db/migration/table,classpath:db/migration/procedure/h2
+
+d11:
+  download.selenium:
+    remoteUrl: http://localhost:4444/wd/hub
+    # Provide user data dir only if using a standalone application Selenium
+    userDataDir: .chrome

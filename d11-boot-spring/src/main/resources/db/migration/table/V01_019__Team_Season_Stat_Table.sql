@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS team_season_stat(
+    id SERIAL PRIMARY KEY,
+    team_id INTEGER NOT NULL REFERENCES team,
+    season_id INTEGER NOT NULL REFERENCES season,
+    win_count INTEGER,
+    matches_played INTEGER NOT NULL DEFAULT 0,
+    matches_won INTEGER NOT NULL DEFAULT 0,
+    matches_drawn INTEGER NOT NULL DEFAULT 0,
+    matches_lost INTEGER NOT NULL DEFAULT 0,
+    goals_for INTEGER NOT NULL DEFAULT 0,
+    goals_against INTEGER NOT NULL DEFAULT 0,
+    goal_difference INTEGER NOT NULL DEFAULT 0,
+    points INTEGER NOT NULL DEFAULT 0,
+    form_points INTEGER NOT NULL DEFAULT 0,
+    form_match_points VARCHAR(255) NOT NULL,
+    ranking INTEGER NOT NULL DEFAULT 0,
+    previous_ranking INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp
+);
