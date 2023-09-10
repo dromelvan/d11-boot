@@ -1,0 +1,56 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+    id 'checkstyle'
+    id 'pmd'
+    id "com.github.spotbugs" version "${spotBugsPluginVersion}"
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camelVersion}"
+
+    // Camel 4.0.0 provides version with vulnerabilities so declare dependency on a newer version.
+    implementation "org.yaml:snakeyaml:${snakeYamlVersion}"
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "org.apache.camel:camel-test-spring-junit5:${camelVersion}"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+checkstyle {
+    toolVersion "${checkstyleVersion}"
+}
+
+pmd {
+    ruleSets = []
+    ruleSetFiles = rootProject.files("config/pmd/pmd.xml")
+}
+
+spotbugs {
+    toolVersion = "${spotBugsVersion}"
+    excludeFilter.set(file("${project.rootProject.rootDir}/config/spotbugs/exclude.xml"))
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
