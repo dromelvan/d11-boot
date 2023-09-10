@@ -1,6 +1,8 @@
 rootProject.name = 'd11-boot'
 
 include 'd11-boot-api'
+include 'd11-boot-api-client:d11-boot-api-client-feign'
+include 'd11-boot-api-client:d11-boot-api-client-javascript'
 include 'd11-boot-download'
 include 'd11-boot-parser'
 include 'd11-boot-util'

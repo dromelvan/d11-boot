@@ -1,0 +1,38 @@
+plugins {
+    id 'base'
+    id "org.openapi.generator" version "${openapiGeneratorVersion}"
+    id "com.github.node-gradle.node" version "3.4.0"
+}
+
+openApiGenerate() {
+    generatorName = "javascript"
+    inputSpec = project(':d11-boot-api').inputSpecFile.toString()
+    outputDir = "$buildDir/generated"
+    configOptions = [
+            projectName: "d11-boot-api",
+            usePromises: "true"
+    ]
+}
+
+task npmInstallJavascriptClient(type:NpmTask) {
+    dependsOn tasks.openApiGenerate
+
+    workingDir = file("$buildDir/generated")
+    args = [ 'install' ]
+}
+
+task npmPackJavascriptClient(type:NpmTask) {
+    dependsOn tasks.npmInstallJavascriptClient
+
+    workingDir = file("$buildDir/generated")
+    args = [ 'pack' ]
+
+    doLast {
+        ant.move file: "${buildDir}/generated/d11-boot-api-2.0.0.tgz", todir: "${buildDir}/lib"
+    }
+}
+
+build {
+    dependsOn tasks.npmPackJavascriptClient
+    dependsOn tasks.openApiGenerate
+}
