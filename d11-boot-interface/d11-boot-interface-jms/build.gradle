@@ -1,0 +1,57 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+    id 'checkstyle'
+    id 'pmd'
+    id "com.github.spotbugs" version "${spotBugsPluginVersion}"
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    implementation project(':d11-boot-camel')
+
+    implementation 'org.springframework.boot:spring-boot-starter-artemis'
+    implementation 'org.springframework.boot:spring-boot-starter-json'
+    implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camelVersion}"
+
+    implementation "com.github.spotbugs:spotbugs-annotations:${spotBugsVersion}"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.awaitility:awaitility'
+
+    // This is only used when the local profile is active
+    runtimeOnly "org.apache.activemq:artemis-jms-server:${artemisJmsServerVersion}"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+checkstyle {
+    toolVersion "${checkstyleVersion}"
+}
+
+pmd {
+    ruleSets = []
+    ruleSetFiles = rootProject.files("config/pmd/pmd.xml")
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
