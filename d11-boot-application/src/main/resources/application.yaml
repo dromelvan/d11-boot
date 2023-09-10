@@ -1,0 +1,49 @@
+d11:
+  download.selenium:
+    remoteUrl: http://localhost:4444/wd/hub
+    # Provide user data dir only if using a standalone application Selenium
+    userDataDir: .chrome
+
+spring:
+  flyway:
+    locations: classpath:db/migration/table,classpath:db/migration/procedure/postgres
+  datasource:
+    # default connection pool
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        generate_statistics: false
+    open-in-view: false
+  cache:
+    cache-names: userDetailsCache
+    caffeine:
+      spec: expireAfterAccess=600s
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    protocol: smtp
+    properties:
+      mail.smtp:
+        auth: true
+        starttls.enable: true
+  artemis:
+    broker-url: tcp://localhost:61616
+    mode: NATIVE
+    embedded:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, ping
+  endpoint:
+    health:
+      show-components: always
+  health:
+    mail:
+      enabled: false # Maybe enable this for environments that use the real mail sender.

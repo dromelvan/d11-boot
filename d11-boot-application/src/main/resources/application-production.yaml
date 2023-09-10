@@ -1,0 +1,11 @@
+spring:
+  config:
+    import: classpath:application-production-secrets.yaml
+
+---
+
+# Put other production configs here
+
+spring:
+  artemis:
+    broker-url: tcp://artemis:61616

@@ -1,0 +1,2298 @@
+{
+	"info": {
+		"_postman_id": "6c3884b6-93da-4056-9766-7feb6441532c",
+		"name": "D11 API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23053206"
+	},
+	"item": [
+		{
+			"name": "v2",
+			"item": [
+				{
+					"name": "seasons",
+					"item": [
+						{
+							"name": "GET seasons",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET seasons",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET seasons status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET seasons response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"seasons\");",
+															"",
+															"  pm.expect(body.seasons.length).to.eq(2);",
+															"",
+															"  pm.expect(body.seasons[0].id).to.eq(parseInt(pm.environment.get(\"currentSeasonId\")));",
+															"  pm.expect(body.seasons[0].status).to.eq(pm.environment.get(\"currentSeasonStatus\"));",
+															"",
+															"  pm.expect(body.seasons[1].id).to.eq(parseInt(pm.environment.get(\"seasonId\")));",
+															"  pm.expect(body.seasons[1].status).to.eq(pm.environment.get(\"seasonStatus\"));",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "GET season/{seasonId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET seasons/{seasonId}",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET season status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET season response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"season\");",
+															"",
+															"  pm.expect(body.season.id).to.eq(parseInt(pm.environment.get(\"seasonId\")));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"name\");",
+															"  pm.expect(body.season.name).to.match(/\\d{4}-\\d{4}/);",
+															"",
+															"  pm.expect(body.season).to.have.property(\"shortName\");",
+															"  pm.expect(body.season.name).to.match(/\\d{2}-\\d{2}/);",
+															"",
+															"  pm.expect(body.season).to.have.property(\"d11TeamBudget\");",
+															"  pm.expect(body.season.d11TeamBudget).to.eq(parseInt(pm.environment.get(\"seasonD11TeamBudget\")));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"d11TeamMaxTransfers\");",
+															"  pm.expect(body.season.d11TeamMaxTransfers).to.eq(parseInt(pm.environment.get(\"seasonD11TeamMaxTransfers\")));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"status\");",
+															"  pm.expect(body.season.status).to.eq(pm.environment.get(\"seasonStatus\"));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"date\");",
+															"  pm.expect(body.season.date).to.eq(pm.environment.get(\"seasonDate\"));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"legacy\");",
+															"  pm.expect(body.season.legacy.toString()).to.eq(pm.environment.get(\"seasonLegacy\"));",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons/{{seasonId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons",
+														"{{seasonId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET seasons/{seasonId} - Invalid Season Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET season invalid season id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET season invalid season id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(400);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Invalid season id: invalid\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/seasons/invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons/invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons",
+														"invalid"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "404 Not Found",
+									"item": [
+										{
+											"name": "GET seasons/{seasonId} - Not Found",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET season not found status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"GET season not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(404);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Season with id 0 was not found.\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/seasons/0\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons/0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons",
+														"0"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "GET seasons/current",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET seasons/current",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET season current status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET season current response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"season\");",
+															"",
+															"  pm.expect(body.season.id).to.eq(parseInt(pm.environment.get(\"currentSeasonId\")));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"status\");",
+															"  pm.expect(body.season.status).to.eq(pm.environment.get(\"currentSeasonStatus\"));",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons/current",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons",
+														"current"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "security",
+					"item": [
+						{
+							"name": "POST security/authenticate",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "POST security/authenticate - Admin Non Persistent",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"const moment = require('moment');",
+															"",
+															"pm.test(\"POST security authenticate admin non persistent status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST security authenticate admin non persistent response body\", () => {",
+															"  const body = pm.response.json();",
+															"  ",
+															"  pm.expect(body).to.have.property(\"user\");",
+															"  pm.expect(body.user).to.have.property(\"name\");",
+															"  pm.expect(body.user.name).to.eq(pm.environment.get(\"adminName\"));",
+															"",
+															"  pm.expect(body).to.have.property(\"jwt\");",
+															"  pm.expect(body.jwt).to.match(new RegExp(pm.environment.get(\"jwtRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"expiresAt\");  ",
+															"  let expiresAt = new Date(body.expiresAt);",
+															"  pm.expect(isNaN(expiresAt.getTime())).to.eq(false);",
+															"",
+															"  // It's tricky to define what the JWT expiry time should be exactly since we can't",
+															"  // know at what exact instant it is created on the server.So, we'll just check that ",
+															"  // it is within one minute of 24 hours from now.",
+															"  let now = moment();",
+															"  now.add(24 * 60 * 60 - 30, \"seconds\");",
+															"  pm.expect(now.isBefore(expiresAt)).to.eq(true);",
+															"",
+															"  now.add(60, \"seconds\");",
+															"  pm.expect(now.isAfter(expiresAt)).to.eq(true);",
+															"",
+															"  pm.expect(body).to.have.property(\"persistent\");",
+															"  pm.expect(body.persistent).to.eq(false);",
+															"",
+															"  pm.environment.set(\"jwt\", body.jwt);",
+															"});",
+															"",
+															"pm.test(\"POST security authenticate admin non persistent cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(1);",
+															"      ",
+															"      const cookie = cookies.members[0];",
+															"",
+															"      pm.expect(cookie.name).to.eq(\"refreshToken\");",
+															"      pm.expect(cookie.maxAge).to.eq(24 * 60 * 60);",
+															"      pm.expect(cookie.value).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": false\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/authenticate - Admin Persistent",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"const moment = require('moment');",
+															"",
+															"pm.test(\"POST security authenticate admin persistent status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST security authenticate admin persistent response body\", () => {",
+															"  const body = pm.response.json();",
+															"  ",
+															"  pm.expect(body).to.have.property(\"user\");",
+															"  pm.expect(body.user).to.have.property(\"name\");",
+															"  pm.expect(body.user.name).to.eq(pm.environment.get(\"adminName\"));",
+															"",
+															"  pm.expect(body).to.have.property(\"jwt\");",
+															"  pm.expect(body.jwt).to.match(new RegExp(pm.environment.get(\"jwtRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"expiresAt\");  ",
+															"  let expiresAt = new Date(body.expiresAt);",
+															"  pm.expect(isNaN(expiresAt.getTime())).to.eq(false);",
+															"",
+															"  // It's tricky to define what the JWT expiry time should be exactly since we can't",
+															"  // know at what exact instant it is created on the server.So, we'll just check that ",
+															"  // it is within one minute of 24 hours from now.",
+															"  let now = moment();",
+															"  now.add(30 * 24 * 60 * 60 - 30, \"seconds\");",
+															"  pm.expect(now.isBefore(expiresAt)).to.eq(true);",
+															"",
+															"  now.add(60, \"seconds\");",
+															"  pm.expect(now.isAfter(expiresAt)).to.eq(true);",
+															"",
+															"  pm.expect(body).to.have.property(\"persistent\");",
+															"  pm.expect(body.persistent).to.eq(true);",
+															"",
+															"  pm.environment.set(\"jwt\", body.jwt);",
+															"});",
+															"",
+															"pm.test(\"POST security authenticate admin persistent cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(1);",
+															"      ",
+															"      const cookie = cookies.members[0];",
+															"",
+															"      pm.expect(cookie.name).to.eq(\"refreshToken\");",
+															"      pm.expect(cookie.maxAge).to.eq(30 * 24 * 60 * 60);",
+															"      pm.expect(cookie.value).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/authenticate - User Non Persistent",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"const moment = require('moment');",
+															"",
+															"pm.test(\"POST security authenticate user non persistent status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST security authenticate user non persistent response body\", () => {",
+															"  const body = pm.response.json();",
+															"  ",
+															"  pm.expect(body).to.have.property(\"user\");",
+															"  pm.expect(body.user).to.have.property(\"name\");",
+															"  pm.expect(body.user.name).to.eq(pm.environment.get(\"userName\"));",
+															"",
+															"  pm.expect(body).to.have.property(\"jwt\");",
+															"  pm.expect(body.jwt).to.match(new RegExp(pm.environment.get(\"jwtRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"expiresAt\");  ",
+															"  let expiresAt = new Date(body.expiresAt);",
+															"  pm.expect(isNaN(expiresAt.getTime())).to.eq(false);",
+															"",
+															"  // It's tricky to define what the JWT expiry time should be exactly since we can't",
+															"  // know at what exact instant it is created on the server.So, we'll just check that ",
+															"  // it is within one minute of 24 hours from now.",
+															"  let now = moment();",
+															"  now.add(24 * 60 * 60 - 30, \"seconds\");",
+															"  pm.expect(now.isBefore(expiresAt)).to.eq(true);",
+															"",
+															"  now.add(60, \"seconds\");",
+															"  pm.expect(now.isAfter(expiresAt)).to.eq(true);",
+															"",
+															"  pm.expect(body).to.have.property(\"persistent\");",
+															"  pm.expect(body.persistent).to.eq(false);",
+															"",
+															"  pm.environment.set(\"jwt\", body.jwt);",
+															"});",
+															"",
+															"pm.test(\"POST security authenticate user non persistent cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(1);",
+															"      ",
+															"      const cookie = cookies.members[0];",
+															"",
+															"      pm.expect(cookie.name).to.eq(\"refreshToken\");",
+															"      pm.expect(cookie.maxAge).to.eq(24 * 60 * 60);",
+															"      pm.expect(cookie.value).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{userUsername}}\",\n    \"password\": \"{{userPassword}}\",\n    \"persistent\": false\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/authenticate - User Persistent",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"const moment = require('moment');",
+															"",
+															"pm.test(\"POST security authenticate user persistent status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST security authenticate user persistent response body\", () => {",
+															"  const body = pm.response.json();",
+															"  ",
+															"  pm.expect(body).to.have.property(\"user\");",
+															"  pm.expect(body.user).to.have.property(\"name\");",
+															"  pm.expect(body.user.name).to.eq(pm.environment.get(\"userName\"));",
+															"",
+															"  pm.expect(body).to.have.property(\"jwt\");",
+															"  pm.expect(body.jwt).to.match(new RegExp(pm.environment.get(\"jwtRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"expiresAt\");  ",
+															"  let expiresAt = new Date(body.expiresAt);",
+															"  pm.expect(isNaN(expiresAt.getTime())).to.eq(false);",
+															"",
+															"  // It's tricky to define what the JWT expiry time should be exactly since we can't",
+															"  // know at what exact instant it is created on the server.So, we'll just check that ",
+															"  // it is within one minute of 24 hours from now.",
+															"  let now = moment();",
+															"  now.add(30 * 24 * 60 * 60 - 30, \"seconds\");",
+															"  pm.expect(now.isBefore(expiresAt)).to.eq(true);",
+															"",
+															"  now.add(60, \"seconds\");",
+															"  pm.expect(now.isAfter(expiresAt)).to.eq(true);",
+															"",
+															"  pm.expect(body).to.have.property(\"persistent\");",
+															"  pm.expect(body.persistent).to.eq(true);",
+															"",
+															"  pm.environment.set(\"jwt\", body.jwt);",
+															"});",
+															"",
+															"pm.test(\"POST security authenticate user persistent cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															"  const body = pm.response.json();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(1);",
+															"      ",
+															"      const cookie = cookies.members[0];",
+															"",
+															"      pm.expect(cookie.name).to.eq(\"refreshToken\");",
+															"      pm.expect(cookie.maxAge).to.eq(30 * 24 * 60 * 60);",
+															"      pm.expect(cookie.value).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{userUsername}}\",\n    \"password\": \"{{userPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "POST security/authenticate - Invalid Request Body",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security authenticate invalid request body Status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST security authenticate invalid request body response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(400);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/authenticate\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "401 Unauthorized",
+									"item": [
+										{
+											"name": "POST security/authenticate - Invalid Credentials",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security authenticate invalid credentials status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															"",
+															"pm.test(\"POST security authenticate invalid credentials response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(401);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Unauthorized\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Authentication failed\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/authenticate\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"invalid\",\n    \"password\": \"invalid\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "POST security/authorize",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/authorize - Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"const moment = require('moment');",
+															"",
+															"pm.test(\"POST security authorize admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST security authorize admin response body\", () => {",
+															"  const body = pm.response.json();",
+															"  ",
+															"  pm.expect(body).to.have.property(\"user\");",
+															"  pm.expect(body.user).to.have.property(\"name\");",
+															"  pm.expect(body.user.name).to.eq(pm.environment.get(\"adminName\"));",
+															"",
+															"  pm.expect(body).to.have.property(\"jwt\");",
+															"  pm.expect(body.jwt).to.match(new RegExp(pm.environment.get(\"jwtRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"expiresAt\");  ",
+															"  let expiresAt = new Date(body.expiresAt);",
+															"  pm.expect(isNaN(expiresAt.getTime())).to.eq(false);",
+															"",
+															"  // It's tricky to define what the JWT expiry time should be exactly since we can't",
+															"  // know at what exact instant it is created on the server.So, we'll just check that ",
+															"  // it is within one minute of 24 hours from now.",
+															"  let now = moment();",
+															"  now.add(30 * 24 * 60 * 60 - 30, \"seconds\");",
+															"  pm.expect(now.isBefore(expiresAt)).to.eq(true);",
+															"",
+															"  now.add(60, \"seconds\");",
+															"  pm.expect(now.isAfter(expiresAt)).to.eq(true);",
+															"",
+															"  pm.expect(body).to.have.property(\"persistent\");",
+															"  pm.expect(body.persistent).to.eq(true);",
+															"",
+															"  pm.environment.set(\"jwt\", body.jwt);",
+															"});",
+															"",
+															"pm.test(\"POST security authorize admin cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(1);",
+															"      ",
+															"      const cookie = cookies.members[0];",
+															"",
+															"      pm.expect(cookie.name).to.eq(\"refreshToken\");",
+															"      pm.expect(cookie.maxAge).to.eq(30 * 24 * 60 * 60);",
+															"      pm.expect(cookie.value).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authorize",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authorize"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Setup - Login User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login user status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{userUsername}}\",\n    \"password\": \"{{userPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/authorize - User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"const moment = require('moment');",
+															"",
+															"pm.test(\"POST security authorize user status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST security authorize user response body\", () => {",
+															"  const body = pm.response.json();",
+															"  ",
+															"  pm.expect(body).to.have.property(\"user\");",
+															"  pm.expect(body.user).to.have.property(\"name\");",
+															"  pm.expect(body.user.name).to.eq(pm.environment.get(\"userName\"));",
+															"",
+															"  pm.expect(body).to.have.property(\"jwt\");",
+															"  pm.expect(body.jwt).to.match(new RegExp(pm.environment.get(\"jwtRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"expiresAt\");  ",
+															"  let expiresAt = new Date(body.expiresAt);",
+															"  pm.expect(isNaN(expiresAt.getTime())).to.eq(false);",
+															"",
+															"  // It's tricky to define what the JWT expiry time should be exactly since we can't",
+															"  // know at what exact instant it is created on the server.So, we'll just check that ",
+															"  // it is within one minute of 24 hours from now.",
+															"  let now = moment();",
+															"  now.add(30 * 24 * 60 * 60 - 30, \"seconds\");",
+															"  pm.expect(now.isBefore(expiresAt)).to.eq(true);",
+															"",
+															"  now.add(60, \"seconds\");",
+															"  pm.expect(now.isAfter(expiresAt)).to.eq(true);",
+															"",
+															"  pm.expect(body).to.have.property(\"persistent\");",
+															"  pm.expect(body.persistent).to.eq(true);",
+															"",
+															"  pm.environment.set(\"jwt\", body.jwt);",
+															"});",
+															"",
+															"pm.test(\"POST security authorize user cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(1);",
+															"      ",
+															"      const cookie = cookies.members[0];",
+															"",
+															"      pm.expect(cookie.name).to.eq(\"refreshToken\");",
+															"      pm.expect(cookie.maxAge).to.eq(30 * 24 * 60 * 60);",
+															"      pm.expect(cookie.value).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authorize",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authorize"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "POST security/authorize - Invalid Refresh Token",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security authorize invalid refresh token status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST security authorize invalid refresh token response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(400);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Invalid refresh token: invalid\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/authorize\");",
+															"",
+															"});",
+															"",
+															"pm.test(\"POST security authorize invalid refresh token cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(1);",
+															"      ",
+															"      const cookie = cookies.members[0];",
+															"",
+															"      pm.expect(cookie.name).to.eq(\"refreshToken\");",
+															"      pm.expect(cookie.maxAge).to.eq(0);",
+															"      pm.expect(cookie.value).to.eq(\"invalid\");",
+															"",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															"const cookieJar = pm.cookies.jar();",
+															"",
+															"cookieJar.set(pm.environment.get(\"host\"), \"refreshToken\", \"invalid\", function(error, cookie) {",
+															"  // Set invalid token",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authorize",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authorize"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "401 Unauthorized",
+									"item": [
+										{
+											"name": "POST security/authorize - Missing Cookie",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security authorize missing cookie status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															"",
+															"pm.test(\"POST security authorize missing cookie response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(401);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Unauthorized\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Refresh token cookie not present in request\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/authorize\");",
+															"",
+															"});",
+															"",
+															"pm.test(\"POST security authorize missing cookie cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(0);      ",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															"const cookieJar = pm.cookies.jar();",
+															"",
+															"cookieJar.clear(pm.environment.get(\"host\"), function (error) {",
+															"  // Clear all cookies",
+															"});"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authorize",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authorize"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/authorize - Unauthorized Refresh Token",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security authorize unauthorized refresh token status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															"",
+															"pm.test(\"POST security authorize unauthorized refresh token response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(401);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Unauthorized\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Authorization failed\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/authorize\");",
+															"",
+															"});",
+															"",
+															"pm.test(\"POST security authorize unauthorized refresh token cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(0);      ",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															"const cookieJar = pm.cookies.jar();",
+															"",
+															"cookieJar.set(pm.environment.get(\"host\"), \"refreshToken\", \"00000000-0000-0000-0000-000000000000\", function(error, cookie) {",
+															"  // Set invalid token",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authorize",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authorize"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "POST security/unauthorize",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/unauthorize - Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security unauthorize admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST security unauthorize admin response body\", () => {",
+															"  const body = pm.response.json();",
+															"  ",
+															"  pm.expect(body).to.have.property(\"loggedOut\");",
+															"",
+															"  pm.expect(body.loggedOut).to.eq(true);",
+															"});",
+															"",
+															"pm.test(\"POST security unauthorize admin cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(0);",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/unauthorize",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"unauthorize"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Setup - Login User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{userUsername}}\",\n    \"password\": \"{{userPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/unauthorize - User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security unauthorize user status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST security unauthorize user response body\", () => {",
+															"  const body = pm.response.json();",
+															"  ",
+															"  pm.expect(body).to.have.property(\"loggedOut\");",
+															"",
+															"  pm.expect(body.loggedOut).to.eq(true);",
+															"});",
+															"",
+															"pm.test(\"POST security unauthorize user cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(0);",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/unauthorize",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"unauthorize"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/unauthorize - Unauthorized Refresh Token",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security unauthorize unauthorized refresh token status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST security unauthorize unauthorized refresh token response body\", () => {",
+															"  const body = pm.response.json();",
+															"  ",
+															"  pm.expect(body).to.have.property(\"loggedOut\");",
+															"",
+															"  pm.expect(body.loggedOut).to.eq(true);",
+															"});",
+															"",
+															"pm.test(\"POST security unauthorize unauthorized refresh token cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(0);",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															"const cookieJar = pm.cookies.jar();",
+															"",
+															"cookieJar.set(pm.environment.get(\"host\"), \"refreshToken\", \"00000000-0000-0000-0000-000000000000\", function(error, cookie) {",
+															"  // Set invalid token",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/unauthorize",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"unauthorize"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "POST security/unauthorize - Invalid Refresh Token",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security unauthorize invalid refresh token status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST security unauthorize invalid refresh token response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(400);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Invalid refresh token: invalid\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/unauthorize\");",
+															"",
+															"});",
+															"",
+															"pm.test(\"POST security authorize invalid refresh token cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(1);",
+															"      ",
+															"      const cookie = cookies.members[0];",
+															"",
+															"      pm.expect(cookie.name).to.eq(\"refreshToken\");",
+															"      pm.expect(cookie.maxAge).to.eq(0);",
+															"      pm.expect(cookie.value).to.eq(\"invalid\");",
+															"",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															"const cookieJar = pm.cookies.jar();",
+															"",
+															"cookieJar.set(pm.environment.get(\"host\"), \"refreshToken\", \"invalid\", function(error, cookie) {",
+															"  // Set invalid token",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/unauthorize",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"unauthorize"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "401 Unauthorized",
+									"item": [
+										{
+											"name": "POST security/unauthorize - Missing Cookie",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security unauthorize missing cookie status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															"",
+															"pm.test(\"POST security unauthorize missing cookie response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(401);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Unauthorized\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Refresh token cookie not present in request\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/unauthorize\");",
+															"",
+															"});",
+															"",
+															"pm.test(\"POST security unauthorize missing cookie\", () => {",
+															"  const cookieJar = pm.cookies.jar();",
+															" ",
+															"  cookieJar.getAll(pm.environment.get(\"host\"), function (error, cookies) {  ",
+															"      pm.expect(cookies.members.length).to.eq(0);      ",
+															"  });",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															"const cookieJar = pm.cookies.jar();",
+															"",
+															"cookieJar.clear(pm.environment.get(\"host\"), function (error) {",
+															"  // Clear all cookies",
+															"});"
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/unauthorize",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"unauthorize"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "POST security/request-password-reset",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "POST security/request-password-reset - Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security request password reset admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST security request password reset admin response body\", () => {",
+															"  pm.expect(responseBody.length).to.eq(0);",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"email\": \"{{adminUsername}}\",\n  \"link\": \"http://example.com/%s\"    \n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/request-password-reset",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"request-password-reset"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/request-password-reset - User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security request password reset user status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST security request password reset user response body\", () => {",
+															"  pm.expect(responseBody.length).to.eq(0);",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"email\": \"{{userUsername}}\",\n  \"link\": \"http://example.com/%s\"    \n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/request-password-reset",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"request-password-reset"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/request-password-reset - Invalid Email",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"// Invalid email should also return 200 to prevent someone from finding out if an email is registered or not.",
+															"pm.test(\"POST security request password reset invalid email status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST security request password reset invalid email response body\", () => {",
+															"  pm.expect(responseBody.length).to.eq(0);",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"email\": \"invalid@email.com\",\n  \"link\": \"http://example.com/%s\"    \n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/request-password-reset",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"request-password-reset"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "POST security/request-password-reset - Invalid Request Body",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security request password reset invalid request body status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST security request password reset invalid request body response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(400);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/request-password-reset\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/request-password-reset",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"request-password-reset"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "POST security/reset-password",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET actuator/health",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"// THere is no way of gwtting a valid reset password token for a user through the API so we ",
+															"// can't write a real test for 200 OK here.",
+															"",
+															"pm.test(\"GET actuator health status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET actuator health response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(\"UP\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/actuator/health",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"actuator",
+														"health"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "POST security/reset-password - Invalid Reset Password Token",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security reset password invalid reset password token status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															"",
+															"pm.test(\"POST security reset password invalid reset password token response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(401);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Unauthorized\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Authentication failed\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/reset-password\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"email\": \"{{adminUsername}}\",\n  \"password\": \"newpassword\",\n  \"resetPasswordToken\": \"00000000-0000-0000-0000-000000000000\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/reset-password",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"reset-password"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "401 Unauthorized",
+									"item": [
+										{
+											"name": "POST security/reset-password - Invalid Request Body",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security reset password invalid request body status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST security reset password invalid request body response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(400);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/reset-password\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/reset-password",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"reset-password"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

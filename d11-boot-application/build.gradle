@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+    id 'checkstyle'
+    id 'pmd'
+    id "com.github.spotbugs" version "${spotBugsPluginVersion}"
+    id "com.palantir.docker" version "0.35.0"
+}
+
+dependencies {
+    implementation project(':d11-boot-interface:d11-boot-interface-rest')
+    implementation project(':d11-boot-interface:d11-boot-interface-jms')
+    implementation project(':d11-boot-camel')
+    implementation project(':d11-boot-download')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation "com.github.ulisesbocchio:jasypt-spring-boot-starter:${jasyptVersion}"
+
+    // Needed for the command line runner
+    implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camelVersion}"
+    implementation "com.github.spotbugs:spotbugs-annotations:${spotBugsVersion}"
+
+    runtimeOnly 'com.h2database:h2'
+}
+
+checkstyle {
+    toolVersion "${checkstyleVersion}"
+}
+
+pmd {
+    ruleSets = []
+    ruleSetFiles = rootProject.files("config/pmd/pmd.xml")
+}
+
+jar {
+    enabled = false
+}
+
+docker {
+    name "d11/d11-boot-${d11BootVersion}"
+    copySpec.from(tasks.bootJar.outputs).into("build/libs")
+}

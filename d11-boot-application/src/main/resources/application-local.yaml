@@ -1,0 +1,29 @@
+d11:
+  security:
+    keystore:
+      # Create keystore with: keytool -genkey -alias <alias> -keyalg RSA -keystore <profile>-keystore.jks -keysize 2048 -validity 9999
+      location: keys/local-keystore.jks
+      password: password
+      keyAlias: local
+      privateKeyPassphrase: password
+    # Configure local frontend to run on port 8081
+    allowedOrigins: 127.0.0.1:8081,localhost:8081
+  download.selenium:
+    remoteUrl: http://localhost:4444
+    # Provide user data dir only if using a standalone application Selenium
+    # userDataDir: .chrome
+
+spring:
+  flyway:
+    locations: classpath:db/migration/table,classpath:db/migration/procedure/h2,classpath:db/migration/data/local
+  datasource:
+    username: sa
+    password:
+    url: jdbc:h2:mem:d11
+    driverClassName: org.h2.Driver
+  h2:
+    console.enabled: true
+  artemis:
+    mode: EMBEDDED
+    embedded:
+      enabled: true
