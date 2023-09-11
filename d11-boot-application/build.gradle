@@ -22,6 +22,7 @@ dependencies {
     implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camelVersion}"
     implementation "com.github.spotbugs:spotbugs-annotations:${spotBugsVersion}"
 
+    runtimeOnly "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}"
     runtimeOnly 'com.h2database:h2'
 }
 

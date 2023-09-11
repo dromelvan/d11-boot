@@ -47,3 +47,9 @@ management:
   health:
     mail:
       enabled: false # Maybe enable this for environments that use the real mail sender.
+
+springdoc:
+  api-docs:
+    path: /v2/api-docs
+  swagger-ui:
+    path: /v2/swagger-ui/index.html
