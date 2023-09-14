@@ -11,6 +11,7 @@ import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -46,6 +47,7 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
      * @param transferDayDelay Number of days after transfer listing deadline the first transfer day will take place.
      * @return New transfer window.
      */
+    @Transactional
     public TransferWindow insertTransferWindow(final LocalDateTime datetime, final int transferDayDelay) {
         if (datetime == null || !datetime.isAfter(LocalDateTime.now())) {
             throw new BadRequestException("datetime", "Datetime is missing or invalid");

@@ -14,7 +14,11 @@ public enum Route {
     /**
      * Receive test route definition.
      */
-    HANDLE_TEST("direct:handleTest");
+    HANDLE_TEST("direct:handleTest"),
+    /**
+     * Insert transfer window route definition.
+     */
+    INSERT_TRANSFER_WINDOW("direct:insertTransferWindow");
 
     /**
      * Route endpoint string.

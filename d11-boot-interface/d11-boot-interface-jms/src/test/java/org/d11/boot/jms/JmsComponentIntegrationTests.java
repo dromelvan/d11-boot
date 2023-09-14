@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
 import org.springframework.jms.listener.MessageListenerContainer;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
@@ -14,6 +15,7 @@ import static org.awaitility.Awaitility.await;
  * Base class for JMS component integration tests.
  */
 @SpringBootTest
+@ActiveProfiles("test")
 public class JmsComponentIntegrationTests {
 
     /**
