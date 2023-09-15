@@ -1,232 +1,486 @@
 -- Data for in memory H2 database when running with local profile
 
 -- User
-INSERT INTO application_user (id, name, email, encrypted_password, administrator)
-    VALUES(1, 'User', 'user@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', false);
-INSERT INTO application_user (id, name, email, encrypted_password, administrator)
-    VALUES(2, 'Administrator', 'administrator@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', true);
+INSERT INTO application_user (name, email, encrypted_password, administrator)
+    VALUES('User', 'user@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', false);
+INSERT INTO application_user (name, email, encrypted_password, administrator)
+    VALUES('Administrator', 'administrator@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', true);
 
 -- Country
-INSERT INTO country VALUES(1, 'CountryA', 'AA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO country VALUES(2, 'CountryB', 'BB', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO country (name, iso)
+    VALUES('CountryA', 'AA');
+INSERT INTO country (name, iso)
+    VALUES('CountryB', 'BB');
 
 -- Stadium
-INSERT INTO stadium VALUES(1, 'StadiumA', 'CityA', 11111, 2020, '1.png', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO stadium VALUES(2, 'StadiumB', 'CityB', 22222, 2020, '2.png', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO stadium (name, city, capacity, opened, photo_file_name)
+    VALUES('StadiumA', 'CityA', 11111, 2020, '1.png');
+INSERT INTO stadium (name, city, capacity, opened, photo_file_name)
+    VALUES('StadiumB', 'CityB', 22222, 2020, '2.png');
 
 -- Position
-INSERT INTO position VALUES(1, 'Defender', 'D', 4, true, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO position VALUES(2, 'Non Defender', 'ND', 4, false, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO position VALUES(3, 'Non Defender 2', 'N2', 4, false, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO position VALUES(4, 'Non Defender 3', 'N3', 4, false, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO position (name, code, max_count, defender, sort_order)
+    VALUES('Defender', 'D', 4, true, 1);
+INSERT INTO position (name, code, max_count, defender, sort_order)
+    VALUES('Non Defender', 'ND', 4, false, 2);
+INSERT INTO position (name, code, max_count, defender, sort_order)
+    VALUES('Non Defender 2', 'N2', 4, false, 3);
+INSERT INTO position (name, code, max_count, defender, sort_order)
+    VALUES('Non Defender 3', 'N3', 4, false, 3);
 
 -- Team
-INSERT INTO team VALUES(1, 1, 11111, 1, 'TeamA', 'ShortA', 'TMA', 2020, 'ColourA', false, '1.png', 'https://test.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO team VALUES(2, 2, 22222, 2, 'TeamB', 'ShortB', 'TMB', 2020, 'ColourB', false, '2.png', 'https://test.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO team (stadium_id, whoscored_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
+    VALUES(1, 11111, 1, 'TeamA', 'ShortA', 'TMA', 2020, 'ColourA', false, '1.png', 'https://test.com');
+INSERT INTO team (stadium_id, whoscored_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
+    VALUES(2, 22222, 2, 'TeamB', 'ShortB', 'TMB', 2020, 'ColourB', false, '2.png', 'https://test.com');
 
 -- D11 Team
-INSERT INTO d11_team VALUES(1, 1, null, 'D11TeamA', 'ShortA', 'DTA', true, '1.png', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_team VALUES(2, 2, null, 'D11TeamB', 'ShortB', 'DTB', false, '2.png', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)
+    VALUES(1, null, 'D11TeamA', 'ShortA', 'DTA', true, '1.png');
+INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)
+    VALUES(2, null, 'D11TeamB', 'ShortB', 'DTB', false, '2.png');
 
 -- Player
-INSERT INTO player VALUES(1, 1, 111111, 1, 'FirstA', 'LastA', 'FullA', 'firsta-lasta', '2020-01-01', 111, '1.png', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player VALUES(2, 2, 222222, 2, 'FirstB', 'LastB', 'FullB', 'firstb-lastb', '2020-01-01', 222, '2.png', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player VALUES(3, 1, 333333, 3, 'FirstC', 'LastC', 'FullC', 'firstc-lastc', '2020-01-01', 333, '3.png', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
+    VALUES(1, 111111, 1, 'FirstA', 'LastA', 'FullA', 'firsta-lasta', '2020-01-01', 111, '1.png', true);
+INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
+    VALUES(2, 222222, 2, 'FirstB', 'LastB', 'FullB', 'firstb-lastb', '2020-01-01', 222, '2.png', true);
+INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
+    VALUES(1, 333333, 3, 'FirstC', 'LastC', 'FullC', 'firstc-lastc', '2020-01-01', 333, '3.png', true);
 -- Players used for search tests.
-INSERT INTO player VALUES(4, 1, 444444, 4, 'Foo', 'Bar', null, 'foo-bar', '2020-01-01', 111, '4.png', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player VALUES(5, 1, 555555, 5, 'Bar', 'Foo', null, 'bar-foo', '2020-01-01', 111, '5.png', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player VALUES(6, 1, 666666, 6, 'Foo', '', null, 'foo', '2020-01-01', 111, '6.png', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
+    VALUES(1, 444444, 4, 'Foo', 'Bar', null, 'foo-bar', '2020-01-01', 111, '4.png', true);
+INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
+    VALUES(1, 555555, 5, 'Bar', 'Foo', null, 'bar-foo', '2020-01-01', 111, '5.png', true);
+INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
+    VALUES(1, 666666, 6, 'Foo', '', null, 'foo', '2020-01-01', 111, '6.png', true);
 
 -- Season
-INSERT INTO season VALUES(1, '2020-2021', 600, 13, 3, '2020-01-01', false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO season VALUES(2, '2021-2022', 600, 13, 1, '2021-01-01', false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date, legacy)
+    VALUES('2020-2021', 600, 13, 3, '2020-01-01', false);
+INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date, legacy)
+    VALUES('2021-2022', 600, 13, 1, '2021-01-01', false);
 
 -- Premier League
-INSERT INTO premier_league VALUES(1, 1, 'PremierLeagueA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO premier_league VALUES(2, 2, 'PremierLeagueB', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO premier_league (season_id, name)
+    VALUES(1, 'PremierLeagueA');
+INSERT INTO premier_league (season_id, name)
+    VALUES(2, 'PremierLeagueB');
 
 -- D11 League
-INSERT INTO d11_league VALUES(1, 1, 'D11LeagueA', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_league VALUES(2, 2, 'D11LeagueB', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO d11_league (season_id, name)
+    VALUES(1, 'D11LeagueA');
+INSERT INTO d11_league (season_id, name)
+    VALUES(2, 'D11LeagueB');
 
 -- Match Week
-INSERT INTO match_week VALUES(1, 1, null, null, null, 1, CURRENT_DATE - 2, 10, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO match_week VALUES(2, 1, null, null, null, 2, CURRENT_DATE - 1, 10, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO match_week VALUES(3, 2, null, null, null, 1, CURRENT_DATE, 7, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO match_week VALUES(4, 2, null, null, null, 2, CURRENT_DATE + 1, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_id, most_valuable_player_id, match_week_number, date, elapsed, status)
+    VALUES(1, null, null, null, 1, CURRENT_DATE - 2, 10, 3);
+INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_id, most_valuable_player_id, match_week_number, date, elapsed, status)
+    VALUES(1, null, null, null, 2, CURRENT_DATE - 1, 10, 3);
+INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_id, most_valuable_player_id, match_week_number, date, elapsed, status)
+    VALUES(2, null, null, null, 1, CURRENT_DATE, 7, 1);
+INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_id, most_valuable_player_id, match_week_number, date, elapsed, status)
+    VALUES(2, null, null, null, 2, CURRENT_DATE + 1, 0, 0);
 
 -- Match
-INSERT INTO match VALUES(1, 1, 2, 1, 1, 1, '2020-01-01 17:00:00', 0, 1, 0, 0, 'FT', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO match VALUES(2, 2, 1, 1, 2, 2, '2020-01-02 17:00:00', 2, 1, 1, 0, 'FT', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO match VALUES(3, 1, 2, 2, 1, 3, '2020-02-01 17:00:00', 0, 1, 0, 0, 'FT', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO match VALUES(4, 2, 1, 2, 2, 4, '2020-02-02 17:00:00', 2, 1, 1, 0, 'FT', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO match VALUES(5, 1, 2, 3, 1, 5, '2021-01-01 17:00:00', 0, 1, 0, 0, 'HT', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO match VALUES(6, 2, 1, 3, 2, 6, '2021-01-02 17:00:00', 2, 1, 1, 0, '55', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO match VALUES(7, 1, 2, 4, 1, 7, '2021-02-01 22:00:00', 0, 1, 0, 0, 'N/A', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO match VALUES(8, 2, 1, 4, 2, 8, '2021-02-01 17:00:00', 2, 1, 1, 0, 'N/A', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
+                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+    VALUES(1, 2, 1, 1, 1, '2020-01-01 17:00:00', 0, 1, 0, 0, 'FT', 3);
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
+                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+    VALUES(2, 1, 1, 2, 2, '2020-01-02 17:00:00', 2, 1, 1, 0, 'FT', 3);
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
+                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+    VALUES(1, 2, 2, 1, 3, '2020-02-01 17:00:00', 0, 1, 0, 0, 'FT', 2);
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
+                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+    VALUES(2, 1, 2, 2, 4, '2020-02-02 17:00:00', 2, 1, 1, 0, 'FT', 2);
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
+                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+    VALUES(1, 2, 3, 1, 5, '2021-01-01 17:00:00', 0, 1, 0, 0, 'HT', 1);
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
+                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+    VALUES(2, 1, 3, 2, 6, '2021-01-02 17:00:00', 2, 1, 1, 0, '55', 1);
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
+                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+    VALUES(1, 2, 4, 1, 7, '2021-02-01 22:00:00', 0, 1, 0, 0, 'N/A', 0);
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
+                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+    VALUES(2, 1, 4, 2, 8, '2021-02-01 17:00:00', 2, 1, 1, 0, 'N/A', 4);
 
 -- D11 Match
-INSERT INTO d11_match VALUES(1, 1, 2, 1, '2020-01-01', 0, 1, 0, 1, 0, 0, 0, 0, 'FT', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_match VALUES(2, 2, 1, 1, '2020-01-02', 2, 1, 5, 1, 0, 0, 0, 0, 'FT', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_match VALUES(3, 1, 2, 2, '2020-02-01', 0, 1, 0, 1, 0, 0, 0, 0, 'FT', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_match VALUES(4, 2, 1, 2, '2020-02-02', 2, 1, 5, 1, 0, 0, 0, 0, 'FT', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_match VALUES(5, 1, 2, 3, '2021-01-01', 0, 1, 0, 1, 0, 0, 0, 0, 'HT', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_match VALUES(6, 2, 1, 3, '2021-01-02', 2, 1, 5, 1, 0, 0, 0, 0, '55', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_match VALUES(7, 1, 2, 4, '2020-02-01', 0, 1, 0, 1, 0, 0, 0, 0, 'N/A', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_match VALUES(8, 2, 1, 4, '2020-02-02', 2, 1, 5, 1, 0, 0, 0, 0, 'N/A', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
+                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+    VALUES(1, 2, 1, '2020-01-01', 0, 1, 0, 1, 0, 0, 0, 0, 'FT', 2);
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
+                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+    VALUES(2, 1, 1, '2020-01-02', 2, 1, 5, 1, 0, 0, 0, 0, 'FT', 2);
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
+                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+    VALUES(1, 2, 2, '2020-02-01', 0, 1, 0, 1, 0, 0, 0, 0, 'FT', 2);
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
+                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+    VALUES(2, 1, 2, '2020-02-02', 2, 1, 5, 1, 0, 0, 0, 0, 'FT', 2);
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
+                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+    VALUES(1, 2, 3, '2021-01-01', 0, 1, 0, 1, 0, 0, 0, 0, 'HT', 1);
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
+                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+    VALUES(2, 1, 3, '2021-01-02', 2, 1, 5, 1, 0, 0, 0, 0, '55', 1);
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
+                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+    VALUES(1, 2, 4, '2020-02-01', 0, 1, 0, 1, 0, 0, 0, 0, 'N/A', 0);
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
+                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+    VALUES(2, 1, 4, '2020-02-02', 2, 1, 5, 1, 0, 0, 0, 0, 'N/A', 0);
 
 -- Goal
-INSERT INTO goal VALUES(1, 1, 1, 1, 45, 0, false, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(2, 1, 1, 1, 90, 5, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(3, 1, 2, 2, 60, 0, false, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(4, 1, 2, 2, 90, 0, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(5, 2, 1, 2, 45, 0, false, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(6, 2, 1, 1, 90, 5, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(7, 2, 2, 1, 60, 0, false, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(8, 2, 2, 2, 90, 0, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(9, 3, 1, 1, 45, 0, false, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(10, 3, 1, 1, 90, 5, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(11, 3, 2, 2, 60, 0, false, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(12, 3, 2, 2, 90, 0, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(13, 4, 1, 2, 45, 0, false, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(14, 4, 1, 1, 90, 5, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(15, 4, 2, 1, 60, 0, false, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(16, 4, 2, 2, 90, 0, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(17, 5, 1, 1, 45, 0, false, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(18, 5, 1, 1, 90, 5, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(19, 5, 2, 2, 60, 0, false, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(20, 5, 2, 2, 90, 0, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(21, 6, 1, 2, 45, 0, false, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(22, 6, 1, 1, 90, 5, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(23, 6, 2, 1, 60, 0, false, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(24, 6, 2, 2, 90, 0, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(25, 7, 1, 1, 45, 0, false, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(26, 7, 1, 1, 90, 5, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(27, 7, 2, 2, 60, 0, false, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(28, 7, 2, 2, 90, 0, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(29, 8, 1, 2, 45, 0, false, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(30, 8, 1, 1, 90, 5, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(31, 8, 2, 1, 60, 0, false, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO goal VALUES(32, 8, 2, 2, 90, 0, true, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(1, 1, 1, 45, 0, false, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(1, 1, 1, 90, 5, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(1, 2, 2, 60, 0, false, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(1, 2, 2, 90, 0, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(2, 1, 2, 45, 0, false, true);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(2, 1, 1, 90, 5, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(2, 2, 1, 60, 0, false, true);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(2, 2, 2, 90, 0, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(3, 1, 1, 45, 0, false, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(3, 1, 1, 90, 5, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(3, 2, 2, 60, 0, false, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(3, 2, 2, 90, 0, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(4, 1, 2, 45, 0, false, true);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(4, 1, 1, 90, 5, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(4, 2, 1, 60, 0, false, true);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(4, 2, 2, 90, 0, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(5, 1, 1, 45, 0, false, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(5, 1, 1, 90, 5, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(5, 2, 2, 60, 0, false, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(5, 2, 2, 90, 0, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(6, 1, 2, 45, 0, false, true);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(6, 1, 1, 90, 5, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(6, 2, 1, 60, 0, false, true);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(6, 2, 2, 90, 0, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(7, 1, 1, 45, 0, false, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(7, 1, 1, 90, 5, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(7, 2, 2, 60, 0, false, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(7, 2, 2, 90, 0, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(8, 1, 2, 45, 0, false, true);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(8, 1, 1, 90, 5, true, false);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(8, 2, 1, 60, 0, false, true);
+INSERT INTO goal (match_id, team_id, player_id, time, added_time, penalty, own_goal)
+    VALUES(8, 2, 2, 90, 0, true, false);
 
 -- Player match stat
-INSERT INTO player_match_stat VALUES (1, 1, 1, 1, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 700, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (2, 2, 1, 1, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 861, 12, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (3, 1, 2, 2, 1, 1, 2, 'ND', 1, 23, 0, 0, 0, 0, 1, 10, 0, false, false, 701, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (4, 2, 2, 2, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 1, 0, 0, 0, true, false, 862, 12, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (5, 1, 3, 3, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 702, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (6, 2, 3, 3, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 863, 12, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (7, 1, 4, 4, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 703, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (8, 2, 4, 4, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 864, 12, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (9, 1, 5, 5, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 704, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (10, 2, 5, 5, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 865, 12, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (11, 1, 6, 6, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 705, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (12, 2, 6, 6, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 866, 12, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (13, 1, 7, 7, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 706, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (14, 2, 7, 7, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 867, 12, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (15, 1, 8, 8, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 707, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (16, 2, 8, 8, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 868, 12, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (17, 3, 1, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (18, 3, 2, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (19, 3, 3, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (20, 3, 4, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (21, 3, 5, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (22, 3, 6, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (23, 3, 7, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_match_stat VALUES (24, 3, 8, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (1, 1, 1, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 700, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (2, 1, 1, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 861, 12);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (1, 2, 2, 1, 1, 2, 'ND', 1, 23, 0, 0, 0, 0, 1, 10, 0, false, false, 701, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (2, 2, 2, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 1, 0, 0, 0, true, false, 862, 12);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (1, 3, 3, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 702, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (2, 3, 3, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 863, 12);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (1, 4, 4, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 703, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (2, 4, 4, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 864, 12);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (1, 5, 5, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 704, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (2, 5, 5, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 865, 12);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (1, 6, 6, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 705, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (2, 6, 6, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 866, 12);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (1, 7, 7, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 706, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (2, 7, 7, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 867, 12);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (1, 8, 8, 1, 1, 2, 'ND', 2, 0, 0, 0, 0, 0, 1, 10, 0, false, false, 707, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (2, 8, 8, 2, 2, 1, 'D', 2, 0, 80, 1, 1, 0, 0, 0, 0, true, false, 868, 12);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (3, 1, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (3, 2, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (3, 3, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (3, 4, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (3, 5, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (3, 6, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (3, 7, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (3, 8, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0);
 -- Update match_week most_valuable_player_id after player_match_stats are inserted
 UPDATE match_week SET most_valuable_player_id = id where most_valuable_player_id is null;
 
 -- Player season stat
-INSERT INTO player_season_stat VALUES (1, 1, 1, 1, 1, 1, 1, 1, 50, 1, 100, 50, '-1,2,3', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_season_stat VALUES (2, 2, 1, 2, 2, 2, null, null, 50, 2, 50, 25, '', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 732, 1, 1, 0, 90, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_season_stat VALUES (3, 1, 2, 1, 1, 1, 2, 1, 50, 2, 50, 50, '2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 632, 1, 1, 0, 90, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_season_stat VALUES (4, 2, 2, 2, 2, 2, 3, 1, 50, 1, 55, 25, '1,2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_season_stat VALUES (5, 3, 2, 2, 2, 3, 4, 1, 50, 3, 45, 25, '1,2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO player_season_stat VALUES (6, 4, 2, 2, 1, 4, 5, 1, 50, 4, 40, 25, '1,2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO player_season_stat (player_id, season_id, team_id, d11_team_id, position_id, shirt_number, win_count, fee, ranking, points, form_points, form_match_points, points_per_appearance,
+                                goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match,
+                                rating, games_started, games_substitute, games_did_not_participate, minutes_played)
+    VALUES (1, 1, 1, 1, 1, 1, 1, 50, 1, 100, 50, '-1,2,3', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90);
+INSERT INTO player_season_stat (player_id, season_id, team_id, d11_team_id, position_id, shirt_number, win_count, fee, ranking, points, form_points, form_match_points, points_per_appearance,
+                                goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match,
+                                rating, games_started, games_substitute, games_did_not_participate, minutes_played)
+    VALUES (2, 1, 2, 2, 2, null, null, 50, 2, 50, 25, '', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 732, 1, 1, 0, 90);
+INSERT INTO player_season_stat (player_id, season_id, team_id, d11_team_id, position_id, shirt_number, win_count, fee, ranking, points, form_points, form_match_points, points_per_appearance,
+                                goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match,
+                                rating, games_started, games_substitute, games_did_not_participate, minutes_played)
+    VALUES (1, 2, 1, 1, 1, 2, 1, 50, 2, 50, 50, '2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 632, 1, 1, 0, 90);
+INSERT INTO player_season_stat (player_id, season_id, team_id, d11_team_id, position_id, shirt_number, win_count, fee, ranking, points, form_points, form_match_points, points_per_appearance,
+                                goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match,
+                                rating, games_started, games_substitute, games_did_not_participate, minutes_played)
+    VALUES (2, 2, 2, 2, 2, 3, 1, 50, 1, 55, 25, '1,2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90);
+INSERT INTO player_season_stat (player_id, season_id, team_id, d11_team_id, position_id, shirt_number, win_count, fee, ranking, points, form_points, form_match_points, points_per_appearance,
+                                goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match,
+                                rating, games_started, games_substitute, games_did_not_participate, minutes_played)
+    VALUES (3, 2, 2, 2, 3, 4, 1, 50, 3, 45, 25, '1,2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90);
+INSERT INTO player_season_stat (player_id, season_id, team_id, d11_team_id, position_id, shirt_number, win_count, fee, ranking, points, form_points, form_match_points, points_per_appearance,
+                                goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match,
+                                rating, games_started, games_substitute, games_did_not_participate, minutes_played)
+    VALUES (4, 2, 2, 1, 4, 5, 1, 50, 4, 40, 25, '1,2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90);
 
 -- Team match week stat
-INSERT INTO team_match_week_stat VALUES (1, 1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 3, '3', 1, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO team_match_week_stat VALUES (2, 2, 1, 1, 0, 0, 1, 1, 2, -1, 0, 0, '0', 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO team_match_week_stat VALUES (3, 1, 2, 2, 1, 0, 1, 3, 3, 0, 3, 3, '3,0', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO team_match_week_stat VALUES (4, 2, 2, 1, 1, 0, 1, 3, 3, 0, 3, 3, '0,3', 2, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO team_match_week_stat VALUES (5, 1, 3, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 2, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO team_match_week_stat VALUES (6, 2, 3, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO team_match_week_stat VALUES (7, 1, 4, 2, 1, 1, 0, 2, 0, 2, 4, 4, '1,3', 1, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO team_match_week_stat VALUES (8, 2, 4, 2, 0, 1, 1, 0, 2, -2, 1, 1, '1,0', 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO team_match_week_stat (team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points,
+                                  form_match_points, ranking, previous_ranking)
+    VALUES (1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 3, '3', 1, 2);
+INSERT INTO team_match_week_stat (team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points,
+                                  form_match_points, ranking, previous_ranking)
+    VALUES (2, 1, 1, 0, 0, 1, 1, 2, -1, 0, 0, '0', 2, 1);
+INSERT INTO team_match_week_stat (team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points,
+                                  form_match_points, ranking, previous_ranking)
+    VALUES (1, 2, 2, 1, 0, 1, 3, 3, 0, 3, 3, '3,0', 1, 1);
+INSERT INTO team_match_week_stat (team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points,
+                                  form_match_points, ranking, previous_ranking)
+    VALUES (2, 2, 1, 1, 0, 1, 3, 3, 0, 3, 3, '0,3', 2, 2);
+INSERT INTO team_match_week_stat (team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points,
+                                  form_match_points, ranking, previous_ranking)
+    VALUES (1, 3, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 2, 2);
+INSERT INTO team_match_week_stat (team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points,
+                                  form_match_points, ranking, previous_ranking)
+    VALUES (2, 3, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 1, 1);
+INSERT INTO team_match_week_stat (team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points,
+                                  form_match_points, ranking, previous_ranking)
+    VALUES (1, 4, 2, 1, 1, 0, 2, 0, 2, 4, 4, '1,3', 1, 2);
+INSERT INTO team_match_week_stat (team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points,
+                                  form_match_points, ranking, previous_ranking)
+    VALUES (2, 4, 2, 0, 1, 1, 0, 2, -2, 1, 1, '1,0', 2, 1);
 -- Update match_week premier_league_leader_id after team_match_week_stats are inserted
 UPDATE match_week SET premier_league_leader_id = id where premier_league_leader_id is null;
 
 -- Team season stat
-INSERT INTO team_season_stat VALUES (1, 1, 1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 3, '3', 1, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO team_season_stat VALUES (2, 2, 1, null, 1, 0, 0, 1, 1, 2, -1, 0, 0, '0', 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO team_season_stat VALUES (3, 1, 2, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 2, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO team_season_stat VALUES (4, 2, 2, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO team_season_stat (team_id, season_id, win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                              points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (1, 1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 3, '3', 1, 2);
+INSERT INTO team_season_stat (team_id, season_id, win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                              points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (2, 1, null, 1, 0, 0, 1, 1, 2, -1, 0, 0, '0', 2, 1);
+INSERT INTO team_season_stat (team_id, season_id, win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                              points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (1, 2, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 2, 2);
+INSERT INTO team_season_stat (team_id, season_id, win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                              points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (2, 2, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 1, 1);
 
 -- D11 team match week stat
-INSERT INTO d11_team_match_week_stat VALUES (1, 1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 3, '3', 1, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_team_match_week_stat VALUES (2, 2, 1, 1, 0, 0, 1, 1, 2, -1, 0, 0, '0', 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_team_match_week_stat VALUES (3, 1, 2, 2, 1, 0, 1, 3, 3, 0, 3, 3, '3,0', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_team_match_week_stat VALUES (4, 2, 2, 1, 1, 0, 1, 3, 3, 0, 3, 3, '0,3', 2, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_team_match_week_stat VALUES (5, 1, 3, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 2, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_team_match_week_stat VALUES (6, 2, 3, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_team_match_week_stat VALUES (7, 1, 4, 2, 1, 1, 0, 2, 0, 2, 4, 4, '1,3', 1, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_team_match_week_stat VALUES (8, 2, 4, 2, 0, 1, 1, 0, 2, -2, 1, 1, '1,0', 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO d11_team_match_week_stat (d11_team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                                      points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 3, '3', 1, 2);
+INSERT INTO d11_team_match_week_stat (d11_team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                                      points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (2, 1, 1, 0, 0, 1, 1, 2, -1, 0, 0, '0', 2, 1);
+INSERT INTO d11_team_match_week_stat (d11_team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                                      points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (1, 2, 2, 1, 0, 1, 3, 3, 0, 3, 3, '3,0', 1, 1);
+INSERT INTO d11_team_match_week_stat (d11_team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                                      points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (2, 2, 1, 1, 0, 1, 3, 3, 0, 3, 3, '0,3', 2, 2);
+INSERT INTO d11_team_match_week_stat (d11_team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                                      points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (1, 3, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 2, 2);
+INSERT INTO d11_team_match_week_stat (d11_team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                                      points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (2, 3, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 1, 1);
+INSERT INTO d11_team_match_week_stat (d11_team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                                      points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (1, 4, 2, 1, 1, 0, 2, 0, 2, 4, 4, '1,3', 1, 2);
+INSERT INTO d11_team_match_week_stat (d11_team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                                      points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (2, 4, 2, 0, 1, 1, 0, 2, -2, 1, 1, '1,0', 2, 1);
 -- Update match_week d11_league_leader_id after d11_team_match_week_stats are inserted
 UPDATE match_week SET d11_league_leader_id = id where d11_league_leader_id is null;
 
 -- D11 team season stat
-INSERT INTO d11_team_season_stat VALUES (1, 1, 1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 3, '3', 1, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_team_season_stat VALUES (2, 2, 1, null, 1, 0, 0, 1, 1, 2, -1, 0, 0, '0', 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_team_season_stat VALUES (3, 1, 2, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 2, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO d11_team_season_stat VALUES (4, 2, 2, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO d11_team_season_stat (d11_team_id, season_id, win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                                  points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (1, 1, 1, 1, 1, 0, 0, 2, 1, 1, 3, 3, '3', 1, 2);
+INSERT INTO d11_team_season_stat (d11_team_id, season_id, win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                                  points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (2, 1, null, 1, 0, 0, 1, 1, 2, -1, 0, 0, '0', 2, 1);
+INSERT INTO d11_team_season_stat (d11_team_id, season_id, win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                                  points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (1, 2, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 2, 2);
+INSERT INTO d11_team_season_stat (d11_team_id, season_id, win_count, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference,
+                                  points, form_points, form_match_points, ranking, previous_ranking)
+    VALUES (2, 2, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, '1', 1, 1);
 
 -- Transfer window
-INSERT INTO transfer_window VALUES(1, 1, 0, true, 3, CURRENT_DATE - 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_window VALUES(2, 2, 1, false, 3, CURRENT_DATE - 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_window VALUES(3, 3, 0, true, 3, CURRENT_DATE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_window VALUES(4, 4, 1, false, 3, CURRENT_DATE + 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO transfer_window (match_week_id, transfer_window_number, draft, status, datetime)
+    VALUES(1, 0, true, 3, CURRENT_DATE - 2);
+INSERT INTO transfer_window (match_week_id, transfer_window_number, draft, status, datetime)
+    VALUES(2, 1, false, 3, CURRENT_DATE - 1);
+INSERT INTO transfer_window (match_week_id, transfer_window_number, draft, status, datetime)
+    VALUES(3, 0, true, 3, CURRENT_DATE);
+INSERT INTO transfer_window (match_week_id, transfer_window_number, draft, status, datetime)
+    VALUES(4, 1, false, 3, CURRENT_DATE + 1);
 
 -- Transfer day
-INSERT INTO transfer_day VALUES(1, 1, 1, 3, CURRENT_DATE - 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_day VALUES(2, 1, 2, 3, CURRENT_DATE - 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_day VALUES(3, 2, 1, 3, CURRENT_DATE - 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_day VALUES(4, 2, 2, 3, CURRENT_DATE - 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_day VALUES(5, 3, 1, 3, CURRENT_DATE - 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_day VALUES(6, 3, 2, 3, CURRENT_DATE - 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_day VALUES(7, 4, 1, 1, CURRENT_DATE - 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_day VALUES(8, 4, 2, 0, CURRENT_DATE + 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO transfer_day (transfer_window_id, transfer_day_number, status, datetime)
+    VALUES(1, 1, 3, CURRENT_DATE - 6);
+INSERT INTO transfer_day (transfer_window_id, transfer_day_number, status, datetime)
+    VALUES(1, 2, 3, CURRENT_DATE - 5);
+INSERT INTO transfer_day (transfer_window_id, transfer_day_number, status, datetime)
+    VALUES(2, 1, 3, CURRENT_DATE - 4);
+INSERT INTO transfer_day (transfer_window_id, transfer_day_number, status, datetime)
+    VALUES(2, 2, 3, CURRENT_DATE - 3);
+INSERT INTO transfer_day (transfer_window_id, transfer_day_number, status, datetime)
+    VALUES(3, 1, 3, CURRENT_DATE - 2);
+INSERT INTO transfer_day (transfer_window_id, transfer_day_number, status, datetime)
+    VALUES(3, 2, 3, CURRENT_DATE - 1);
+INSERT INTO transfer_day (transfer_window_id, transfer_day_number, status, datetime)
+    VALUES(4, 1, 1, CURRENT_DATE - 1);
+INSERT INTO transfer_day (transfer_window_id, transfer_day_number, status, datetime)
+    VALUES(4, 2, 0, CURRENT_DATE + 1);
 
 -- Transfer listing
-INSERT INTO transfer_listing VALUES (1, 1, 1, 1, 2, 1, 1, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_listing VALUES (2, 1, 2, 2, 1, 2, 2, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_listing VALUES (3, 7, 1, 1, 2, 1, 1, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_listing VALUES (4, 8, 2, 2, 1, 2, 2, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO transfer_listing (transfer_day_id, player_id, team_id, d11_team_id, position_id, ranking, points, form_points, form_match_points, points_per_appearance,
+                              goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off,
+                              man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, new_player)
+    VALUES (1, 1, 1, 2, 1, 1, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, false);
+INSERT INTO transfer_listing (transfer_day_id, player_id, team_id, d11_team_id, position_id, ranking, points, form_points, form_match_points, points_per_appearance,
+                              goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off,
+                              man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, new_player)
+    VALUES (1, 2, 2, 1, 2, 2, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, false);
+INSERT INTO transfer_listing (transfer_day_id, player_id, team_id, d11_team_id, position_id, ranking, points, form_points, form_match_points, points_per_appearance,
+                              goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off,
+                              man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, new_player)
+    VALUES (7, 1, 1, 2, 1, 1, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, false);
+INSERT INTO transfer_listing (transfer_day_id, player_id, team_id, d11_team_id, position_id, ranking, points, form_points, form_match_points, points_per_appearance,
+                              goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off,
+                              man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, new_player)
+    VALUES (8, 2, 2, 1, 2, 2, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, true);
 
 -- Transfer bid
-INSERT INTO transfer_bid VALUES(1, 1, 1, 1, 1, 1, 100, 100, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(2, 1, 2, 1, 2, 1, 200, 50, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(3, 2, 1, 1, 1, 1, 100, 100, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(4, 2, 2, 1, 2, 1, 200, 50, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(5, 3, 1, 1, 1, 1, 100, 100, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(6, 3, 2, 1, 2, 1, 200, 50, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(7, 4, 1, 1, 1, 1, 100, 100, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(8, 4, 2, 1, 2, 1, 200, 50, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(9, 5, 1, 1, 1, 1, 100, 100, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(10, 5, 2, 1, 2, 1, 200, 50, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(11, 6, 1, 1, 1, 1, 100, 100, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(12, 6, 2, 1, 2, 1, 200, 50, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(13, 7, 1, 1, 1, 1, 100, 100, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(14, 7, 2, 2, 2, 1, 200, 50, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(15, 8, 1, 1, 1, 1, 100, 100, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer_bid VALUES(16, 8, 2, 2, 2, 1, 200, 50, false, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(1, 1, 1, 1, 1, 100, 100, true);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(1, 2, 1, 2, 1, 200, 50, false);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(2, 1, 1, 1, 1, 100, 100, true);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(2, 2, 1, 2, 1, 200, 50, false);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(3, 1, 1, 1, 1, 100, 100, true);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(3, 2, 1, 2, 1, 200, 50, false);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(4, 1, 1, 1, 1, 100, 100, true);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(4, 2, 1, 2, 1, 200, 50, false);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(5, 1, 1, 1, 1, 100, 100, true);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(5, 2, 1, 2, 1, 200, 50, false);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(6, 1, 1, 1, 1, 100, 100, true);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(6, 2, 1, 2, 1, 200, 50, false);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(7, 1, 1, 1, 1, 100, 100, true);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(7, 2, 2, 2, 1, 200, 50, false);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(8, 1, 1, 1, 1, 100, 100, true);
+INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)
+    VALUES(8, 2, 2, 2, 1, 200, 50, false);
 
 -- Transfer
-INSERT INTO transfer VALUES(1, 1, 1, 1, 100, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer VALUES(3, 2, 1, 1, 100, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer VALUES(5, 3, 1, 1, 100, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer VALUES(7, 4, 1, 1, 100, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer VALUES(9, 5, 1, 1, 100, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer VALUES(11, 6, 1, 1, 100, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer VALUES(13, 7, 1, 1, 100, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-INSERT INTO transfer VALUES(15, 8, 1, 1, 100, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
+    VALUES(1, 1, 1, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
+    VALUES(2, 1, 1, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
+    VALUES(3, 1, 1, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
+    VALUES(4, 1, 1, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
+    VALUES(5, 1, 1, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
+    VALUES(6, 1, 1, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
+    VALUES(7, 1, 1, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
+    VALUES(8, 1, 1, 100);
