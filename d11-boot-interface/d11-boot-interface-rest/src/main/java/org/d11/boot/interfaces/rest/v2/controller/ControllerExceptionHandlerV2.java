@@ -142,7 +142,10 @@ public class ControllerExceptionHandlerV2 {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final AccessDeniedException e,
                                                  @NonNull final HttpServletRequest request) {
-        final HttpStatus httpStatus = HttpStatus.FORBIDDEN;
+        final String authorizationHeader = request.getHeader("Authorization");
+
+        // If the header is null then we're sending an empty JWT or no bearer header at all.
+        final HttpStatus httpStatus = authorizationHeader == null ? HttpStatus.UNAUTHORIZED : HttpStatus.FORBIDDEN;
         final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
             .uuid(UUID.randomUUID())
             .error(httpStatus.getReasonPhrase())
