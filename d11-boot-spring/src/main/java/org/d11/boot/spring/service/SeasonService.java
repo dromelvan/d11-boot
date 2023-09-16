@@ -5,6 +5,7 @@ import org.d11.boot.spring.repository.SeasonRepository;
 import org.d11.boot.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -41,6 +42,21 @@ public class SeasonService extends RepositoryService<Season, SeasonRepository> {
     public Season getCurrentSeason() {
         return getJpaRepository().findFirstByOrderByDateDesc()
                 .orElseThrow(() -> new NotFoundException("Current season does not exist."));
+    }
+
+    /**
+     * Updates properties for a season.
+     *
+     * @param updatedSeason Season with new properties.
+     * @return Updated season.
+     */
+    @Transactional
+    public Season updateSeason(final Season updatedSeason) {
+        final Season season = getById(updatedSeason.getId());
+
+        getMapper().map(updatedSeason, season);
+
+        return getJpaRepository().save(season);
     }
 
 }

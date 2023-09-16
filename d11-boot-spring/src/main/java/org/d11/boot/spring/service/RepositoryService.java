@@ -48,4 +48,14 @@ public class RepositoryService<T extends D11Entity, U extends D11EntityRepositor
                 .orElseThrow(() -> new NotFoundException(id, this.entityClass));
     }
 
+    /**
+     * Saves an entity.
+     *
+     * @param entity The entity.
+     * @return The saved entity.
+     */
+    public T save(final T entity) {
+        return this.jpaRepository.save(entity);
+    }
+
 }
