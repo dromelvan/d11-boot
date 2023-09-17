@@ -70,7 +70,7 @@
 							]
 						},
 						{
-							"name": "GET season/{seasonId}",
+							"name": "GET seasons/{seasonId}",
 							"item": [
 								{
 									"name": "200 OK",
@@ -94,10 +94,10 @@
 															"  pm.expect(body.season.id).to.eq(parseInt(pm.environment.get(\"seasonId\")));",
 															"",
 															"  pm.expect(body.season).to.have.property(\"name\");",
-															"  pm.expect(body.season.name).to.match(/\\d{4}-\\d{4}/);",
+															"  pm.expect(body.season.name).to.eq(pm.environment.get(\"seasonName\"));",
 															"",
 															"  pm.expect(body.season).to.have.property(\"shortName\");",
-															"  pm.expect(body.season.name).to.match(/\\d{2}-\\d{2}/);",
+															"  pm.expect(body.season.shortName).to.eq(pm.environment.get(\"seasonShortName\"));",
 															"",
 															"  pm.expect(body.season).to.have.property(\"d11TeamBudget\");",
 															"  pm.expect(body.season.d11TeamBudget).to.eq(parseInt(pm.environment.get(\"seasonD11TeamBudget\")));",
@@ -312,6 +312,829 @@
 														"v2",
 														"seasons",
 														"current"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "PUT seasons",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "PUT seasons",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT season status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"PUT season response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"season\");",
+															"",
+															"  pm.expect(body.season.id).to.eq(parseInt(pm.environment.get(\"seasonId\")));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"name\");",
+															"  pm.expect(body.season.name).to.eq(\"1970-1971\");",
+															"",
+															"  pm.expect(body.season).to.have.property(\"shortName\");",
+															"  pm.expect(body.season.shortName).to.eq(\"70-71\");",
+															"",
+															"  pm.expect(body.season).to.have.property(\"d11TeamBudget\");",
+															"  pm.expect(body.season.d11TeamBudget).to.eq(5);",
+															"",
+															"  pm.expect(body.season).to.have.property(\"d11TeamMaxTransfers\");",
+															"  pm.expect(body.season.d11TeamMaxTransfers).to.eq(1);",
+															"",
+															"  pm.expect(body.season).to.have.property(\"status\");",
+															"  pm.expect(body.season.status).to.eq(\"Pending\");",
+															"",
+															"  pm.expect(body.season).to.have.property(\"date\");",
+															"  pm.expect(body.season.date).to.eq(\"1970-01-01\");",
+															"",
+															"  pm.expect(body.season).to.have.property(\"legacy\");",
+															"  pm.expect(body.season.legacy).to.eq(true);",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"season\": {\n        \"id\": {{seasonId}},\n        \"name\": \"1970-1971\",\n        \"d11TeamBudget\": 5,\n        \"d11TeamMaxTransfers\": 1,\n        \"status\": \"Pending\",\n        \"date\": \"1970-01-01\",\n        \"legacy\": true\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Confirm - GET season/{seasonId}",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET season status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"Confirm GET season response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"season\");",
+															"",
+															"  pm.expect(body.season.id).to.eq(parseInt(pm.environment.get(\"seasonId\")));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"name\");",
+															"  pm.expect(body.season.name).to.eq(\"1970-1971\");",
+															"",
+															"  pm.expect(body.season).to.have.property(\"shortName\");",
+															"  pm.expect(body.season.shortName).to.eq(\"70-71\");",
+															"",
+															"  pm.expect(body.season).to.have.property(\"d11TeamBudget\");",
+															"  pm.expect(body.season.d11TeamBudget).to.eq(5);",
+															"",
+															"  pm.expect(body.season).to.have.property(\"d11TeamMaxTransfers\");",
+															"  pm.expect(body.season.d11TeamMaxTransfers).to.eq(1);",
+															"",
+															"  pm.expect(body.season).to.have.property(\"status\");",
+															"  pm.expect(body.season.status).to.eq(\"Pending\");",
+															"",
+															"  pm.expect(body.season).to.have.property(\"date\");",
+															"  pm.expect(body.season.date).to.eq(\"1970-01-01\");",
+															"",
+															"  pm.expect(body.season).to.have.property(\"legacy\");",
+															"  pm.expect(body.season.legacy).to.eq(true);",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons/{{seasonId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons",
+														"{{seasonId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Rollback - PUT seasons",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT season status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"Rollback PUT season response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"season\");",
+															"",
+															"  pm.expect(body.season.id).to.eq(parseInt(pm.environment.get(\"seasonId\")));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"name\");",
+															"  pm.expect(body.season.name).to.eq(pm.environment.get(\"seasonName\"));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"shortName\");",
+															"  pm.expect(body.season.shortName).to.eq(pm.environment.get(\"seasonShortName\"));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"d11TeamBudget\");",
+															"  pm.expect(body.season.d11TeamBudget).to.eq(parseInt(pm.environment.get(\"seasonD11TeamBudget\")));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"d11TeamMaxTransfers\");",
+															"  pm.expect(body.season.d11TeamMaxTransfers).to.eq(parseInt(pm.environment.get(\"seasonD11TeamMaxTransfers\")));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"status\");",
+															"  pm.expect(body.season.status).to.eq(pm.environment.get(\"seasonStatus\"));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"date\");",
+															"  pm.expect(body.season.date).to.eq(pm.environment.get(\"seasonDate\"));",
+															"",
+															"  pm.expect(body.season).to.have.property(\"legacy\");",
+															"  pm.expect(body.season.legacy.toString()).to.eq(pm.environment.get(\"seasonLegacy\"));",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"season\": {\n        \"id\": {{seasonId}},\n        \"name\": \"{{seasonName}}\",\n        \"d11TeamBudget\": {{seasonD11TeamBudget}},\n        \"d11TeamMaxTransfers\": {{seasonD11TeamMaxTransfers}},\n        \"status\": \"{{seasonStatus}}\",\n        \"date\": \"{{seasonDate}}\",\n        \"legacy\": {{seasonLegacy}}\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "PUT seasons - Bad Request",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT season status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"PUT season bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(400);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/seasons\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "401 Unauthorized",
+									"item": [
+										{
+											"name": "PUT seasons - Unauthorized No Auth",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT season status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															"",
+															"pm.test(\"PUT season unauthorized response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(401);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Unauthorized\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Access Denied\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/seasons\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"season\": {\n        \"id\": 1,\n        \"name\": \"1970-1971\",\n        \"d11TeamBudget\": 5,\n        \"d11TeamMaxTransfers\": 1,\n        \"status\": \"Pending\",\n        \"date\": \"1970-01-01\",\n        \"legacy\": false\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "PUT seasons - Unauthorized Invalid Auth",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT season status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															"",
+															"pm.test(\"PUT season unauthorized response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(401);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Unauthorized\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Access Denied\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/seasons\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{expiredJwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"season\": {\n        \"id\": 1,\n        \"name\": \"1970-1971\",\n        \"d11TeamBudget\": 5,\n        \"d11TeamMaxTransfers\": 1,\n        \"status\": \"Pending\",\n        \"date\": \"1970-01-01\",\n        \"legacy\": false\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "403 Forbidden",
+									"item": [
+										{
+											"name": "Setup - Login User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login user status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{userUsername}}\",\n    \"password\": \"{{userPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "PUT seasons - Forbidden",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT season status code is 403\", () => {",
+															"  pm.response.to.have.status(403);",
+															"});",
+															"",
+															"pm.test(\"PUT season forbidden response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(403);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Forbidden\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Access Denied\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/seasons\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"season\": {\n        \"id\": 1,\n        \"name\": \"1970-1971\",\n        \"d11TeamBudget\": 5,\n        \"d11TeamMaxTransfers\": 1,\n        \"status\": \"Pending\",\n        \"date\": \"1970-01-01\",\n        \"legacy\": false\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "404 Not Found",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "PUT seasons - Not Found",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT season status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"PUT season not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(404);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Season with id 0 was not found.\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/seasons\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"season\": {\n        \"id\": 0,\n        \"name\": \"1970-1971\",\n        \"d11TeamBudget\": 5,\n        \"d11TeamMaxTransfers\": 1,\n        \"status\": \"Pending\",\n        \"date\": \"1970-01-01\",\n        \"legacy\": false\n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons"
 													]
 												}
 											},
@@ -1461,6 +2284,8 @@
 															"      pm.expect(cookies.members.length).to.eq(0);",
 															"  });",
 															"});",
+															"",
+															"pm.environment.set(\"jwt\", \"\");",
 															""
 														],
 														"type": "text/javascript"
@@ -1561,7 +2386,8 @@
 															"      pm.expect(cookies.members.length).to.eq(0);",
 															"  });",
 															"});",
-															""
+															"",
+															"pm.environment.set(\"jwt\", \"\");"
 														],
 														"type": "text/javascript"
 													}

@@ -2,10 +2,12 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import org.d11.boot.api.v2.SeasonApi;
 import org.d11.boot.api.v2.model.SeasonDTO;
+import org.d11.boot.api.v2.model.SeasonRequestBodyDTO;
 import org.d11.boot.api.v2.model.SeasonResponseBodyDTO;
 import org.d11.boot.api.v2.model.SeasonsResponseBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.Season;
+import org.d11.boot.spring.security.RoleAdmin;
 import org.d11.boot.spring.service.SeasonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +53,16 @@ public class SeasonControllerV2 extends RepositoryServiceController<SeasonServic
 
         return ResponseEntity.ok(new SeasonResponseBodyDTO()
                 .season(getMapper().map(season, SeasonDTO.class)));
+    }
+
+    @Override
+    @RoleAdmin
+    public ResponseEntity<SeasonResponseBodyDTO> updateSeason(final SeasonRequestBodyDTO seasonRequestBodyDTO) {
+        final SeasonDTO seasonDTO = seasonRequestBodyDTO.getSeason();
+
+        final Season season = getRepositoryService().updateSeason(getMapper().map(seasonDTO, Season.class));
+
+        return ResponseEntity.ok(new SeasonResponseBodyDTO().season(getMapper().map(season, SeasonDTO.class)));
     }
 
 }

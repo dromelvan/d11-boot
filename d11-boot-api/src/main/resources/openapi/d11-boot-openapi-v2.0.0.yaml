@@ -147,6 +147,7 @@ paths:
       tags:
         - season
       summary: Gets all seasons.
+      security: []
       operationId: getSeasons
       responses:
         200:
@@ -158,11 +159,44 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+    put:
+      tags:
+        - season
+      summary: Updates a season.
+      security:
+        - BearerAuth: [admin]
+      operationId: updateSeason
+      requestBody:
+        description: Update season properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SeasonRequestBody"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeasonResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /v2/seasons/{seasonId}:
     get:
       tags:
         - season
       summary: Get a season by id.
+      security: []
       operationId: getSeasonById
       parameters:
         - name: seasonId
@@ -191,6 +225,7 @@ paths:
       tags:
         - season
       summary: Gets the current season.
+      security: []
       operationId: getCurrentSeason
       responses:
         200:
@@ -227,7 +262,7 @@ components:
             $ref: '#/components/schemas/D11ApiError'
 
     Forbidden:
-      description: Forbiden
+      description: Forbidden
       content:
         application/json:
           schema:
@@ -408,7 +443,6 @@ components:
       required:
         - id
         - name
-        - shortName
         - d11TeamBudget
         - d11TeamMaxTransfers
         - status
@@ -436,6 +470,14 @@ components:
           format: date
         legacy:
           type: boolean
+
+    SeasonRequestBody:
+      type: object
+      required:
+        - season
+      properties:
+        season:
+          $ref: '#/components/schemas/Season'
 
     SeasonResponseBody:
       type: object
