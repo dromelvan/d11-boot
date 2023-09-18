@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.d11.boot.api.v2.model.D11ApiErrorDTO;
 import org.d11.boot.interfaces.rest.RefreshTokenCookieBuilder;
 import org.d11.boot.spring.model.RefreshToken;
+import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,32 @@ public class ControllerExceptionHandlerV2 {
             .status(httpStatus.value())
             .timestamp(LocalDateTime.now())
             .path(request.getRequestURI());
+        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+    }
+
+    /**
+     * Handles a Bad Request exception. This is thrown when a request has an input that lets it get past the other Bad
+     * Request validations but is still invalid in some way.
+     *
+     * @param e       The exception that will be handled.
+     * @param request The request that caused the exception.
+     * @return Response entity with error details.
+     */
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final BadRequestException e,
+                                                 @NonNull final HttpServletRequest request) {
+        final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        final String parameter = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(e.getParameter()), ' ')
+                .toLowerCase(Locale.getDefault());
+
+        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
+                .uuid(UUID.randomUUID())
+                .error(httpStatus.getReasonPhrase())
+                .message("Invalid " + parameter)
+                .status(httpStatus.value())
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI());
         return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
     }
 
