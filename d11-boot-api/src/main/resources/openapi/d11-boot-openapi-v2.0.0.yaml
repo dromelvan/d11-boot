@@ -159,38 +159,6 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-    put:
-      tags:
-        - season
-      summary: Updates a season.
-      security:
-        - BearerAuth: [admin]
-      operationId: updateSeason
-      requestBody:
-        description: Update season properties.
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SeasonRequestBody"
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SeasonResponseBody"
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/Forbidden'
-        404:
-          $ref: '#/components/responses/NotFound'
-        500:
-          $ref: '#/components/responses/InternalServerError'
-
   /v2/seasons/{seasonId}:
     get:
       tags:
@@ -215,6 +183,46 @@ paths:
                 $ref: "#/components/schemas/SeasonResponseBody"
         400:
           $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      tags:
+        - season
+      summary: Updates a season.
+      security:
+        - BearerAuth: [admin]
+      operationId: updateSeason
+      parameters:
+        - name: seasonId
+          in: path
+          required: true
+          description: Id of the season that will be updated.
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update season properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSeasonRequestBody"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeasonResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
         404:
           $ref: '#/components/responses/NotFound'
         500:
@@ -441,7 +449,6 @@ components:
     Season:
       type: object
       required:
-        - id
         - name
         - d11TeamBudget
         - d11TeamMaxTransfers
@@ -471,7 +478,7 @@ components:
         legacy:
           type: boolean
 
-    SeasonRequestBody:
+    UpdateSeasonRequestBody:
       type: object
       required:
         - season

@@ -3,10 +3,10 @@ package org.d11.boot.interfaces.rest.v2.controller;
 import feign.FeignException;
 import org.d11.boot.api.v2.client.SeasonApi;
 import org.d11.boot.api.v2.model.SeasonDTO;
-import org.d11.boot.api.v2.model.SeasonRequestBodyDTO;
 import org.d11.boot.api.v2.model.SeasonResponseBodyDTO;
 import org.d11.boot.api.v2.model.SeasonsResponseBodyDTO;
 import org.d11.boot.api.v2.model.StatusDTO;
+import org.d11.boot.api.v2.model.UpdateSeasonRequestBodyDTO;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.repository.SeasonRepository;
@@ -98,19 +98,20 @@ class SeasonControllerV2Tests extends D11BootControllerV2Tests {
         final SeasonDTO rollbackSeasonDTO = getMapper().map(season, SeasonDTO.class);
 
         assertThrows(FeignException.Unauthorized.class,
-                     () -> seasonApi.updateSeason(new SeasonRequestBodyDTO().season(rollbackSeasonDTO)),
+                     () -> seasonApi.updateSeason(season.getId(),
+                                                  new UpdateSeasonRequestBodyDTO().season(rollbackSeasonDTO)),
                      "SeasonController::updateSeason unauthorized throws");
 
         final SeasonApi userSeasonApi = getUserApi(SeasonApi.class);
 
         assertThrows(FeignException.Forbidden.class,
-                     () -> userSeasonApi.updateSeason(new SeasonRequestBodyDTO().season(rollbackSeasonDTO)),
+                     () -> userSeasonApi.updateSeason(season.getId(),
+                                                      new UpdateSeasonRequestBodyDTO().season(rollbackSeasonDTO)),
                      "SeasonController::updateSeason user throws");
 
         final SeasonApi adminSeasonApi = getAdministratorApi(SeasonApi.class);
 
         final SeasonDTO seasonDTO = new SeasonDTO()
-                .id(season.getId())
                 .name("1970-1971")
                 .d11TeamBudget(Transfer.FEE_DIVISOR)
                 .d11TeamMaxTransfers(1)
@@ -118,9 +119,11 @@ class SeasonControllerV2Tests extends D11BootControllerV2Tests {
                 .date(LocalDate.parse("1970-01-01"))
                 .legacy(true);
 
-        final SeasonDTO result = adminSeasonApi.updateSeason(new SeasonRequestBodyDTO().season(seasonDTO)).getSeason();
+        final SeasonDTO result =
+                adminSeasonApi.updateSeason(season.getId(),
+                                            new UpdateSeasonRequestBodyDTO().season(seasonDTO)).getSeason();
 
-        assertEquals(seasonDTO.getId(), result.getId(), "SeasonController::updateSeason response id equals");
+        assertEquals(season.getId(), result.getId(), "SeasonController::updateSeason response id equals");
         assertEquals(seasonDTO.getName(), result.getName(), "SeasonController::updateSeason response name equals");
         assertEquals(seasonDTO.getD11TeamBudget(), result.getD11TeamBudget(),
                      "SeasonController::updateSeason response d11TeamBudget equals");
@@ -134,7 +137,7 @@ class SeasonControllerV2Tests extends D11BootControllerV2Tests {
 
         final Season updatedSeason = this.seasonRepository.findById(season.getId()).orElseThrow(NotFoundException::new);
 
-        assertEquals(seasonDTO.getId(), updatedSeason.getId(), "SeasonController::updateSeason entity id equals");
+        assertEquals(season.getId(), updatedSeason.getId(), "SeasonController::updateSeason entity id equals");
         assertEquals(seasonDTO.getName(), updatedSeason.getName(), "SeasonController::updateSeason entity name equals");
         assertEquals(seasonDTO.getD11TeamBudget(), updatedSeason.getD11TeamBudget(),
                      "SeasonController::updateSeason entity d11TeamBudget equals");
