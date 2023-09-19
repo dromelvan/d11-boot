@@ -8,6 +8,7 @@ import org.d11.boot.api.v2.model.D11ApiErrorDTO;
 import org.d11.boot.interfaces.rest.RefreshTokenCookieBuilder;
 import org.d11.boot.spring.model.RefreshToken;
 import org.d11.boot.util.exception.BadRequestException;
+import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -67,13 +68,33 @@ public class ControllerExceptionHandlerV2 {
                                                  @NonNull final HttpServletRequest request) {
         final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
-        final String parameter = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(e.getParameter()), ' ')
-                .toLowerCase(Locale.getDefault());
+        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
+                .uuid(UUID.randomUUID())
+                .error(httpStatus.getReasonPhrase())
+                .message(e.getMessage())
+                .status(httpStatus.value())
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI());
+        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+    }
+
+    /**
+     * Handles a Conflict exception. This is thrown when a request cannot be performed because the input conflicts with
+     * the current state of the application.
+     *
+     * @param e       The exception that will be handled.
+     * @param request The request that caused the exception.
+     * @return Response entity with error details.
+     */
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final ConflictException e,
+                                                 @NonNull final HttpServletRequest request) {
+        final HttpStatus httpStatus = HttpStatus.CONFLICT;
 
         final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
                 .uuid(UUID.randomUUID())
                 .error(httpStatus.getReasonPhrase())
-                .message("Invalid " + parameter)
+                .message(e.getMessage())
                 .status(httpStatus.value())
                 .timestamp(LocalDateTime.now())
                 .path(request.getRequestURI());
