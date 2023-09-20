@@ -4,6 +4,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
@@ -25,7 +27,18 @@ import java.util.List;
  */
 @Data
 @Entity
+@NamedEntityGraph(name = TransferWindow.TRANSFER_WINDOW_ASSOCIATIONS,
+        attributeNodes = {
+            @NamedAttributeNode("matchWeek"),
+            @NamedAttributeNode("transferDays")
+        }
+)
 public class TransferWindow extends D11Entity implements Comparable<TransferWindow> {
+
+    /**
+     * Name of the entity graph that includes match week and transfer days.
+     */
+    public static final String TRANSFER_WINDOW_ASSOCIATIONS = "TransferWindow.associations";
 
     /**
      * Transfer window comparator.
@@ -70,7 +83,7 @@ public class TransferWindow extends D11Entity implements Comparable<TransferWind
     /**
      * List of transfer days in this transfer window.
      */
-    @OneToMany(mappedBy = "transferWindow", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "transferWindow", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
     @OrderBy("transferDayNumber")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

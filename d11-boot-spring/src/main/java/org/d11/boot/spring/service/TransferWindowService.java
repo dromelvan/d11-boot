@@ -60,8 +60,7 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
                 .orElseThrow(NotFoundException::new);
 
         if (!Status.FINISHED.equals(currentTransferWindow.getStatus())) {
-            throw new ConflictException("A new transfer window cannot be inserted when the status of the current " +
-                                                "transfer window is " + currentTransferWindow.getStatus());
+            throw new ConflictException("Current transfer window status is " + currentTransferWindow.getStatus());
         }
 
         final MatchWeek matchWeek =

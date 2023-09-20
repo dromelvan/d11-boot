@@ -20,21 +20,25 @@ INSERT INTO stadium (name, city, capacity, opened, photo_file_name)
 
 -- Position
 INSERT INTO position (name, code, max_count, defender, sort_order)
-    VALUES('Defender', 'D', 4, true, 1);
+    VALUES('Goalkeeper', 'GK', 1, true, 1);
 INSERT INTO position (name, code, max_count, defender, sort_order)
-    VALUES('Non Defender', 'ND', 4, false, 2);
+    VALUES('Defender', 'D', 4, true, 2);
 INSERT INTO position (name, code, max_count, defender, sort_order)
-    VALUES('Non Defender 2', 'N2', 4, false, 3);
+    VALUES('Midfielder', 'MF', 4, false, 3);
 INSERT INTO position (name, code, max_count, defender, sort_order)
-    VALUES('Non Defender 3', 'N3', 4, false, 3);
+    VALUES('Forward', 'F', 2, false, 4);
 
 -- Team
 INSERT INTO team (stadium_id, whoscored_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
-    VALUES(1, 11111, 1, 'TeamA', 'ShortA', 'TMA', 2020, 'ColourA', false, '1.png', 'https://test.com');
+    VALUES(1, 11, 1, 'None', 'None', 'DUM', 2020, 'None', true, null, 'https://test.com');
 INSERT INTO team (stadium_id, whoscored_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
-    VALUES(2, 22222, 2, 'TeamB', 'ShortB', 'TMB', 2020, 'ColourB', false, '2.png', 'https://test.com');
+    VALUES(1, 11111, 2, 'TeamA', 'ShortA', 'TMA', 2020, 'ColourA', false, '1.png', 'https://test.com');
+INSERT INTO team (stadium_id, whoscored_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
+    VALUES(2, 22222, 3, 'TeamB', 'ShortB', 'TMB', 2020, 'ColourB', false, '2.png', 'https://test.com');
 
 -- D11 Team
+INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)
+    VALUES(null, null, 'None', 'None', 'DUM', false, null);
 INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)
     VALUES(1, null, 'D11TeamA', 'ShortA', 'DTA', true, '1.png');
 INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)
@@ -82,6 +86,8 @@ INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_i
     VALUES(2, null, null, null, 1, CURRENT_DATE, 7, 1);
 INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_id, most_valuable_player_id, match_week_number, date, elapsed, status)
     VALUES(2, null, null, null, 2, CURRENT_DATE + 1, 0, 0);
+INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_id, most_valuable_player_id, match_week_number, date, elapsed, status)
+    VALUES(2, null, null, null, 3, CURRENT_DATE + 2, 0, 0);
 
 -- Match
 INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,

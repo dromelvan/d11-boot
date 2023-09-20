@@ -1,6 +1,7 @@
 package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.TransferWindow;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,16 @@ import java.util.Optional;
  */
 @Repository
 public interface TransferWindowRepository extends D11EntityRepository<TransferWindow> {
+
+    /**
+     * Overrides parent method with TransferWindow.TRANSFER_WINDOW_ASSOCIATIONS named entity graph applied.
+     *
+     * @param id Transfer window id.
+     * @return Optional with the transfer window or empty optional if none was found.
+     */
+    @Override
+    @EntityGraph(TransferWindow.TRANSFER_WINDOW_ASSOCIATIONS)
+    Optional<TransferWindow> findById(Long id);
 
     /**
      * Finds the latest transfer window. This is the current one.

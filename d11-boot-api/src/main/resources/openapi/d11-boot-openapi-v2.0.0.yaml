@@ -247,6 +247,41 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  # Transfer window-----------------------------------------------------------------------------------------------------
+
+  /v2/transfer-windows:
+    post:
+      tags:
+        - transferWindow
+      summary: Inserts a transfer window.
+      security:
+        - BearerAuth: [admin]
+      operationId: insertTransferWindow
+      requestBody:
+        description: New transfer window properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InsertTransferWindowRequestBody"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferWindowResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+          $ref: '#/components/responses/Conflict'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
 # Components -----------------------------------------------------------------------------------------------------------
 
 components:
@@ -503,6 +538,104 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Season'
+
+  # Match week ---------------------------------------------------------------------------------------------------------
+
+    MatchWeek:
+      type: object
+      required:
+        - id
+        - matchWeekNumber
+        - date
+        - elapsed
+        - status
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        matchWeekNumber:
+          type: integer
+          format: int32
+        date:
+          type: string
+          format: date
+        elapsed:
+          type: integer
+          format: int32
+        status:
+          $ref: '#/components/schemas/Status'
+
+    # Transfer window --------------------------------------------------------------------------------------------------
+
+    TransferWindow:
+      type: object
+      required:
+        - id
+        - datetime
+        - draft
+        - status
+        - datetime
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        transferWindowNumber:
+          type: integer
+          format: int32
+        draft:
+          type: boolean
+        status:
+          $ref: '#/components/schemas/Status'
+        datetime:
+          type: string
+          format: date-time
+
+    InsertTransferWindowRequestBody:
+      type: object
+      required:
+        - datetime
+        - transferDayDelay
+      properties:
+        datetime:
+          type: string
+          format: date-time
+        transferDayDelay:
+          type: integer
+          format: int32
+
+    TransferWindowResponseBody:
+      type: object
+      required:
+        - transferWindow
+        - matchWeek
+      properties:
+        transferWindow:
+          $ref: '#/components/schemas/TransferWindow'
+        matchWeek:
+          $ref: '#/components/schemas/MatchWeek'
+        transferDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferDay'
+
+    # Transfer day -------------------------------------------------------------------------------------------------------
+
+    TransferDay:
+      type: object
+      required:
+        - id
+        - transferDayNumber
+        - status
+        - datetime
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        transferDayNumber:
+          type: integer
+          format: int32
+        status:
+          $ref: '#/components/schemas/Status'
+        datetime:
+          type: string
+          format: date-time
 
   # Security schemes ---------------------------------------------------------------------------------------------------
 
