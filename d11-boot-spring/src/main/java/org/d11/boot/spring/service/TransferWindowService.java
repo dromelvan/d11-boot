@@ -78,7 +78,23 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
         transferDay.setDatetime(datetime.plus(transferDayDelay, ChronoUnit.DAYS));
         transferWindow.getTransferDays().add(transferDay);
 
-        return getJpaRepository().save(transferWindow);
+        return save(transferWindow);
+    }
+
+    /**
+     * Deletes a transfer window and it's associated transfer days. The transfer window must have status pending.
+     *
+     * @param transferWindowId Transfer window id.
+     */
+    @Transactional
+    public void deleteTransferWindow(final Long transferWindowId) {
+        final TransferWindow transferWindow = getById(transferWindowId);
+
+        if (!Status.PENDING.equals(transferWindow.getStatus())) {
+            throw new ConflictException("Transfer window status is " + transferWindow.getStatus());
+        }
+
+        getJpaRepository().delete(transferWindow);
     }
 
 }

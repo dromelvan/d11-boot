@@ -8,6 +8,7 @@ import org.d11.boot.spring.repository.TransferWindowRepository;
 import org.d11.boot.util.Status;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
+import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
@@ -16,12 +17,15 @@ import org.mockito.Mock;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -127,6 +131,40 @@ class TransferWindowServiceTests extends D11BootServiceTests {
                      "TransferWindowService::insertTransferWindow transferDay datetime equals");
         assertEquals(transferWindow, transferDay.getTransferWindow(),
                      "TransferWindowService::insertTransferWindow transferDay transferWindow equals");
+    }
+
+    /**
+     * Tests TransferWindowService::deleteTransferWindow.
+     */
+    @Test
+    void testDeleteTransferWindow() {
+        final TransferWindow transferWindow = new TransferWindow();
+        transferWindow.setId(1L);
+
+        when(this.transferWindowRepository.findById(eq(transferWindow.getId()))).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class,
+                     () -> this.transferWindowService.deleteTransferWindow(transferWindow.getId()),
+                     "TransferWindowService::deleteTransferWindow not found throws");
+
+        when(this.transferWindowRepository.findById(eq(transferWindow.getId())))
+                .thenReturn(Optional.of(transferWindow));
+
+        transferWindow.setStatus(Status.FINISHED);
+        assertThrows(ConflictException.class,
+                     () -> this.transferWindowService.deleteTransferWindow(transferWindow.getId()),
+                     "TransferWindowService::deleteTransferWindow status FINISHED throws");
+
+        transferWindow.setStatus(Status.ACTIVE);
+        assertThrows(ConflictException.class,
+                     () -> this.transferWindowService.deleteTransferWindow(transferWindow.getId()),
+                     "TransferWindowService::deleteTransferWindow status ACTIVE throws");
+
+        transferWindow.setStatus(Status.PENDING);
+        assertDoesNotThrow(() -> this.transferWindowService.deleteTransferWindow(transferWindow.getId()),
+                           "TransferWindowService::deleteTransferWindow status PENDING does not throw");
+
+        verify(this.transferWindowRepository, times(1)).delete(eq(transferWindow));
     }
 
 }
