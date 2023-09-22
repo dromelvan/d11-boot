@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -118,8 +120,6 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
                 .findFirstByDateGreaterThanOrderByDateAsc(requestBody.getDatetime().toLocalDate())
                         .orElseThrow(NotFoundException::new);
 
-        assertEquals(currentTransferWindow.getId() + 1, transferWindow.getId(),
-                     "TransferWindowController::insertTransferWindow transferWindow id equals");
         assertEquals(currentTransferWindow.getTransferWindowNumber() + 1, transferWindow.getTransferWindowNumber(),
                      "TransferWindowController::insertTransferWindow transferWindow transferWindowNumber equals");
         assertFalse(transferWindow.isDraft(),
@@ -147,6 +147,75 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
 
         // Rollback the changes just in case
         this.transferWindowRepository.delete(transferWindow);
+        currentTransferWindow.setStatus(Status.PENDING);
+        this.transferWindowRepository.save(currentTransferWindow);
+    }
+
+    /**
+     * Tests TransferWindowController::deleteTransferWindow.
+     */
+    @Test
+    void testDeleteTransferWindow() {
+
+        // 401 Unauthorized --------------------------------------------------------------------------------------------
+
+        assertThrows(FeignException.Unauthorized.class,
+                     () -> getApi(TransferWindowApi.class).deleteTransferWindow(1L),
+                     "TransferWindowController::deleteTransferWindow unauthorized throws");
+
+        // 403 Forbidden -----------------------------------------------------------------------------------------------
+
+        assertThrows(FeignException.Forbidden.class,
+                     () -> getUserApi(TransferWindowApi.class).deleteTransferWindow(1L),
+                     "TransferWindowController::deleteTransferWindow user throws");
+
+        // 404 Not Found -----------------------------------------------------------------------------------------------
+
+        final TransferWindowApi transferWindowApi = getAdministratorApi(TransferWindowApi.class);
+
+        assertThrows(FeignException.NotFound.class,
+                     () -> transferWindowApi.deleteTransferWindow(0L),
+                     "TransferWindowController::deleteTransferWindow not found throws");
+
+        // 409 Conflict ------------------------------------------------------------------------------------------------
+
+        final TransferWindow currentTransferWindow = this.transferWindowRepository.findFirstByOrderByDatetimeDesc()
+                .orElseThrow(NotFoundException::new);
+
+        currentTransferWindow.setStatus(Status.ACTIVE);
+        this.transferWindowRepository.save(currentTransferWindow);
+
+        assertThrows(FeignException.Conflict.class,
+                     () -> transferWindowApi.deleteTransferWindow(currentTransferWindow.getId()),
+                     "TransferWindowController::deleteTransferWindow status active throws");
+
+        currentTransferWindow.setStatus(Status.FINISHED);
+        this.transferWindowRepository.save(currentTransferWindow);
+
+        assertThrows(FeignException.Conflict.class,
+                     () -> transferWindowApi.deleteTransferWindow(currentTransferWindow.getId()),
+                     "TransferWindowController::deleteTransferWindow status finished throws");
+
+        // 204 No Content ----------------------------------------------------------------------------------------------
+
+        final InsertTransferWindowRequestBodyDTO requestBody = new InsertTransferWindowRequestBodyDTO()
+                .datetime(LocalDateTime.now().plusDays(1))
+                .transferDayDelay(1);
+        final TransferWindowResponseBodyDTO responseBody = transferWindowApi.insertTransferWindow(requestBody);
+
+        final TransferWindow transferWindow = this.transferWindowRepository
+                .findById(responseBody.getTransferWindow().getId())
+                .orElseThrow(NotFoundException::new);
+
+        assertDoesNotThrow(() -> transferWindowApi.deleteTransferWindow(transferWindow.getId()),
+                           "TransferWindowController::deleteTransferWindow does not throw");
+
+        final Optional<TransferWindow> optional = this.transferWindowRepository.findById(transferWindow.getId());
+
+        assertFalse(optional.isPresent(),
+                    "TransferWindowController::deleteTransferWindow transferWindow deleted present");
+
+        // Rollback the changes just in case
         currentTransferWindow.setStatus(Status.PENDING);
         this.transferWindowRepository.save(currentTransferWindow);
     }

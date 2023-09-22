@@ -46,4 +46,11 @@ public class TransferWindowControllerV2
         return ResponseEntity.ok(responseBody);
     }
 
+    @Override
+    @RoleAdmin
+    public ResponseEntity<Void> deleteTransferWindow(final Long transferWindowId) {
+        getRepositoryService().deleteTransferWindow(transferWindowId);
+        return ResponseEntity.noContent().build();
+    }
+
 }
