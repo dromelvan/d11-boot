@@ -1971,7 +1971,7 @@
 									"name": "200 OK",
 									"item": [
 										{
-											"name": "GET seasons",
+											"name": "GET seasons - OK",
 											"event": [
 												{
 													"listen": "test",
@@ -2028,7 +2028,7 @@
 									"name": "200 OK",
 									"item": [
 										{
-											"name": "GET seasons/{seasonId}",
+											"name": "GET seasons/{seasonId} - OK",
 											"event": [
 												{
 													"listen": "test",
@@ -2225,7 +2225,7 @@
 									"name": "200 OK",
 									"item": [
 										{
-											"name": "GET seasons/current",
+											"name": "GET seasons/current - OK",
 											"event": [
 												{
 													"listen": "test",
@@ -2328,7 +2328,7 @@
 											"response": []
 										},
 										{
-											"name": "PUT seasons/{seasonId}",
+											"name": "PUT seasons/{seasonId} - OK",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -2404,69 +2404,6 @@
 														}
 													}
 												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/seasons/{{seasonId}}",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"seasons",
-														"{{seasonId}}"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "Confirm - GET season/{seasonId}",
-											"event": [
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"GET season status code is 200\", () => {",
-															"  pm.response.to.have.status(200);",
-															"});",
-															"",
-															"pm.test(\"Confirm GET season response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body).to.have.property(\"season\");",
-															"",
-															"  pm.expect(body.season.id).to.eq(parseInt(pm.environment.get(\"seasonId\")));",
-															"",
-															"  pm.expect(body.season).to.have.property(\"name\");",
-															"  pm.expect(body.season.name).to.eq(\"1970-1971\");",
-															"",
-															"  pm.expect(body.season).to.have.property(\"shortName\");",
-															"  pm.expect(body.season.shortName).to.eq(\"70-71\");",
-															"",
-															"  pm.expect(body.season).to.have.property(\"d11TeamBudget\");",
-															"  pm.expect(body.season.d11TeamBudget).to.eq(5);",
-															"",
-															"  pm.expect(body.season).to.have.property(\"d11TeamMaxTransfers\");",
-															"  pm.expect(body.season.d11TeamMaxTransfers).to.eq(1);",
-															"",
-															"  pm.expect(body.season).to.have.property(\"status\");",
-															"  pm.expect(body.season.status).to.eq(\"Pending\");",
-															"",
-															"  pm.expect(body.season).to.have.property(\"date\");",
-															"  pm.expect(body.season.date).to.eq(\"1970-01-01\");",
-															"",
-															"  pm.expect(body.season).to.have.property(\"legacy\");",
-															"  pm.expect(body.season.legacy).to.eq(true);",
-															"",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"method": "GET",
-												"header": [],
 												"url": {
 													"raw": "{{baseUrl}}/v2/seasons/{{seasonId}}",
 													"host": [
@@ -3163,7 +3100,7 @@
 											"response": []
 										},
 										{
-											"name": "POST transfer-windows",
+											"name": "POST transfer-windows - OK",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -3188,8 +3125,8 @@
 															"  pm.expect(body).to.have.property(\"transferWindow\");",
 															"",
 															"  pm.expect(body.transferWindow).to.have.property(\"id\");",
-															"  pm.expect(body.transferWindow.id).to.eq(parseInt(pm.environment.get(\"currentTransferWindowId\")) + 1);",
-															"",
+															"  pm.environment.set(\"transferWindowId\", body.transferWindow.id);",
+															"  ",
 															"  pm.expect(body.transferWindow).to.have.property(\"transferWindowNumber\");",
 															"  pm.expect(body.transferWindow.transferWindowNumber).to.eq(parseInt(pm.environment.get(\"currentTransferWindowNumber\")) + 1);",
 															"",
@@ -4013,6 +3950,782 @@
 													"path": [
 														"v2",
 														"transfer-windows"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DELETE transfer-windows",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "DELETE transfer-windows - OK",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"DELETE transfer window status code is 204\", () => {",
+															"  pm.response.to.have.status(204);",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-windows/{{transferWindowId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-windows",
+														"{{transferWindowId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "DELETE transfer-windows - Bad Request",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"DELETE transfer window status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"DELETE transfer window bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(400);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Invalid transfer window id: INVALID\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows/INVALID\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-windows/INVALID",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-windows",
+														"INVALID"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "401 Unauthorized",
+									"item": [
+										{
+											"name": "DELETE transfer-windows - Unauthorized No Auth",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"DELETE transfer window status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															"",
+															"pm.test(\"DELETE transfer window unauthorized response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(401);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Unauthorized\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Access Denied\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows/\" + pm.environment.get(\"currentTransferWindowId\"));",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-windows/{{currentTransferWindowId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-windows",
+														"{{currentTransferWindowId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "DELETE transfer-windows - Unauthorized Invalid Auth",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"DELETE transfer window status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															"",
+															"pm.test(\"DELETE transfer window unauthorized response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(401);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Unauthorized\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Access Denied\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows/\" + pm.environment.get(\"currentTransferWindowId\"));",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{expiredJwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-windows/{{currentTransferWindowId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-windows",
+														"{{currentTransferWindowId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "403 Forbidden",
+									"item": [
+										{
+											"name": "Setup - Login User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login user status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{userUsername}}\",\n    \"password\": \"{{userPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "DELETE transfer-windows - Forbidden",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"DELETE transfer window status code is 403\", () => {",
+															"  pm.response.to.have.status(403);",
+															"});",
+															"",
+															"pm.test(\"DELETE transfer window forbidden response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(403);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Forbidden\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Access Denied\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows/\" + pm.environment.get(\"currentTransferWindowId\"));",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-windows/{{currentTransferWindowId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-windows",
+														"{{currentTransferWindowId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "404 Not Found",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "DELETE transfer-windows - Not Found",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"DELETE transfer window status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"DELETE transfer window not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(404);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.eq(\"Transfer window with id 0 was not found.\");",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows/0\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-windows/0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-windows",
+														"0"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "409 Conflict",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "DELETE transfer-windows - Status Not Pending",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"DELETE transfer window status code is 409\", () => {",
+															"  pm.response.to.have.status(409);",
+															"});",
+															"",
+															"pm.test(\"DELETE transfer window conflict response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"uuid\");",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"",
+															"  pm.expect(body).to.have.property(\"timestamp\");",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"",
+															"  pm.expect(body).to.have.property(\"status\");  ",
+															"  pm.expect(body.status).to.eq(409);",
+															"",
+															"  pm.expect(body).to.have.property(\"error\");",
+															"  pm.expect(body.error).to.eq(\"Conflict\");",
+															"",
+															"  pm.expect(body).to.have.property(\"message\");",
+															"  pm.expect(body.message).to.match(/Transfer window status is (Active|Finished)/);",
+															"",
+															"  pm.expect(body).to.have.property(\"path\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows/\" + pm.environment.get(\"currentTransferWindowId\"));",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-windows/{{currentTransferWindowId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-windows",
+														"{{currentTransferWindowId}}"
 													]
 												}
 											},
