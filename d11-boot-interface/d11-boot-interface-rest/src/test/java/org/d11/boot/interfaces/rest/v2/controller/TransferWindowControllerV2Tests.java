@@ -9,11 +9,13 @@ import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferWindow;
 import org.d11.boot.spring.repository.MatchWeekRepository;
+import org.d11.boot.spring.repository.TransferDayRepository;
 import org.d11.boot.spring.repository.TransferWindowRepository;
 import org.d11.boot.util.Status;
 import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,6 +43,52 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Autowired
     private MatchWeekRepository matchWeekRepository;
+
+    /**
+     * Transfer day repository.
+     */
+    @Autowired
+    private TransferDayRepository transferDayRepository;
+
+    /**
+     * Tests TransferWindowController::getTransferWindowById.
+     */
+    @Test
+    @Transactional
+    void testGetTransferWindowById() {
+        final List<TransferWindow> transferWindows = this.transferWindowRepository.findAll();
+
+        // Check to see that the test data is set up correctly
+        assertFalse(transferWindows.isEmpty(), "TransferWindowController::getTransferWindowById transferWindows empty");
+
+        final TransferWindowApi transferWindowApi = getApi(TransferWindowApi.class);
+
+        // 404 Not Found -----------------------------------------------------------------------------------------------
+
+        assertThrows(FeignException.NotFound.class,
+                     () -> transferWindowApi.getTransferWindowById(0L),
+                     "TransferWindowController::getTransferWindowById not found throws");
+
+        // 200 OK ------------------------------------------------------------------------------------------------------
+
+        for (final TransferWindow transferWindow : transferWindows) {
+            final TransferWindowResponseBodyDTO responseBody =
+                    transferWindowApi.getTransferWindowById(transferWindow.getId());
+
+            assertEquals(transferWindow.getId(), responseBody.getTransferWindow().getId(),
+                         "TransferWindowController::getTransferWindowById transferWindow id equals");
+            assertEquals(transferWindow.getMatchWeek().getId(), responseBody.getMatchWeek().getId(),
+                         "TransferWindowController::getTransferWindowById matchWeek id equals");
+            assertEquals(transferWindow.getTransferDays().size(), responseBody.getTransferDays().size(),
+                         "TransferWindowController::getTransferWindowById transferDays size equals");
+
+            for (int i = 0; i < transferWindow.getTransferDays().size(); ++i) {
+                assertEquals(transferWindow.getTransferDays().get(i).getId(),
+                             responseBody.getTransferDays().get(i).getId(),
+                             "TransferWindowController::getTransferWindowById transferDay id equals");
+            }
+        }
+    }
 
     /**
      * Tests TransferWindowController::insertTransferWindow.
@@ -214,6 +262,11 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
 
         assertFalse(optional.isPresent(),
                     "TransferWindowController::deleteTransferWindow transferWindow deleted present");
+
+        for (final TransferDay transferDay : transferWindow.getTransferDays()) {
+            assertFalse(this.transferDayRepository.findById(transferDay.getId()).isPresent(),
+                        "TransferWindowController::deleteTransferWindow transferDay deleted present");
+        }
 
         // Rollback the changes just in case
         currentTransferWindow.setStatus(Status.PENDING);

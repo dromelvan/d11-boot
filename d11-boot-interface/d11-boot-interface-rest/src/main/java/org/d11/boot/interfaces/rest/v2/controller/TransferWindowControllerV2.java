@@ -30,6 +30,18 @@ public class TransferWindowControllerV2
     }
 
     @Override
+    public ResponseEntity<TransferWindowResponseBodyDTO> getTransferWindowById(final Long transferWindowId) {
+        final TransferWindow transferWindow = getRepositoryService().getById(transferWindowId);
+
+        final TransferWindowResponseBodyDTO responseBody = new TransferWindowResponseBodyDTO()
+                .transferWindow(map(transferWindow, TransferWindowDTO.class))
+                .matchWeek(map(transferWindow.getMatchWeek(), MatchWeekDTO.class))
+                .transferDays(map(transferWindow.getTransferDays(), TransferDayDTO.class));
+
+        return ResponseEntity.ok(responseBody);
+    }
+
+    @Override
     @RoleAdmin
     public ResponseEntity<TransferWindowResponseBodyDTO> insertTransferWindow(
             final InsertTransferWindowRequestBodyDTO requestBody) {
