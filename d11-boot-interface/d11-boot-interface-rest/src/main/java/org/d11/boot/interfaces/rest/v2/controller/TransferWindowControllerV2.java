@@ -39,9 +39,9 @@ public class TransferWindowControllerV2
                                                             requestBody.getTransferDayDelay());
 
         final TransferWindowResponseBodyDTO responseBody = new TransferWindowResponseBodyDTO()
-                .transferWindow(getMapper().map(transferWindow, TransferWindowDTO.class))
-                .matchWeek(getMapper().map(transferWindow.getMatchWeek(), MatchWeekDTO.class))
-                .transferDays(getMapper().map(transferWindow.getTransferDays(), TransferDayDTO.class));
+                .transferWindow(map(transferWindow, TransferWindowDTO.class))
+                .matchWeek(map(transferWindow.getMatchWeek(), MatchWeekDTO.class))
+                .transferDays(map(transferWindow.getTransferDays(), TransferDayDTO.class));
 
         return ResponseEntity.ok(responseBody);
     }
