@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,6 +33,7 @@ import java.util.UUID;
  */
 @Slf4j
 @RestControllerAdvice
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class ControllerExceptionHandlerV2 {
 
     /**
@@ -227,6 +229,30 @@ public class ControllerExceptionHandlerV2 {
             return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
         }
         return handle((Exception) e, request);
+    }
+
+    /**
+     * Handles HttpRequestMethodNotSupportedException. This is most likely thrown when trying to call a method with some
+     * path parameter missing.
+     *
+     * @param e       The exception that will be handled.
+     * @param request The request that caused the exception.
+     * @return Response entity with error details.
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final HttpRequestMethodNotSupportedException e,
+                                                 @NonNull final HttpServletRequest request) {
+        final HttpStatus httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
+        final UUID uuid = UUID.randomUUID();
+
+        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
+                .uuid(uuid)
+                .error(httpStatus.getReasonPhrase())
+                .message(e.getMessage())
+                .status(httpStatus.value())
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI());
+        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
     }
 
     /**
