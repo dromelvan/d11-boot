@@ -3046,6 +3046,89 @@
 					"name": "transfer-windows",
 					"item": [
 						{
+							"name": "GET transfer-windows/{transferWindowId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET transfer-windows/{transferWindowId} - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer window status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET transfer window response body\", () => {",
+															"",
+															"  const body = pm.response.json();",
+															"  const currentTransferWindow = JSON.parse(pm.environment.get(\"currentTransferWindow\"));",
+															"",
+															"  pm.expect(body).to.have.property(\"transferWindow\");",
+															"",
+															"  pm.expect(body.transferWindow.id).to.eq(currentTransferWindow.id);",
+															"  pm.expect(body.transferWindow.transferWindowNumber).to.eq(currentTransferWindow.transferWindowNumber);",
+															"  pm.expect(body.transferWindow.draft).to.eq(currentTransferWindow.draft);",
+															"  pm.expect(body.transferWindow.status).to.eq(currentTransferWindow.status);",
+															"  pm.expect(body.transferWindow.datetime).to.eq(pm.globals.get(\"datetimePlus1\"));",
+															"",
+															"  pm.expect(body).to.have.property(\"matchWeek\");",
+															"",
+															"  const currentTransferWindowMatchWeek = JSON.parse(pm.environment.get(\"currentTransferWindowMatchWeek\"));",
+															"",
+															"  pm.expect(body.matchWeek.id).to.eq(currentTransferWindowMatchWeek.id);",
+															"  pm.expect(body.matchWeek.matchWeekNumber).to.eq(currentTransferWindowMatchWeek.matchWeekNumber);",
+															"  pm.expect(body.matchWeek.elapsed).to.eq(currentTransferWindowMatchWeek.elapsed);",
+															"  pm.expect(body.matchWeek.status).to.eq(currentTransferWindowMatchWeek.status);",
+															"  pm.expect(body.matchWeek.date).to.eq(pm.globals.get(\"datePlus1\"));",
+															"",
+															"  pm.expect(body).to.have.property(\"transferDays\");",
+															"",
+															"  const currentTransferWindowTransferDays = JSON.parse(pm.environment.get(\"currentTransferWindowTransferDays\"));",
+															"  ",
+															"  pm.expect(body.transferDays.length).to.eq(2);",
+															"",
+															"  for (let i = 0; i < body.transferDays.length; i++) {",
+															"    pm.expect(body.transferDays[i].id).to.eq(currentTransferWindowTransferDays[i].id);",
+															"    pm.expect(body.transferDays[i].transferDayNumber).to.eq(currentTransferWindowTransferDays[i].transferDayNumber);",
+															"    pm.expect(body.transferDays[i].status).to.eq(currentTransferWindowTransferDays[i].status);",
+															"  }",
+															"  ",
+															"  pm.expect(body.transferDays[0].datetime).to.eq(pm.globals.get(\"datetimeMinus1\"));",
+															"  pm.expect(body.transferDays[1].datetime).to.eq(pm.globals.get(\"datetimePlus1\"));",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-windows/{{currentTransferWindowId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-windows",
+														"{{currentTransferWindowId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
 							"name": "POST transfer-windows",
 							"item": [
 								{
@@ -4749,15 +4832,31 @@
 					"const moment = require('moment');",
 					"",
 					"pm.globals.set(\"date\", moment().format(\"YYYY-MM-DD\"));",
+					"",
+					"pm.globals.set(\"datePlus1\", moment()",
+					"  .add(1, 'days') ",
+					"  .format(\"YYYY-MM-DD\"));",
+					"",
 					"pm.globals.set(\"datetime\", moment()",
 					" .add(1, 'minutes')",
+					" .set(0, 'seconds')",
 					" .format(\"YYYY-MM-DDTHH:mm:ss\"));",
-					"pm.globals.set(\"tomorrow\", moment()",
+					"",
+					"pm.globals.set(\"datetimeMinus1\", moment()",
+					" .subtract(1, 'days')",
+					" .format(\"YYYY-MM-DDT00:00:00\"));",
+					"",
+					"pm.globals.set(\"datetimePlus1\", moment()",
 					" .add(1, 'days')",
-					" .format(\"YYYY-MM-DDTHH:mm:ss\")); ",
+					" .format(\"YYYY-MM-DDT00:00:00\"));",
+					"",
+					"pm.globals.set(\"tomorrow\", moment()",
+					" .add(1, 'days') ",
+					" .format(\"YYYY-MM-DDThh:mm:ss\"));",
+					"",
 					" pm.globals.set(\"dayAfterTomorrow\", moment()",
 					" .add(2, 'days')",
-					" .format(\"YYYY-MM-DDTHH:mm:ss\")); ",
+					" .format(\"YYYY-MM-DDThh:mm:ss\")); ",
 					""
 				]
 			}
