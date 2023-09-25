@@ -10,6 +10,7 @@ import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.TransferWindow;
 import org.d11.boot.spring.security.RoleAdmin;
 import org.d11.boot.spring.service.TransferWindowService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -55,7 +56,7 @@ public class TransferWindowControllerV2
                 .matchWeek(map(transferWindow.getMatchWeek(), MatchWeekDTO.class))
                 .transferDays(map(transferWindow.getTransferDays(), TransferDayDTO.class));
 
-        return ResponseEntity.ok(responseBody);
+        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
     @Override

@@ -143,7 +143,7 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
                      () -> transferWindowApi.insertTransferWindow(requestBody),
                      "TransferWindowController::insertTransferWindow current transfer window status pending throws");
 
-        // 200 OK ------------------------------------------------------------------------------------------------------
+        // 201 Created -------------------------------------------------------------------------------------------------
 
         final TransferWindow currentTransferWindow = this.transferWindowRepository.findFirstByOrderByDatetimeDesc()
                 .orElseThrow(NotFoundException::new);
