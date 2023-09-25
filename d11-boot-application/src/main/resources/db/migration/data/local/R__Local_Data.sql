@@ -61,9 +61,9 @@ INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, las
 
 -- Season
 INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date, legacy)
-    VALUES('2020-2021', 600, 13, 3, '2020-01-01', false);
+    VALUES('2022-2023', 600, 13, 3, '2022-01-01', false);
 INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date, legacy)
-    VALUES('2021-2022', 600, 13, 1, '2021-01-01', false);
+    VALUES('2023-2024', 600, 13, 1, '2023-01-01', false);
 
 -- Premier League
 INSERT INTO premier_league (season_id, name)
