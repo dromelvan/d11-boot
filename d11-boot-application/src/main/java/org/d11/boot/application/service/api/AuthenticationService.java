@@ -69,9 +69,15 @@ public class AuthenticationService extends ApiService {
     public AuthenticationResultDTO authenticate(final String username, final String password) {
         final UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
         if(this.passwordEncoder.matches(password, userDetails.getPassword())) {
+            final D11Team dummyTeam = new D11Team();
+            dummyTeam.setName("No Team");
+            dummyTeam.setCode("NTE");
+            dummyTeam.setId(0L);
+            dummyTeam.setDummy(true);
+
             final D11Team d11Team = this.d11TeamRepository.findByOwnerEmailOrCoOwnerEmail(userDetails.getUsername(),
                                                                                           userDetails.getUsername())
-                                                                                        .orElse(null);
+                                                                                        .orElse(dummyTeam);
             final String jwt = this.jwtBuilder.build(username);
             return new AuthenticationResultDTO()
                     .d11Team(map(d11Team, D11TeamNameDTO.class))

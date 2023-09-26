@@ -2,6 +2,7 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.UsersApi;
 import org.d11.boot.api.model.UserDTO;
+import org.d11.boot.api.model.UserRegistrationDTO;
 import org.d11.boot.application.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,15 @@ public class UserController extends AbstractRepositoryServiceController<UserDTO,
     @Override
     public ResponseEntity<UserDTO> findUserById(final Long userId) {
         return findById(userId);
+    }
+
+    @Override
+    public ResponseEntity<UserDTO> createUser(final UserRegistrationDTO userRegistrationDTO) {
+        final UserDTO userDto = getRepositoryService().createUser(userRegistrationDTO.getName(),
+                                                                  userRegistrationDTO.getEmail(),
+                                                                  userRegistrationDTO.getPassword(),
+                                                                  userRegistrationDTO.getRepeatedPassword());
+        return ResponseEntity.ok(userDto);
     }
 
 }

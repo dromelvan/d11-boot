@@ -13,6 +13,14 @@ import java.util.Optional;
 public interface UserRepository extends D11EntityRepository<User> {
 
     /**
+     * Finds a user by name.
+     *
+     * @param name The name of the user that will be looked up.
+     * @return Optional with the user with the provided name.
+     */
+    Optional<User> findByName(@Param("name") String name);
+
+    /**
      * Finds a user by email.
      *
      * @param email The email of the user that will be looked up.

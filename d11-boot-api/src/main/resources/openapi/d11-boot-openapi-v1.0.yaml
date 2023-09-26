@@ -59,6 +59,33 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /users:
+    post:
+      summary: Inserts a new user.
+      operationId: createUser
+      tags:
+        - user
+      requestBody:
+        description: User authentication properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
+
   /countries:
     get:
       summary: Finds all countries.
@@ -2350,6 +2377,23 @@ components:
           type: string
         administrator:
           type: boolean
+
+    UserRegistration:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - repeatedPassword
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        repeatedPassword:
+          type: string
 
     Status:
       type: string
