@@ -3,7 +3,7 @@ package org.d11.boot;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.camel.ProducerTemplate;
 import org.d11.boot.camel.Route;
-import org.d11.boot.camel.body.InsertTransferWindowExchangeBody;
+import org.d11.boot.camel.body.CreateTransferWindowExchangeBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -37,11 +37,11 @@ public class D11CommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(final String... args) {
-        final InsertTransferWindowExchangeBody body = new InsertTransferWindowExchangeBody();
+        final CreateTransferWindowExchangeBody body = new CreateTransferWindowExchangeBody();
         body.setDatetime(LocalDateTime.now().plusMinutes(1));
         body.setTransferDayDelay(1);
 
-        this.producerTemplate.sendBody(Route.INSERT_TRANSFER_WINDOW.getEndpoint(), body);
+        this.producerTemplate.sendBody(Route.CREATE_TRANSFER_WINDOW.getEndpoint(), body);
     }
 
 }

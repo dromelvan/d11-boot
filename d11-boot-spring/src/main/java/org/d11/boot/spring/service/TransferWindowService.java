@@ -41,14 +41,14 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
     }
 
     /**
-     * Inserts a new transfer window.
+     * Creates a new transfer window.
      *
      * @param datetime         Transfer window transfer listing deadline.
      * @param transferDayDelay Number of days after transfer listing deadline the first transfer day will take place.
      * @return New transfer window.
      */
     @Transactional
-    public TransferWindow insertTransferWindow(final LocalDateTime datetime, final int transferDayDelay) {
+    public TransferWindow createTransferWindow(final LocalDateTime datetime, final int transferDayDelay) {
         if (datetime == null || !datetime.isAfter(LocalDateTime.now())) {
             throw new BadRequestException("datetime", "Datetime is missing or invalid");
         }

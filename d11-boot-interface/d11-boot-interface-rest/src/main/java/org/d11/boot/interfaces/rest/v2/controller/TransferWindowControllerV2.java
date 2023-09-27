@@ -1,7 +1,7 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
 import org.d11.boot.api.v2.TransferWindowApi;
-import org.d11.boot.api.v2.model.InsertTransferWindowRequestBodyDTO;
+import org.d11.boot.api.v2.model.CreateTransferWindowRequestBodyDTO;
 import org.d11.boot.api.v2.model.MatchWeekDTO;
 import org.d11.boot.api.v2.model.TransferDayDTO;
 import org.d11.boot.api.v2.model.TransferWindowDTO;
@@ -44,11 +44,11 @@ public class TransferWindowControllerV2
 
     @Override
     @RoleAdmin
-    public ResponseEntity<TransferWindowResponseBodyDTO> insertTransferWindow(
-            final InsertTransferWindowRequestBodyDTO requestBody) {
+    public ResponseEntity<TransferWindowResponseBodyDTO> createTransferWindow(
+            final CreateTransferWindowRequestBodyDTO requestBody) {
 
         final TransferWindow transferWindow =
-                getRepositoryService().insertTransferWindow(requestBody.getDatetime(),
+                getRepositoryService().createTransferWindow(requestBody.getDatetime(),
                                                             requestBody.getTransferDayDelay());
 
         final TransferWindowResponseBodyDTO responseBody = new TransferWindowResponseBodyDTO()

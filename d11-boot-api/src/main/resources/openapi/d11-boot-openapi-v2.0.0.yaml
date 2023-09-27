@@ -253,17 +253,17 @@ paths:
     post:
       tags:
         - transferWindow
-      summary: Inserts a transfer window.
+      summary: Creates a transfer window.
       security:
         - BearerAuth: [admin]
-      operationId: insertTransferWindow
+      operationId: createTransferWindow
       requestBody:
         description: New transfer window properties.
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/InsertTransferWindowRequestBody"
+              $ref: "#/components/schemas/CreateTransferWindowRequestBody"
       responses:
         201:
           description: Created
@@ -648,7 +648,7 @@ components:
           type: string
           format: date-time
 
-    InsertTransferWindowRequestBody:
+    CreateTransferWindowRequestBody:
       type: object
       required:
         - datetime

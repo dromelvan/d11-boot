@@ -1,6 +1,6 @@
 package org.d11.boot.camel.bean;
 
-import org.d11.boot.camel.body.InsertTransferWindowExchangeBody;
+import org.d11.boot.camel.body.CreateTransferWindowExchangeBody;
 import org.d11.boot.spring.model.TransferWindow;
 import org.d11.boot.spring.service.TransferWindowService;
 import org.junit.jupiter.api.Test;
@@ -16,10 +16,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 /**
- * Tests the insert transfer window bean.
+ * Tests the create transfer window bean.
  */
 @ExtendWith(MockitoExtension.class)
-class InsertTransferWindowTests {
+class CreateTransferWindowTests {
 
     /**
      * Mocked transfer window service.
@@ -28,24 +28,24 @@ class InsertTransferWindowTests {
     private TransferWindowService transferWindowService;
 
     /**
-     * Tests InsertTransferWindow::handle.
+     * Tests CreateTransferWindow::handle.
      */
     @Test
-    void testInsertTransferWindow() {
-        final InsertTransferWindowExchangeBody body = new InsertTransferWindowExchangeBody();
+    void testCreateTransferWindow() {
+        final CreateTransferWindowExchangeBody body = new CreateTransferWindowExchangeBody();
         body.setDatetime(LocalDateTime.now().plusDays(1));
         body.setTransferDayDelay(1);
 
         final TransferWindow transferWindow = new TransferWindow();
 
-        when(this.transferWindowService.insertTransferWindow(eq(body.getDatetime()), eq(body.getTransferDayDelay())))
+        when(this.transferWindowService.createTransferWindow(eq(body.getDatetime()), eq(body.getTransferDayDelay())))
                 .thenReturn(transferWindow);
 
-        final InsertTransferWindow insertTransferWindow = new InsertTransferWindow(this.transferWindowService);
-        insertTransferWindow.handle(body);
+        final CreateTransferWindow createTransferWindow = new CreateTransferWindow(this.transferWindowService);
+        createTransferWindow.handle(body);
 
-        assertNotNull(body.getTransferWindow(), "InsertTransferWindow::handle not null");
-        assertEquals(transferWindow, body.getTransferWindow(), "InsertTransferWindow::handle equals");
+        assertNotNull(body.getTransferWindow(), "CreateTransferWindow::handle not null");
+        assertEquals(transferWindow, body.getTransferWindow(), "CreateTransferWindow::handle equals");
     }
 
 }

@@ -16,9 +16,9 @@ public enum Route {
      */
     HANDLE_TEST("direct:handleTest"),
     /**
-     * Insert transfer window route definition.
+     * Create transfer window route definition.
      */
-    INSERT_TRANSFER_WINDOW("direct:insertTransferWindow");
+    CREATE_TRANSFER_WINDOW("direct:createTransferWindow");
 
     /**
      * Route endpoint string.

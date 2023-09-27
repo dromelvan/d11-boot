@@ -8,12 +8,12 @@ import org.d11.boot.spring.model.TransferWindow;
 import java.time.LocalDateTime;
 
 /**
- * Holds properties for an insert transfer window Camel route.
+ * Holds properties for a create transfer window Camel route.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InsertTransferWindowExchangeBody extends CamelExchangeBody {
+public class CreateTransferWindowExchangeBody extends CamelExchangeBody {
 
     /**
      * Transfer window transfer listing deadline.
@@ -26,7 +26,7 @@ public class InsertTransferWindowExchangeBody extends CamelExchangeBody {
     private int transferDayDelay;
 
     /**
-     * The transfer window that was inserted.
+     * The transfer window that was created.
      */
     private TransferWindow transferWindow;
 
