@@ -2,11 +2,14 @@ package org.d11.boot.application.controller;
 
 import org.d11.boot.api.UsersApi;
 import org.d11.boot.api.model.UserDTO;
+import org.d11.boot.api.model.UserPasswordUpdateDTO;
 import org.d11.boot.api.model.UserRegistrationDTO;
 import org.d11.boot.application.service.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.security.RolesAllowed;
 
 /**
  * Controller that implements the UsersApi and provides user endpoints.
@@ -36,6 +39,14 @@ public class UserController extends AbstractRepositoryServiceController<UserDTO,
                                                                   userRegistrationDTO.getPassword(),
                                                                   userRegistrationDTO.getRepeatedPassword());
         return ResponseEntity.ok(userDto);
+    }
+
+    @Override
+    @RolesAllowed({"ADMIN", "USER"})
+    public ResponseEntity<Void> updatePassword(final UserPasswordUpdateDTO userPasswordUpdateDTO) {
+        getRepositoryService().updatePassword(userPasswordUpdateDTO.getPassword(),
+                                              userPasswordUpdateDTO.getRepeatedPassword());
+        return ResponseEntity.ok().build();
     }
 
 }

@@ -85,6 +85,32 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/Unexpected'
+  /users/password:
+    put:
+      summary: Update a user password.
+      security:
+        - BearerAuth: []
+      operationId: updatePassword
+      tags:
+        - user
+      requestBody:
+        description: The new password.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPasswordUpdate'
+      responses:
+        '200':
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/Unexpected'
 
   /countries:
     get:
@@ -2390,6 +2416,17 @@ components:
           type: string
         email:
           type: string
+        password:
+          type: string
+        repeatedPassword:
+          type: string
+
+    UserPasswordUpdate:
+      type: object
+      required:
+        - password
+        - repeatedPassword
+      properties:
         password:
           type: string
         repeatedPassword:

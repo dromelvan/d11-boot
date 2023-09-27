@@ -6,6 +6,7 @@ import org.d11.boot.application.configuration.CacheConfiguration;
 import org.d11.boot.application.model.User;
 import org.d11.boot.application.repository.UserRepository;
 import org.d11.boot.application.util.BadRequestException;
+import org.d11.boot.application.util.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -71,6 +72,24 @@ public class UserService extends ApiRepositoryService<User, UserDTO, UserReposit
         user.setAdministrator(false);
 
         return map(getJpaRepository().save(user));
+    }
+
+    /**
+     * Updates the password for a user.
+     *
+     * @param password         The password.
+     * @param repeatedPassword User password, repeated.
+     */
+    public void updatePassword(final String password, final String repeatedPassword) {
+        if (StringUtils.isAnyBlank(password, repeatedPassword)
+                || !StringUtils.equals(password, repeatedPassword)) {
+            throw new BadRequestException("Passwords are invalid or do not match");
+        }
+
+        final User user = getCurrentUser().orElseThrow(NotFoundException::new);
+        user.setEncryptedPassword(this.passwordEncoder.encode(password));
+
+        getJpaRepository().save(user);
     }
 
     /**
