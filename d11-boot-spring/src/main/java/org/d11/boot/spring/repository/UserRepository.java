@@ -14,6 +14,14 @@ import java.util.UUID;
 public interface UserRepository extends D11EntityRepository<User> {
 
     /**
+     * Finds a user by name.
+     *
+     * @param name The name of the user.
+     * @return Optional with the user or empty optional if no user was found.
+     */
+    Optional<User> findByName(@Param("name") String name);
+
+    /**
      * Finds a user by email.
      *
      * @param email The email of the user.

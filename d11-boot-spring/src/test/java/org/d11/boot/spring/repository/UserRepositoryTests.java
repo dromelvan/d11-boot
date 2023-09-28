@@ -19,6 +19,18 @@ class UserRepositoryTests extends D11BootRepositoryTests<User, UserRepository> {
     }
 
     /**
+     * Tests UserRepository::findByName.
+     */
+    @Test
+    void testFindByName() {
+        getEntities().forEach(user -> {
+            final User result = getRepository().findByName(user.getName()).orElse(null);
+            assertNotNull(result, "UserRepository::findByName not null");
+            assertEquals(user, result, "UserRepository::findByName equals");
+        });
+    }
+
+    /**
      * Tests UserRepository::findByEmail.
      */
     @Test
