@@ -1,12 +1,12 @@
 -- User
-INSERT INTO application_user (id, name, email, encrypted_password, administrator)
-    VALUES(1, 'User', 'user@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', false);
-INSERT INTO application_user (id, name, email, encrypted_password, administrator)
-    VALUES(2, 'Administrator', 'administrator@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', true);
+INSERT INTO application_user (name, email, encrypted_password, administrator)
+    VALUES('User', 'user@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', false);
+INSERT INTO application_user (name, email, encrypted_password, administrator)
+    VALUES('Administrator', 'administrator@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', true);
 
 -- Season
-INSERT INTO season (id, name, d11_team_budget, d11_team_max_transfers, status, date) VALUES(1, '2020-2021', 600, 13, 3, '2020-01-01');
-INSERT INTO season (id, name, d11_team_budget, d11_team_max_transfers, status, date) VALUES(2, '2021-2022', 600, 13, 1, '2021-01-01');
+INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date) VALUES('2020-2021', 600, 13, 3, '2020-01-01');
+INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date) VALUES('2021-2022', 600, 13, 1, '2021-01-01');
 
 -- Match day
 INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_id, most_valuable_player_id, match_week_number, date, elapsed, status)

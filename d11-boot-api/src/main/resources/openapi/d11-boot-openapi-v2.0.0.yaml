@@ -140,6 +140,35 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  # User ---------------------------------------------------------------------------------------------------------------
+
+  /v2/users:
+    post:
+      tags:
+        - user
+      summary: Creates a user.
+      operationId: createUser
+      requestBody:
+        description: User registration properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequestBody"
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        409:
+          $ref: '#/components/responses/Conflict'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Season -------------------------------------------------------------------------------------------------------------
 
   /v2/seasons:
@@ -538,6 +567,32 @@ components:
           type: string
         administrator:
           type: boolean
+
+    CreateUserRequestBody:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - confirmPassword
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        confirmPassword:
+          type: string
+
+    UserResponseBody:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
 
     # Season -----------------------------------------------------------------------------------------------------------
 

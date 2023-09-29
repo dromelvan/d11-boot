@@ -5,6 +5,7 @@ import org.d11.boot.spring.model.User;
 import org.d11.boot.spring.model.UserRegistration;
 import org.d11.boot.spring.repository.UserRepository;
 import org.d11.boot.util.exception.BadRequestException;
+import org.d11.boot.util.exception.ConflictException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -54,14 +55,12 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
      * @return The new user.
      */
     public User createUser(final UserRegistration userRegistration) {
-        if (StringUtils.isBlank(userRegistration.getName())
-                || getJpaRepository().findByName(userRegistration.getName()).isPresent()) {
-            throw new BadRequestException("name", "Invalid name");
+        if (StringUtils.isBlank(userRegistration.getName())) {
+            throw new BadRequestException("name", "Name is missing");
         }
 
-        if (StringUtils.isBlank(userRegistration.getEmail())
-                || getJpaRepository().findByEmail(userRegistration.getEmail()).isPresent()) {
-            throw new BadRequestException("email", "Invalid email");
+        if (StringUtils.isBlank(userRegistration.getEmail())) {
+            throw new BadRequestException("email", "Email is missing");
         }
 
         if (StringUtils.isBlank(userRegistration.getPassword())) {
@@ -74,6 +73,14 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
 
         if (!StringUtils.equals(userRegistration.getPassword(), userRegistration.getConfirmPassword())) {
             throw new BadRequestException(CONFIRM_PASSWORD_PROPERTY, "Password confirmation does not match password");
+        }
+
+        if (getJpaRepository().findByName(userRegistration.getName()).isPresent()) {
+            throw new ConflictException("Name is unavailable");
+        }
+
+        if (getJpaRepository().findByEmail(userRegistration.getEmail()).isPresent()) {
+            throw new ConflictException("Email is unavailable");
         }
 
         final User user = new User();

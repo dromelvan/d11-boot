@@ -4,6 +4,7 @@ import org.d11.boot.spring.model.User;
 import org.d11.boot.spring.model.UserRegistration;
 import org.d11.boot.spring.repository.UserRepository;
 import org.d11.boot.util.exception.BadRequestException;
+import org.d11.boot.util.exception.ConflictException;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
@@ -66,6 +67,9 @@ class UserServiceTests extends D11BootServiceTests {
         final String confirmPasswordProperty = "confirmPassword";
 
         final UserRegistration userRegistration = new UserRegistration();
+        userRegistration.setEmail(emailProperty);
+        userRegistration.setPassword(passwordProperty);
+        userRegistration.setConfirmPassword(passwordProperty);
 
         // Name --------------------------------------------------------------------------------------------------------
 
@@ -77,12 +81,12 @@ class UserServiceTests extends D11BootServiceTests {
         userRegistration.setName("EXISTING_NAME");
         when(this.userRepository.findByName(eq(userRegistration.getName()))).thenReturn(Optional.of(new User()));
 
-        exception = assertThrows(BadRequestException.class,
-                                 () -> this.userService.createUser(userRegistration),
-                                 "UserService::createUser name invalid throws");
-        assertEquals(nameProperty, exception.getParameter(), "UserService::createUser name invalid parameter equals");
+        assertThrows(ConflictException.class,
+                     () -> this.userService.createUser(userRegistration),
+                     "UserService::createUser name unavailable throws");
 
-        userRegistration.setName("USER_NAME");
+        userRegistration.setName(nameProperty);
+        userRegistration.setEmail(null);
 
         // Email -------------------------------------------------------------------------------------------------------
 
@@ -94,14 +98,15 @@ class UserServiceTests extends D11BootServiceTests {
         userRegistration.setEmail("EXISTING_EMAIL");
         when(this.userRepository.findByEmail(eq(userRegistration.getEmail()))).thenReturn(Optional.of(new User()));
 
-        exception = assertThrows(BadRequestException.class,
-                                 () -> this.userService.createUser(userRegistration),
-                                 "UserService::createUser email invalid throws");
-        assertEquals(emailProperty, exception.getParameter(), "UserService::createUser email invalid parameter equals");
+        assertThrows(ConflictException.class,
+                     () -> this.userService.createUser(userRegistration),
+                     "UserService::createUser email unavailable throws");
 
-        userRegistration.setEmail("USER_EMAIL");
+        userRegistration.setEmail(emailProperty);
 
         // Password-----------------------------------------------------------------------------------------------------
+
+        userRegistration.setPassword(null);
 
         exception = assertThrows(BadRequestException.class,
                                  () -> this.userService.createUser(userRegistration),
@@ -109,9 +114,11 @@ class UserServiceTests extends D11BootServiceTests {
         assertEquals(passwordProperty, exception.getParameter(),
                      "UserService::createUser password missing parameter equals");
 
-        userRegistration.setPassword("USER_PASSWORD");
+        userRegistration.setPassword(passwordProperty);
 
         // Confirm password --------------------------------------------------------------------------------------------
+
+        userRegistration.setConfirmPassword(null);
 
         exception = assertThrows(BadRequestException.class,
                                  () -> this.userService.createUser(userRegistration),
