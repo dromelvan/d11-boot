@@ -133,17 +133,20 @@
 															"",
 															"  pm.expect(body).to.have.property(\"expiresAt\");  ",
 															"  let expiresAt = new Date(body.expiresAt);",
-															"  pm.expect(isNaN(expiresAt.getTime())).to.eq(false);",
+															"  pm.expect(isNaN(expiresAt.getTime())).to.eq(false); ",
 															"",
 															"  // It's tricky to define what the JWT expiry time should be exactly since we can't",
 															"  // know at what exact instant it is created on the server.So, we'll just check that ",
 															"  // it is within one minute of 24 hours from now.",
-															"  let now = moment();",
-															"  now.add(30 * 24 * 60 * 60 - 30, \"seconds\");",
-															"  pm.expect(now.isBefore(expiresAt)).to.eq(true);",
+															"  let date = new Date();",
+															"  date.setMonth(date.getMonth() + 1);",
+															"  date.setMinutes(date.getMinutes() - 1);",
 															"",
-															"  now.add(60, \"seconds\");",
-															"  pm.expect(now.isAfter(expiresAt)).to.eq(true);",
+															"  pm.expect(date.isBefore(expiresAt)).to.eq(true);",
+															"",
+															"  date.setMinutes(date.getMinutes() + 2);",
+															"  ",
+															"  pm.expect(date.isAfter(expiresAt)).to.eq(true);",
 															"",
 															"  pm.expect(body).to.have.property(\"persistent\");",
 															"  pm.expect(body.persistent).to.eq(true);",
@@ -318,12 +321,15 @@
 															"  // It's tricky to define what the JWT expiry time should be exactly since we can't",
 															"  // know at what exact instant it is created on the server.So, we'll just check that ",
 															"  // it is within one minute of 24 hours from now.",
-															"  let now = moment();",
-															"  now.add(30 * 24 * 60 * 60 - 30, \"seconds\");",
-															"  pm.expect(now.isBefore(expiresAt)).to.eq(true);",
+															"  let date = new Date();",
+															"  date.setMonth(date.getMonth() + 1);",
+															"  date.setMinutes(date.getMinutes() - 1);",
 															"",
-															"  now.add(60, \"seconds\");",
-															"  pm.expect(now.isAfter(expiresAt)).to.eq(true);",
+															"  pm.expect(date.isBefore(expiresAt)).to.eq(true);",
+															"",
+															"  date.setMinutes(date.getMinutes() + 2);",
+															"",
+															"  pm.expect(date.isAfter(expiresAt)).to.eq(true);",
 															"",
 															"  pm.expect(body).to.have.property(\"persistent\");",
 															"  pm.expect(body.persistent).to.eq(true);",
@@ -593,12 +599,15 @@
 															"  // It's tricky to define what the JWT expiry time should be exactly since we can't",
 															"  // know at what exact instant it is created on the server.So, we'll just check that ",
 															"  // it is within one minute of 24 hours from now.",
-															"  let now = moment();",
-															"  now.add(30 * 24 * 60 * 60 - 30, \"seconds\");",
-															"  pm.expect(now.isBefore(expiresAt)).to.eq(true);",
+															"  let date = new Date();",
+															"  date.setMonth(date.getMonth() + 1);",
+															"  date.setMinutes(date.getMinutes() - 1);",
 															"",
-															"  now.add(60, \"seconds\");",
-															"  pm.expect(now.isAfter(expiresAt)).to.eq(true);",
+															"  pm.expect(date.isBefore(expiresAt)).to.eq(true);",
+															"",
+															"  date.setMinutes(date.getMinutes() + 2);",
+															"",
+															"  pm.expect(date.isAfter(expiresAt)).to.eq(true);",
 															"",
 															"  pm.expect(body).to.have.property(\"persistent\");",
 															"  pm.expect(body.persistent).to.eq(true);",
@@ -722,12 +731,15 @@
 															"  // It's tricky to define what the JWT expiry time should be exactly since we can't",
 															"  // know at what exact instant it is created on the server.So, we'll just check that ",
 															"  // it is within one minute of 24 hours from now.",
-															"  let now = moment();",
-															"  now.add(30 * 24 * 60 * 60 - 30, \"seconds\");",
-															"  pm.expect(now.isBefore(expiresAt)).to.eq(true);",
+															"  let date = new Date();",
+															"  date.setMonth(date.getMonth() + 1);",
+															"  date.setMinutes(date.getMinutes() - 1);",
 															"",
-															"  now.add(60, \"seconds\");",
-															"  pm.expect(now.isAfter(expiresAt)).to.eq(true);",
+															"  pm.expect(date.isBefore(expiresAt)).to.eq(true);",
+															"",
+															"  date.setMinutes(date.getMinutes() + 2);",
+															"",
+															"  pm.expect(date.isAfter(expiresAt)).to.eq(true);",
 															"",
 															"  pm.expect(body).to.have.property(\"persistent\");",
 															"  pm.expect(body.persistent).to.eq(true);",
@@ -1841,6 +1853,759 @@
 					]
 				},
 				{
+					"name": "users",
+					"item": [
+						{
+							"name": "POST users",
+							"item": [
+								{
+									"name": "201 Created",
+									"item": [
+										{
+											"name": "POST users - OK",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 201\", () => {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"",
+															"pm.test(\"POST user response body\", () => {",
+															"  const body = pm.response.json();",
+															"  ",
+															"  pm.expect(body).to.have.property(\"user\");",
+															"",
+															"  pm.expect(body.user.name).to.eq(pm.environment.get('newUserName'));",
+															"  pm.expect(body.user.administrator).to.eq(false);",
+															"});",
+															"",
+															"",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"{{newUserName}}\",\n    \"email\": \"{{newUserUsername}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "POST users - Bad Request",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST user bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST users - Bad Request Missing Name",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST user bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Name is missing\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"\",\n    \"email\": \"{{newUserUsername}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST users - Bad Request Invalid Email",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST user bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"{{newUserName}}\",\n    \"email\": \"INVAÖLD_EMAIL\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST users - Bad Request Missing Email",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST user bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Email is missing\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"{{newUserName}}\",\n    \"email\": \"\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST users - Bad Request Missing Password",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST user bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Password is missing\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"{{newUserName}}\",\n    \"email\": \"{{newUserUsername}}\",\n    \"password\": \"\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST users - Bad Request Missing Confirm Password",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST user bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Password confirmation is missing\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"{{newUserName}}\",\n    \"email\": \"{{newUserUsername}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST users - Bad Request Missing Password Mismatch",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST user bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Password confirmation does not match password\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"{{newUserName}}\",\n    \"email\": \"{{newUserUsername}}\",\n    \"password\": \"PASSWORD\",\n    \"confirmPassword\": \"CONFIRM_PASSWORD\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "409 Conflict",
+									"item": [
+										{
+											"name": "POST users - Bad Request Name Unavailable",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 409\", () => {",
+															"  pm.response.to.have.status(409);",
+															"});",
+															"",
+															"pm.test(\"POST user bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(409);",
+															"  pm.expect(body.error).to.eq(\"Conflict\");",
+															"  pm.expect(body.message).to.eq(\"Name is unavailable\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"name\": \"{{adminName}}\",\n    \"email\": \"{{newUserUsername}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST users - Bad Request Email Unavailable",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 409\", () => {",
+															"  pm.response.to.have.status(409);",
+															"});",
+															"",
+															"pm.test(\"POST user bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(409);",
+															"  pm.expect(body.error).to.eq(\"Conflict\");",
+															"  pm.expect(body.message).to.eq(\"Email is unavailable\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    // When this is run after 200 OK the new user name will be unavailable so set another dummy name\n    \"name\": \"name\",\n    \"email\": \"{{adminUsername}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
 					"name": "seasons",
 					"item": [
 						{
@@ -2928,7 +3693,7 @@
 							"name": "POST transfer-windows",
 							"item": [
 								{
-									"name": "200 OK",
+									"name": "201 Created",
 									"item": [
 										{
 											"name": "Setup - Login Admin",
@@ -2994,8 +3759,8 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST transfer window status code is 200\", () => {",
-															"  pm.response.to.have.status(200);",
+															"pm.test(\"POST transfer window status code is 201\", () => {",
+															"  pm.response.to.have.status(201);",
 															"});",
 															"",
 															"pm.test(\"POST transfer window response body\", () => {",
@@ -3326,7 +4091,7 @@
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n    \"datetime\": \"{{tomorrow}}\",\n    \"transferDayDelay\": -1\n}",
+													"raw": "{\n    \"datetime\": \"{{datetimePlus1}}\",\n    \"transferDayDelay\": -1\n}",
 													"options": {
 														"raw": {
 															"language": "json"
