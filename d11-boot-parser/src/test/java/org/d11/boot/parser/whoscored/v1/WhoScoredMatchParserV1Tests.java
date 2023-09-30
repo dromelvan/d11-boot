@@ -1,6 +1,7 @@
 package org.d11.boot.parser.whoscored.v1;
 
 import org.d11.boot.jms.model.MatchData;
+import org.d11.boot.jms.model.PlayerMatchData;
 import org.d11.boot.jms.model.Status;
 import org.d11.boot.parser.ParserException;
 import org.d11.boot.parser.match.whoscored.v1.WhoScoredMatchParserV1;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Tests for WhoScoredMatchParserV1.
  */
-@SuppressWarnings("checkstyle:MagicNumber")
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "checkstyle:MagicNumber", "checkstyle:MultipleStringLiterals" })
 public class WhoScoredMatchParserV1Tests {
 
     /**
@@ -94,6 +95,16 @@ public class WhoScoredMatchParserV1Tests {
 
         assertFalse(matchData.getPlayers().isEmpty(),
                 "Full time match data player match stats should not be empty.");
+
+        for(final PlayerMatchData playerMatchData : matchData.getPlayers()) {
+            if(playerMatchData.getTeamWhoscoredId() == matchData.getHomeTeamWhoscoredId().intValue()) {
+                assertEquals(2, (int) playerMatchData.getGoalsConceded(),
+                             "Player match data home team goals conceded should equal");
+            } else {
+                assertEquals(1, (int) playerMatchData.getGoalsConceded(),
+                             "Player match data away team goals conceded should equal");
+            }
+        }
     }
 
     /**
@@ -131,6 +142,16 @@ public class WhoScoredMatchParserV1Tests {
 
         assertFalse(matchData.getPlayers().isEmpty(),
                 "90+ match data player match stats should not be empty.");
+
+        for(final PlayerMatchData playerMatchData : matchData.getPlayers()) {
+            if(playerMatchData.getTeamWhoscoredId() == matchData.getHomeTeamWhoscoredId().intValue()) {
+                assertEquals(1, (int) playerMatchData.getGoalsConceded(),
+                             "Player match data home team goals conceded should equal");
+            } else {
+                assertEquals(2, (int) playerMatchData.getGoalsConceded(),
+                             "Player match data away team goals conceded should equal");
+            }
+        }
     }
 
     /**
@@ -168,6 +189,63 @@ public class WhoScoredMatchParserV1Tests {
 
         assertFalse(matchData.getPlayers().isEmpty(),
                 "90+2 match data player match stats should not be empty.");
+
+        for(final PlayerMatchData playerMatchData : matchData.getPlayers()) {
+            if(playerMatchData.getTeamWhoscoredId() == matchData.getHomeTeamWhoscoredId().intValue()) {
+                assertEquals(3, (int) playerMatchData.getGoalsConceded(),
+                             "Player match data home team goals conceded should equal");
+            } else {
+                assertEquals(1, (int) playerMatchData.getGoalsConceded(),
+                             "Player match data away team goals conceded should equal");
+            }
+        }
+    }
+
+    /**
+     * Tests parsing yet another version of "green" full time WhoScored match file.
+     *
+     * @throws IOException     If something goes wrong.
+     * @throws ParserException If something goes wrong.
+     */
+    @Test
+    public void parse90PlusMatch3() throws IOException, ParserException {
+        final WhoScoredMatchParserV1 whoScoredMatchParserV1 = new WhoScoredMatchParserV1();
+        final File finishedMatchFile = new File("src/test/resources/whoscored/v1/match/90+3.html");
+        final MatchData matchData = whoScoredMatchParserV1.parse(finishedMatchFile);
+
+        assertEquals(Long.valueOf(1_729_295), matchData.getWhoscoredId(),
+                     "Match data whoscoredId should equal 90+2 file matchId.");
+
+        assertEquals(MatchHeader.ELAPSED_90_PLUS_TIME, matchData.getElapsed(),
+                     "Match data elapsed should be 90+.");
+        assertEquals(Status.ACTIVE, matchData.getStatus(), "Match data status should be active.");
+
+        assertNotNull(matchData.getHomeTeamWhoscoredId(), "90+ file match data home team should not be null.");
+        assertEquals(Long.valueOf(183), matchData.getHomeTeamWhoscoredId(),
+                     "Match data home team id should equal 90+ file home team id.");
+
+        assertNotNull(matchData.getAwayTeamWhoscoredId(), "90+ file match data away team should not be null.");
+        assertEquals(Long.valueOf(13), matchData.getAwayTeamWhoscoredId(),
+                     "Match data away team id should equal 90+ file away team id.");
+
+        assertEquals(LocalDateTime.of(2023, 9, 30, 17, 0, 0), matchData.getDatetime(),
+                     "Match data datetime should equal 90+ file datetime.");
+
+        assertFalse(matchData.getGoals().isEmpty(),
+                    "90+3 match data goals should not be empty.");
+
+        assertFalse(matchData.getPlayers().isEmpty(),
+                    "90+3 match data player match stats should not be empty.");
+
+        for(final PlayerMatchData playerMatchData : matchData.getPlayers()) {
+            if(playerMatchData.getTeamWhoscoredId() == matchData.getHomeTeamWhoscoredId().intValue()) {
+                assertEquals(4, (int) playerMatchData.getGoalsConceded(),
+                             "Player match data home team goals conceded should equal");
+            } else {
+                assertEquals(0, (int) playerMatchData.getGoalsConceded(),
+                             "Player match data away team goals conceded should equal");
+            }
+        }
     }
 
     /**
