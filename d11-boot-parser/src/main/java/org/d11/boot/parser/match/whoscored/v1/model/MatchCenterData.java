@@ -44,7 +44,7 @@ public class MatchCenterData {
     /**
      * Pattern for match score element.
      */
-    public static final Pattern SCORE_PATTERN = Pattern.compile("\\*?(\\d*) : (\\d*)");
+    public static final Pattern SCORE_PATTERN = Pattern.compile("\\*?(\\d*) : (\\d*)\\*?");
 
     /**
      * Player id <-> name dictionary.

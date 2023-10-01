@@ -3,6 +3,7 @@ package org.d11.boot.parser.match.whoscored.v1;
 import org.d11.boot.parser.ParserException;
 import org.d11.boot.parser.match.whoscored.v1.model.MatchHeader;
 import org.d11.boot.parser.model.ParsedMatchData;
+import org.d11.boot.parser.model.ParsedPlayerMatchData;
 import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 
@@ -99,6 +100,16 @@ class WhoScoredMatchParserV1Tests {
         assertFalse(parsedMatchData.getPlayers().isEmpty(), "WhoScoredMatchParserV1::parse full time players empty");
         assertEquals(602, parsedMatchData.getPlayers().get(0).getRating(),
                      "WhoScoredMatchParserV1::parse full time players rating");
+
+        for (final ParsedPlayerMatchData playerMatchData : parsedMatchData.getPlayers()) {
+            if (playerMatchData.getTeamSiteId() == parsedMatchData.getHomeTeamSiteId().intValue()) {
+                assertEquals(2, (int) playerMatchData.getGoalsConceded(),
+                             "WhoScoredMatchParserV1::parse full time home team player goals conceded equals");
+            } else {
+                assertEquals(1, (int) playerMatchData.getGoalsConceded(),
+                             "WhoScoredMatchParserV1::parse full time away team player goals conceded equals");
+            }
+        }
     }
 
     /**
@@ -138,6 +149,16 @@ class WhoScoredMatchParserV1Tests {
         assertFalse(parsedMatchData.getPlayers().isEmpty(), "WhoScoredMatchParserV1::parse 90+ players empty");
         assertEquals(670, parsedMatchData.getPlayers().get(0).getRating(),
                      "WhoScoredMatchParserV1::parse 90+ players rating");
+
+        for (final ParsedPlayerMatchData playerMatchData : parsedMatchData.getPlayers()) {
+            if (playerMatchData.getTeamSiteId() == parsedMatchData.getHomeTeamSiteId().intValue()) {
+                assertEquals(1, (int) playerMatchData.getGoalsConceded(),
+                             "WhoScoredMatchParserV1::parse 90+ home team player goals conceded equals");
+            } else {
+                assertEquals(2, (int) playerMatchData.getGoalsConceded(),
+                             "WhoScoredMatchParserV1::parse 90+ away team player goals conceded equals");
+            }
+        }
     }
 
     /**
@@ -177,6 +198,65 @@ class WhoScoredMatchParserV1Tests {
         assertFalse(parsedMatchData.getPlayers().isEmpty(), "WhoScoredMatchParserV1::parse 90+2 players empty");
         assertEquals(546, parsedMatchData.getPlayers().get(0).getRating(),
                      "WhoScoredMatchParserV1::parse 90+2 players rating");
+
+        for (final ParsedPlayerMatchData playerMatchData : parsedMatchData.getPlayers()) {
+            if (playerMatchData.getTeamSiteId() == parsedMatchData.getHomeTeamSiteId().intValue()) {
+                assertEquals(3, (int) playerMatchData.getGoalsConceded(),
+                             "WhoScoredMatchParserV1::parse 90+2 home team player goals conceded equals");
+            } else {
+                assertEquals(1, (int) playerMatchData.getGoalsConceded(),
+                             "WhoScoredMatchParserV1::parse 90+2 away team player goals conceded equals");
+            }
+        }
+    }
+
+    /**
+     * Tests WhoScoredMatchParserV1::parse another version of "green" full time match.
+     *
+     * @throws IOException     If something goes wrong.
+     * @throws ParserException If something goes wrong.
+     */
+    @Test
+    void testParse90Plus3() throws IOException, ParserException {
+        final WhoScoredMatchParserV1 whoScoredMatchParserV1 = new WhoScoredMatchParserV1();
+        final File file = new File("src/test/resources/whoscored/match/v1/90+3.html");
+        final ParsedMatchData parsedMatchData = whoScoredMatchParserV1.parse(file);
+
+        assertEquals(Long.valueOf(1_729_295), parsedMatchData.getSiteId(),
+                     "WhoScoredMatchParserV1::parse 90+3 site id equals");
+
+        assertEquals(MatchHeader.ELAPSED_90_PLUS_TIME, parsedMatchData.getElapsed(),
+                     "WhoScoredMatchParserV1::parse 90+3 elapsed equals");
+        assertEquals(Status.ACTIVE, parsedMatchData.getStatus(), "WhoScoredMatchParserV1::parse 90+3 status equals");
+
+        assertNotNull(parsedMatchData.getHomeTeamSiteId(),
+                      "WhoScoredMatchParserV1::parse 90+3 home team site id not null");
+        assertEquals(Long.valueOf(183), parsedMatchData.getHomeTeamSiteId(),
+                     "WhoScoredMatchParserV1::parse 90+3 home team site id equals");
+
+        assertNotNull(parsedMatchData.getAwayTeamSiteId(),
+                      "WhoScoredMatchParserV1::parse 90+3 away team site id not null");
+        assertEquals(Long.valueOf(13), parsedMatchData.getAwayTeamSiteId(),
+                     "WhoScoredMatchParserV1::parse 90+3 away team site id equals");
+
+        assertEquals(LocalDateTime.of(2023, 9, 30, 17, 0, 0), parsedMatchData.getDatetime(),
+                     "WhoScoredMatchParserV1::parse 90+3 datetime equals");
+
+        assertFalse(parsedMatchData.getGoals().isEmpty(), "WhoScoredMatchParserV1::parse 90+3 goals empty");
+
+        assertFalse(parsedMatchData.getPlayers().isEmpty(), "WhoScoredMatchParserV1::parse 90+3 players empty");
+        assertEquals(656, parsedMatchData.getPlayers().get(0).getRating(),
+                     "WhoScoredMatchParserV1::parse 90+3 players rating");
+
+        for (final ParsedPlayerMatchData playerMatchData : parsedMatchData.getPlayers()) {
+            if (playerMatchData.getTeamSiteId() == parsedMatchData.getHomeTeamSiteId().intValue()) {
+                assertEquals(4, (int) playerMatchData.getGoalsConceded(),
+                             "WhoScoredMatchParserV1::parse 90+3 home team player goals conceded equals");
+            } else {
+                assertEquals(0, (int) playerMatchData.getGoalsConceded(),
+                             "WhoScoredMatchParserV1::parse 90+3 away team player goals conceded equals");
+            }
+        }
     }
 
     /**
