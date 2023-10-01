@@ -44,7 +44,7 @@ public class D11BootEasyRandomParameters extends EasyRandomParameters {
         randomize(FieldPredicates.named("email").and(FieldPredicates.inClass(User.class)), new EmailRandomizer());
 
         randomize(FieldPredicates.named("iso").and(FieldPredicates.inClass(Country.class)),
-                  new StringRandomizer(Country.ISO_CODE_LENGTH, Country.ISO_CODE_LENGTH, System.currentTimeMillis()));
+                  new CountryIsoRandomizer());
 
         randomize(FieldPredicates.named("opened").and(FieldPredicates.inClass(Stadium.class)),
                   new IntegerRangeRandomizer(Stadium.MIN_OPENED_YEAR, Stadium.MAX_OPENED_YEAR));
