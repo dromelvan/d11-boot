@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 /**
  * Transfer window service tests.
  */
-class TransferWindowServiceTests extends D11BootServiceTests {
+class TransferWindowServiceTests extends BaseD11BootServiceTests {
 
     /**
      * Mocked transfer window repository.

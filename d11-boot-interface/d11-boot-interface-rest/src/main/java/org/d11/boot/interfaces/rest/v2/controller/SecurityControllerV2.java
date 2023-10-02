@@ -1,5 +1,6 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.validation.Valid;
 import org.d11.boot.api.v2.SecurityApi;
 import org.d11.boot.api.v2.model.AuthenticationRequestBodyDTO;
@@ -24,6 +25,8 @@ import java.util.UUID;
  * Security API REST controller implementation.
  */
 @RestController
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                    justification = "Can't inject an immutable SecurityService")
 public class SecurityControllerV2 extends D11BootRestController implements SecurityApi {
 
     /**

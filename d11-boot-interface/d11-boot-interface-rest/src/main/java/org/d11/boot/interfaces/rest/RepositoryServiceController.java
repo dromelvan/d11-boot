@@ -1,5 +1,6 @@
 package org.d11.boot.interfaces.rest;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.d11.boot.spring.service.RepositoryService;
@@ -9,6 +10,8 @@ import org.d11.boot.spring.service.RepositoryService;
  *
  * @param <T> Class of the service the controller will use.
  */
+@SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+                    justification = "This comes from subclasses")
 public class RepositoryServiceController<T extends RepositoryService<?, ?>> extends D11BootRestController {
 
     /**

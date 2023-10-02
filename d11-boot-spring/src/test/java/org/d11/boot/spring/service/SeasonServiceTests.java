@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 /**
  * Season service tests.
  */
-class SeasonServiceTests extends D11BootServiceTests {
+class SeasonServiceTests extends BaseD11BootServiceTests {
 
     /**
      * Mocked season repository.

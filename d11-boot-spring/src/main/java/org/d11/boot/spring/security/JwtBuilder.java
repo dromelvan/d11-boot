@@ -20,6 +20,11 @@ import java.util.UUID;
 public class JwtBuilder {
 
     /**
+     * The name of the JWT claim that contains the username.
+     */
+    public static final String USERNAME_CLAIM = "username";
+
+    /**
      * The RSA private key that will be used to sign the JWTs.
      */
     private final RSAPrivateKey rsaPrivateKey;
@@ -50,7 +55,7 @@ public class JwtBuilder {
     public String build(final String username, final LocalDateTime expiresAt) {
         return JWT.create()
                 .withJWTId(UUID.randomUUID().toString())
-                .withClaim("username", username)
+                .withClaim(USERNAME_CLAIM, username)
                 .withExpiresAt(Date.from(expiresAt.atZone(ZoneId.systemDefault()).toInstant()))
                 .sign(Algorithm.RSA256(this.rsaPublicKey, this.rsaPrivateKey));
     }

@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 /**
  * Security service tests.
  */
-class SecurityServiceTests extends D11BootServiceTests {
+class SecurityServiceTests extends BaseD11BootServiceTests {
 
     /**
      * Dummy password.
