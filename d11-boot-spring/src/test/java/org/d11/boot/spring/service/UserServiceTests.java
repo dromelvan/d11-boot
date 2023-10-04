@@ -7,6 +7,7 @@ import org.d11.boot.spring.security.JwtBuilder;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ForbiddenException;
+import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
@@ -30,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -202,7 +204,7 @@ class UserServiceTests extends BaseD11BootServiceTests {
      * Tests UserService::updateUserPassword.
      */
     @Test
-    @SuppressWarnings("PMD.ExcessiveMethodLength")
+    @SuppressWarnings({ "PMD.ExcessiveMethodLength", "checkstyle:ExecutableStatementCount" })
     void testUpdateUserPassword() {
 
         // Current password --------------------------------------------------------------------------------------------
@@ -248,7 +250,24 @@ class UserServiceTests extends BaseD11BootServiceTests {
         assertEquals(CONFIRM_PASSWORD_PROPERTY, badRequestException.getParameter(),
                      "UserService::updateUserPassword confirmPassword not matching parameter equals");
 
+        // User not found ----------------------------------------------------------------------------------------------
+
+        when(this.userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> this.userService.updateUserPassword(1L,
+                                                                                        CURRENT_PASSWORD_PROPERTY,
+                                                                                        PASSWORD_PROPERTY,
+                                                                                        PASSWORD_PROPERTY),
+                "UserService::updateUserPassword user not found throws");
+
         // No current user ---------------------------------------------------------------------------------------------
+
+        final User user = new User();
+        user.setId(0L);
+        user.setEncryptedPassword(PASSWORD_PROPERTY);
+        user.setEmail("user@email.com");
+
+        when(this.userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
 
         // Have to explicitly set this to null here in case some other test has authenticated before this.
         SecurityContextHolder.getContext().setAuthentication(null);
@@ -260,11 +279,6 @@ class UserServiceTests extends BaseD11BootServiceTests {
                      "UserService::updateUserPassword no current user throws");
 
         // Wrong user --------------------------------------------------------------------------------------------------
-
-        final User user = new User();
-        user.setId(0L);
-        user.setEncryptedPassword(PASSWORD_PROPERTY);
-        user.setEmail("user@email.com");
 
         when(this.authentication.getPrincipal()).thenReturn(this.jwt);
         SecurityContextHolder.getContext().setAuthentication(this.authentication);
@@ -285,6 +299,7 @@ class UserServiceTests extends BaseD11BootServiceTests {
         // Wrong current password --------------------------------------------------------------------------------------
 
         user.setId(1L);
+        reset(this.passwordEncoder);
 
         assertThrows(ForbiddenException.class,
                      () -> this.userService.updateUserPassword(1L,

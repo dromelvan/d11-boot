@@ -223,7 +223,7 @@ public class ControllerExceptionHandlerV2 {
         final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
                 .uuid(UUID.randomUUID())
                 .error(httpStatus.getReasonPhrase())
-                .message(e.getMessage())
+                .message("Access Denied")
                 .status(httpStatus.value())
                 .timestamp(LocalDateTime.now())
                 .path(request.getRequestURI());

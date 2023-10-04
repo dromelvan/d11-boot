@@ -174,7 +174,7 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
         // Not Found ---------------------------------------------------------------------------------------------------
 
         assertThrows(FeignException.NotFound.class,
-                     () -> unauthorizedApi.updateUser(null, updateUserRequestBodyDTO),
+                     () -> unauthorizedApi.updateUser(-1L, updateUserRequestBodyDTO),
                      "UserController::updateUser not found throws");
 
         // OK ----------------------------------------------------------------------------------------------------------

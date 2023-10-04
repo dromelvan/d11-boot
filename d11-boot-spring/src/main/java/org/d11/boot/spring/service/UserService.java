@@ -7,6 +7,7 @@ import org.d11.boot.spring.repository.UserRepository;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ForbiddenException;
+import org.d11.boot.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -15,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * User service.
@@ -112,16 +115,17 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
 
         validatePassword(password, confirmPassword);
 
-        final User user = getCurrentUser().orElseThrow(ForbiddenException::new);
+        final User user = getJpaRepository().findById(userId).orElseThrow(NotFoundException::new);
+        final User currentUser = getCurrentUser().orElseThrow(ForbiddenException::new);
 
-        if (user.getId() != userId
-                || !this.passwordEncoder.matches(currentPassword, user.getEncryptedPassword())) {
+        if (!Objects.equals(currentUser.getId(), user.getId())
+                || !this.passwordEncoder.matches(currentPassword, currentUser.getEncryptedPassword())) {
             throw new ForbiddenException();
         }
 
-        user.setEncryptedPassword(this.passwordEncoder.encode(password));
+        currentUser.setEncryptedPassword(this.passwordEncoder.encode(password));
 
-        return getJpaRepository().save(user);
+        return getJpaRepository().save(currentUser);
     }
 
     /**
