@@ -8,6 +8,7 @@ import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ForbiddenException;
 import org.d11.boot.util.exception.NotFoundException;
+import org.d11.boot.util.exception.UnauthorizedException;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
@@ -30,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -272,10 +273,10 @@ class UserServiceTests extends BaseD11BootServiceTests {
         // Have to explicitly set this to null here in case some other test has authenticated before this.
         SecurityContextHolder.getContext().setAuthentication(null);
 
-        assertThrows(ForbiddenException.class, () -> this.userService.updateUserPassword(1L,
-                                                                                         CURRENT_PASSWORD_PROPERTY,
-                                                                                         PASSWORD_PROPERTY,
-                                                                                         PASSWORD_PROPERTY),
+        assertThrows(UnauthorizedException.class, () -> this.userService.updateUserPassword(1L,
+                                                                                            CURRENT_PASSWORD_PROPERTY,
+                                                                                            PASSWORD_PROPERTY,
+                                                                                            PASSWORD_PROPERTY),
                      "UserService::updateUserPassword no current user throws");
 
         // Wrong user --------------------------------------------------------------------------------------------------

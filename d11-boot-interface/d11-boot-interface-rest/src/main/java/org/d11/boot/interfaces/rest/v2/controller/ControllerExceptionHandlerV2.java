@@ -11,6 +11,7 @@ import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ForbiddenException;
 import org.d11.boot.util.exception.NotFoundException;
+import org.d11.boot.util.exception.UnauthorizedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -204,6 +205,29 @@ public class ControllerExceptionHandlerV2 {
             .status(httpStatus.value())
             .timestamp(LocalDateTime.now())
             .path(request.getRequestURI());
+        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+    }
+
+    /**
+     * Handles UnauthorizedException. This is thrown internally when a request lacks valid authentication credentials
+     * for the requested resource.
+     *
+     * @param e       The exception that will be handled.
+     * @param request The request that caused the exception.
+     * @return Response entity with error details.
+     */
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<?> handle(@NonNull final UnauthorizedException e,
+                                    @NonNull final HttpServletRequest request) {
+        final HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
+
+        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
+                .uuid(UUID.randomUUID())
+                .error(httpStatus.getReasonPhrase())
+                .message(e.getMessage())
+                .status(httpStatus.value())
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI());
         return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
     }
 
