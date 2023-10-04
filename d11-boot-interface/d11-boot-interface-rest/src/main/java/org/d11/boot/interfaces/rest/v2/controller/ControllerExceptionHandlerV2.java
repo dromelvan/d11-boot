@@ -9,6 +9,7 @@ import org.d11.boot.interfaces.rest.RefreshTokenCookieBuilder;
 import org.d11.boot.spring.model.RefreshToken;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
+import org.d11.boot.util.exception.ForbiddenException;
 import org.d11.boot.util.exception.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -203,6 +204,29 @@ public class ControllerExceptionHandlerV2 {
             .status(httpStatus.value())
             .timestamp(LocalDateTime.now())
             .path(request.getRequestURI());
+        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+    }
+
+    /**
+     * Handles ForbiddenException. This is thrown internally when the server understands the request but a service
+     * refuses to authorize it.
+     *
+     * @param e       The exception that will be handled.
+     * @param request The request that caused the exception.
+     * @return Response entity with error details.
+     */
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<?> handle(@NonNull final ForbiddenException e,
+                                    @NonNull final HttpServletRequest request) {
+        final HttpStatus httpStatus = HttpStatus.FORBIDDEN;
+
+        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
+                .uuid(UUID.randomUUID())
+                .error(httpStatus.getReasonPhrase())
+                .message(e.getMessage())
+                .status(httpStatus.value())
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI());
         return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
     }
 
