@@ -169,6 +169,47 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/users/{userId}:
+    put:
+      tags:
+        - user
+      summary: Updates a users password.
+      security:
+        - BearerAuth: [user]
+      operationId: updateUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Id of the user that will be updated.
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update user password.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRequestBody"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Season -------------------------------------------------------------------------------------------------------------
 
   /v2/seasons:
@@ -584,6 +625,20 @@ components:
         email:
           type: string
           format: email
+        password:
+          type: string
+        confirmPassword:
+          type: string
+
+    UpdateUserRequestBody:
+      type: object
+      required:
+        - currentPassword
+        - password
+        - confirmPassword
+      properties:
+        currentPassword:
+          type: string
         password:
           type: string
         confirmPassword:
