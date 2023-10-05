@@ -139,7 +139,7 @@
 															"  // know at what exact instant it is created on the server.So, we'll just check that ",
 															"  // it is within one minute of 24 hours from now.",
 															"  let date = new Date();",
-															"  date.setMonth(date.getMonth() + 1);",
+															"  date.setDate(date.getDate() + 30);",
 															"  date.setMinutes(date.getMinutes() - 1);",
 															"",
 															"  pm.expect(date.isBefore(expiresAt)).to.eq(true);",
@@ -322,7 +322,7 @@
 															"  // know at what exact instant it is created on the server.So, we'll just check that ",
 															"  // it is within one minute of 24 hours from now.",
 															"  let date = new Date();",
-															"  date.setMonth(date.getMonth() + 1);",
+															"  date.setDate(date.getDate() + 30);",
 															"  date.setMinutes(date.getMinutes() - 1);",
 															"",
 															"  pm.expect(date.isBefore(expiresAt)).to.eq(true);",
@@ -600,7 +600,7 @@
 															"  // know at what exact instant it is created on the server.So, we'll just check that ",
 															"  // it is within one minute of 24 hours from now.",
 															"  let date = new Date();",
-															"  date.setMonth(date.getMonth() + 1);",
+															"  date.setDate(date.getDate() + 30);",
 															"  date.setMinutes(date.getMinutes() - 1);",
 															"",
 															"  pm.expect(date.isBefore(expiresAt)).to.eq(true);",
@@ -732,7 +732,7 @@
 															"  // know at what exact instant it is created on the server.So, we'll just check that ",
 															"  // it is within one minute of 24 hours from now.",
 															"  let date = new Date();",
-															"  date.setMonth(date.getMonth() + 1);",
+															"  date.setDate(date.getDate() + 30);",
 															"  date.setMinutes(date.getMinutes() - 1);",
 															"",
 															"  pm.expect(date.isBefore(expiresAt)).to.eq(true);",
@@ -2377,7 +2377,7 @@
 											"response": []
 										},
 										{
-											"name": "POST users - Bad Request Missing Password Mismatch",
+											"name": "POST users - Bad Request Password Mismatch",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -2595,6 +2595,957 @@
 													"path": [
 														"v2",
 														"users"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "PUT users/{userId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "Setup - Login User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{userUsername}}\",\n    \"password\": \"{{userPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "PUT users/{userId} - OK",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST user response body\", () => {",
+															"  const body = pm.response.json();",
+															"  ",
+															"  pm.expect(body).to.have.property(\"user\");",
+															"  ",
+															"  pm.expect(body.user).to.have.property(\"id\");",
+															"  pm.expect(body.user.name).to.eq(pm.environment.get('userName'));",
+															"  pm.expect(body.user.administrator).to.eq(false);",
+															"});",
+															"",
+															"",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"currentPassword\": \"{{userPassword}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{userId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "PUT users/{userId} - Rollback",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"POST user response body\", () => {",
+															"  const body = pm.response.json();",
+															"  ",
+															"  pm.expect(body).to.have.property(\"user\");",
+															"  ",
+															"  pm.expect(body.user).to.have.property(\"id\");",
+															"  pm.expect(body.user.name).to.eq(pm.environment.get('userName'));",
+															"  pm.expect(body.user.administrator).to.eq(false);",
+															"});",
+															"",
+															"",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"currentPassword\": \"{{newUserPassword}}\",\n    \"password\": \"{{userPassword}}\",\n    \"confirmPassword\": \"{{userPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{userId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "PUT users/{userId} - Bad Request",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"PUT season bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{userId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "PUT users/{userId} - Bad Request Missing Current Password",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"PUT season bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"password\": \"{{userPassword}}\",\n    \"confirmPassword\": \"{{userPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{userId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "PUT users/{userId} - Bad Request Missing Password",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"PUT season bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"currentPassword\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{userPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{userId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "PUT users/{userId} - Bad Request Missing Confirm Password",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"PUT season bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"currentPassword\": \"{{newUserPassword}}\",\n    \"password\": \"{{userPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{userId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "PUT users/{userId} - Bad Request Password Mismatch",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST user status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"PUT season bad request response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Password confirmation does not match password\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"currentPassword\": \"{{newUserPassword}}\",\n    \"password\": \"{{userPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{userId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "401 Unauthorized",
+									"item": [
+										{
+											"name": "PUT users/{userId} - Unauthorized No Auth",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT season status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															"",
+															"pm.test(\"PUT season unauthorized response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(401);",
+															"  pm.expect(body.error).to.eq(\"Unauthorized\");",
+															"  pm.expect(body.message).to.eq(\"Access Denied\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"currentPassword\": \"{{userPassword}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{userId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "PUT users/{userId} - Unauthorized Invalid Auth",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT season status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															"",
+															"pm.test(\"PUT season unauthorized response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(401);",
+															"  pm.expect(body.error).to.eq(\"Unauthorized\");",
+															"  pm.expect(body.message).to.eq(\"Access Denied\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{expiredJwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"currentPassword\": \"{{userPassword}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{userId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "403 Forbidden",
+									"item": [
+										{
+											"name": "PUT users/{userId} - Forbidden Not Current User",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT season status code is 403\", () => {",
+															"  pm.response.to.have.status(403);",
+															"});",
+															"",
+															"pm.test(\"PUT season forbidden response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(403);",
+															"  pm.expect(body.error).to.eq(\"Forbidden\");",
+															"  pm.expect(body.message).to.eq(\"Access Denied\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"adminId\"));",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"currentPassword\": \"{{userPassword}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{adminId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{adminId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "PUT users/{userId} - Forbidden Invalid Current Password",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT season status code is 403\", () => {",
+															"  pm.response.to.have.status(403);",
+															"});",
+															"",
+															"pm.test(\"PUT season forbidden response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(403);",
+															"  pm.expect(body.error).to.eq(\"Forbidden\");",
+															"  pm.expect(body.message).to.eq(\"Access Denied\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"currentPassword\": \"{{newUserPassword}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{userId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "404 Not Found",
+									"item": [
+										{
+											"name": "PUT users/{userId} - Not Found",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT season status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"PUT season forbidden response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(404);",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"  pm.expect(body.message).to.eq(\"Requested resource was not found.\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users/-1\");",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"currentPassword\": \"{{userPassword}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/-1",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"-1"
 													]
 												}
 											},
