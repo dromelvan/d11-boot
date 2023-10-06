@@ -429,17 +429,9 @@ components:
 
     Unauthorized:
       description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/D11ApiError'
 
     Forbidden:
       description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/D11ApiError'
 
     NotFound:
       description: Not Found

@@ -39,27 +39,6 @@ import java.util.UUID;
 public class ControllerExceptionHandlerV2 {
 
     /**
-     * Handles a Not Found exception.
-     *
-     * @param e       The exception that will be handled.
-     * @param request The request that caused the exception.
-     * @return Response entity with error details.
-     */
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final NotFoundException e,
-                                                 @NonNull final HttpServletRequest request) {
-        final HttpStatus httpStatus = HttpStatus.NOT_FOUND;
-        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-            .uuid(UUID.randomUUID())
-            .error(httpStatus.getReasonPhrase())
-            .message(e.getMessage())
-            .status(httpStatus.value())
-            .timestamp(LocalDateTime.now())
-            .path(request.getRequestURI());
-        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
-    }
-
-    /**
      * Handles a Bad Request exception. This is thrown when a request has an input that lets it get past the other Bad
      * Request validations but is still invalid in some way.
      *
@@ -79,6 +58,59 @@ public class ControllerExceptionHandlerV2 {
                 .status(httpStatus.value())
                 .timestamp(LocalDateTime.now())
                 .path(request.getRequestURI());
+        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+    }
+
+    /**
+     * Handles UnauthorizedException. This is thrown internally when a request lacks valid authentication credentials
+     * for the requested resource.
+     *
+     * @param e       The exception that will be handled.
+     * @param request The request that caused the exception.
+     * @return Response entity with error details.
+     */
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<?> handle(@NonNull final UnauthorizedException e,
+                                    @NonNull final HttpServletRequest request) {
+        LOGGER.trace(request.getRequestURI(), e);
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    /**
+     * Handles ForbiddenException. This is thrown internally when the server understands the request but a service
+     * refuses to authorize it.
+     *
+     * @param e       The exception that will be handled.
+     * @param request The request that caused the exception.
+     * @return Response entity with error details.
+     */
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<?> handle(@NonNull final ForbiddenException e,
+                                    @NonNull final HttpServletRequest request) {
+        LOGGER.trace(request.getRequestURI(), e);
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    /**
+     * Handles a Not Found exception.
+     *
+     * @param e       The exception that will be handled.
+     * @param request The request that caused the exception.
+     * @return Response entity with error details.
+     */
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final NotFoundException e,
+                                                 @NonNull final HttpServletRequest request) {
+        final HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
+            .uuid(UUID.randomUUID())
+            .error(httpStatus.getReasonPhrase())
+            .message(e.getMessage())
+            .status(httpStatus.value())
+            .timestamp(LocalDateTime.now())
+            .path(request.getRequestURI());
         return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
     }
 
@@ -167,21 +199,14 @@ public class ControllerExceptionHandlerV2 {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final BadCredentialsException e,
                                                  @NonNull final HttpServletRequest request) {
-        final HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
+        LOGGER.trace(request.getRequestURI(), e);
+
         // Set a cookie with max age 0 to remove the refresh token cookie when we provide bad credentials.
         final ResponseCookie responseCookie = new RefreshTokenCookieBuilder().build();
 
-        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-            .uuid(UUID.randomUUID())
-            .error(httpStatus.getReasonPhrase())
-            .message(e.getMessage())
-            .status(httpStatus.value())
-            .timestamp(LocalDateTime.now())
-            .path(request.getRequestURI());
-
-        return ResponseEntity.status(httpStatus)
-            .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-            .body(D11ApiErrorDTO);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .build();
     }
 
     /**
@@ -194,64 +219,13 @@ public class ControllerExceptionHandlerV2 {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final AccessDeniedException e,
                                                  @NonNull final HttpServletRequest request) {
+        LOGGER.trace(request.getRequestURI(), e);
+
         final String authorizationHeader = request.getHeader("Authorization");
 
         // If the header is null then we're sending an empty JWT or no bearer header at all.
         final HttpStatus httpStatus = authorizationHeader == null ? HttpStatus.UNAUTHORIZED : HttpStatus.FORBIDDEN;
-        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-            .uuid(UUID.randomUUID())
-            .error(httpStatus.getReasonPhrase())
-            .message(e.getMessage())
-            .status(httpStatus.value())
-            .timestamp(LocalDateTime.now())
-            .path(request.getRequestURI());
-        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
-    }
-
-    /**
-     * Handles UnauthorizedException. This is thrown internally when a request lacks valid authentication credentials
-     * for the requested resource.
-     *
-     * @param e       The exception that will be handled.
-     * @param request The request that caused the exception.
-     * @return Response entity with error details.
-     */
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<?> handle(@NonNull final UnauthorizedException e,
-                                    @NonNull final HttpServletRequest request) {
-        final HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
-
-        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-                .uuid(UUID.randomUUID())
-                .error(httpStatus.getReasonPhrase())
-                .message(e.getMessage())
-                .status(httpStatus.value())
-                .timestamp(LocalDateTime.now())
-                .path(request.getRequestURI());
-        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
-    }
-
-    /**
-     * Handles ForbiddenException. This is thrown internally when the server understands the request but a service
-     * refuses to authorize it.
-     *
-     * @param e       The exception that will be handled.
-     * @param request The request that caused the exception.
-     * @return Response entity with error details.
-     */
-    @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<?> handle(@NonNull final ForbiddenException e,
-                                    @NonNull final HttpServletRequest request) {
-        final HttpStatus httpStatus = HttpStatus.FORBIDDEN;
-
-        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-                .uuid(UUID.randomUUID())
-                .error(httpStatus.getReasonPhrase())
-                .message("Access Denied")
-                .status(httpStatus.value())
-                .timestamp(LocalDateTime.now())
-                .path(request.getRequestURI());
-        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+        return ResponseEntity.status(httpStatus).build();
     }
 
     /**
@@ -266,15 +240,9 @@ public class ControllerExceptionHandlerV2 {
     public ResponseEntity<?> handle(@NonNull final MissingRequestCookieException e,
                                     @NonNull final HttpServletRequest request) {
         if (RefreshToken.COOKIE_NAME.equals(e.getCookieName())) {
-            final HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
-            final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-                .uuid(UUID.randomUUID())
-                .error(httpStatus.getReasonPhrase())
-                .message("Refresh token cookie not present in request")
-                .status(httpStatus.value())
-                .timestamp(LocalDateTime.now())
-                .path(request.getRequestURI());
-            return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+            LOGGER.trace(request.getRequestURI(), e);
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return handle((Exception) e, request);
     }
