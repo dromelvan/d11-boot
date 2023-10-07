@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.d11.boot.api.v2.model.ConflictResponseBodyDTO;
 import org.d11.boot.api.v2.model.D11ApiErrorDTO;
 import org.d11.boot.interfaces.rest.RefreshTokenCookieBuilder;
 import org.d11.boot.spring.model.RefreshToken;
@@ -123,18 +124,16 @@ public class ControllerExceptionHandlerV2 {
      * @return Response entity with error details.
      */
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final ConflictException e,
-                                                 @NonNull final HttpServletRequest request) {
-        final HttpStatus httpStatus = HttpStatus.CONFLICT;
+    public ResponseEntity<ConflictResponseBodyDTO> handle(@NonNull final ConflictException e,
+                                                          @NonNull final HttpServletRequest request) {
 
-        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-                .uuid(UUID.randomUUID())
-                .error(httpStatus.getReasonPhrase())
+        final ConflictResponseBodyDTO conflictResponseBodyDTO = new ConflictResponseBodyDTO()
                 .message(e.getMessage())
-                .status(httpStatus.value())
                 .timestamp(LocalDateTime.now())
+                .method(request.getMethod())
                 .path(request.getRequestURI());
-        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(conflictResponseBodyDTO);
     }
 
     /**

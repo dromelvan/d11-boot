@@ -445,7 +445,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/D11ApiError'
+            $ref: '#/components/schemas/ConflictResponseBody'
 
     InternalServerError:
       description: Internal Server Error
@@ -484,6 +484,26 @@ components:
         error:
           type: string
         message:
+          type: string
+        path:
+          type: string
+
+    ConflictResponseBody:
+      type: object
+      required:
+        - timestamp
+        - message
+        - method
+        - path
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Date and time the error happened.
+          example: "1970-01-01T00:00:00Z"
+        message:
+          type: string
+        method:
           type: string
         path:
           type: string

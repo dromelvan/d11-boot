@@ -2390,7 +2390,7 @@
 									"name": "409 Conflict",
 									"item": [
 										{
-											"name": "POST users - Bad Request Name Unavailable",
+											"name": "POST users - Conflict Name Unavailable",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -2412,12 +2412,10 @@
 															"pm.test(\"POST user bad request response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(409);",
-															"  pm.expect(body.error).to.eq(\"Conflict\");",
 															"  pm.expect(body.message).to.eq(\"Name is unavailable\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
 															"  pm.expect(body.path).to.eq(\"/v2/users\");",
 															"",
 															"});",
@@ -2463,7 +2461,7 @@
 											"response": []
 										},
 										{
-											"name": "POST users - Bad Request Email Unavailable",
+											"name": "POST users - Conflict Email Unavailable",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -2485,12 +2483,10 @@
 															"pm.test(\"POST user bad request response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(409);",
-															"  pm.expect(body.error).to.eq(\"Conflict\");",
 															"  pm.expect(body.message).to.eq(\"Email is unavailable\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
 															"  pm.expect(body.path).to.eq(\"/v2/users\");",
 															"",
 															"});",
@@ -5218,12 +5214,10 @@
 															"pm.test(\"POST transfer window conflict response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(409);",
-															"  pm.expect(body.error).to.eq(\"Conflict\");",
 															"  pm.expect(body.message).to.match(/Current transfer window status is (Pending|Active)/);",
+															"  pm.expect(body.method).to.eq(\"POST\");",
 															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows\");",
 															"",
 															"});",
@@ -5897,14 +5891,11 @@
 															"pm.test(\"DELETE transfer window conflict response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(409);",
-															"  pm.expect(body.error).to.eq(\"Conflict\");",
 															"  pm.expect(body.message).to.match(/Transfer window status is (Active|Finished)/);",
+															"  pm.expect(body.method).to.eq(\"DELETE\");",
 															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows/\" + pm.environment.get(\"currentTransferWindowId\"));",
-															"",
 															"});",
 															""
 														],
