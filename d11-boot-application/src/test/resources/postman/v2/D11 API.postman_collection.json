@@ -392,17 +392,66 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "POST security/authenticate - Invalid Request Body",
+											"name": "POST security/authenticate - Bad Request No Request Body",
 											"event": [
 												{
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST security authenticate invalid request body Status code is 400\", () => {",
+															"pm.test(\"POST security authenticate no request body Status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"POST security authenticate invalid request body response body\", () => {",
+															"pm.test(\"POST security authenticate no request body response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/authenticate\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/authenticate - Bad Request Missing Username",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security authenticate missing username Status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST security authenticate missing username response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -428,7 +477,65 @@
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n\n}\n",
+													"raw": "{\n    \"password\": \"{{userPassword}}\",\n    \"persistent\": false\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/authenticate - Bad Request Missing Password",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security authenticate missing password Status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST security authenticate missing password response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/authenticate\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{userUsername}}\",\n    \"persistent\": false\n}\n",
 													"options": {
 														"raw": {
 															"language": "json"
@@ -1558,17 +1665,66 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "POST security/request-password-reset - Invalid Request Body",
+											"name": "POST security/request-password-reset - No Request Body",
 											"event": [
 												{
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST security request password reset invalid request body status code is 400\", () => {",
+															"pm.test(\"POST security request password reset no request body status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"POST security request password reset invalid request body response body\", () => {",
+															"pm.test(\"POST security request password reset no request body response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/request-password-reset\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/request-password-reset",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"request-password-reset"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/request-password-reset - Missing Email",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security request password reset missing email status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST security request password reset missing email response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -1594,7 +1750,65 @@
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n\n}\n",
+													"raw": "{\n  \"link\": \"http://example.com/%s\"    \n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/request-password-reset",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"request-password-reset"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/request-password-reset - Missing Link",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security request password reset missing link status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST security request password reset missing link response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/request-password-reset\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"email\": \"{{userUsername}}\"\n}\n",
 													"options": {
 														"raw": {
 															"language": "json"
@@ -1724,17 +1938,17 @@
 									"name": "401 Unauthorized",
 									"item": [
 										{
-											"name": "POST security/reset-password - Invalid Request Body",
+											"name": "POST security/reset-password - No Request Body",
 											"event": [
 												{
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST security reset password invalid request body status code is 400\", () => {",
+															"pm.test(\"POST security reset password no request body status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"POST security reset password invalid request body response body\", () => {",
+															"pm.test(\"POST security reset password no request body response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -1742,7 +1956,7 @@
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
 															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
 															"  pm.expect(body.path).to.eq(\"/v2/security/reset-password\");",
 															"",
 															"});",
@@ -1758,9 +1972,171 @@
 												},
 												"method": "POST",
 												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/reset-password",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"reset-password"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/reset-password - Missing Email",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security reset password missing email status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST security reset password missing email response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/reset-password\");",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n\n}\n",
+													"raw": "{\n  \"password\": \"newpassword\",\n  \"resetPasswordToken\": \"00000000-0000-0000-0000-000000000000\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/reset-password",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"reset-password"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/reset-password - Missing Password",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security reset password missing password status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST security reset password missing password response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/reset-password\");",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"email\": \"{{adminUsername}}\",\n  \"resetPasswordToken\": \"00000000-0000-0000-0000-000000000000\"\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/reset-password",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"reset-password"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST security/reset-password - Missing Reset Password Token",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST security reset password missing reset password token status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST security reset password reset password token response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.status).to.eq(400);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.path).to.eq(\"/v2/security/reset-password\");",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"email\": \"{{adminUsername}}\",\n  \"password\": \"newpassword\"\n}\n",
 													"options": {
 														"raw": {
 															"language": "json"
@@ -1874,7 +2250,7 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "POST users - Bad Request",
+											"name": "POST users - Bad Request No Request Body",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -1889,11 +2265,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 400\", () => {",
+															"pm.test(\"POST user no request body status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"POST user bad request response body\", () => {",
+															"pm.test(\"POST user no request body response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -1901,7 +2277,7 @@
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
 															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
 															"  pm.expect(body.path).to.eq(\"/v2/users\");",
 															"",
 															"});",
@@ -1924,15 +2300,6 @@
 												},
 												"method": "POST",
 												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \n}\n",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
 												"url": {
 													"raw": "{{baseUrl}}/v2/users",
 													"host": [
@@ -1962,11 +2329,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 400\", () => {",
+															"pm.test(\"POST user missing name status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"POST user bad request response body\", () => {",
+															"pm.test(\"POST user missing name response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -2035,11 +2402,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 400\", () => {",
+															"pm.test(\"POST user invalid email status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"POST user bad request response body\", () => {",
+															"pm.test(\"POST user invalid email response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -2072,7 +2439,7 @@
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n    \"name\": \"{{newUserName}}\",\n    \"email\": \"INVAÖLD_EMAIL\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"raw": "{\n    \"name\": \"{{newUserName}}\",\n    \"email\": \"INVALID_EMAIL\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
 													"options": {
 														"raw": {
 															"language": "json"
@@ -2108,11 +2475,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 400\", () => {",
+															"pm.test(\"POST user missing email status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"POST user bad request response body\", () => {",
+															"pm.test(\"POST user missing email response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -2181,11 +2548,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 400\", () => {",
+															"pm.test(\"POST user missing password status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"POST user bad request response body\", () => {",
+															"pm.test(\"POST user missing password response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -2254,11 +2621,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 400\", () => {",
+															"pm.test(\"POST user missing confirm password status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"POST user bad request response body\", () => {",
+															"pm.test(\"POST user missing confirm password response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -2327,11 +2694,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 400\", () => {",
+															"pm.test(\"POST user password mismatch status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"POST user bad request response body\", () => {",
+															"pm.test(\"POST user password mismatch response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -2405,11 +2772,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 409\", () => {",
+															"pm.test(\"POST user name unavailable status code is 409\", () => {",
 															"  pm.response.to.have.status(409);",
 															"});",
 															"",
-															"pm.test(\"POST user bad request response body\", () => {",
+															"pm.test(\"POST user name unavailable response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  let timestamp = new Date(body.timestamp);",
@@ -2477,11 +2844,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 409\", () => {",
+															"pm.test(\"POST user email unvavailable status code is 409\", () => {",
 															"  pm.response.to.have.status(409);",
 															"});",
 															"",
-															"pm.test(\"POST user bad request response body\", () => {",
+															"pm.test(\"POST user email unvavailable response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  let timestamp = new Date(body.timestamp);",
@@ -2743,7 +3110,7 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "PUT users/{userId} - Bad Request",
+											"name": "PUT users/{userId} - Bad Request No Request Body",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -2758,11 +3125,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 400\", () => {",
+															"pm.test(\"POST user no request body status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season bad request response body\", () => {",
+															"pm.test(\"PUT season no request body response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -2770,9 +3137,8 @@
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
 															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
 															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
-															"",
 															"});",
 															""
 														],
@@ -2793,15 +3159,6 @@
 												},
 												"method": "PUT",
 												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \n}\n",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
 												"url": {
 													"raw": "{{baseUrl}}/v2/users/{{userId}}",
 													"host": [
@@ -2832,11 +3189,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 400\", () => {",
+															"pm.test(\"POST user invalid user idstatus code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season bad request response body\", () => {",
+															"pm.test(\"PUT season invalid user id response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -2868,7 +3225,7 @@
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n    \n}\n",
+													"raw": "{\n    \"currentPassword\": \"{{userPassword}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
 													"options": {
 														"raw": {
 															"language": "json"
@@ -2905,11 +3262,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 400\", () => {",
+															"pm.test(\"POST user missing current password status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season bad request response body\", () => {",
+															"pm.test(\"PUT season missing current password response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -2979,11 +3336,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 400\", () => {",
+															"pm.test(\"POST user missing password status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season bad request response body\", () => {",
+															"pm.test(\"PUT season missing password response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -3053,11 +3410,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 400\", () => {",
+															"pm.test(\"POST user missing confirm password status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season bad request response body\", () => {",
+															"pm.test(\"PUT season missing confirm password response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -3127,11 +3484,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 400\", () => {",
+															"pm.test(\"POST user password mismatch status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season bad request response body\", () => {",
+															"pm.test(\"PUT season password mismatch response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -3205,7 +3562,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 401\", () => {",
+															"pm.test(\"PUT user no auth status code is 401\", () => {",
 															"  pm.response.to.have.status(401);",
 															"});",
 															""
@@ -3259,7 +3616,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 401\", () => {",
+															"pm.test(\"PUT user invalid auth status code is 401\", () => {",
 															"  pm.response.to.have.status(401);",
 															"});",
 															""
@@ -3325,7 +3682,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 403\", () => {",
+															"pm.test(\"PUT user not current users tatus code is 403\", () => {",
 															"  pm.response.to.have.status(403);",
 															"});",
 															""
@@ -3386,7 +3743,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 403\", () => {",
+															"pm.test(\"PUT user invalid current password status code is 403\", () => {",
 															"  pm.response.to.have.status(403);",
 															"});",
 															""
@@ -3452,11 +3809,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 404\", () => {",
+															"pm.test(\"PUT user not found status code is 404\", () => {",
 															"  pm.response.to.have.status(404);",
 															"});",
 															"",
-															"pm.test(\"PUT season forbidden response body\", () => {",
+															"pm.test(\"PUT user not found response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  let timestamp = new Date(body.timestamp);",
@@ -4041,7 +4398,7 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "PUT seasons/{seasonId} - Bad Request",
+											"name": "PUT seasons/{seasonId} - Bad Request No Request Body",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -4056,11 +4413,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 400\", () => {",
+															"pm.test(\"PUT season no request body status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season bad request response body\", () => {",
+															"pm.test(\"PUT season no request body response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -4068,7 +4425,7 @@
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
 															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
 															"  pm.expect(body.path).to.eq(\"/v2/seasons/\" + pm.environment.get(\"seasonId\"));",
 															"});",
 															""
@@ -4083,15 +4440,6 @@
 												},
 												"method": "PUT",
 												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \"season\": {\n    }\n}",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
 												"url": {
 													"raw": "{{baseUrl}}/v2/seasons/{{seasonId}}",
 													"host": [
@@ -4122,11 +4470,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 400\", () => {",
+															"pm.test(\"PUT season invalid season id status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season bad request response body\", () => {",
+															"pm.test(\"PUT season invalid season id response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -4189,11 +4537,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 400\", () => {",
+															"pm.test(\"PUT season missing name status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season bad request response body\", () => {",
+															"pm.test(\"PUT season missing name response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -4262,11 +4610,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 400\", () => {",
+															"pm.test(\"PUT season missing D11 team budget status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season bad request response body\", () => {",
+															"pm.test(\"PUT season missing D11 team budget response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -4335,11 +4683,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 400\", () => {",
+															"pm.test(\"PUT season missing D11 team max transfers status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season bad request response body\", () => {",
+															"pm.test(\"PUT season missing D11 team max transfers response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -4408,11 +4756,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 400\", () => {",
+															"pm.test(\"PUT season missing status status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season bad request response body\", () => {",
+															"pm.test(\"PUT season missing status response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -4481,11 +4829,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 400\", () => {",
+															"pm.test(\"PUT season missing date status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season bad request response body\", () => {",
+															"pm.test(\"PUT season missing date response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -4559,7 +4907,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 401\", () => {",
+															"pm.test(\"PUT season no auth status code is 401\", () => {",
 															"  pm.response.to.have.status(401);",
 															"});",
 															""
@@ -4613,7 +4961,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 401\", () => {",
+															"pm.test(\"PUT season invalid auth status code is 401\", () => {",
 															"  pm.response.to.have.status(401);",
 															"});",
 															""
@@ -4727,7 +5075,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 403\", () => {",
+															"pm.test(\"PUT season forbidden status code is 403\", () => {",
 															"  pm.response.to.have.status(403);",
 															"});",
 															""
@@ -4841,7 +5189,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season status code is 404\", () => {",
+															"pm.test(\"PUT season not found status code is 404\", () => {",
 															"  pm.response.to.have.status(404);",
 															"});",
 															"",
@@ -5245,7 +5593,7 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "POST transfer-windows - Bad Request",
+											"name": "POST transfer-windows - Bad Request No Request Body",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -5260,11 +5608,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST transfer window status code is 400\", () => {",
+															"pm.test(\"POST transfer window no request body status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"POST transfer window bad request response body\", () => {",
+															"pm.test(\"POST transfer window no request body response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -5272,9 +5620,8 @@
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
 															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
 															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows\");",
-															"",
 															"});",
 															""
 														],
@@ -5295,15 +5642,6 @@
 												},
 												"method": "POST",
 												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \n}",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
 												"url": {
 													"raw": "{{baseUrl}}/v2/transfer-windows",
 													"host": [
@@ -5381,11 +5719,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST transfer window status code is 400\", () => {",
+															"pm.test(\"POST transfer window invalid datetime status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"POST transfer window bad request response body\", () => {",
+															"pm.test(\"POST transfer window invalid datetime response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -5454,11 +5792,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST transfer window status code is 400\", () => {",
+															"pm.test(\"POST transfer window invalid transfer day delay status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"POST transfer window bad request response body\", () => {",
+															"pm.test(\"POST transfer window invalid transfer day delay response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -5533,7 +5871,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST transfer window status code is 401\", () => {",
+															"pm.test(\"POST transfer window no auth status code is 401\", () => {",
 															"  pm.response.to.have.status(401);",
 															"});",
 															""
@@ -5586,7 +5924,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST transfer window status code is 401\", () => {",
+															"pm.test(\"POST transfer window invalid auth status code is 401\", () => {",
 															"  pm.response.to.have.status(401);",
 															"});",
 															""
@@ -5699,7 +6037,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST transfer window status code is 403\", () => {",
+															"pm.test(\"POST transfer window forbidden status code is 403\", () => {",
 															"  pm.response.to.have.status(403);",
 															"});",
 															""
@@ -5812,11 +6150,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST transfer window status code is 409\", () => {",
+															"pm.test(\"POST transfer window no match week found after datetime status code is 409\", () => {",
 															"  pm.response.to.have.status(409);",
 															"});",
 															"",
-															"pm.test(\"POST transfer window conflict response body\", () => {",
+															"pm.test(\"POST transfer window no match week found after datetime response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  let timestamp = new Date(body.timestamp);",
@@ -5884,11 +6222,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST transfer window status code is 409\", () => {",
+															"pm.test(\"POST transfer window current transfer window not finished status code is 409\", () => {",
 															"  pm.response.to.have.status(409);",
 															"});",
 															"",
-															"pm.test(\"POST transfer window conflict response body\", () => {",
+															"pm.test(\"POST transfer window current transfer window not finished response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  let timestamp = new Date(body.timestamp);",
@@ -6119,11 +6457,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"DELETE transfer window status code is 400\", () => {",
+															"pm.test(\"DELETE transfer window invalid transfer window id status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"DELETE transfer window bad request response body\", () => {",
+															"pm.test(\"DELETE transfer window invalid transfer window id response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
@@ -6189,7 +6527,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"DELETE transfer window status code is 401\", () => {",
+															"pm.test(\"DELETE transfer window no auth status code is 401\", () => {",
 															"  pm.response.to.have.status(401);",
 															"});",
 															""
@@ -6234,7 +6572,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"DELETE transfer window status code is 401\", () => {",
+															"pm.test(\"DELETE transfer window invalid auth status code is 401\", () => {",
 															"  pm.response.to.have.status(401);",
 															"});",
 															""
@@ -6339,7 +6677,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"DELETE transfer window status code is 403\", () => {",
+															"pm.test(\"DELETE transfer window forbidden status code is 403\", () => {",
 															"  pm.response.to.have.status(403);",
 															"});",
 															""
@@ -6444,7 +6782,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"DELETE transfer window status code is 404\", () => {",
+															"pm.test(\"DELETE transfer window not found status code is 404\", () => {",
 															"  pm.response.to.have.status(404);",
 															"});",
 															"",
@@ -6561,11 +6899,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"DELETE transfer window status code is 409\", () => {",
+															"pm.test(\"DELETE transfer window status not pending status code is 409\", () => {",
 															"  pm.response.to.have.status(409);",
 															"});",
 															"",
-															"pm.test(\"DELETE transfer window conflict response body\", () => {",
+															"pm.test(\"DELETE transfer window status not pending response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  let timestamp = new Date(body.timestamp);",

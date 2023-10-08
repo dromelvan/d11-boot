@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestCookieException;
@@ -190,6 +191,30 @@ public class ControllerExceptionHandlerV2 {
             .status(httpStatus.value())
             .timestamp(LocalDateTime.now())
             .path(request.getRequestURI());
+        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+    }
+
+    /**
+     * Handles HttpMediaTypeNotSupportedException. This is most likely thrown when trying to call a method that requires
+     * a request body without providing one.
+     *
+     * @param e       The exception that will be handled.
+     * @param request The request that caused the exception.
+     * @return Response entity with error details.
+     */
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final HttpMediaTypeNotSupportedException e,
+                                                 @NonNull final HttpServletRequest request) {
+        final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        final UUID uuid = UUID.randomUUID();
+
+        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
+                .uuid(uuid)
+                .error(httpStatus.getReasonPhrase())
+                .message(e.getMessage())
+                .status(httpStatus.value())
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI());
         return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
     }
 

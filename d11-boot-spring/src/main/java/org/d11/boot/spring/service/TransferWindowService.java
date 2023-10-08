@@ -47,6 +47,7 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
      * @return New transfer window.
      */
     @Transactional
+    @SuppressWarnings("PMD.PrematureDeclaration")
     public TransferWindow createTransferWindow(final LocalDateTime datetime, final int transferDayDelay) {
         if (datetime == null || !datetime.isAfter(LocalDateTime.now())) {
             throw new BadRequestException("datetime", "Datetime is missing or invalid");
@@ -61,7 +62,7 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
         final MatchWeek matchWeek =
                 this.matchWeekRepository.findFirstByDateGreaterThanOrderByDateAsc(datetime.toLocalDate())
                         .orElseThrow(() -> new ConflictException("No match week found after " +
-                                datetime.toLocalDate()));
+                                                                 datetime.toLocalDate()));
 
         if (!Status.FINISHED.equals(currentTransferWindow.getStatus())) {
             throw new ConflictException("Current transfer window status is " + currentTransferWindow.getStatus());
