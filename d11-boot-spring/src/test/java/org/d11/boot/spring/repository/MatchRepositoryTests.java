@@ -2,7 +2,6 @@ package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.D11Entity;
 import org.d11.boot.spring.model.Match;
-import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
@@ -47,8 +46,7 @@ class MatchRepositoryTests extends D11BootRepositoryTests<Match, MatchRepository
         matches.forEach(match -> match.setWhoscoredId(matches.indexOf(match)));
 
         matches.forEach(match -> {
-            final Match result = getRepository().findByWhoscoredId(match.getWhoscoredId())
-                    .orElseThrow(NotFoundException::new);
+            final Match result = getRepository().findByWhoscoredId(match.getWhoscoredId()).orElse(null);
 
             assertNotNull(result, "MatchRepository::findByWhoscoredId not null");
             assertEquals(match, result, "MatchRepository::findByWhoscoredId equals");

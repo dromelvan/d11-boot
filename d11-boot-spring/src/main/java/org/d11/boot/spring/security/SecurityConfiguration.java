@@ -86,7 +86,7 @@ public class SecurityConfiguration {
             return httpSecurity.build();
         } catch (final Exception e) {
             // This should not happen.
-            throw new IllegalStateException("Security filter chain could not be created.", e);
+            throw new IllegalStateException("Security filter chain could not be created", e);
         }
     }
 

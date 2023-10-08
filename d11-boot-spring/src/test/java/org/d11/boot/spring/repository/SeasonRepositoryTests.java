@@ -1,7 +1,6 @@
 package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.Season;
-import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
@@ -31,7 +30,8 @@ class SeasonRepositoryTests extends D11BootRepositoryTests<Season, SeasonReposit
     void testFindFirstByOrderByDateDesc() {
         final Season currentSeason = getEntities().stream()
                 .max(Comparator.comparing(Season::getDate))
-                .orElseThrow(NotFoundException::new);
+                .orElse(null);
+        assertNotNull(currentSeason, "SeasonRepository::findFirstByOrderByDateDesc currentSeason not null");
 
         final Season result = getRepository().findFirstByOrderByDateDesc().orElse(null);
         assertNotNull(result, "SeasonRepository::findFirstByOrderByDateDesc not null");

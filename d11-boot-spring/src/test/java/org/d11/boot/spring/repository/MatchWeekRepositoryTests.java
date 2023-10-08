@@ -2,7 +2,6 @@ package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.util.Status;
-import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -42,7 +41,7 @@ class MatchWeekRepositoryTests extends D11BootRepositoryTests<MatchWeek, MatchWe
         final MatchWeek matchWeek = matchWeeks.get(0);
 
         final MatchWeek result = getRepository().findFirstByDateLessThanEqualOrderByDateDesc(matchWeek.getDate())
-                .orElseThrow(NotFoundException::new);
+                .orElse(null);
 
         assertNotNull(result, "MatchWeekRepository::findFirstByDateLessThanEqualOrderByDateDesc not null");
         assertEquals(matchWeek, result, "MatchWeekRepository::findFirstByDateLessThanEqualOrderByDateDesc equals");
@@ -61,8 +60,7 @@ class MatchWeekRepositoryTests extends D11BootRepositoryTests<MatchWeek, MatchWe
         matchWeek.setDate(localDate.plusDays(1));
         getRepository().save(matchWeek);
 
-        final MatchWeek result = getRepository().findFirstByDateGreaterThanOrderByDateAsc(localDate)
-                .orElseThrow(NotFoundException::new);
+        final MatchWeek result = getRepository().findFirstByDateGreaterThanOrderByDateAsc(localDate).orElse(null);
 
         assertNotNull(result, "MatchWeekRepository::findFirstByDateGreaterThanOrderByDateAsc not null");
         assertEquals(matchWeek, result, "MatchWeekRepository::findFirstByDateGreaterThanOrderByDateAsc equals");
@@ -81,8 +79,7 @@ class MatchWeekRepositoryTests extends D11BootRepositoryTests<MatchWeek, MatchWe
         matchWeek.getSeason().setStatus(Status.PENDING);
         getRepository().saveAll(matchWeeks);
 
-        final MatchWeek result = getRepository().findFirstBySeasonStatusOrderByDateAsc(Status.PENDING)
-                .orElseThrow(NotFoundException::new);
+        final MatchWeek result = getRepository().findFirstBySeasonStatusOrderByDateAsc(Status.PENDING).orElse(null);
 
         assertNotNull(result, "MatchWeekRepository::findFirstBySeasonStatusOrderByDateAsc not null");
         assertEquals(matchWeek, result, "MatchWeekRepository::findFirstBySeasonStatusOrderByDateAsc equals");

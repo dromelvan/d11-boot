@@ -7,7 +7,6 @@ import org.d11.boot.spring.repository.UserRepository;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ForbiddenException;
-import org.d11.boot.util.exception.NotFoundException;
 import org.d11.boot.util.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -116,7 +115,7 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
 
         validatePassword(password, confirmPassword);
 
-        final User user = getJpaRepository().findById(userId).orElseThrow(NotFoundException::new);
+        final User user = getById(userId);
         final User currentUser = getCurrentUser().orElseThrow(UnauthorizedException::new);
 
         if (!Objects.equals(currentUser.getId(), user.getId())

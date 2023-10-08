@@ -438,7 +438,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/D11ApiError'
+            $ref: '#/components/schemas/NotFoundResponseBody'
 
     Conflict:
       description: Conflict
@@ -477,7 +477,7 @@ components:
           type: string
           format: date-time
           description: Date and time the error happened.
-          example: "1970-01-01T00:00:00Z"
+          example: "1970-01-01T00:00:00.000000"
         status:
           type: integer
           format: int32
@@ -488,10 +488,37 @@ components:
         path:
           type: string
 
+    NotFoundResponseBody:
+      type: object
+      required:
+        - timestamp
+        - error
+        - resource
+        - id
+        - method
+        - path
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Date and time the error happened.
+          example: "1970-01-01T00:00:00.000000"
+        error:
+          type: string
+        resource:
+          type: string
+        id:
+          $ref: '#/components/schemas/Id'
+        method:
+          type: string
+        path:
+          type: string
+
     ConflictResponseBody:
       type: object
       required:
         - timestamp
+        - error
         - message
         - method
         - path
@@ -500,7 +527,9 @@ components:
           type: string
           format: date-time
           description: Date and time the error happened.
-          example: "1970-01-01T00:00:00Z"
+          example: "1970-01-01T00:00:00.000000"
+        error:
+          type: string
         message:
           type: string
         method:

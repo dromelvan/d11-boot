@@ -1,6 +1,6 @@
 package org.d11.boot.util.exception;
 
-import org.apache.commons.lang3.StringUtils;
+import lombok.Getter;
 
 import java.io.Serial;
 
@@ -13,40 +13,32 @@ public class NotFoundException extends D11BootException {
     private static final long serialVersionUID = 6333560520228645897L;
 
     /**
-     * Creates a new Not Found exception.
+     * Message template.
      */
-    public NotFoundException() {
-        super("Requested resource was not found.");
-    }
+    private static final String MESSAGE = "%s with id %s was not found";
+
+    /**
+     * Resource id.
+     */
+    @Getter
+    private final long id;
+
+    /**
+     * Resource name.
+     */
+    @Getter
+    private final String resource;
 
     /**
      * Creates a new Not Found exception.
      *
-     * @param message Exception message.
-     */
-    public NotFoundException(final String message) {
-        super(message);
-    }
-
-    /**
-     * Creates a new Not Found exception.
-     *
-     * @param id    Id of the resource that was not found.
+     * @param id    ID of the resource that was not found.
      * @param clazz Class of the resource that was not found.
      */
     public NotFoundException(final long id, final Class<?> clazz) {
-        super(getResourceName(clazz) + " with id " + id + " was not found.");
-    }
-
-    /**
-     * Turns a TitleCasedClassName for a resource into "Title cased class name".
-     *
-     * @param clazz Class of the resource that was not found.
-     * @return Reformatted resource name.
-     */
-    private static String getResourceName(final Class<?> clazz) {
-        final String[] splits = StringUtils.splitByCharacterTypeCamelCase(clazz.getSimpleName());
-        return StringUtils.capitalize(StringUtils.lowerCase(StringUtils.join(splits, " ")));
+        super(String.format(MESSAGE, clazz.getSimpleName(), id));
+        this.id = id;
+        this.resource = clazz.getSimpleName();
     }
 
 }

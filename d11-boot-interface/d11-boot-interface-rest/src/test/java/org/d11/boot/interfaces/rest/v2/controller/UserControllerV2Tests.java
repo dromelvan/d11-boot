@@ -7,13 +7,13 @@ import org.d11.boot.api.v2.model.UpdateUserRequestBodyDTO;
 import org.d11.boot.api.v2.model.UserResponseBodyDTO;
 import org.d11.boot.spring.model.User;
 import org.d11.boot.spring.repository.UserRepository;
-import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -94,9 +94,9 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
 
         final UserResponseBodyDTO userResponseBodyDTO = userApi.createUser(createUserRequestBodyDTO);
 
-        final User user = this.userRepository.findByName(userResponseBodyDTO.getUser().getName())
-                .orElseThrow(NotFoundException::new);
+        final User user = this.userRepository.findByName(userResponseBodyDTO.getUser().getName()).orElse(null);
 
+        assertNotNull(user, "UserController::createUser user not null");
         assertEquals(name, user.getName(), "UserController::createUser user name equals");
         assertEquals(email, user.getEmail(), "UserController::createUser user email equals");
         assertTrue(this.passwordEncoder.matches(PASSWORD, user.getEncryptedPassword()),
@@ -109,8 +109,11 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Test
     void testUpdateUser() {
-        final User user = this.userRepository.findByName("User").orElseThrow(NotFoundException::new);
-        final User admin = this.userRepository.findByName("Administrator").orElseThrow(NotFoundException::new);
+        final User user = this.userRepository.findByName("User").orElse(null);
+        final User admin = this.userRepository.findByName("Administrator").orElse(null);
+
+        assertNotNull(user, "UserController::updateUser user not null");
+        assertNotNull(admin, "UserController::updateUser admin not null");
 
         final UpdateUserRequestBodyDTO updateUserRequestBodyDTO = new UpdateUserRequestBodyDTO()
                 .currentPassword(PASSWORD)
@@ -186,9 +189,9 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
                 .confirmPassword(newPassword);
 
         final UserResponseBodyDTO userResponseBodyDTO = userApi.updateUser(user.getId(), updateUserRequestBodyDTO);
-        final User result = this.userRepository.findById(userResponseBodyDTO.getUser().getId())
-                .orElseThrow(NotFoundException::new);
+        final User result = this.userRepository.findById(userResponseBodyDTO.getUser().getId()).orElse(null);
 
+        assertNotNull(result, "UserController::updateUser result not null");
         assertEquals(user.getId(), result.getId(), "UserController::updateUser result id equals");
         assertTrue(this.passwordEncoder.matches(newPassword, result.getEncryptedPassword()),
                    "UserController::updateUser new password matches");

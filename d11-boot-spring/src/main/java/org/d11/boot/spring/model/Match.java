@@ -14,10 +14,10 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.d11.boot.spring.model.converter.StatusConverter;
 import org.d11.boot.util.Status;
-import org.d11.boot.util.exception.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A Premier League match.
@@ -231,13 +231,13 @@ public class Match extends D11Entity implements Comparable<Match> {
      * @param teamWhoscoredId The WhoScored id.
      * @return The home team or the away team depending on which teams WhoScored id is provided.
      */
-    public Team getTeamByWhoscoredId(final int teamWhoscoredId) {
+    public Optional<Team> getTeamByWhoscoredId(final int teamWhoscoredId) {
         if (getHomeTeam().getWhoscoredId() == teamWhoscoredId) {
-            return getHomeTeam();
+            return Optional.of(getHomeTeam());
         } else if (getAwayTeam().getWhoscoredId() == teamWhoscoredId) {
-            return getAwayTeam();
+            return Optional.of(getAwayTeam());
         }
-        throw new NotFoundException("Team " + teamWhoscoredId + " not found in match " + getId());
+        return Optional.empty();
     }
 
     /**

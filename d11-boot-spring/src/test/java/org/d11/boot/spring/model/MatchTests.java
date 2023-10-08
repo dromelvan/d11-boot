@@ -2,14 +2,12 @@ package org.d11.boot.spring.model;
 
 import org.d11.boot.spring.EasyRandomTests;
 import org.d11.boot.util.Status;
-import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -254,13 +252,12 @@ class MatchTests extends EasyRandomTests {
         match.getHomeTeam().setWhoscoredId(1);
         match.getAwayTeam().setWhoscoredId(0);
 
-        assertEquals(match.getHomeTeam(), match.getTeamByWhoscoredId(match.getHomeTeam().getWhoscoredId()),
+        assertEquals(match.getHomeTeam(), match.getTeamByWhoscoredId(match.getHomeTeam().getWhoscoredId()).orElse(null),
                      "Match::GetTeamByWhoscoredId home team");
-        assertEquals(match.getAwayTeam(), match.getTeamByWhoscoredId(match.getAwayTeam().getWhoscoredId()),
+        assertEquals(match.getAwayTeam(), match.getTeamByWhoscoredId(match.getAwayTeam().getWhoscoredId()).orElse(null),
                      "Match::GetTeamByWhoscoredId away team");
 
-        assertThrows(NotFoundException.class, () -> match.getTeamByWhoscoredId(-1),
-                     "Match::GetTeamByWhoscoredId not found");
+        assertFalse(match.getTeamByWhoscoredId(-1).isPresent(), "Match::GetTeamByWhoscoredId no team present");
     }
 
     /**

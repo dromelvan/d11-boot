@@ -14,7 +14,6 @@ import org.d11.boot.interfaces.rest.CookieErrorDecoder;
 import org.d11.boot.interfaces.rest.CookieRequestInterceptor;
 import org.d11.boot.interfaces.rest.RefreshTokenCookieBuilder;
 import org.d11.boot.interfaces.rest.RefreshTokenCookieDecoder;
-import org.d11.boot.util.exception.NotFoundException;
 import org.d11.boot.spring.model.Authentication;
 import org.d11.boot.spring.model.RefreshToken;
 import org.d11.boot.spring.model.User;
@@ -584,8 +583,9 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                                                  .email(user.getEmail())
                                                  .link(EXAMPLE_URL));
 
-            final User updatedUser = this.userRepository.findById(user.getId()).orElseThrow(NotFoundException::new);
+            final User updatedUser = this.userRepository.findById(user.getId()).orElse(null);
 
+            assertNotNull(updatedUser, "SecurityController::requestPasswordReset updatedUser not null");
             assertNotNull(updatedUser.getResetPasswordToken(),
                           "SecurityController::requestPasswordReset resetPasswordToken not null");
 
@@ -640,14 +640,16 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                                                  .email(user.getEmail())
                                                  .link(EXAMPLE_URL));
 
-            User updatedUser = this.userRepository.findById(user.getId()).orElseThrow(NotFoundException::new);
+            User updatedUser = this.userRepository.findById(user.getId()).orElse(null);
+            assertNotNull(updatedUser, "SecurityController::resetPassword updatedUser not null");
 
             securityApi.resetPassword(new ResetPasswordRequestBodyDTO()
                                           .email(updatedUser.getEmail())
                                           .password(newPassword)
                                           .resetPasswordToken(updatedUser.getResetPasswordToken()));
 
-            updatedUser = this.userRepository.findById(user.getId()).orElseThrow(NotFoundException::new);
+            updatedUser = this.userRepository.findById(user.getId()).orElse(null);
+            assertNotNull(updatedUser, "SecurityController::resetPassword updatedUser x2 not null");
 
             assertTrue(this.passwordEncoder.matches(newPassword, updatedUser.getEncryptedPassword()),
                        "SecurityController::resetPassword encryptedPassword matches");

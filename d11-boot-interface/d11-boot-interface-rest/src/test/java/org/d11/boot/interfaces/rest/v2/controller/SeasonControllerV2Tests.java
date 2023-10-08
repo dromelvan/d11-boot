@@ -10,7 +10,6 @@ import org.d11.boot.api.v2.model.UpdateSeasonRequestBodyDTO;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.repository.SeasonRepository;
-import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -79,7 +78,9 @@ class SeasonControllerV2Tests extends D11BootControllerV2Tests {
         final SeasonApi seasonApi = getApi(SeasonApi.class);
 
         final Season currentSeason =
-            this.seasonRepository.findFirstByOrderByDateDesc().orElseThrow(NotFoundException::new);
+            this.seasonRepository.findFirstByOrderByDateDesc().orElse(null);
+
+        assertNotNull(currentSeason, "SeasonController::getCurrentSeason currentSeason not null");
 
         final SeasonResponseBodyDTO result = seasonApi.getCurrentSeason();
         assertNotNull(result, "SeasonController::getCurrentSeason not null");
@@ -94,7 +95,9 @@ class SeasonControllerV2Tests extends D11BootControllerV2Tests {
     void testUpdateSeason() {
         final SeasonApi seasonApi = getApi(SeasonApi.class);
 
-        final Season season = this.seasonRepository.findFirstByOrderByDateDesc().orElseThrow(NotFoundException::new);
+        final Season season = this.seasonRepository.findFirstByOrderByDateDesc().orElse(null);
+        assertNotNull(season, "SeasonController::updateSeason season not null");
+
         final SeasonDTO rollbackSeasonDTO = getMapper().map(season, SeasonDTO.class);
 
         assertThrows(FeignException.Unauthorized.class,
@@ -135,8 +138,9 @@ class SeasonControllerV2Tests extends D11BootControllerV2Tests {
         assertEquals(seasonDTO.isLegacy(), result.isLegacy(),
                      "SeasonController::updateSeason response legacy equals");
 
-        final Season updatedSeason = this.seasonRepository.findById(season.getId()).orElseThrow(NotFoundException::new);
+        final Season updatedSeason = this.seasonRepository.findById(season.getId()).orElse(null);
 
+        assertNotNull(updatedSeason, "SeasonController::updateSeason updatedSeason not null");
         assertEquals(season.getId(), updatedSeason.getId(), "SeasonController::updateSeason entity id equals");
         assertEquals(seasonDTO.getName(), updatedSeason.getName(), "SeasonController::updateSeason entity name equals");
         assertEquals(seasonDTO.getD11TeamBudget(), updatedSeason.getD11TeamBudget(),

@@ -8,7 +8,6 @@ import org.d11.boot.spring.repository.TransferWindowRepository;
 import org.d11.boot.util.Status;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
-import org.d11.boot.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,15 +56,16 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
         }
 
         final TransferWindow currentTransferWindow = getJpaRepository().findFirstByOrderByDatetimeDesc()
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new ConflictException("Current transfer window does not exist"));
+
+        final MatchWeek matchWeek =
+                this.matchWeekRepository.findFirstByDateGreaterThanOrderByDateAsc(datetime.toLocalDate())
+                        .orElseThrow(() -> new ConflictException("No match week found after " +
+                                datetime.toLocalDate()));
 
         if (!Status.FINISHED.equals(currentTransferWindow.getStatus())) {
             throw new ConflictException("Current transfer window status is " + currentTransferWindow.getStatus());
         }
-
-        final MatchWeek matchWeek =
-                this.matchWeekRepository.findFirstByDateGreaterThanOrderByDateAsc(datetime.toLocalDate())
-                        .orElseThrow(NotFoundException::new);
 
         final TransferWindow transferWindow = new TransferWindow();
         transferWindow.setMatchWeek(matchWeek);

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.d11.boot.api.v2.model.ConflictResponseBodyDTO;
 import org.d11.boot.api.v2.model.D11ApiErrorDTO;
+import org.d11.boot.api.v2.model.NotFoundResponseBodyDTO;
 import org.d11.boot.interfaces.rest.RefreshTokenCookieBuilder;
 import org.d11.boot.spring.model.RefreshToken;
 import org.d11.boot.util.exception.BadRequestException;
@@ -102,17 +103,19 @@ public class ControllerExceptionHandlerV2 {
      * @return Response entity with error details.
      */
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final NotFoundException e,
-                                                 @NonNull final HttpServletRequest request) {
+    public ResponseEntity<NotFoundResponseBodyDTO> handle(@NonNull final NotFoundException e,
+                                                          @NonNull final HttpServletRequest request) {
         final HttpStatus httpStatus = HttpStatus.NOT_FOUND;
-        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-            .uuid(UUID.randomUUID())
-            .error(httpStatus.getReasonPhrase())
-            .message(e.getMessage())
-            .status(httpStatus.value())
-            .timestamp(LocalDateTime.now())
-            .path(request.getRequestURI());
-        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+
+        final NotFoundResponseBodyDTO notFoundResponseBodyDTO = new NotFoundResponseBodyDTO()
+                .timestamp(LocalDateTime.now())
+                .error(httpStatus.getReasonPhrase())
+                .resource(e.getResource())
+                .id(e.getId())
+                .method(request.getMethod())
+                .path(request.getRequestURI());
+
+        return ResponseEntity.status(httpStatus).body(notFoundResponseBodyDTO);
     }
 
     /**
@@ -126,14 +129,16 @@ public class ControllerExceptionHandlerV2 {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ConflictResponseBodyDTO> handle(@NonNull final ConflictException e,
                                                           @NonNull final HttpServletRequest request) {
+        final HttpStatus httpStatus = HttpStatus.CONFLICT;
 
         final ConflictResponseBodyDTO conflictResponseBodyDTO = new ConflictResponseBodyDTO()
+                .error(httpStatus.getReasonPhrase())
                 .message(e.getMessage())
                 .timestamp(LocalDateTime.now())
                 .method(request.getMethod())
                 .path(request.getRequestURI());
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(conflictResponseBodyDTO);
+        return ResponseEntity.status(httpStatus).body(conflictResponseBodyDTO);
     }
 
     /**

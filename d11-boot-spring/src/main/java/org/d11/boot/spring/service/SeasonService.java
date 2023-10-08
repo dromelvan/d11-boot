@@ -2,7 +2,7 @@ package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.repository.SeasonRepository;
-import org.d11.boot.util.exception.NotFoundException;
+import org.d11.boot.util.exception.ConflictException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +41,7 @@ public class SeasonService extends RepositoryService<Season, SeasonRepository> {
      */
     public Season getCurrentSeason() {
         return getJpaRepository().findFirstByOrderByDateDesc()
-                .orElseThrow(() -> new NotFoundException("Current season does not exist."));
+                .orElseThrow(() -> new ConflictException("Current season does not exist"));
     }
 
     /**

@@ -12,7 +12,6 @@ import org.d11.boot.spring.repository.MatchWeekRepository;
 import org.d11.boot.spring.repository.TransferDayRepository;
 import org.d11.boot.spring.repository.TransferWindowRepository;
 import org.d11.boot.util.Status;
-import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -146,7 +145,9 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
         // 201 Created -------------------------------------------------------------------------------------------------
 
         final TransferWindow currentTransferWindow = this.transferWindowRepository.findFirstByOrderByDatetimeDesc()
-                .orElseThrow(NotFoundException::new);
+                .orElse(null);
+        assertNotNull(currentTransferWindow,
+                      "TransferWindowController::createTransferWindow currentTransferWindow not null");
 
         currentTransferWindow.setStatus(Status.FINISHED);
         this.transferWindowRepository.save(currentTransferWindow);
@@ -163,10 +164,14 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
                      "TransferWindowController::createTransferWindow transferDay DTOs size equals");
 
         final TransferWindow transferWindow = this.transferWindowRepository.findById(transferWindowDTO.getId())
-                .orElseThrow(NotFoundException::new);
+                .orElse(null);
         final MatchWeek matchWeek = this.matchWeekRepository
-                .findFirstByDateGreaterThanOrderByDateAsc(requestBody.getDatetime().toLocalDate())
-                        .orElseThrow(NotFoundException::new);
+                .findFirstByDateGreaterThanOrderByDateAsc(requestBody.getDatetime().toLocalDate()).orElse(null);
+
+        assertNotNull(transferWindow,
+                      "TransferWindowController::createTransferWindow transferDay not null");
+        assertNotNull(matchWeek,
+                     "TransferWindowController::createTransferWindow matchWeek not null");
 
         assertEquals(currentTransferWindow.getTransferWindowNumber() + 1, transferWindow.getTransferWindowNumber(),
                      "TransferWindowController::createTransferWindow transferWindow transferWindowNumber equals");
@@ -228,7 +233,9 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
         // 409 Conflict ------------------------------------------------------------------------------------------------
 
         final TransferWindow currentTransferWindow = this.transferWindowRepository.findFirstByOrderByDatetimeDesc()
-                .orElseThrow(NotFoundException::new);
+                .orElse(null);
+        assertNotNull(currentTransferWindow,
+                      "TransferWindowController::deleteTransferWindow currentTransferWindow not null");
 
         currentTransferWindow.setStatus(Status.ACTIVE);
         this.transferWindowRepository.save(currentTransferWindow);
@@ -253,7 +260,8 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
 
         final TransferWindow transferWindow = this.transferWindowRepository
                 .findById(responseBody.getTransferWindow().getId())
-                .orElseThrow(NotFoundException::new);
+                .orElse(null);
+        assertNotNull(transferWindow, "TransferWindowController::deleteTransferWindow transferWindow not null");
 
         assertDoesNotThrow(() -> transferWindowApi.deleteTransferWindow(transferWindow.getId()),
                            "TransferWindowController::deleteTransferWindow does not throw");
