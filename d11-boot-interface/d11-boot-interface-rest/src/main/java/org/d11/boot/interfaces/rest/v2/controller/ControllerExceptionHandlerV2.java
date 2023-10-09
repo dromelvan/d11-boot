@@ -292,19 +292,9 @@ public class ControllerExceptionHandlerV2 {
      * @return Response entity with error details.
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final HttpRequestMethodNotSupportedException e,
-                                                 @NonNull final HttpServletRequest request) {
-        final HttpStatus httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
-        final UUID uuid = UUID.randomUUID();
-
-        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-                .uuid(uuid)
-                .error(httpStatus.getReasonPhrase())
-                .message(e.getMessage())
-                .status(httpStatus.value())
-                .timestamp(LocalDateTime.now())
-                .path(request.getRequestURI());
-        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+    public ResponseEntity<?> handle(@NonNull final HttpRequestMethodNotSupportedException e,
+                                    @NonNull final HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
     }
 
     /**
