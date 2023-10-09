@@ -1,12 +1,13 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.d11.boot.api.v2.model.BadRequestResponseBodyDTO;
 import org.d11.boot.api.v2.model.ConflictResponseBodyDTO;
 import org.d11.boot.api.v2.model.D11ApiErrorDTO;
 import org.d11.boot.api.v2.model.NotFoundResponseBodyDTO;
+import org.d11.boot.api.v2.model.ValidationErrorDTO;
 import org.d11.boot.interfaces.rest.RefreshTokenCookieBuilder;
 import org.d11.boot.spring.model.RefreshToken;
 import org.d11.boot.util.exception.BadRequestException;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -50,18 +52,21 @@ public class ControllerExceptionHandlerV2 {
      * @return Response entity with error details.
      */
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final BadRequestException e,
-                                                 @NonNull final HttpServletRequest request) {
+    public ResponseEntity<BadRequestResponseBodyDTO> handle(@NonNull final BadRequestException e,
+                                                            @NonNull final HttpServletRequest request) {
         final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
-        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-                .uuid(UUID.randomUUID())
-                .error(httpStatus.getReasonPhrase())
-                .message(e.getMessage())
-                .status(httpStatus.value())
+        final BadRequestResponseBodyDTO badRequestResponseBodyDTO = new BadRequestResponseBodyDTO()
                 .timestamp(LocalDateTime.now())
+                .error(httpStatus.getReasonPhrase())
+                .method(request.getMethod())
                 .path(request.getRequestURI());
-        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+
+        badRequestResponseBodyDTO.addValidationErrorsItem(new ValidationErrorDTO()
+                .property(e.getParameter())
+                .error(e.getMessage()));
+
+        return ResponseEntity.status(httpStatus).body(badRequestResponseBodyDTO);
     }
 
     /**
@@ -151,20 +156,23 @@ public class ControllerExceptionHandlerV2 {
      * @return Response entity with error details.
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final MethodArgumentTypeMismatchException e,
-                                                 @NonNull final HttpServletRequest request) {
+    public ResponseEntity<BadRequestResponseBodyDTO> handle(@NonNull final MethodArgumentTypeMismatchException e,
+                                                            @NonNull final HttpServletRequest request) {
         final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         final String parameter = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(e.getName()), ' ')
-            .toLowerCase(Locale.getDefault());
+                .toLowerCase(Locale.getDefault());
 
-        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-            .uuid(UUID.randomUUID())
-            .error(httpStatus.getReasonPhrase())
-            .message("Invalid " + parameter + ": " + e.getValue())
-            .status(httpStatus.value())
-            .timestamp(LocalDateTime.now())
-            .path(request.getRequestURI());
-        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+        final BadRequestResponseBodyDTO badRequestResponseBodyDTO = new BadRequestResponseBodyDTO()
+                .timestamp(LocalDateTime.now())
+                .error(httpStatus.getReasonPhrase())
+                .method(request.getMethod())
+                .path(request.getRequestURI());
+
+        badRequestResponseBodyDTO.addValidationErrorsItem(new ValidationErrorDTO()
+                .property(parameter)
+                .error(e.getMessage()));
+
+        return ResponseEntity.status(httpStatus).body(badRequestResponseBodyDTO);
     }
 
     /**
@@ -174,24 +182,25 @@ public class ControllerExceptionHandlerV2 {
      * @param request The request that caused the exception.
      * @return Response entity with error details.
      */
-    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH",
-                        justification = "MethodArgumentNotValidException will actually always have a body")
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final MethodArgumentNotValidException e,
-                                                 @NonNull final HttpServletRequest request) {
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+    public ResponseEntity<BadRequestResponseBodyDTO> handle(@NonNull final MethodArgumentNotValidException e,
+                                                            @NonNull final HttpServletRequest request) {
         final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        final String message = e.getBody().getDetail() != null
-                ? e.getBody().getDetail().replace(".", "")
-                : "Bad Request";
 
-        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-            .uuid(UUID.randomUUID())
-            .error(httpStatus.getReasonPhrase())
-            .message(message)
-            .status(httpStatus.value())
-            .timestamp(LocalDateTime.now())
-            .path(request.getRequestURI());
-        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+        final BadRequestResponseBodyDTO badRequestResponseBodyDTO = new BadRequestResponseBodyDTO()
+                .timestamp(LocalDateTime.now())
+                .error(httpStatus.getReasonPhrase())
+                .method(request.getMethod())
+                .path(request.getRequestURI());
+
+        for (final FieldError fieldError : e.getBindingResult().getFieldErrors()) {
+            badRequestResponseBodyDTO.addValidationErrorsItem(new ValidationErrorDTO()
+                    .property(fieldError.getField())
+                    .error(fieldError.getDefaultMessage()));
+        }
+
+        return ResponseEntity.status(httpStatus).body(badRequestResponseBodyDTO);
     }
 
     /**
@@ -203,19 +212,17 @@ public class ControllerExceptionHandlerV2 {
      * @return Response entity with error details.
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final HttpMediaTypeNotSupportedException e,
-                                                 @NonNull final HttpServletRequest request) {
+    public ResponseEntity<BadRequestResponseBodyDTO> handle(@NonNull final HttpMediaTypeNotSupportedException e,
+                                                            @NonNull final HttpServletRequest request) {
         final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        final UUID uuid = UUID.randomUUID();
 
-        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-                .uuid(uuid)
-                .error(httpStatus.getReasonPhrase())
-                .message(e.getMessage())
-                .status(httpStatus.value())
+        final BadRequestResponseBodyDTO badRequestResponseBodyDTO = new BadRequestResponseBodyDTO()
                 .timestamp(LocalDateTime.now())
+                .error(httpStatus.getReasonPhrase())
+                .method(request.getMethod())
                 .path(request.getRequestURI());
-        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+
+        return ResponseEntity.status(httpStatus).body(badRequestResponseBodyDTO);
     }
 
     /**
@@ -226,8 +233,8 @@ public class ControllerExceptionHandlerV2 {
      * @return Response entity with error details.
      */
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final BadCredentialsException e,
-                                                 @NonNull final HttpServletRequest request) {
+    public ResponseEntity<?> handle(@NonNull final BadCredentialsException e,
+                                    @NonNull final HttpServletRequest request) {
         LOGGER.trace(request.getRequestURI(), e);
 
         // Set a cookie with max age 0 to remove the refresh token cookie when we provide bad credentials.
@@ -246,8 +253,8 @@ public class ControllerExceptionHandlerV2 {
      * @return Response entity with error details.
      */
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final AccessDeniedException e,
-                                                 @NonNull final HttpServletRequest request) {
+    public ResponseEntity<?> handle(@NonNull final AccessDeniedException e,
+                                    @NonNull final HttpServletRequest request) {
         LOGGER.trace(request.getRequestURI(), e);
 
         final String authorizationHeader = request.getHeader("Authorization");
