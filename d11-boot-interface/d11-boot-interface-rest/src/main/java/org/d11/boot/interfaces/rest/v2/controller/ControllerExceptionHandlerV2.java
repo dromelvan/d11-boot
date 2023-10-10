@@ -212,17 +212,9 @@ public class ControllerExceptionHandlerV2 {
      * @return Response entity with error details.
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<BadRequestResponseBodyDTO> handle(@NonNull final HttpMediaTypeNotSupportedException e,
-                                                            @NonNull final HttpServletRequest request) {
-        final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-
-        final BadRequestResponseBodyDTO badRequestResponseBodyDTO = new BadRequestResponseBodyDTO()
-                .timestamp(LocalDateTime.now())
-                .error(httpStatus.getReasonPhrase())
-                .method(request.getMethod())
-                .path(request.getRequestURI());
-
-        return ResponseEntity.status(httpStatus).body(badRequestResponseBodyDTO);
+    public ResponseEntity<?> handle(@NonNull final HttpMediaTypeNotSupportedException e,
+                                    @NonNull final HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).build();
     }
 
     /**
