@@ -195,9 +195,13 @@ public class ControllerExceptionHandlerV2 {
                 .path(request.getRequestURI());
 
         for (final FieldError fieldError : e.getBindingResult().getFieldErrors()) {
+            final String error = fieldError.getRejectedValue() == null
+                    ? "is missing"
+                    : fieldError.getDefaultMessage();
+
             badRequestResponseBodyDTO.addValidationErrorsItem(new ValidationErrorDTO()
                     .property(fieldError.getField())
-                    .error(fieldError.getDefaultMessage()));
+                    .error(error));
         }
 
         return ResponseEntity.status(httpStatus).body(badRequestResponseBodyDTO);
