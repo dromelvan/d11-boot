@@ -2,7 +2,6 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.d11.boot.api.v2.model.BadRequestResponseBodyDTO;
 import org.d11.boot.api.v2.model.ConflictResponseBodyDTO;
 import org.d11.boot.api.v2.model.D11ApiErrorDTO;
@@ -32,7 +31,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -159,8 +160,6 @@ public class ControllerExceptionHandlerV2 {
     public ResponseEntity<BadRequestResponseBodyDTO> handle(@NonNull final MethodArgumentTypeMismatchException e,
                                                             @NonNull final HttpServletRequest request) {
         final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        final String parameter = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(e.getName()), ' ')
-                .toLowerCase(Locale.getDefault());
 
         final BadRequestResponseBodyDTO badRequestResponseBodyDTO = new BadRequestResponseBodyDTO()
                 .timestamp(LocalDateTime.now())
@@ -168,9 +167,18 @@ public class ControllerExceptionHandlerV2 {
                 .method(request.getMethod())
                 .path(request.getRequestURI());
 
-        badRequestResponseBodyDTO.addValidationErrorsItem(new ValidationErrorDTO()
-                .property(parameter)
-                .error(e.getMessage()));
+        final ValidationErrorDTO validationErrorDTO = new ValidationErrorDTO()
+                .property(e.getPropertyName());
+
+        if (e.getCause() == null) {
+            validationErrorDTO.setError(e.getMessage());
+        } else if (e.getCause() instanceof NumberFormatException) {
+            validationErrorDTO.setError("is invalid");
+        } else {
+            validationErrorDTO.setError(e.getCause().getMessage());
+        }
+
+        badRequestResponseBodyDTO.addValidationErrorsItem(validationErrorDTO);
 
         return ResponseEntity.status(httpStatus).body(badRequestResponseBodyDTO);
     }
@@ -194,7 +202,10 @@ public class ControllerExceptionHandlerV2 {
                 .method(request.getMethod())
                 .path(request.getRequestURI());
 
-        for (final FieldError fieldError : e.getBindingResult().getFieldErrors()) {
+        final List<FieldError> fieldErrors = new ArrayList<>(e.getBindingResult().getFieldErrors());
+        fieldErrors.sort(Comparator.comparing(FieldError::getField));
+
+        for (final FieldError fieldError : fieldErrors) {
             final String error = fieldError.getRejectedValue() == null
                     ? "is missing"
                     : fieldError.getDefaultMessage();

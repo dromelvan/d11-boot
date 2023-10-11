@@ -46,6 +46,11 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
     private static final String CURRENT_PASSWORD_PROPERTY = "currentPassword";
 
     /**
+     * Is missing error message.
+     */
+    private static final String IS_MISSING_MESSAGE = "is missing";
+
+    /**
      * Password encoder for encoding passwords for new users.
      */
     private final PasswordEncoder passwordEncoder;
@@ -70,11 +75,11 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
      */
     public User createUser(final UserRegistration userRegistration) {
         if (StringUtils.isBlank(userRegistration.getName())) {
-            throw new BadRequestException("name", "Name is missing");
+            throw new BadRequestException("name", IS_MISSING_MESSAGE);
         }
 
         if (StringUtils.isBlank(userRegistration.getEmail())) {
-            throw new BadRequestException("email", "Email is missing");
+            throw new BadRequestException("email", IS_MISSING_MESSAGE);
         }
 
         validatePassword(userRegistration.getPassword(), userRegistration.getConfirmPassword());
@@ -110,7 +115,7 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
                                    final String confirmPassword) {
 
         if (StringUtils.isBlank(currentPassword)) {
-            throw new BadRequestException(CURRENT_PASSWORD_PROPERTY, "Current password is missing");
+            throw new BadRequestException(CURRENT_PASSWORD_PROPERTY, IS_MISSING_MESSAGE);
         }
 
         validatePassword(password, confirmPassword);
@@ -163,15 +168,15 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
      */
     private void validatePassword(final String password, final String confirmPassword) {
         if (StringUtils.isBlank(password)) {
-            throw new BadRequestException(PASSWORD_PROPERTY, "Password is missing");
+            throw new BadRequestException(PASSWORD_PROPERTY, IS_MISSING_MESSAGE);
         }
 
         if (StringUtils.isBlank(confirmPassword)) {
-            throw new BadRequestException(CONFIRM_PASSWORD_PROPERTY, "Password confirmation is missing");
+            throw new BadRequestException(CONFIRM_PASSWORD_PROPERTY, IS_MISSING_MESSAGE);
         }
 
         if (!StringUtils.equals(password, confirmPassword)) {
-            throw new BadRequestException(CONFIRM_PASSWORD_PROPERTY, "Password confirmation does not match password");
+            throw new BadRequestException(CONFIRM_PASSWORD_PROPERTY, "must match password");
         }
     }
 

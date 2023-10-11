@@ -50,10 +50,10 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
     @SuppressWarnings("PMD.PrematureDeclaration")
     public TransferWindow createTransferWindow(final LocalDateTime datetime, final int transferDayDelay) {
         if (datetime == null || !datetime.isAfter(LocalDateTime.now())) {
-            throw new BadRequestException("datetime", "Datetime is missing or invalid");
+            throw new BadRequestException("datetime", "must be after current datetime");
         }
         if (transferDayDelay <= 0) {
-            throw new BadRequestException("transferDayDelay", "Transfer day delay is not positive");
+            throw new BadRequestException("transferDayDelay", "must be positive");
         }
 
         final TransferWindow currentTransferWindow = getJpaRepository().findFirstByOrderByDatetimeDesc()
