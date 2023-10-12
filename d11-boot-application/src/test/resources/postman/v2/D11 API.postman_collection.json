@@ -392,56 +392,7 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "POST security/authenticate - Bad Request No Request Body",
-											"event": [
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST security authenticate no request body Status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"POST security authenticate no request body response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
-															"  pm.expect(body.path).to.eq(\"/v2/security/authenticate\");",
-															"",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "noauth"
-												},
-												"method": "POST",
-												"header": [],
-												"url": {
-													"raw": "{{baseUrl}}/v2/security/authenticate",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"security",
-														"authenticate"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "POST security/authenticate - Bad Request Missing Username",
+											"name": "POST security/authenticate - Bad Request Missing Properties",
 											"event": [
 												{
 													"listen": "test",
@@ -454,14 +405,17 @@
 															"pm.test(\"POST security authenticate missing username response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
 															"  pm.expect(body.path).to.eq(\"/v2/security/authenticate\");",
 															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"password\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"  pm.expect(body.validationErrors[1].property).to.eq(\"username\");",
+															"  pm.expect(body.validationErrors[1].error).to.eq(\"is missing\");",
 															"});",
 															""
 														],
@@ -477,65 +431,7 @@
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n    \"password\": \"{{userPassword}}\",\n    \"persistent\": false\n}\n",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/security/authenticate",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"security",
-														"authenticate"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "POST security/authenticate - Bad Request Missing Password",
-											"event": [
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST security authenticate missing password Status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"POST security authenticate missing password response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/security/authenticate\");",
-															"",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "noauth"
-												},
-												"method": "POST",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \"username\": \"{{userUsername}}\",\n    \"persistent\": false\n}\n",
+													"raw": "{\n\n}\n",
 													"options": {
 														"raw": {
 															"language": "json"
@@ -886,7 +782,7 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "POST security/authorize - Invalid Refresh Token",
+											"name": "POST security/authorize - Bad Request Invalid Refresh Token",
 											"event": [
 												{
 													"listen": "test",
@@ -899,14 +795,14 @@
 															"pm.test(\"POST security authorize invalid refresh token response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid refresh token: invalid\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
 															"  pm.expect(body.path).to.eq(\"/v2/security/authorize\");",
 															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"refreshToken\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"Invalid UUID string: invalid\");",
 															"});",
 															"",
 															"pm.test(\"POST security authorize invalid refresh token cookie\", () => {",
@@ -1362,7 +1258,7 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "POST security/unauthorize - Invalid Refresh Token",
+											"name": "POST security/unauthorize - Bad Request Invalid Refresh Token",
 											"event": [
 												{
 													"listen": "test",
@@ -1375,14 +1271,14 @@
 															"pm.test(\"POST security unauthorize invalid refresh token response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid refresh token: invalid\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
 															"  pm.expect(body.path).to.eq(\"/v2/security/unauthorize\");",
 															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"refreshToken\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"Invalid UUID string: invalid\");",
 															"});",
 															"",
 															"pm.test(\"POST security authorize invalid refresh token cookie\", () => {",
@@ -1665,56 +1561,7 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "POST security/request-password-reset - No Request Body",
-											"event": [
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST security request password reset no request body status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"POST security request password reset no request body response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
-															"  pm.expect(body.path).to.eq(\"/v2/security/request-password-reset\");",
-															"",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "noauth"
-												},
-												"method": "POST",
-												"header": [],
-												"url": {
-													"raw": "{{baseUrl}}/v2/security/request-password-reset",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"security",
-														"request-password-reset"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "POST security/request-password-reset - Missing Email",
+											"name": "POST security/request-password-reset - Bad Request Missing Properties",
 											"event": [
 												{
 													"listen": "test",
@@ -1727,14 +1574,17 @@
 															"pm.test(\"POST security request password reset missing email response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
 															"  pm.expect(body.path).to.eq(\"/v2/security/request-password-reset\");",
 															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"email\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"  pm.expect(body.validationErrors[1].property).to.eq(\"link\");",
+															"  pm.expect(body.validationErrors[1].error).to.eq(\"is missing\");",
 															"});",
 															""
 														],
@@ -1750,65 +1600,7 @@
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n  \"link\": \"http://example.com/%s\"    \n}\n",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/security/request-password-reset",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"security",
-														"request-password-reset"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "POST security/request-password-reset - Missing Link",
-											"event": [
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST security request password reset missing link status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"POST security request password reset missing link response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/security/request-password-reset\");",
-															"",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "noauth"
-												},
-												"method": "POST",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n  \"email\": \"{{userUsername}}\"\n}\n",
+													"raw": "{\n\n}\n",
 													"options": {
 														"raw": {
 															"language": "json"
@@ -1888,14 +1680,33 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "POST security/reset-password - Invalid Reset Password Token",
+											"name": "POST security/reset-password - Bad Request Missing Properties",
 											"event": [
 												{
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST security reset password invalid reset password token status code is 401\", () => {",
-															"  pm.response.to.have.status(401);",
+															"pm.test(\"POST security reset password missing email status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST security reset password missing email response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
+															"    pm.expect(body.path).to.eq(\"/v2/security/reset-password\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"email\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"  pm.expect(body.validationErrors[1].property).to.eq(\"password\");",
+															"  pm.expect(body.validationErrors[1].error).to.eq(\"is missing\");",
+															"",
+															"  pm.expect(body.validationErrors[2].property).to.eq(\"resetPasswordToken\");",
+															"  pm.expect(body.validationErrors[2].error).to.eq(\"is missing\");",
 															"});",
 															""
 														],
@@ -1911,7 +1722,7 @@
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n  \"email\": \"{{adminUsername}}\",\n  \"password\": \"newpassword\",\n  \"resetPasswordToken\": \"00000000-0000-0000-0000-000000000000\"\n}\n",
+													"raw": "{\n    \n}\n",
 													"options": {
 														"raw": {
 															"language": "json"
@@ -1938,75 +1749,14 @@
 									"name": "401 Unauthorized",
 									"item": [
 										{
-											"name": "POST security/reset-password - No Request Body",
+											"name": "POST security/reset-password - Invalid Reset Password Token",
 											"event": [
 												{
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST security reset password no request body status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"POST security reset password no request body response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
-															"  pm.expect(body.path).to.eq(\"/v2/security/reset-password\");",
-															"",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "noauth"
-												},
-												"method": "POST",
-												"header": [],
-												"url": {
-													"raw": "{{baseUrl}}/v2/security/reset-password",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"security",
-														"reset-password"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "POST security/reset-password - Missing Email",
-											"event": [
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST security reset password missing email status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"POST security reset password missing email response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/security/reset-password\");",
+															"pm.test(\"POST security reset password invalid reset password token status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
 															"});",
 															""
 														],
@@ -2022,121 +1772,7 @@
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n  \"password\": \"newpassword\",\n  \"resetPasswordToken\": \"00000000-0000-0000-0000-000000000000\"\n}\n",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/security/reset-password",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"security",
-														"reset-password"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "POST security/reset-password - Missing Password",
-											"event": [
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST security reset password missing password status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"POST security reset password missing password response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/security/reset-password\");",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "noauth"
-												},
-												"method": "POST",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n  \"email\": \"{{adminUsername}}\",\n  \"resetPasswordToken\": \"00000000-0000-0000-0000-000000000000\"\n}\n",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/security/reset-password",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"security",
-														"reset-password"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "POST security/reset-password - Missing Reset Password Token",
-											"event": [
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST security reset password missing reset password token status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"POST security reset password reset password token response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/security/reset-password\");",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "noauth"
-												},
-												"method": "POST",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n  \"email\": \"{{adminUsername}}\",\n  \"password\": \"newpassword\"\n}\n",
+													"raw": "{\n  \"email\": \"{{adminUsername}}\",\n  \"password\": \"newpassword\",\n  \"resetPasswordToken\": \"00000000-0000-0000-0000-000000000000\"\n}\n",
 													"options": {
 														"raw": {
 															"language": "json"
@@ -2250,71 +1886,7 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "POST users - Bad Request No Request Body",
-											"event": [
-												{
-													"listen": "prerequest",
-													"script": {
-														"exec": [
-															""
-														],
-														"type": "text/javascript"
-													}
-												},
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST user no request body status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"POST user no request body response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
-															"  pm.expect(body.path).to.eq(\"/v2/users\");",
-															"",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "bearer",
-													"bearer": [
-														{
-															"key": "token",
-															"value": "{{jwt}}",
-															"type": "string"
-														}
-													]
-												},
-												"method": "POST",
-												"header": [],
-												"url": {
-													"raw": "{{baseUrl}}/v2/users",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"users"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "POST users - Bad Request Missing Name",
+											"name": "POST users - Bad Request Missing Properties",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -2336,13 +1908,23 @@
 															"pm.test(\"POST user missing name response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Name is missing\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
 															"  pm.expect(body.path).to.eq(\"/v2/users\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"confirmPassword\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"  pm.expect(body.validationErrors[1].property).to.eq(\"email\");",
+															"  pm.expect(body.validationErrors[1].error).to.eq(\"is missing\");",
+															"",
+															"  pm.expect(body.validationErrors[2].property).to.eq(\"name\");",
+															"  pm.expect(body.validationErrors[2].error).to.eq(\"is missing\");",
+															"",
+															"  pm.expect(body.validationErrors[3].property).to.eq(\"password\");",
+															"  pm.expect(body.validationErrors[3].error).to.eq(\"is missing\");",
 															"",
 															"});",
 															""
@@ -2366,7 +1948,7 @@
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n    \"name\": \"\",\n    \"email\": \"{{newUserUsername}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
+													"raw": "{\n\n}\n",
 													"options": {
 														"raw": {
 															"language": "json"
@@ -2409,13 +1991,14 @@
 															"pm.test(\"POST user invalid email response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
 															"  pm.expect(body.path).to.eq(\"/v2/users\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"email\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be a well-formed email address\");",
 															"",
 															"});",
 															""
@@ -2460,225 +2043,6 @@
 											"response": []
 										},
 										{
-											"name": "POST users - Bad Request Missing Email",
-											"event": [
-												{
-													"listen": "prerequest",
-													"script": {
-														"exec": [
-															""
-														],
-														"type": "text/javascript"
-													}
-												},
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST user missing email status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"POST user missing email response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Email is missing\");",
-															"  pm.expect(body.path).to.eq(\"/v2/users\");",
-															"",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "bearer",
-													"bearer": [
-														{
-															"key": "token",
-															"value": "{{jwt}}",
-															"type": "string"
-														}
-													]
-												},
-												"method": "POST",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \"name\": \"{{newUserName}}\",\n    \"email\": \"\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/users",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"users"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "POST users - Bad Request Missing Password",
-											"event": [
-												{
-													"listen": "prerequest",
-													"script": {
-														"exec": [
-															""
-														],
-														"type": "text/javascript"
-													}
-												},
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST user missing password status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"POST user missing password response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Password is missing\");",
-															"  pm.expect(body.path).to.eq(\"/v2/users\");",
-															"",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "bearer",
-													"bearer": [
-														{
-															"key": "token",
-															"value": "{{jwt}}",
-															"type": "string"
-														}
-													]
-												},
-												"method": "POST",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \"name\": \"{{newUserName}}\",\n    \"email\": \"{{newUserUsername}}\",\n    \"password\": \"\",\n    \"confirmPassword\": \"{{newUserPassword}}\"\n}\n",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/users",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"users"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "POST users - Bad Request Missing Confirm Password",
-											"event": [
-												{
-													"listen": "prerequest",
-													"script": {
-														"exec": [
-															""
-														],
-														"type": "text/javascript"
-													}
-												},
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST user missing confirm password status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"POST user missing confirm password response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Password confirmation is missing\");",
-															"  pm.expect(body.path).to.eq(\"/v2/users\");",
-															"",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "bearer",
-													"bearer": [
-														{
-															"key": "token",
-															"value": "{{jwt}}",
-															"type": "string"
-														}
-													]
-												},
-												"method": "POST",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \"name\": \"{{newUserName}}\",\n    \"email\": \"{{newUserUsername}}\",\n    \"password\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"\"\n}\n",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/users",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"users"
-													]
-												}
-											},
-											"response": []
-										},
-										{
 											"name": "POST users - Bad Request Password Mismatch",
 											"event": [
 												{
@@ -2701,13 +2065,14 @@
 															"pm.test(\"POST user password mismatch response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Password confirmation does not match password\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
 															"  pm.expect(body.path).to.eq(\"/v2/users\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"confirmPassword\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must match password\");",
 															"",
 															"});",
 															""
@@ -3110,7 +2475,7 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "PUT users/{userId} - Bad Request No Request Body",
+											"name": "PUT users/{userId} - Bad Request Missing Properties",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -3125,20 +2490,28 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user no request body status code is 400\", () => {",
+															"pm.test(\"POST user missing current password status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season no request body response body\", () => {",
+															"pm.test(\"PUT season missing current password response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
+															"  pm.expect(body.method).to.eq(\"PUT\");",
 															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"confirmPassword\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"  pm.expect(body.validationErrors[1].property).to.eq(\"currentPassword\");",
+															"  pm.expect(body.validationErrors[1].error).to.eq(\"is missing\");",
+															"",
+															"  pm.expect(body.validationErrors[2].property).to.eq(\"password\");",
+															"  pm.expect(body.validationErrors[2].error).to.eq(\"is missing\");",
+															"",
 															"});",
 															""
 														],
@@ -3159,6 +2532,15 @@
 												},
 												"method": "PUT",
 												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
 												"url": {
 													"raw": "{{baseUrl}}/v2/users/{{userId}}",
 													"host": [
@@ -3196,13 +2578,14 @@
 															"pm.test(\"PUT season invalid user id response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid user id: invalid\");",
+															"  pm.expect(body.method).to.eq(\"PUT\");",
 															"  pm.expect(body.path).to.eq(\"/v2/users/invalid\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"userId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
 															"});",
 															""
 														],
@@ -3247,228 +2630,6 @@
 											"response": []
 										},
 										{
-											"name": "PUT users/{userId} - Bad Request Missing Current Password",
-											"event": [
-												{
-													"listen": "prerequest",
-													"script": {
-														"exec": [
-															""
-														],
-														"type": "text/javascript"
-													}
-												},
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST user missing current password status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"PUT season missing current password response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
-															"",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "bearer",
-													"bearer": [
-														{
-															"key": "token",
-															"value": "{{jwt}}",
-															"type": "string"
-														}
-													]
-												},
-												"method": "PUT",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \"password\": \"{{userPassword}}\",\n    \"confirmPassword\": \"{{userPassword}}\"\n}\n",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/users/{{userId}}",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"users",
-														"{{userId}}"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "PUT users/{userId} - Bad Request Missing Password",
-											"event": [
-												{
-													"listen": "prerequest",
-													"script": {
-														"exec": [
-															""
-														],
-														"type": "text/javascript"
-													}
-												},
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST user missing password status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"PUT season missing password response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
-															"",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "bearer",
-													"bearer": [
-														{
-															"key": "token",
-															"value": "{{jwt}}",
-															"type": "string"
-														}
-													]
-												},
-												"method": "PUT",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \"currentPassword\": \"{{newUserPassword}}\",\n    \"confirmPassword\": \"{{userPassword}}\"\n}\n",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/users/{{userId}}",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"users",
-														"{{userId}}"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "PUT users/{userId} - Bad Request Missing Confirm Password",
-											"event": [
-												{
-													"listen": "prerequest",
-													"script": {
-														"exec": [
-															""
-														],
-														"type": "text/javascript"
-													}
-												},
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST user missing confirm password status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"PUT season missing confirm password response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
-															"",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "bearer",
-													"bearer": [
-														{
-															"key": "token",
-															"value": "{{jwt}}",
-															"type": "string"
-														}
-													]
-												},
-												"method": "PUT",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \"currentPassword\": \"{{newUserPassword}}\",\n    \"password\": \"{{userPassword}}\"\n}\n",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/users/{{userId}}",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"users",
-														"{{userId}}"
-													]
-												}
-											},
-											"response": []
-										},
-										{
 											"name": "PUT users/{userId} - Bad Request Password Mismatch",
 											"event": [
 												{
@@ -3491,13 +2652,15 @@
 															"pm.test(\"PUT season password mismatch response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Password confirmation does not match password\");",
+															"  pm.expect(body.method).to.eq(\"PUT\");",
 															"  pm.expect(body.path).to.eq(\"/v2/users/\" + pm.environment.get(\"userId\"));",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"confirmPassword\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must match password\");",
+															"",
 															"});",
 															""
 														],
@@ -4010,7 +3173,7 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "GET seasons/{seasonId} - Invalid Season Id",
+											"name": "GET seasons/{seasonId} - Bad Request Invalid Season Id",
 											"event": [
 												{
 													"listen": "test",
@@ -4023,13 +3186,14 @@
 															"pm.test(\"GET season invalid season id response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid season id: invalid\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
 															"  pm.expect(body.path).to.eq(\"/v2/seasons/invalid\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
 															"",
 															"});",
 															""
@@ -4398,7 +3562,7 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "PUT seasons/{seasonId} - Bad Request No Request Body",
+											"name": "PUT seasons/{seasonId} - Bad Request Missing Season",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -4413,20 +3577,22 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT season no request body status code is 400\", () => {",
+															"pm.test(\"PUT season missing name status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT season no request body response body\", () => {",
+															"pm.test(\"PUT season missing name response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
+															"  pm.expect(body.method).to.eq(\"PUT\");",
 															"  pm.expect(body.path).to.eq(\"/v2/seasons/\" + pm.environment.get(\"seasonId\"));",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"season\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");  ",
+															"",
 															"});",
 															""
 														],
@@ -4436,10 +3602,113 @@
 											],
 											"request": {
 												"auth": {
-													"type": "noauth"
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
 												},
 												"method": "PUT",
 												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/seasons/{{seasonId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"seasons",
+														"{{seasonId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "PUT seasons/{seasonId} - Bad Request Missing Properties",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT season missing name status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"PUT season missing name response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"PUT\");",
+															"  pm.expect(body.path).to.eq(\"/v2/seasons/\" + pm.environment.get(\"seasonId\"));",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"season.d11TeamBudget\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");  ",
+															"",
+															"  pm.expect(body.validationErrors[1].property).to.eq(\"season.d11TeamMaxTransfers\");",
+															"  pm.expect(body.validationErrors[1].error).to.eq(\"is missing\");  ",
+															"",
+															"  pm.expect(body.validationErrors[2].property).to.eq(\"season.date\");",
+															"  pm.expect(body.validationErrors[2].error).to.eq(\"is missing\");  ",
+															"",
+															"  pm.expect(body.validationErrors[3].property).to.eq(\"season.name\");",
+															"  pm.expect(body.validationErrors[3].error).to.eq(\"is missing\");  ",
+															"",
+															"  pm.expect(body.validationErrors[4].property).to.eq(\"season.status\");",
+															"  pm.expect(body.validationErrors[4].error).to.eq(\"is missing\");  ",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"season\": {\n        \n    }\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
 												"url": {
 													"raw": "{{baseUrl}}/v2/seasons/{{seasonId}}",
 													"host": [
@@ -4477,13 +3746,14 @@
 															"pm.test(\"PUT season invalid season id response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/seasons/\" + pm.environment.get(\"seasonId\"));",
+															"  pm.expect(body.method).to.eq(\"PUT\");",
+															"  pm.expect(body.path).to.eq(\"/v2/seasons/invalid\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");  ",
 															"",
 															"});",
 															""
@@ -4500,7 +3770,7 @@
 												"header": [],
 												"body": {
 													"mode": "raw",
-													"raw": "{\n    \"season\": {\n    }\n}",
+													"raw": "{\n    \"season\": {\n        \"name\": \"1970-1971\",\n        \"d11TeamBudget\": 5,\n        \"d11TeamMaxTransfers\": 1,\n        \"status\": \"Pending\",\n        \"date\": \"1970-01-01\",\n        \"legacy\": true\n    }\n}",
 													"options": {
 														"raw": {
 															"language": "json"
@@ -4508,379 +3778,14 @@
 													}
 												},
 												"url": {
-													"raw": "{{baseUrl}}/v2/seasons/{{seasonId}}",
+													"raw": "{{baseUrl}}/v2/seasons/invalid",
 													"host": [
 														"{{baseUrl}}"
 													],
 													"path": [
 														"v2",
 														"seasons",
-														"{{seasonId}}"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "PUT seasons/{seasonId} - Bad Request Missing Name",
-											"event": [
-												{
-													"listen": "prerequest",
-													"script": {
-														"exec": [
-															""
-														],
-														"type": "text/javascript"
-													}
-												},
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"PUT season missing name status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"PUT season missing name response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/seasons/\" + pm.environment.get(\"seasonId\"));",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "bearer",
-													"bearer": [
-														{
-															"key": "token",
-															"value": "{{jwt}}",
-															"type": "string"
-														}
-													]
-												},
-												"method": "PUT",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \"season\": {\n        \"d11TeamBudget\": 5,\n        \"d11TeamMaxTransfers\": 1,\n        \"status\": \"Pending\",\n        \"date\": \"1970-01-01\",\n        \"legacy\": true\n    }\n}",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/seasons/{{seasonId}}",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"seasons",
-														"{{seasonId}}"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "PUT seasons/{seasonId} - Bad Request Missing D11 Team Budget",
-											"event": [
-												{
-													"listen": "prerequest",
-													"script": {
-														"exec": [
-															""
-														],
-														"type": "text/javascript"
-													}
-												},
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"PUT season missing D11 team budget status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"PUT season missing D11 team budget response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/seasons/\" + pm.environment.get(\"seasonId\"));",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "bearer",
-													"bearer": [
-														{
-															"key": "token",
-															"value": "{{jwt}}",
-															"type": "string"
-														}
-													]
-												},
-												"method": "PUT",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \"season\": {\n        \"name\": \"1970-1971\",\n        \"d11TeamMaxTransfers\": 1,\n        \"status\": \"Pending\",\n        \"date\": \"1970-01-01\",\n        \"legacy\": true\n    }\n}",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/seasons/{{seasonId}}",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"seasons",
-														"{{seasonId}}"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "PUT seasons/{seasonId} - Bad Request Missing D11 Team Max Transfers",
-											"event": [
-												{
-													"listen": "prerequest",
-													"script": {
-														"exec": [
-															""
-														],
-														"type": "text/javascript"
-													}
-												},
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"PUT season missing D11 team max transfers status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"PUT season missing D11 team max transfers response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/seasons/\" + pm.environment.get(\"seasonId\"));",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "bearer",
-													"bearer": [
-														{
-															"key": "token",
-															"value": "{{jwt}}",
-															"type": "string"
-														}
-													]
-												},
-												"method": "PUT",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \"season\": {\n        \"name\": \"1970-1971\",\n        \"d11TeamBudget\": 5,\n        \"status\": \"Pending\",\n        \"date\": \"1970-01-01\",\n        \"legacy\": true\n    }\n}",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/seasons/{{seasonId}}",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"seasons",
-														"{{seasonId}}"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "PUT seasons/{seasonId} - Bad Request Missing Status",
-											"event": [
-												{
-													"listen": "prerequest",
-													"script": {
-														"exec": [
-															""
-														],
-														"type": "text/javascript"
-													}
-												},
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"PUT season missing status status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"PUT season missing status response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/seasons/\" + pm.environment.get(\"seasonId\"));",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "bearer",
-													"bearer": [
-														{
-															"key": "token",
-															"value": "{{jwt}}",
-															"type": "string"
-														}
-													]
-												},
-												"method": "PUT",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \"season\": {\n        \"name\": \"1970-1971\",\n        \"d11TeamBudget\": 5,\n        \"d11TeamMaxTransfers\": 1,\n        \"date\": \"1970-01-01\",\n        \"legacy\": true\n    }\n}",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/seasons/{{seasonId}}",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"seasons",
-														"{{seasonId}}"
-													]
-												}
-											},
-											"response": []
-										},
-										{
-											"name": "PUT seasons/{seasonId} - Bad Request Missing Date",
-											"event": [
-												{
-													"listen": "prerequest",
-													"script": {
-														"exec": [
-															""
-														],
-														"type": "text/javascript"
-													}
-												},
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"PUT season missing date status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"PUT season missing date response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid request content\");",
-															"  pm.expect(body.path).to.eq(\"/v2/seasons/\" + pm.environment.get(\"seasonId\"));",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "bearer",
-													"bearer": [
-														{
-															"key": "token",
-															"value": "{{jwt}}",
-															"type": "string"
-														}
-													]
-												},
-												"method": "PUT",
-												"header": [],
-												"body": {
-													"mode": "raw",
-													"raw": "{\n    \"season\": {\n        \"name\": \"1970-1971\",\n        \"d11TeamBudget\": 5,\n        \"d11TeamMaxTransfers\": 1,\n        \"status\": \"Pending\",\n        \"legacy\": true\n    }\n}",
-													"options": {
-														"raw": {
-															"language": "json"
-														}
-													}
-												},
-												"url": {
-													"raw": "{{baseUrl}}/v2/seasons/{{seasonId}}",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"seasons",
-														"{{seasonId}}"
+														"invalid"
 													]
 												}
 											},
@@ -5353,13 +4258,15 @@
 															"pm.test(\"GET transfer window invalid transfer window id response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid transfer window id: invalid\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
 															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows/invalid\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"transferWindowId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");  ",
+															"",
 															"});",
 															""
 														],
@@ -5593,69 +4500,6 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "POST transfer-windows - Bad Request No Request Body",
-											"event": [
-												{
-													"listen": "prerequest",
-													"script": {
-														"exec": [
-															""
-														],
-														"type": "text/javascript"
-													}
-												},
-												{
-													"listen": "test",
-													"script": {
-														"exec": [
-															"pm.test(\"POST transfer window no request body status code is 400\", () => {",
-															"  pm.response.to.have.status(400);",
-															"});",
-															"",
-															"pm.test(\"POST transfer window no request body response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"  let timestamp = new Date(body.timestamp);",
-															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
-															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Content-Type is not supported\");",
-															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows\");",
-															"});",
-															""
-														],
-														"type": "text/javascript"
-													}
-												}
-											],
-											"request": {
-												"auth": {
-													"type": "bearer",
-													"bearer": [
-														{
-															"key": "token",
-															"value": "{{jwt}}",
-															"type": "string"
-														}
-													]
-												},
-												"method": "POST",
-												"header": [],
-												"url": {
-													"raw": "{{baseUrl}}/v2/transfer-windows",
-													"host": [
-														"{{baseUrl}}"
-													],
-													"path": [
-														"v2",
-														"transfer-windows"
-													]
-												}
-											},
-											"response": []
-										},
-										{
 											"name": "Setup - Login Admin",
 											"event": [
 												{
@@ -5704,7 +4548,7 @@
 											"response": []
 										},
 										{
-											"name": "POST transfer-windows - Bad Request Invalid Datetime",
+											"name": "POST transfer-windows - Bad Request Missing Properties",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -5726,13 +4570,90 @@
 															"pm.test(\"POST transfer window invalid datetime response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Datetime is missing or invalid\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
 															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"datetime\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");  ",
+															"",
+															"  pm.expect(body.validationErrors[1].property).to.eq(\"transferDayDelay\");",
+															"  pm.expect(body.validationErrors[1].error).to.eq(\"is missing\");  ",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-windows",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-windows"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST transfer-windows - Bad Request Invalid Datetime",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST transfer window invalid datetime status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST transfer window invalid datetime response body\", () => {",
+															"  const body = pm.response.json();",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"datetime\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be after current datetime\");  ",
 															"",
 															"});",
 															""
@@ -5777,7 +4698,7 @@
 											"response": []
 										},
 										{
-											"name": "POST transfer-windows - Bad Request Invalid Transfer Day Delay",
+											"name": "POST transfer-windows - Bad Request Negative Transfer Day Delay",
 											"event": [
 												{
 													"listen": "prerequest",
@@ -5797,16 +4718,15 @@
 															"});",
 															"",
 															"pm.test(\"POST transfer window invalid transfer day delay response body\", () => {",
-															"  const body = pm.response.json();",
-															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
-															"",
+															"const body = pm.response.json();",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Transfer day delay is not positive\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
 															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"transferDayDelay\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be positive\");  ",
 															"",
 															"});",
 															""
@@ -6464,13 +5384,14 @@
 															"pm.test(\"DELETE transfer window invalid transfer window id response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
-															"  pm.expect(body.uuid).to.match(new RegExp(pm.environment.get(\"uuidRegex\")));",
 															"  let timestamp = new Date(body.timestamp);",
 															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
-															"  pm.expect(body.status).to.eq(400);",
 															"  pm.expect(body.error).to.eq(\"Bad Request\");",
-															"  pm.expect(body.message).to.eq(\"Invalid transfer window id: invalid\");",
+															"  pm.expect(body.method).to.eq(\"DELETE\");",
 															"  pm.expect(body.path).to.eq(\"/v2/transfer-windows/invalid\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"transferWindowId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");  ",
 															"",
 															"});",
 															""
