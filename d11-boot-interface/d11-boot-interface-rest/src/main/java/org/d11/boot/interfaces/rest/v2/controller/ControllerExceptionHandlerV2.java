@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.d11.boot.api.v2.model.BadRequestResponseBodyDTO;
 import org.d11.boot.api.v2.model.ConflictResponseBodyDTO;
-import org.d11.boot.api.v2.model.D11ApiErrorDTO;
+import org.d11.boot.api.v2.model.InternalServerErrorResponseBodyDTO;
 import org.d11.boot.api.v2.model.NotFoundResponseBodyDTO;
 import org.d11.boot.api.v2.model.ValidationErrorDTO;
 import org.d11.boot.interfaces.rest.RefreshTokenCookieBuilder;
@@ -55,6 +55,8 @@ public class ControllerExceptionHandlerV2 {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<BadRequestResponseBodyDTO> handle(@NonNull final BadRequestException e,
                                                             @NonNull final HttpServletRequest request) {
+        LOGGER.trace(request.getRequestURI(), e);
+
         final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
         final BadRequestResponseBodyDTO badRequestResponseBodyDTO = new BadRequestResponseBodyDTO()
@@ -112,6 +114,8 @@ public class ControllerExceptionHandlerV2 {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<NotFoundResponseBodyDTO> handle(@NonNull final NotFoundException e,
                                                           @NonNull final HttpServletRequest request) {
+        LOGGER.trace(request.getRequestURI(), e);
+
         final HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 
         final NotFoundResponseBodyDTO notFoundResponseBodyDTO = new NotFoundResponseBodyDTO()
@@ -136,6 +140,8 @@ public class ControllerExceptionHandlerV2 {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ConflictResponseBodyDTO> handle(@NonNull final ConflictException e,
                                                           @NonNull final HttpServletRequest request) {
+        LOGGER.trace(request.getRequestURI(), e);
+
         final HttpStatus httpStatus = HttpStatus.CONFLICT;
 
         final ConflictResponseBodyDTO conflictResponseBodyDTO = new ConflictResponseBodyDTO()
@@ -159,6 +165,8 @@ public class ControllerExceptionHandlerV2 {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<BadRequestResponseBodyDTO> handle(@NonNull final MethodArgumentTypeMismatchException e,
                                                             @NonNull final HttpServletRequest request) {
+        LOGGER.trace(request.getRequestURI(), e);
+
         final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
         final BadRequestResponseBodyDTO badRequestResponseBodyDTO = new BadRequestResponseBodyDTO()
@@ -194,6 +202,8 @@ public class ControllerExceptionHandlerV2 {
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public ResponseEntity<BadRequestResponseBodyDTO> handle(@NonNull final MethodArgumentNotValidException e,
                                                             @NonNull final HttpServletRequest request) {
+        LOGGER.trace(request.getRequestURI(), e);
+
         final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
         final BadRequestResponseBodyDTO badRequestResponseBodyDTO = new BadRequestResponseBodyDTO()
@@ -229,6 +239,8 @@ public class ControllerExceptionHandlerV2 {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<?> handle(@NonNull final HttpMediaTypeNotSupportedException e,
                                     @NonNull final HttpServletRequest request) {
+        LOGGER.trace(request.getRequestURI(), e);
+
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).build();
     }
 
@@ -301,6 +313,8 @@ public class ControllerExceptionHandlerV2 {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<?> handle(@NonNull final HttpRequestMethodNotSupportedException e,
                                     @NonNull final HttpServletRequest request) {
+        LOGGER.trace(request.getRequestURI(), e);
+
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
     }
 
@@ -312,22 +326,24 @@ public class ControllerExceptionHandlerV2 {
      * @return Response entity with error details.
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<D11ApiErrorDTO> handle(@NonNull final Exception e,
-                                                 @NonNull final HttpServletRequest request) {
+    public ResponseEntity<InternalServerErrorResponseBodyDTO> handle(@NonNull final Exception e,
+                                                                     @NonNull final HttpServletRequest request) {
         final HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         final UUID uuid = UUID.randomUUID();
 
         final String message = String.format("%s: %s", uuid, httpStatus.getReasonPhrase());
         LOGGER.error(message, e);
 
-        final D11ApiErrorDTO D11ApiErrorDTO = new D11ApiErrorDTO()
-            .uuid(uuid)
-            .error(httpStatus.getReasonPhrase())
-            .message(e.getMessage())
-            .status(httpStatus.value())
-            .timestamp(LocalDateTime.now())
-            .path(request.getRequestURI());
-        return ResponseEntity.status(httpStatus).body(D11ApiErrorDTO);
+        final InternalServerErrorResponseBodyDTO internalServerErrorResponseBodyDTO =
+                new InternalServerErrorResponseBodyDTO()
+                        .uuid(uuid)
+                        .error(httpStatus.getReasonPhrase())
+                        .message(e.getMessage())
+                        .status(httpStatus.value())
+                        .timestamp(LocalDateTime.now())
+                        .path(request.getRequestURI());
+
+        return ResponseEntity.status(httpStatus).body(internalServerErrorResponseBodyDTO);
     }
 
 }
