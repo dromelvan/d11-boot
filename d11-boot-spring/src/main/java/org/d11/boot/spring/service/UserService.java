@@ -134,6 +134,16 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
     }
 
     /**
+     * Deletes a user.
+     *
+     * @param userId Id of the user.
+     */
+    public void deleteUser(final Long userId) {
+        final User user = getById(userId);
+        getJpaRepository().delete(user);
+    }
+
+    /**
      * Loads user details from cache if they are cached or from the database if not.
      *
      * @param username Username for the user details that will be loaded.

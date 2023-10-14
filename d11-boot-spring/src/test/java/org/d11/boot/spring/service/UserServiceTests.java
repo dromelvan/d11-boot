@@ -334,6 +334,20 @@ class UserServiceTests extends BaseD11BootServiceTests {
     }
 
     /**
+     * Tests UserService::deleteUser.
+     */
+    @Test
+    void testDeleteUser() {
+        final User user = generate(User.class);
+
+        when(this.userRepository.findById(eq(user.getId()))).thenReturn(Optional.of(user));
+
+        this.userService.deleteUser(user.getId());
+
+        verify(this.userRepository, times(1)).delete(eq(user));
+    }
+
+    /**
      * Tests UserService::loadCachedUserByUsername.
      */
     @Test
