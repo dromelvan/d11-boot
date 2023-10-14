@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -200,6 +201,52 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
 
         result.setEncryptedPassword(this.passwordEncoder.encode(PASSWORD));
         this.userRepository.save(result);
+    }
+
+    /**
+     * Tests UserController::deleteUser.
+     */
+    @Test
+    void testDeleteUser() {
+        final User unsavedUser = new User();
+        unsavedUser.setName("Deleted");
+        unsavedUser.setEmail("deleted@user.com");
+        unsavedUser.setEncryptedPassword(this.passwordEncoder.encode(PASSWORD));
+        final User user = this.userRepository.save(unsavedUser);
+
+        // Unauthorized ------------------------------------------------------------------------------------------------
+
+        final UserApi unauthorizedApi = getApi(UserApi.class);
+
+        assertThrows(FeignException.Unauthorized.class,
+                () -> unauthorizedApi.deleteUser(user.getId()),
+                "UserController::deleteUser unauthorized throws");
+
+        // Forbidden ---------------------------------------------------------------------------------------------------
+
+        final UserApi forbiddenApi = getUserApi(UserApi.class);
+
+        assertThrows(FeignException.Forbidden.class,
+                () -> forbiddenApi.deleteUser(user.getId()),
+                "UserController::deleteUser user throws");
+
+        // Not Found ---------------------------------------------------------------------------------------------------
+
+        final UserApi administratorApi = getAdministratorApi(UserApi.class);
+
+        assertThrows(FeignException.NotFound.class,
+                () -> administratorApi.deleteUser(-1L),
+                "UserController::deleteUser not found throws");
+
+        // OK ----------------------------------------------------------------------------------------------------------
+
+        assertDoesNotThrow(() -> administratorApi.deleteUser(user.getId()),
+                           "UserController::deleteUser ok does not throw throws");
+
+        assertFalse(this.userRepository.findById(user.getId()).isPresent(), "UserController::deleteUser present");
+        assertThrows(FeignException.NotFound.class,
+                () -> administratorApi.deleteUser(user.getId()),
+                "UserController::deleteUser deleted user throws");
     }
 
 }

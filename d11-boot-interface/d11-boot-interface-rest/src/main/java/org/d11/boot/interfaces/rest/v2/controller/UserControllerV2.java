@@ -8,6 +8,7 @@ import org.d11.boot.api.v2.model.UserResponseBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.User;
 import org.d11.boot.spring.model.UserRegistration;
+import org.d11.boot.spring.security.RoleAdmin;
 import org.d11.boot.spring.security.RoleUser;
 import org.d11.boot.spring.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,13 @@ public class UserControllerV2 extends RepositoryServiceController<UserService> i
         final UserResponseBodyDTO userResponseBodyDTO = new UserResponseBodyDTO()
                 .user(map(user, UserDTO.class));
         return ResponseEntity.ok(userResponseBodyDTO);
+    }
+
+    @Override
+    @RoleAdmin
+    public ResponseEntity<Void> deleteUser(final Long userId) {
+        getRepositoryService().deleteUser(userId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
