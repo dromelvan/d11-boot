@@ -1836,6 +1836,8 @@
 															"  pm.expect(body.user).to.have.property(\"id\");",
 															"  pm.expect(body.user.name).to.eq(pm.environment.get('newUserName'));",
 															"  pm.expect(body.user.administrator).to.eq(false);",
+															"",
+															"  pm.environment.set(\"newUserId\", body.user.id)",
 															"});",
 															"",
 															"",
@@ -2339,11 +2341,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 200\", () => {",
+															"pm.test(\"PUT user status code is 200\", () => {",
 															"  pm.response.to.have.status(200);",
 															"});",
 															"",
-															"pm.test(\"POST user response body\", () => {",
+															"pm.test(\"PUT user response body\", () => {",
 															"  const body = pm.response.json();",
 															"  ",
 															"  pm.expect(body).to.have.property(\"user\");",
@@ -2412,11 +2414,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user status code is 200\", () => {",
+															"pm.test(\"PUT user status code is 200\", () => {",
 															"  pm.response.to.have.status(200);",
 															"});",
 															"",
-															"pm.test(\"POST user response body\", () => {",
+															"pm.test(\"PUT user response body\", () => {",
 															"  const body = pm.response.json();",
 															"  ",
 															"  pm.expect(body).to.have.property(\"user\");",
@@ -2490,7 +2492,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user missing current password status code is 400\", () => {",
+															"pm.test(\"PUT user missing current password status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
@@ -2571,7 +2573,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user invalid user idstatus code is 400\", () => {",
+															"pm.test(\"PUT user invalid user idstatus code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
@@ -2645,7 +2647,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"POST user password mismatch status code is 400\", () => {",
+															"pm.test(\"PUT user password mismatch status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
@@ -2845,7 +2847,7 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT user not current users tatus code is 403\", () => {",
+															"pm.test(\"PUT user not current user status code is 403\", () => {",
 															"  pm.response.to.have.status(403);",
 															"});",
 															""
@@ -3015,6 +3017,510 @@
 														}
 													}
 												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/-1",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"-1"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "DELETE users/{userId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "DELETE users/{userId} - OK",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"DELETE user status code is 204\", () => {",
+															"  pm.response.to.have.status(204);",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{newUserId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{newUserId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "DELETE users/{userId} - Bad Request Invalid User Id",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"DELETE user invalid user idstatus code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"DELETE season invalid user id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"DELETE\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users/invalid\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"userId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"invalid"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "401 Unauthorized",
+									"item": [
+										{
+											"name": "DELETE users/{userId} - Unauthorized No Auth Copy",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"DELETE user no auth status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{userId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "DELETE users/{userId} - Unauthorized Invalid Auth Copy",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"DELETE user invalid auth status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{expiredJwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{userId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{userId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "403 Forbidden",
+									"item": [
+										{
+											"name": "Setup - Login User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{userUsername}}\",\n    \"password\": \"{{userPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "DELETE users/{userId} - Forbidden",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"DELETE user forbidden status code is 403\", () => {",
+															"  pm.response.to.have.status(403);",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/users/{{adminId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"users",
+														"{{adminId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "404 Not Found",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "DELETE users/{userId} - Not Found",
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"exec": [
+															""
+														],
+														"type": "text/javascript"
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"DELETE user not found status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"DELETE user not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"  pm.expect(body.resource).to.eq('User');",
+															"  pm.expect(body.id).to.eq(-1);",
+															"  pm.expect(body.method).to.eq(\"DELETE\");",
+															"  pm.expect(body.path).to.eq(\"/v2/users/-1\");",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "DELETE",
+												"header": [],
 												"url": {
 													"raw": "{{baseUrl}}/v2/users/-1",
 													"host": [
