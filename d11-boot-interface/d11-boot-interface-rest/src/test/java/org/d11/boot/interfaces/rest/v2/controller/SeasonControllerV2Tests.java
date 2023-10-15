@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -49,11 +50,16 @@ class SeasonControllerV2Tests extends D11BootControllerV2Tests {
                      "SeasonController::getSeasonById not found");
     }
 
+    /**
+     * Tests SeasonController::GetSeasons.
+     */
     @Test
     void testGetSeasons() {
         final SeasonApi seasonApi = getApi(SeasonApi.class);
 
         final List<Season> seasons = this.seasonRepository.findByOrderByDateDesc();
+        assertFalse(seasons.isEmpty(), "SeasonController::getSeasons not empty");
+
         final SeasonsResponseBodyDTO seasonsResponseBodyDTO = seasonApi.getSeasons();
 
         assertNotNull(seasonsResponseBodyDTO, "SeasonController::getSeasons not null");

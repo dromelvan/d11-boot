@@ -239,6 +239,25 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  # Countries-----------------------------------------------------------------------------------------------------------
+
+  /v2/countries:
+    get:
+      tags:
+        - country
+      summary: Gets all countries.
+      security: []
+      operationId: getCountries
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CountriesResponseBody"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Season -------------------------------------------------------------------------------------------------------------
 
   /v2/seasons:
@@ -757,6 +776,29 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/User'
+
+    # Country ----------------------------------------------------------------------------------------------------------
+
+    Country:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          type: string
+        iso:
+          type: string
+          pattern: \[A-Z\]{2}
+
+    CountriesResponseBody:
+      type: object
+      required:
+        - countries
+      properties:
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Country'
 
     # Season -----------------------------------------------------------------------------------------------------------
 

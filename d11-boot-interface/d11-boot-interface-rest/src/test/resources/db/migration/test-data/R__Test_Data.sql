@@ -4,6 +4,10 @@ INSERT INTO application_user (name, email, encrypted_password, administrator)
 INSERT INTO application_user (name, email, encrypted_password, administrator)
     VALUES('Administrator', 'administrator@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', true);
 
+-- Country
+INSERT INTO country (name, iso) VALUES('CountryA', 'AA');
+INSERT INTO country (name, iso) VALUES('CountryB', 'BB');
+
 -- Season
 INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date) VALUES('2020-2021', 600, 13, 3, '2020-01-01');
 INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date) VALUES('2021-2022', 600, 13, 1, '2021-01-01');
