@@ -22,13 +22,13 @@ class CountryServiceTests extends BaseD11BootServiceTests {
      * Mocked country repository.
      */
     @Mock
-    private transient CountryRepository countryRepository;
+    private CountryRepository countryRepository;
 
     /**
      * Country service.
      */
     @InjectMocks
-    private transient CountryService countryService;
+    private CountryService countryService;
 
     /**
      * Tests CountryService::getCountries.

@@ -59,31 +59,31 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
      * Mocked refresh token repository.
      */
     @Mock
-    private transient RefreshTokenRepository refreshTokenRepository;
+    private RefreshTokenRepository refreshTokenRepository;
 
     /**
      * Mocked password encoder.
      */
     @Mock
-    private transient PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     /**
      * Mocked JWT builder.
      */
     @Mock
-    private transient JwtBuilder jwtBuilder;
+    private JwtBuilder jwtBuilder;
 
     /**
      * Mocked Java mail sender.
      */
     @Mock
-    private transient JavaMailSender javaMailSender;
+    private JavaMailSender javaMailSender;
 
     /**
      * Security service.
      */
     @InjectMocks
-    private transient SecurityService securityService;
+    private SecurityService securityService;
 
     /**
      * Tests SecurityService::authenticate for a non persistent authentication.

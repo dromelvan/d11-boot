@@ -31,13 +31,13 @@ class SeasonServiceTests extends BaseD11BootServiceTests {
      * Mocked season repository.
      */
     @Mock
-    private transient SeasonRepository seasonRepository;
+    private SeasonRepository seasonRepository;
 
     /**
      * Season service.
      */
     @InjectMocks
-    private transient SeasonService seasonService;
+    private SeasonService seasonService;
 
     /**
      * Tests SeasonService::getById.
