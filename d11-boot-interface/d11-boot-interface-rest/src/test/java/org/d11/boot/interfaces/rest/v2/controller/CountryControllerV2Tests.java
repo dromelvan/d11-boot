@@ -26,7 +26,7 @@ class CountryControllerV2Tests extends D11BootControllerV2Tests {
     private CountryRepository countryRepository;
 
     /**
-     * Tests CountryController::GetCountries.
+     * Tests CountryController::getCountries.
      */
     @Test
     void testGetCountries() {
@@ -47,8 +47,7 @@ class CountryControllerV2Tests extends D11BootControllerV2Tests {
             final Country country = countries.get(i);
             final CountryDTO countryDTO = result.get(i);
 
-            assertEquals(map(country, CountryDTO.class), countryDTO,
-                         "CountryController::getCountries equals");
+            assertEquals(map(country, CountryDTO.class), countryDTO, "CountryController::getCountries equals");
         }
     }
 

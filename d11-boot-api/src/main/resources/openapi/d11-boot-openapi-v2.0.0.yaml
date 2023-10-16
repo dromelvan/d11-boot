@@ -239,7 +239,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  # Countries-----------------------------------------------------------------------------------------------------------
+  # Countries ----------------------------------------------------------------------------------------------------------
 
   /v2/countries:
     get:
@@ -255,6 +255,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CountriesResponseBody"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  # Positions ----------------------------------------------------------------------------------------------------------
+
+  /v2/positions:
+    get:
+      tags:
+        - position
+      summary: Gets all positions.
+      security: []
+      operationId: getPositions
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PositionsResponseBody"
         500:
           $ref: '#/components/responses/InternalServerError'
 
@@ -781,6 +800,10 @@ components:
 
     Country:
       type: object
+      required:
+        - id
+        - name
+        - iso
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -799,6 +822,44 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Country'
+
+    # Position----------------------------------------------------------------------------------------------------------
+
+    Position:
+      type: object
+      required:
+        - id
+        - name
+        - code
+        - maxCount
+        - defender
+        - sortOrder
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          type: string
+        code:
+          type: string
+          pattern: \[A-Z\]{3}
+        maxCount:
+          type: integer
+          format: int32
+        defender:
+          type: boolean
+        sortOrder:
+          type: integer
+          format: int32
+
+    PositionsResponseBody:
+      type: object
+      required:
+        - positions
+      properties:
+        positions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Position'
 
     # Season -----------------------------------------------------------------------------------------------------------
 

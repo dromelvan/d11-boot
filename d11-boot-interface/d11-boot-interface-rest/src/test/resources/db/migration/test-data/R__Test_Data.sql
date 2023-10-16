@@ -8,6 +8,16 @@ INSERT INTO application_user (name, email, encrypted_password, administrator)
 INSERT INTO country (name, iso) VALUES('CountryA', 'AA');
 INSERT INTO country (name, iso) VALUES('CountryB', 'BB');
 
+-- Position
+INSERT INTO position (name, code, max_count, defender, sort_order)
+VALUES('Goalkeeper', 'GK', 1, true, 1);
+INSERT INTO position (name, code, max_count, defender, sort_order)
+VALUES('Defender', 'D', 4, true, 2);
+INSERT INTO position (name, code, max_count, defender, sort_order)
+VALUES('Midfielder', 'MF', 4, false, 3);
+INSERT INTO position (name, code, max_count, defender, sort_order)
+VALUES('Forward', 'F', 2, false, 4);
+
 -- Season
 INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date) VALUES('2020-2021', 600, 13, 3, '2020-01-01');
 INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date) VALUES('2021-2022', 600, 13, 1, '2021-01-01');
