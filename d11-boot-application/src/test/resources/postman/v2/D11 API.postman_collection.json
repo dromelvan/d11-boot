@@ -3542,6 +3542,65 @@
 					]
 				},
 				{
+					"name": "countries",
+					"item": [
+						{
+							"name": "GET countries",
+							"item": [
+								{
+									"name": "GET countries - OK",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"GET countries status code is 200\", () => {",
+													"  pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"GET countries response body\", () => {",
+													"  const body = pm.response.json();",
+													"",
+													"  pm.expect(body).to.have.property(\"countries\");",
+													"",
+													"  pm.expect(body.countries.length).to.eq(2);",
+													"",
+													"  const letters = [ \"A\", \"B\" ];",
+													"",
+													"  for (let i = 0; i < body.countries.length; ++i) {",
+													"    pm.expect(body.countries[i].id).to.eq(i + 1);",
+													"    pm.expect(body.countries[i].name).to.eq(\"Country\" + letters[i]);",
+													"    pm.expect(body.countries[i].iso).to.eq(letters[i] +  letters[i]);",
+													"  }",
+													"",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/v2/countries",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"v2",
+												"countries"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
 					"name": "seasons",
 					"item": [
 						{
