@@ -258,6 +258,25 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  # Teams --------------------------------------------------------------------------------------------------------------
+
+  /v2/teams:
+    get:
+      tags:
+        - team
+      summary: Gets all teams.
+      security: []
+      operationId: getTeams
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamsResponseBody"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Positions ----------------------------------------------------------------------------------------------------------
 
   /v2/positions:
@@ -822,6 +841,60 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Country'
+
+    # Team -------------------------------------------------------------------------------------------------------------
+
+    Team:
+      type: object
+      required:
+        - id
+        - whoscoredId
+        - premierLeagueId
+        - name
+        - shortName
+        - code
+        - established
+        - colour
+        - dummy
+        - photoFileName
+        - url
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        whoscoredId:
+          type: integer
+          format: int32
+        premierLeagueId:
+          type: integer
+          format: int32
+        name:
+          type: string
+        shortName:
+          type: string
+        code:
+          type: string
+          pattern: \[A-Z\]{3}
+        established:
+          type: integer
+          format: int32
+        color:
+          type: string
+        dummy:
+          type: boolean
+        photoFileName:
+          type: string
+        url:
+          type: string
+
+    TeamsResponseBody:
+      type: object
+      required:
+        - teams
+      properties:
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
 
     # Position----------------------------------------------------------------------------------------------------------
 

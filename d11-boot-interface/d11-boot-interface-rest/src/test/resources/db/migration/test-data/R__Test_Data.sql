@@ -8,6 +8,20 @@ INSERT INTO application_user (name, email, encrypted_password, administrator)
 INSERT INTO country (name, iso) VALUES('CountryA', 'AA');
 INSERT INTO country (name, iso) VALUES('CountryB', 'BB');
 
+-- Stadium
+INSERT INTO stadium (name, city, capacity, opened, photo_file_name)
+VALUES('StadiumA', 'CityA', 11111, 2020, '1.png');
+INSERT INTO stadium (name, city, capacity, opened, photo_file_name)
+VALUES('StadiumB', 'CityB', 22222, 2020, '2.png');
+
+-- Team
+INSERT INTO team (stadium_id, whoscored_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
+VALUES(1, 11, 1, 'None', 'None', 'DUM', 2020, 'None', true, null, 'https://test.com');
+INSERT INTO team (stadium_id, whoscored_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
+VALUES(1, 11111, 2, 'TeamA', 'ShortA', 'TMA', 2020, 'ColourA', false, '1.png', 'https://test.com');
+INSERT INTO team (stadium_id, whoscored_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
+VALUES(2, 22222, 3, 'TeamB', 'ShortB', 'TMB', 2020, 'ColourB', false, '2.png', 'https://test.com');
+
 -- Position
 INSERT INTO position (name, code, max_count, defender, sort_order)
 VALUES('Goalkeeper', 'GK', 1, true, 1);
