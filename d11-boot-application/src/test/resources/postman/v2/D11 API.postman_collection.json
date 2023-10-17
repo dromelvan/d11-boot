@@ -3601,6 +3601,68 @@
 					]
 				},
 				{
+					"name": "positions",
+					"item": [
+						{
+							"name": "GET positions",
+							"item": [
+								{
+									"name": "GET positions - OK",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"GET positions status code is 200\", () => {",
+													"  pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"GET positions response body\", () => {",
+													"  const body = pm.response.json();",
+													"",
+													"  pm.expect(body).to.have.property(\"positions\");",
+													"",
+													"  const positions = JSON.parse(pm.environment.get(\"positions\"));",
+													"",
+													"  pm.expect(body.positions.length).to.eq(positions.length);",
+													"",
+													"  for (let i = 0; i < body.positions.length; ++i) {",
+													"    pm.expect(body.positions[i].id).to.eq(positions[i].id);",
+													"    pm.expect(body.positions[i].name).to.eq(positions[i].name);",
+													"    pm.expect(body.positions[i].code).to.eq(positions[i].code);",
+													"    pm.expect(body.positions[i].maxCount).to.eq(positions[i].maxCount);",
+													"    pm.expect(body.positions[i].defender).to.eq(positions[i].defender);",
+													"    pm.expect(body.positions[i].sortOrder).to.eq(positions[i].sortOrder);",
+													"  }",
+													"",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/v2/positions",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"v2",
+												"positions"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
 					"name": "seasons",
 					"item": [
 						{
