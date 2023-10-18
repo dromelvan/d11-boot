@@ -22,6 +22,14 @@ VALUES(1, 11111, 2, 'TeamA', 'ShortA', 'TMA', 2020, 'ColourA', false, '1.png', '
 INSERT INTO team (stadium_id, whoscored_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
 VALUES(2, 22222, 3, 'TeamB', 'ShortB', 'TMB', 2020, 'ColourB', false, '2.png', 'https://test.com');
 
+-- D11 Team
+INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)
+VALUES(null, null, 'None', 'None', 'DUM', false, null);
+INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)
+VALUES(1, null, 'D11TeamA', 'ShortA', 'DTA', true, '1.png');
+INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)
+VALUES(2, null, 'D11TeamB', 'ShortB', 'DTB', false, '2.png');
+
 -- Position
 INSERT INTO position (name, code, max_count, defender, sort_order)
 VALUES('Goalkeeper', 'GK', 1, true, 1);
