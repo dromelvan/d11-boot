@@ -3601,6 +3601,72 @@
 					]
 				},
 				{
+					"name": "teams",
+					"item": [
+						{
+							"name": "GET teams",
+							"item": [
+								{
+									"name": "GET teams - OK",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"GET teams status code is 200\", () => {",
+													"  pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"GET teams response body\", () => {",
+													"  const body = pm.response.json();",
+													"",
+													"  pm.expect(body).to.have.property(\"teams\");",
+													"",
+													"  const teams = JSON.parse(pm.environment.get(\"teams\"));",
+													"",
+													"  pm.expect(body.teams.length).to.eq(teams.length);",
+													"",
+													"  for (let i = 0; i < body.teams.length; ++i) {",
+													"    pm.expect(body.teams[i].id).to.eq(teams[i].id);",
+													"    pm.expect(body.teams[i].whoscoredId).to.eq(teams[i].whoscoredId);",
+													"    pm.expect(body.teams[i].premierLeagueId).to.eq(teams[i].premierLeagueId);",
+													"    pm.expect(body.teams[i].name).to.eq(teams[i].name);",
+													"    pm.expect(body.teams[i].shortName).to.eq(teams[i].shortName);",
+													"    pm.expect(body.teams[i].code).to.eq(teams[i].code);",
+													"    pm.expect(body.teams[i].color).to.eq(teams[i].color);",
+													"    pm.expect(body.teams[i].dummy).to.eq(teams[i].dummy);",
+													"    pm.expect(body.teams[i].photoFileName).to.eq(teams[i].photoFileName);",
+													"    pm.expect(body.teams[i].url).to.eq(teams[i].url);",
+													"  }",
+													"",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/v2/teams",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"v2",
+												"teams"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
 					"name": "positions",
 					"item": [
 						{
