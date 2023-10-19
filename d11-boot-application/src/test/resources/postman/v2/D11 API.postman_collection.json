@@ -3667,6 +3667,68 @@
 					]
 				},
 				{
+					"name": "d11-teams",
+					"item": [
+						{
+							"name": "GET d11-teams",
+							"item": [
+								{
+									"name": "GET d11-teams - OK",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"GET D11 teams status code is 200\", () => {",
+													"  pm.response.to.have.status(200);",
+													"});",
+													"",
+													"pm.test(\"GET D11 teams response body\", () => {",
+													"  const body = pm.response.json();",
+													"",
+													"  pm.expect(body).to.have.property(\"d11Teams\");",
+													"",
+													"  const d11Teams = JSON.parse(pm.environment.get(\"d11Teams\"));",
+													"",
+													"  pm.expect(body.d11Teams.length).to.eq(d11Teams.length);",
+													"",
+													"  for (let i = 0; i < body.d11Teams.length; ++i) {",
+													"    pm.expect(body.d11Teams[i].id).to.eq(d11Teams[i].id);",
+													"    pm.expect(body.d11Teams[i].name).to.eq(d11Teams[i].name);",
+													"    pm.expect(body.d11Teams[i].shortName).to.eq(d11Teams[i].shortName);",
+													"    pm.expect(body.d11Teams[i].code).to.eq(d11Teams[i].code);",
+													"    pm.expect(body.d11Teams[i].dummy).to.eq(d11Teams[i].dummy);",
+													"    pm.expect(body.d11Teams[i].photoFileName).to.eq(d11Teams[i].photoFileName);",
+													"  }",
+													"",
+													"});",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/v2/d11-teams",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"v2",
+												"d11-teams"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
 					"name": "positions",
 					"item": [
 						{
