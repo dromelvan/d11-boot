@@ -15,22 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Transfer day repository tests.
  */
-class TransferDayRepositoryTests extends D11BootRepositoryTests<TransferDay, TransferDayRepository> {
-
-    /**
-     * Creates new transfer day repository tests.
-     */
-    TransferDayRepositoryTests() {
-        super(TransferDay.class);
-    }
-
-    @Override
-    protected void beforeSave(final TransferDay transferDay) {
-        super.beforeSave(transferDay);
-        transferDay.getTransferWindow().setId(null);
-        transferDay.getTransferWindow().getMatchWeek().setId(null);
-        transferDay.getTransferWindow().getMatchWeek().getSeason().setId(null);
-    }
+class TransferDayRepositoryTests extends AbstractRepositoryTests<TransferDay, TransferDayRepository> {
 
     /**
      * Tests TransferDayRepository::findFirstByOrderByDatetimeDesc.

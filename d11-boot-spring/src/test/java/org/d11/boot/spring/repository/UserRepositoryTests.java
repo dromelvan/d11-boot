@@ -9,14 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * User repository tests.
  */
-class UserRepositoryTests extends D11BootRepositoryTests<User, UserRepository> {
-
-    /**
-     * Creates new User repository tests.
-     */
-    UserRepositoryTests() {
-        super(User.class);
-    }
+class UserRepositoryTests extends AbstractRepositoryTests<User, UserRepository> {
 
     /**
      * Tests UserRepository::findByName.

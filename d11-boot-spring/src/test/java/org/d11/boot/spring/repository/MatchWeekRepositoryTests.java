@@ -15,20 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Match week repository tests.
  */
-class MatchWeekRepositoryTests extends D11BootRepositoryTests<MatchWeek, MatchWeekRepository> {
-
-    /**
-     * Creates new match week repository tests.
-     */
-    MatchWeekRepositoryTests() {
-        super(MatchWeek.class);
-    }
-
-    @Override
-    protected void beforeSave(final MatchWeek matchWeek) {
-        super.beforeSave(matchWeek);
-        matchWeek.getSeason().setId(null);
-    }
+class MatchWeekRepositoryTests extends AbstractRepositoryTests<MatchWeek, MatchWeekRepository> {
 
     /**
      * Tests MatchWeekRepository::findFirstByDateLessThanEqualOrderByDateDesc.

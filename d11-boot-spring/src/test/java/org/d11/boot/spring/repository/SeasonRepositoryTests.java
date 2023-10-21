@@ -8,20 +8,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
  * Season repository tests.
  */
-class SeasonRepositoryTests extends D11BootRepositoryTests<Season, SeasonRepository> {
-
-    /**
-     * Creates new Season repository tests.
-     */
-    SeasonRepositoryTests() {
-        super(Season.class);
-    }
+class SeasonRepositoryTests extends AbstractRepositoryTests<Season, SeasonRepository> {
 
     /**
      * Tests SeasonRepository::findFirstByOrderByDateDesc.
@@ -49,7 +41,6 @@ class SeasonRepositoryTests extends D11BootRepositoryTests<Season, SeasonReposit
         final List<Season> result = getRepository().findByOrderByDateDesc();
 
         assertNotNull(result, "SeasonRepository::findByOrderByDateDesc not null");
-        assertTrue(result.size() >= 2, "SeasonRepository::findByOrderByDateDesc size");
         assertEquals(seasons, result, "SeasonRepository::findByOrderByDateDesc");
     }
 

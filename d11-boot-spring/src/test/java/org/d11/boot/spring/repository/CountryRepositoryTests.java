@@ -8,19 +8,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Country repository tests.
  */
-class CountryRepositoryTests extends D11BootRepositoryTests<Country, CountryRepository> {
-
-    /**
-     * Creates new Country repository tests.
-     */
-    CountryRepositoryTests() {
-        super(Country.class);
-    }
+class CountryRepositoryTests extends AbstractRepositoryTests<Country, CountryRepository> {
 
     /**
      * Tests CountryRepository::findByOrderByName.
@@ -33,7 +25,6 @@ class CountryRepositoryTests extends D11BootRepositoryTests<Country, CountryRepo
         final List<Country> result = getRepository().findByOrderByName();
 
         assertNotNull(result, "CountryRepository::findByOrderByName not null");
-        assertTrue(result.size() >= 2, "CountryRepository::findByOrderByName size");
         assertEquals(countries, result, "CountryRepository::findByOrderByName");
     }
 

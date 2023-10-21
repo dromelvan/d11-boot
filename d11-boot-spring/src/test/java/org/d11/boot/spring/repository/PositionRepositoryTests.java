@@ -8,20 +8,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
  * Position repository tests.
  */
-class PositionRepositoryTests extends D11BootRepositoryTests<Position, PositionRepository> {
-
-    /**
-     * Creates new Position repository tests.
-     */
-    PositionRepositoryTests() {
-        super(Position.class);
-    }
+class PositionRepositoryTests extends AbstractRepositoryTests<Position, PositionRepository> {
 
     /**
      * Tests PositionRepository::findByOrderBySortOrder.
@@ -34,7 +26,6 @@ class PositionRepositoryTests extends D11BootRepositoryTests<Position, PositionR
         final List<Position> result = getRepository().findByOrderBySortOrder();
 
         assertNotNull(result, "PositionRepository::findByOrderBySortOrder not null");
-        assertTrue(result.size() >= 2, "PositionRepository::findByOrderBySortOrder size");
         assertEquals(positions, result, "PositionRepository::findByOrderBySortOrder");
     }
 

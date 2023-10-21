@@ -12,20 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * Player repository tests.
  */
-class PlayerRepositoryTests extends D11BootRepositoryTests<Player, PlayerRepository> {
-
-    /**
-     * Creates new Player repository tests.
-     */
-    PlayerRepositoryTests() {
-        super(Player.class);
-    }
-
-    @Override
-    protected void beforeSave(final Player player) {
-        super.beforeSave(player);
-        player.getCountry().setId(null);
-    }
+class PlayerRepositoryTests extends AbstractRepositoryTests<Player, PlayerRepository> {
 
     /**
      * Tests PlayerRepository::findByWhoscoredId.

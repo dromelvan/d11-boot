@@ -18,31 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Transfer listing repository tests.
  */
-class TransferListingRepositoryTests extends D11BootRepositoryTests<TransferListing, TransferListingRepository> {
-
-    /**
-     * Creates new transfer listing repository tests.
-     */
-    TransferListingRepositoryTests() {
-        super(TransferListing.class);
-    }
-
-    @Override
-    protected void beforeSave(final TransferListing transferListing) {
-        super.beforeSave(transferListing);
-        transferListing.getTransferDay().setId(null);
-        transferListing.getTransferDay().getTransferWindow().setId(null);
-        transferListing.getTransferDay().getTransferWindow().getMatchWeek().setId(null);
-        transferListing.getTransferDay().getTransferWindow().getMatchWeek().getSeason().setId(null);
-        transferListing.getPlayer().setId(null);
-        transferListing.getPlayer().getCountry().setId(null);
-        transferListing.getTeam().setId(null);
-        transferListing.getTeam().getStadium().setId(null);
-        transferListing.getD11Team().setId(null);
-        transferListing.getD11Team().getOwner().setId(null);
-        transferListing.getD11Team().getCoOwner().setId(null);
-        transferListing.getPosition().setId(null);
-    }
+class TransferListingRepositoryTests extends AbstractRepositoryTests<TransferListing, TransferListingRepository> {
 
     /**
      * Tests TransferListingRepository::findByTransferDayIdAndPlayerId.
@@ -83,7 +59,7 @@ class TransferListingRepositoryTests extends D11BootRepositoryTests<TransferList
 
         final List<TransferListing> expected = entities.subList(0, 2);
 
-        final int pageSize = 5;
+        final int pageSize = 2;
         final String sortBy = "ranking";
         Pageable pageable = PageRequest.of(0, pageSize, Sort.by(sortBy));
 

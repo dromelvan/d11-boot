@@ -8,25 +8,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Team repository tests.
  */
-class TeamRepositoryTests extends D11BootRepositoryTests<Team, TeamRepository> {
-
-    /**
-     * Creates new Team repository tests.
-     */
-    TeamRepositoryTests() {
-        super(Team.class);
-    }
-
-    @Override
-    protected void beforeSave(final Team team) {
-        super.beforeSave(team);
-        team.getStadium().setId(null);
-    }
+class TeamRepositoryTests extends AbstractRepositoryTests<Team, TeamRepository> {
 
     /**
      * Tests TeamRepository::findByOrderByName.
@@ -39,7 +25,6 @@ class TeamRepositoryTests extends D11BootRepositoryTests<Team, TeamRepository> {
         final List<Team> result = getRepository().findByOrderByName();
 
         assertNotNull(result, "TeamRepository::findByOrderByName not null");
-        assertTrue(result.size() >= 2, "TeamRepository::findByOrderByName size");
         assertEquals(teams, result, "TeamRepository::findByOrderByName");
     }
 

@@ -16,27 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Transfer window repository tests.
  */
-class TransferWindowRepositoryTests extends D11BootRepositoryTests<TransferWindow, TransferWindowRepository> {
+class TransferWindowRepositoryTests extends AbstractRepositoryTests<TransferWindow, TransferWindowRepository> {
 
     /**
      * Updates match weeks.
      */
     @Autowired
     private MatchWeekRepository matchWeekRepository;
-
-    /**
-     * Creates new transfer window repository tests.
-     */
-    TransferWindowRepositoryTests() {
-        super(TransferWindow.class);
-    }
-
-    @Override
-    protected void beforeSave(final TransferWindow transferWindow) {
-        super.beforeSave(transferWindow);
-        transferWindow.getMatchWeek().setId(null);
-        transferWindow.getMatchWeek().getSeason().setId(null);
-    }
 
     /**
      * Tests TransferWindowRepository::findFirstByOrderByDatetimeDesc.

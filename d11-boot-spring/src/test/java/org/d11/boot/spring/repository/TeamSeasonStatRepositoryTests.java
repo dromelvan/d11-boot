@@ -16,22 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Team season stat repository tests.
  */
-class TeamSeasonStatRepositoryTests extends D11BootRepositoryTests<TeamSeasonStat, TeamSeasonStatRepository> {
-
-    /**
-     * Creates new team season stat repository tests.
-     */
-    TeamSeasonStatRepositoryTests() {
-        super(TeamSeasonStat.class);
-    }
-
-    @Override
-    protected void beforeSave(final TeamSeasonStat teamSeasonStat) {
-        super.beforeSave(teamSeasonStat);
-        teamSeasonStat.getSeason().setId(null);
-        teamSeasonStat.getTeam().setId(null);
-        teamSeasonStat.getTeam().getStadium().setId(null);
-    }
+class TeamSeasonStatRepositoryTests extends AbstractRepositoryTests<TeamSeasonStat, TeamSeasonStatRepository> {
 
     /**
      * Tests TeamSeasonStatRepository::findBySeasonIdOrderByRanking.

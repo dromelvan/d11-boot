@@ -5,38 +5,20 @@ import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Season;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Player season stat repository tests.
  */
-class PlayerSeasonStatRepositoryTests extends D11BootRepositoryTests<PlayerSeasonStat, PlayerSeasonStatRepository> {
-
-    /**
-     * Creates new player match stat repository tests.
-     */
-    PlayerSeasonStatRepositoryTests() {
-        super(PlayerSeasonStat.class);
-    }
-
-    @Override
-    protected void beforeSave(final PlayerSeasonStat playerSeasonStat) {
-        super.beforeSave(playerSeasonStat);
-        playerSeasonStat.getPosition().setId(null);
-        playerSeasonStat.getSeason().setId(null);
-        playerSeasonStat.getPlayer().setId(null);
-        playerSeasonStat.getPlayer().getCountry().setId(null);
-        playerSeasonStat.getTeam().setId(null);
-        playerSeasonStat.getTeam().getStadium().setId(null);
-        playerSeasonStat.getD11Team().setId(null);
-        playerSeasonStat.getD11Team().getOwner().setId(null);
-        playerSeasonStat.getD11Team().getCoOwner().setId(null);
-    }
+class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeasonStat, PlayerSeasonStatRepository> {
 
     /**
      * Tests PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc.
@@ -44,22 +26,30 @@ class PlayerSeasonStatRepositoryTests extends D11BootRepositoryTests<PlayerSeaso
     @Test
     void testFindByPlayerIdOrderBySeasonIdDesc() {
         final List<PlayerSeasonStat> entities = getEntities();
-        // Set the player for the first two entities to the same one to ensure we get a result with more than one
-        // but not all player season stats.
-        final Player player = entities.get(0).getPlayer();
-        entities.get(1).setPlayer(player);
+        entities.sort(Comparator.comparing(playerSeasonStat -> playerSeasonStat.getSeason().getId(),
+                                           Comparator.reverseOrder()));
 
-        getRepository().save(entities.get(1));
+        final Set<Player> players = entities.stream()
+                .map(PlayerSeasonStat::getPlayer).collect(Collectors.toSet());
 
-        final List<PlayerSeasonStat> expected = Arrays.asList(entities.get(0), entities.get(1));
-        expected.sort(Comparator.comparingLong(playerSeasonStat -> -1 * playerSeasonStat.getSeason().getId()));
+        assertTrue(players.size() > 1,
+                   "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc players size > 1");
 
-        final List<PlayerSeasonStat> result = getRepository().findByPlayerIdOrderBySeasonIdDesc(player.getId());
+        for (final Player player : players) {
+            final List<PlayerSeasonStat> result = getRepository().findByPlayerIdOrderBySeasonIdDesc(player.getId());
 
-        assertNotNull(result, "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc not null");
-        assertEquals(expected, result, "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc equals");
+            final List<PlayerSeasonStat> expected = entities.stream()
+                    .filter(playerSeasonStat -> playerSeasonStat.getPlayer().equals(player))
+                    .toList();
+
+            assertTrue(expected.size() > 1,
+                       "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc expected size > 1");
+
+            assertNotNull(result, "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc not null ");
+            assertFalse(result.isEmpty(), "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc empty");
+            assertEquals(expected, result, "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc equals");
+        }
     }
-
 
     /**
      * Tests PlayerSeasonStatRepository::findBySeasonId.
@@ -67,21 +57,25 @@ class PlayerSeasonStatRepositoryTests extends D11BootRepositoryTests<PlayerSeaso
     @Test
     void testFindBySeasonId() {
         final List<PlayerSeasonStat> entities = getEntities();
-        // Set the season for the first two entities to the same one to ensure we get a result with more than one
-        // but not all player season stats.
-        final Season season = entities.get(0).getSeason();
-        entities.get(1).setSeason(season);
 
-        getRepository().save(entities.get(1));
+        final Set<Season> seasons = entities.stream()
+                .map(PlayerSeasonStat::getSeason).collect(Collectors.toSet());
 
-        final List<PlayerSeasonStat> expected = Arrays.asList(entities.get(0), entities.get(1));
-        expected.sort(Comparator.naturalOrder());
+        assertTrue(seasons.size() > 1, "PlayerSeasonStatRepository::findBySeasonId seasons size > 1");
 
-        final List<PlayerSeasonStat> result = getRepository().findBySeasonId(season.getId());
-        result.sort(Comparator.naturalOrder());
+        for (final Season season : seasons) {
+            final List<PlayerSeasonStat> result = getRepository().findBySeasonId(season.getId());
 
-        assertNotNull(result, "PlayerSeasonStatRepository::findBySeasonId not null");
-        assertEquals(expected, result, "PlayerSeasonStatRepository::findBySeasonId equals");
+            final List<PlayerSeasonStat> expected = entities.stream()
+                    .filter(playerSeasonStat -> playerSeasonStat.getSeason().equals(season))
+                    .toList();
+
+            assertTrue(expected.size() > 1, "PlayerSeasonStatRepository::findBySeasonId expected size > 1");
+
+            assertNotNull(result, "PlayerSeasonStatRepository::findBySeasonId not null ");
+            assertFalse(result.isEmpty(), "PlayerSeasonStatRepository::findBySeasonId empty");
+            assertEquals(expected, result, "PlayerSeasonStatRepository::findBySeasonId equals");
+        }
     }
 
 }

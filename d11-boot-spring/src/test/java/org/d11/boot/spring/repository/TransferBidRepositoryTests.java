@@ -1,93 +1,75 @@
 package org.d11.boot.spring.repository;
 
-import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferBid;
 import org.d11.boot.spring.model.TransferDay;
 import org.junit.jupiter.api.Test;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Transfer bid repository tests.
  */
-class TransferBidRepositoryTests extends D11BootRepositoryTests<TransferBid, TransferBidRepository> {
-
-    /**
-     * Creates new transfer bid repository tests.
-     */
-    TransferBidRepositoryTests() {
-        super(TransferBid.class);
-    }
-
-    @Override
-    protected void beforeSave(final TransferBid transferBid) {
-        super.beforeSave(transferBid);
-        transferBid.getTransferDay().setId(null);
-        transferBid.getTransferDay().getTransferWindow().setId(null);
-        transferBid.getTransferDay().getTransferWindow().getMatchWeek().setId(null);
-        transferBid.getTransferDay().getTransferWindow().getMatchWeek().getSeason().setId(null);
-        transferBid.getPlayer().setId(null);
-        transferBid.getPlayer().getCountry().setId(null);
-        transferBid.getD11Team().setId(null);
-        transferBid.getD11Team().getOwner().setId(null);
-        transferBid.getD11Team().getCoOwner().setId(null);
-        transferBid.setFee(Transfer.FEE_DIVISOR);
-    }
+class TransferBidRepositoryTests extends AbstractRepositoryTests<TransferBid, TransferBidRepository> {
 
     /**
      * Tests TransferBidRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc.
      */
     @Test
-    @SuppressWarnings("checkstyle:MagicNumber")
     void testFindByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc() {
         final List<TransferBid> entities = getEntities();
-        // Set transfer day of the first few entities to the same one so the query finds some but not all of them.
-        final TransferDay transferDay = entities.get(0).getTransferDay();
+        entities.sort(Comparator
+                              .comparing(TransferBid::getPlayerRanking)
+                              .thenComparing(TransferBid::getActiveFee, Comparator.reverseOrder())
+                              .thenComparing(TransferBid::getD11TeamRanking, Comparator.reverseOrder()));
 
-        // Sort by player ranking first
-        entities.get(0).setPlayerRanking(1);
+        final Set<TransferDay> transferDays = entities.stream()
+                .map(TransferBid::getTransferDay).collect(Collectors.toSet());
 
-        // If player ranking is equal sort by active fee descending
-        entities.get(1).setPlayerRanking(2);
-        entities.get(1).setActiveFee(Transfer.FEE_DIVISOR * 2);
-        entities.get(1).setTransferDay(transferDay);
+        assertTrue(transferDays.size() > 1,
+                   """
+                   TransferRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc
+                   transferDays size > 1
+                   """);
 
-        entities.get(2).setPlayerRanking(2);
-        entities.get(2).setActiveFee(Transfer.FEE_DIVISOR);
-        entities.get(2).setTransferDay(transferDay);
+        for (final TransferDay transferDay : transferDays) {
+            final long id = transferDay.getId();
+            final List<TransferBid> result =
+                    getRepository().findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(id);
 
-        // If player ranking and active fee is equal sort by D11 team ranking descending
-        entities.get(3).setPlayerRanking(3);
-        entities.get(3).setActiveFee(Transfer.FEE_DIVISOR);
-        entities.get(3).setD11TeamRanking(2);
-        entities.get(3).setTransferDay(transferDay);
+            final List<TransferBid> expected = entities.stream()
+                    .filter(transferBid -> transferBid.getTransferDay().equals(transferDay))
+                    .toList();
 
-        entities.get(4).setPlayerRanking(3);
-        entities.get(4).setActiveFee(Transfer.FEE_DIVISOR);
-        entities.get(4).setD11TeamRanking(1);
-        entities.get(4).setTransferDay(transferDay);
+            assertTrue(expected.size() > 1,
+                       """
+                       TransferRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc
+                       expected size > 1
+                       """);
 
-        getRepository().saveAll(entities);
-
-        final List<TransferBid> expected = entities.subList(0, 5);
-
-        final List<TransferBid> result =
-                getRepository()
-                        .findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(transferDay.getId());
-
-        assertNotNull(result,
-                      """
-                      TransferBidRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc
-                      not null
-                      """);
-        assertEquals(expected, result,
-                     """
-                     TransferBidRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc
-                     equals
-                     """);
+            assertNotNull(result,
+                          """
+                          TransferRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc
+                          not null
+                          """);
+            assertFalse(result.isEmpty(),
+                        """
+                        TransferRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc
+                        empty
+                        """);
+            assertEquals(expected, result,
+                         """
+                         TransferRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc 
+                         equals
+                         """);
+        }
     }
 
 }

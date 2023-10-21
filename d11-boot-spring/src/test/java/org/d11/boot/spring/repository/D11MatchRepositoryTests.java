@@ -1,13 +1,17 @@
 package org.d11.boot.spring.repository;
 
-import org.d11.boot.spring.model.D11Entity;
 import org.d11.boot.spring.model.D11Match;
+import org.d11.boot.spring.model.D11Team;
+import org.d11.boot.spring.model.Season;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,27 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * D11Match repository tests.
  */
-class D11MatchRepositoryTests extends D11BootRepositoryTests<D11Match, D11MatchRepository> {
-
-    /**
-     * Creates new D11 match repository tests.
-     */
-    D11MatchRepositoryTests() {
-        super(D11Match.class);
-    }
-
-    @Override
-    protected void beforeSave(final D11Match d11Match) {
-        super.beforeSave(d11Match);
-        d11Match.getMatchWeek().setId(null);
-        d11Match.getMatchWeek().getSeason().setId(null);
-        d11Match.getHomeD11Team().setId(null);
-        d11Match.getHomeD11Team().getOwner().setId(null);
-        d11Match.getHomeD11Team().getCoOwner().setId(null);
-        d11Match.getAwayD11Team().setId(null);
-        d11Match.getAwayD11Team().getOwner().setId(null);
-        d11Match.getAwayD11Team().getCoOwner().setId(null);
-    }
+class D11MatchRepositoryTests extends AbstractRepositoryTests<D11Match, D11MatchRepository> {
 
     /**
      * Tests D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime.
@@ -43,54 +27,44 @@ class D11MatchRepositoryTests extends D11BootRepositoryTests<D11Match, D11MatchR
     @Test
     void testFindByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime() {
         final List<D11Match> entities = getEntities();
-        final D11Match d11Match = entities.get(0);
-        entities.get(1).setHomeD11Team(d11Match.getHomeD11Team());
-        entities.get(1).setMatchWeek(d11Match.getMatchWeek());
+        entities.sort(Comparator.comparing(D11Match::getDatetime));
 
-        final List<Long> matchIds = entities.stream()
-                .filter(filteredMatch ->
-                                (filteredMatch.getHomeD11Team().equals(d11Match.getHomeD11Team())
-                                 || filteredMatch.getAwayD11Team().equals(d11Match.getAwayD11Team()))
-                                && filteredMatch.getMatchWeek().getSeason().equals(d11Match.getMatchWeek().getSeason()))
-                .sorted(Comparator.comparing(D11Match::getDatetime))
-                .mapToLong(D11Entity::getId)
-                .boxed()
-                .toList();
+        final Set<D11Team> d11Teams = entities.stream()
+                .map(D11Match::getHomeD11Team).collect(Collectors.toSet());
+        d11Teams.addAll(entities.stream()
+                                .map(D11Match::getAwayD11Team).collect(Collectors.toSet()));
+        final Set<Season> seasons = entities.stream()
+                .map(d11Match -> d11Match.getMatchWeek().getSeason())
+                .collect(Collectors.toSet());
 
-        final List<Long> result = getRepository()
-                .findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime(d11Match.getHomeD11Team().getId(),
-                                                                    d11Match.getMatchWeek().getSeason().getId());
+        assertTrue(d11Teams.size() > 1,
+                   "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime d11Teams size > 1");
+        assertTrue(seasons.size() > 1,
+                   "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime seasons size > 1");
 
-        assertNotNull(result, "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime not null");
-        assertTrue(result.size() > 1, "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime size");
-        assertEquals(matchIds, result, "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime equals");
-    }
+        for (final D11Team d11Team : d11Teams) {
+            for (final Season season : seasons) {
+                final List<D11Match> result =
+                        getRepository().findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime(d11Team.getId(),
+                                                                                                season.getId());
 
-    /**
-     * Tests D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonId.
-     */
-    @Test
-    void testFindByD11TeamIdAndMatchWeekSeasonId() {
-        final List<D11Match> entities = getEntities();
-        final D11Match d11Match = entities.get(0);
-        entities.get(1).setHomeD11Team(d11Match.getHomeD11Team());
-        entities.get(1).setMatchWeek(d11Match.getMatchWeek());
+                final List<D11Match> expected = entities.stream()
+                        .filter(d11Match -> (d11Match.getHomeD11Team().equals(d11Team)
+                                             || d11Match.getAwayD11Team().equals(d11Team))
+                                            && d11Match.getMatchWeek().getSeason().equals(season))
+                        .toList();
 
-        final List<D11Match> matchIds = entities.stream()
-                .filter(filteredMatch ->
-                                (filteredMatch.getHomeD11Team().equals(d11Match.getHomeD11Team())
-                                 || filteredMatch.getAwayD11Team().equals(d11Match.getAwayD11Team()))
-                                && filteredMatch.getMatchWeek().getSeason().equals(d11Match.getMatchWeek().getSeason()))
-                .sorted(Comparator.comparing(D11Match::getDatetime))
-                .toList();
+                assertTrue(expected.size() > 1,
+                           "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime expected size > 1");
 
-        final List<D11Match> result =
-                getRepository().findByD11TeamIdAndMatchWeekSeasonId(d11Match.getHomeD11Team().getId(),
-                                                                    d11Match.getMatchWeek().getSeason().getId());
-
-        assertNotNull(result, "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonId not null");
-        assertTrue(result.size() > 1, "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonId size");
-        assertEquals(matchIds, result, "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonId equals");
+                assertNotNull(result,
+                              "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime not null");
+                assertFalse(result.isEmpty(),
+                            "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime empty");
+                assertEquals(expected, result,
+                             "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime equals");
+            }
+        }
     }
 
 }
