@@ -24,22 +24,6 @@ public interface MatchRepository extends D11EntityRepository<Match> {
     Optional<Match> findByWhoscoredId(@Param("whoscoredId") Integer whoscoredId);
 
     /**
-     * Gets match ids by team and season ordered by datetime.
-     * It's tricky to do (? or ?) and ? with the brackets by defining the query in the method name, so we'll use JPQL.
-     *
-     * @param teamId   The team id.
-     * @param seasonId The season id.
-     * @return Match ids for the team and the season.
-     */
-    @Query("""
-           SELECT match.id FROM Match match
-           WHERE (match.homeTeam.id = :teamId OR match.awayTeam.id = :teamId) AND match.matchWeek.season.id = :seasonId
-           ORDER BY match.datetime
-           """)
-    List<Long> findByTeamIdAndMatchWeekSeasonIdOrderByDatetime(@Param("teamId") Long teamId,
-                                                               @Param("seasonId") Long seasonId);
-
-    /**
      * Gets matches by team and season ordered by datetime.
      * It's tricky to do (? or ?) and ? with the brackets by defining the query in the method name, so we'll use JPQL.
      *
@@ -52,6 +36,7 @@ public interface MatchRepository extends D11EntityRepository<Match> {
            WHERE (match.homeTeam.id = :teamId OR match.awayTeam.id = :teamId) AND match.matchWeek.season.id = :seasonId
            ORDER BY match.datetime
            """)
-    List<Match> findByTeamIdAndMatchWeekSeasonId(@Param("teamId") Long teamId, @Param("seasonId") Long seasonId);
+    List<Match> findByTeamIdAndMatchWeekSeasonIdOrderByDatetime(@Param("teamId") Long teamId,
+                                                                @Param("seasonId") Long seasonId);
 
 }
