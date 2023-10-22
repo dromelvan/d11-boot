@@ -10,25 +10,6 @@ openApiGenerate() {
     outputDir = "$buildDir/generated"
 }
 
-task npmInstallJavascriptClient(type:NpmTask) {
-    dependsOn tasks.openApiGenerate
-
-    workingDir = file("$buildDir/generated")
-    args = [ 'install' ]
-}
-
-task npmPackJavascriptClient(type:NpmTask) {
-    dependsOn tasks.npmInstallJavascriptClient
-
-    workingDir = file("$buildDir/generated")
-    args = [ 'pack' ]
-
-    doLast {
-        ant.move file: "${buildDir}/generated/d11-boot-api-angular-2.0.0.tgz", todir: "${buildDir}/lib"
-    }
-}
-
 build {
-    dependsOn tasks.npmPackJavascriptClient
     dependsOn tasks.openApiGenerate
 }
