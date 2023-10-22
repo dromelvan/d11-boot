@@ -44,9 +44,11 @@ VALUES('Forward', 'F', 2, false, 4);
 INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date) VALUES('2020-2021', 600, 13, 3, '2020-01-01');
 INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date) VALUES('2021-2022', 600, 13, 1, '2021-01-01');
 
--- Match day
+-- Match week
 INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_id, most_valuable_player_id, match_week_number, date, elapsed, status)
-VALUES(1, null, null, null, 1, CURRENT_DATE - 2, 10, 3);
+VALUES(1, null, null, null, 1, CURRENT_DATE - 3, 10, 3);
+INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_id, most_valuable_player_id, match_week_number, date, elapsed, status)
+VALUES(1, null, null, null, 2, CURRENT_DATE - 2, 10, 3);
 INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_id, most_valuable_player_id, match_week_number, date, elapsed, status)
 VALUES(2, null, null, null, 1, CURRENT_DATE - 1, 0, 0);
 INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_id, most_valuable_player_id, match_week_number, date, elapsed, status)

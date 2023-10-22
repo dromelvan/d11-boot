@@ -26,6 +26,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestCookieException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -43,6 +44,11 @@ import java.util.UUID;
 @RestControllerAdvice
 @SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class ControllerExceptionHandlerV2 {
+
+    /**
+     * Error message for missing parameters.
+     */
+    private static final String IS_MISSING = "is missing";
 
     /**
      * Handles a Bad Request exception. This is thrown when a request has an input that lets it get past the other Bad
@@ -217,13 +223,43 @@ public class ControllerExceptionHandlerV2 {
 
         for (final FieldError fieldError : fieldErrors) {
             final String error = fieldError.getRejectedValue() == null
-                    ? "is missing"
+                    ? IS_MISSING
                     : fieldError.getDefaultMessage();
 
             badRequestResponseBodyDTO.addValidationErrorsItem(new ValidationErrorDTO()
                     .property(fieldError.getField())
                     .error(error));
         }
+
+        return ResponseEntity.status(httpStatus).body(badRequestResponseBodyDTO);
+    }
+
+    /**
+     * Handles a MissingServletRequestParameterException exception. This is thrown when a required query parameter is
+     * not provided.
+     *
+     * @param e       The exception that will be handled.
+     * @param request The request that caused the exception.
+     * @return Response entity with error details.
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<BadRequestResponseBodyDTO> handle(@NonNull final MissingServletRequestParameterException e,
+                                                            @NonNull final HttpServletRequest request) {
+        LOGGER.trace(request.getRequestURI(), e);
+
+        final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+
+        final BadRequestResponseBodyDTO badRequestResponseBodyDTO = new BadRequestResponseBodyDTO()
+                .timestamp(LocalDateTime.now())
+                .error(httpStatus.getReasonPhrase())
+                .method(request.getMethod())
+                .path(request.getRequestURI());
+
+        final ValidationErrorDTO validationErrorDTO = new ValidationErrorDTO()
+                .property(e.getParameterName())
+                .error(IS_MISSING);
+
+        badRequestResponseBodyDTO.addValidationErrorsItem(validationErrorDTO);
 
         return ResponseEntity.status(httpStatus).body(badRequestResponseBodyDTO);
     }

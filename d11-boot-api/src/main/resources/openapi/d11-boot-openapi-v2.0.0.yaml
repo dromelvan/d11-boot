@@ -422,6 +422,35 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  # Match week ---------------------------------------------------------------------------------------------------------
+
+  /v2/match-weeks:
+    get:
+      tags:
+        - matchWeek
+      summary: Gets all match weeks for a season.
+      security: []
+      operationId: getMatchWeeksBySeasonId
+      parameters:
+        - in: query
+          required: true
+          name: seasonId
+          schema:
+            type: integer
+            format: int64
+          description: The season id.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchWeeksResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Transfer window-----------------------------------------------------------------------------------------------------
 
   /v2/transfer-windows:
@@ -1073,6 +1102,16 @@ components:
           format: int32
         status:
           $ref: '#/components/schemas/Status'
+
+    MatchWeeksResponseBody:
+      type: object
+      required:
+        - matchWeeks
+      properties:
+        matchWeeks:
+          type: array
+          items:
+            $ref: '#/components/schemas/MatchWeek'
 
     # Transfer window --------------------------------------------------------------------------------------------------
 
