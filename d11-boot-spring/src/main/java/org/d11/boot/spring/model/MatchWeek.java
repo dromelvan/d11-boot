@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -95,6 +96,15 @@ public class MatchWeek extends D11Entity implements Comparable<MatchWeek> {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<D11Match> d11Matches = new ArrayList<>();
+
+    /**
+     * The player that scored the most points for this match week.
+     */
+    @OneToOne
+    @JoinColumn(name = "most_valuable_player_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private PlayerMatchStat mostValuablePlayer;
 
     /**
      * Get started status.
