@@ -1,16 +1,20 @@
 package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.MatchWeek;
+import org.d11.boot.spring.model.Season;
 import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Match week repository tests.
@@ -70,6 +74,35 @@ class MatchWeekRepositoryTests extends AbstractRepositoryTests<MatchWeek, MatchW
 
         assertNotNull(result, "MatchWeekRepository::findFirstBySeasonStatusOrderByDateAsc not null");
         assertEquals(matchWeek, result, "MatchWeekRepository::findFirstBySeasonStatusOrderByDateAsc equals");
+    }
+
+    /**
+     * Tests MatchWeekRepository::findBySeasonIdOrderByDate.
+     */
+    @Test
+    void testFindBySeasonIdOrderByDate() {
+        final List<MatchWeek> entities = getEntities();
+        entities.sort(Comparator.comparing(MatchWeek::getDate));
+
+        final Set<Season> seasons = entities.stream()
+                .map(MatchWeek::getSeason)
+                .collect(Collectors.toSet());
+
+        assertTrue(seasons.size() > 1, "MatchWeekRepository::findBySeasonIdOrderByDate seasons size > 1");
+
+        for (final Season season : seasons) {
+            final List<MatchWeek> result = getRepository().findBySeasonIdOrderByDate(season.getId());
+
+            final List<MatchWeek> expected = entities.stream()
+                    .filter(matchWeek -> matchWeek.getSeason().equals(season))
+                    .toList();
+
+            assertTrue(expected.size() > 1, "MatchWeekRepository::findBySeasonIdOrderByDate expected size > 1");
+
+            assertNotNull(result, "MatchWeekRepository::findBySeasonIdOrderByDate not null ");
+            assertFalse(result.isEmpty(), "MatchWeekRepository::findBySeasonIdOrderByDate empty");
+            assertEquals(expected, result, "MatchWeekRepository::findBySeasonIdOrderByDate equals");
+        }
     }
 
 }

@@ -44,7 +44,7 @@ class PlayerMatchStatRepositoryTests extends AbstractRepositoryTests<PlayerMatch
             assertTrue(expected.size() > 1,
                        "PlayerMatchStatRepository::findByMatchIdOrderByPositionSortOrder expected size > 1");
 
-            assertNotNull(result, "PlayerMatchStatRepository::findByMatchIdOrderByPositionSortOrder  not null ");
+            assertNotNull(result, "PlayerMatchStatRepository::findByMatchIdOrderByPositionSortOrder not null ");
             assertFalse(result.isEmpty(), "PlayerMatchStatRepository::findByMatchIdOrderByPositionSortOrder empty");
             assertEquals(expected, result, "PlayerMatchStatRepository::findByMatchIdOrderByPositionSortOrder equals");
         }

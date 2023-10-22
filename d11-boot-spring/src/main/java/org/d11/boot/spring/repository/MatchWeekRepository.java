@@ -6,6 +6,7 @@ import org.d11.boot.util.Status;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -39,5 +40,13 @@ public interface MatchWeekRepository extends D11EntityRepository<MatchWeek> {
      * @return Optional with the first match week of a season with the provided status.
      */
     Optional<MatchWeek> findFirstBySeasonStatusOrderByDateAsc(Status status);
+
+    /**
+     * Finds a list of all match weeks for a season ordered by descending date.
+     *
+     * @param seasonId The season id.
+     * @return List of match weeks for the season.
+     */
+    List<MatchWeek> findBySeasonIdOrderByDate(Long seasonId);
 
 }
