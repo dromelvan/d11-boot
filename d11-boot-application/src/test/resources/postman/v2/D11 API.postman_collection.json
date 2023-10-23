@@ -4913,6 +4913,181 @@
 					]
 				},
 				{
+					"name": "match-weeks",
+					"item": [
+						{
+							"name": "GET match-weeks",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET match-weeks - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET match weeks status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET match weeks response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"matchWeeks\");",
+															"",
+															"  const matchWeeks = JSON.parse(pm.environment.get(\"matchWeeks\"));",
+															"",
+															"  pm.expect(body.matchWeeks.length).to.eq(matchWeeks.length);",
+															"",
+															"  for (let i = 0; i < body.matchWeeks.length; ++i) {",
+															"    pm.expect(body.matchWeeks[i].id).to.eq(matchWeeks[i].id);",
+															"    pm.expect(body.matchWeeks[i].matchWeekNumber).to.eq(matchWeeks[i].matchWeekNumber);",
+															"    pm.expect(body.matchWeeks[i].date).to.eq(matchWeeks[i].date);",
+															"    pm.expect(body.matchWeeks[i].elapsed).to.eq(matchWeeks[i].elapsed);",
+															"    pm.expect(body.matchWeeks[i].status).to.eq(matchWeeks[i].status);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/match-weeks?seasonId={{seasonId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"match-weeks"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "{{seasonId}}"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET match-weeks - Bad Request Invalid Season Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET match weeks invalid season id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET match weeks invalid season id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/match-weeks\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/match-weeks?seasonId=invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"match-weeks"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "invalid"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET match-weeks - Bad Request Missing Season Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET match weeks invalid season id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET match weeks invalid season id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/match-weeks\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/match-weeks",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"match-weeks"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
 					"name": "transfer-windows",
 					"item": [
 						{
