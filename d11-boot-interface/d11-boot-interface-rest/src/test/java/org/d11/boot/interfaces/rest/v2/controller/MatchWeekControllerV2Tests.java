@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Match week controller tests.
  */
-class MatchWeekV2Tests extends D11BootControllerV2Tests {
+class MatchWeekControllerV2Tests extends D11BootControllerV2Tests {
 
     /**
      * Match week repository.

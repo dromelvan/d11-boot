@@ -60,9 +60,10 @@ openApiGenerate {
 
 task openApiClean(type: Delete) {
     dependsOn tasks.openApiGenerate
-    // We don't need the automagically generated ApiUtil
+    // We don't need the automagically generated ApiUtil or the AllOf classes
     delete fileTree('build\\generated\\') {
         include '**/ApiUtil.java'
+        include '**/*AllOf*.java'
     }
 }
 

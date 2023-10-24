@@ -2,7 +2,7 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import org.d11.boot.api.v2.TransferWindowApi;
 import org.d11.boot.api.v2.model.CreateTransferWindowRequestBodyDTO;
-import org.d11.boot.api.v2.model.MatchWeekDTO;
+import org.d11.boot.api.v2.model.MatchWeekBaseDTO;
 import org.d11.boot.api.v2.model.TransferDayDTO;
 import org.d11.boot.api.v2.model.TransferWindowDTO;
 import org.d11.boot.api.v2.model.TransferWindowResponseBodyDTO;
@@ -36,7 +36,7 @@ public class TransferWindowControllerV2
 
         final TransferWindowResponseBodyDTO responseBody = new TransferWindowResponseBodyDTO()
                 .transferWindow(map(transferWindow, TransferWindowDTO.class))
-                .matchWeek(map(transferWindow.getMatchWeek(), MatchWeekDTO.class))
+                .matchWeek(map(transferWindow.getMatchWeek(), MatchWeekBaseDTO.class))
                 .transferDays(map(transferWindow.getTransferDays(), TransferDayDTO.class));
 
         return ResponseEntity.ok(responseBody);
@@ -53,7 +53,7 @@ public class TransferWindowControllerV2
 
         final TransferWindowResponseBodyDTO responseBody = new TransferWindowResponseBodyDTO()
                 .transferWindow(map(transferWindow, TransferWindowDTO.class))
-                .matchWeek(map(transferWindow.getMatchWeek(), MatchWeekDTO.class))
+                .matchWeek(map(transferWindow.getMatchWeek(), MatchWeekBaseDTO.class))
                 .transferDays(map(transferWindow.getTransferDays(), TransferDayDTO.class));
 
         return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
