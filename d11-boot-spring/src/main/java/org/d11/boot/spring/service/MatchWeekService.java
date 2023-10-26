@@ -24,7 +24,7 @@ public class MatchWeekService extends RepositoryService<MatchWeek, MatchWeekRepo
     }
 
     /**
-     * Gets a list of all match weeks ordered by date.
+     * Gets a list of match weeks by season ordered by date.
      *
      * @param seasonId The season id.
      * @return List of all match weeks ordered by date.
