@@ -5030,7 +5030,6 @@
 															"",
 															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
 															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
-															"",
 															"});",
 															""
 														],
