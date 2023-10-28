@@ -62,27 +62,27 @@ public class Match extends D11Entity implements Comparable<Match> {
      * Number of goals scored by the home team.
      */
     @PositiveOrZero
-    private int homeTeamGoals;
+    private int homeTeamGoalsScored;
 
     /**
      * Number of goals scored by the away team.
      */
     @PositiveOrZero
-    private int awayTeamGoals;
+    private int awayTeamGoalsScored;
 
     /**
      * Number of goals scored by the home team the previous time the match was updated.
      * This number can be used to keep track of scoring changes since the last update.
      */
     @PositiveOrZero
-    private int previousHomeTeamGoals;
+    private int previousHomeTeamGoalsScored;
 
     /**
      * Number of goals scored by the away team the previous time the match was updated.
      * This number can be used to keep track of scoring changes since the last update.
      */
     @PositiveOrZero
-    private int previousAwayTeamGoals;
+    private int previousAwayTeamGoalsScored;
 
     /**
      * Elapsed string. This can be either the number of minutes played or N/A, HT, FT or whatever
@@ -166,8 +166,8 @@ public class Match extends D11Entity implements Comparable<Match> {
      * @return True if the team is the match winner (or leader), false if not.
      */
     public boolean isWinner(final Team team) {
-        return team.equals(this.homeTeam) && this.homeTeamGoals > this.awayTeamGoals
-               || team.equals(this.awayTeam) && this.awayTeamGoals > this.homeTeamGoals;
+        return team.equals(this.homeTeam) && this.homeTeamGoalsScored > this.awayTeamGoalsScored
+               || team.equals(this.awayTeam) && this.awayTeamGoalsScored > this.homeTeamGoalsScored;
     }
 
     /**
@@ -177,8 +177,8 @@ public class Match extends D11Entity implements Comparable<Match> {
      * @return True if the team is the match loser (or is losing), false if not.
      */
     public boolean isLoser(final Team team) {
-        return team.equals(this.homeTeam) && this.homeTeamGoals < this.awayTeamGoals
-               || team.equals(this.awayTeam) && this.awayTeamGoals < this.homeTeamGoals;
+        return team.equals(this.homeTeam) && this.homeTeamGoalsScored < this.awayTeamGoalsScored
+               || team.equals(this.awayTeam) && this.awayTeamGoalsScored < this.homeTeamGoalsScored;
     }
 
     /**
@@ -187,7 +187,7 @@ public class Match extends D11Entity implements Comparable<Match> {
      * @return True if the match is a draw, false is not.
      */
     public boolean isDraw() {
-        return this.homeTeamGoals == this.awayTeamGoals;
+        return this.homeTeamGoalsScored == this.awayTeamGoalsScored;
     }
 
     /**
@@ -197,7 +197,7 @@ public class Match extends D11Entity implements Comparable<Match> {
      * @return The number of goals scored by the team.
      */
     public int getGoalsFor(final Team team) {
-        return team.equals(this.homeTeam) ? this.homeTeamGoals : this.awayTeamGoals;
+        return team.equals(this.homeTeam) ? this.homeTeamGoalsScored : this.awayTeamGoalsScored;
     }
 
     /**
@@ -207,7 +207,7 @@ public class Match extends D11Entity implements Comparable<Match> {
      * @return The number of goals conceded by the team.
      */
     public int getGoalsAgainst(final Team team) {
-        return team.equals(this.homeTeam) ? this.awayTeamGoals : this.homeTeamGoals;
+        return team.equals(this.homeTeam) ? this.awayTeamGoalsScored : this.homeTeamGoalsScored;
     }
 
     /**
@@ -245,10 +245,10 @@ public class Match extends D11Entity implements Comparable<Match> {
      * team and away team goals to 0.
      */
     public void reset() {
-        this.previousHomeTeamGoals = this.homeTeamGoals;
-        this.previousAwayTeamGoals = this.awayTeamGoals;
-        this.homeTeamGoals = 0;
-        this.awayTeamGoals = 0;
+        this.previousHomeTeamGoalsScored = this.homeTeamGoalsScored;
+        this.previousAwayTeamGoalsScored = this.awayTeamGoalsScored;
+        this.homeTeamGoalsScored = 0;
+        this.awayTeamGoalsScored = 0;
     }
 
     @Override

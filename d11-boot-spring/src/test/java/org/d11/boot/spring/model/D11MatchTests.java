@@ -29,21 +29,21 @@ class D11MatchTests extends EasyRandomTests {
         assertFalse(d11Match.isValid(), "D11Match::isValid datetime null");
         d11Match.setDatetime(LocalDateTime.now());
 
-        d11Match.setHomeTeamGoals(-1);
-        assertFalse(d11Match.isValid(), "D11Match::isValid home team goals negative");
-        d11Match.setHomeTeamGoals(1);
+        d11Match.setHomeTeamGoalsScored(-1);
+        assertFalse(d11Match.isValid(), "D11Match::isValid home team goals scored negative");
+        d11Match.setHomeTeamGoalsScored(1);
 
-        d11Match.setAwayTeamGoals(-1);
-        assertFalse(d11Match.isValid(), "D11Match::isValid away team goals negative");
-        d11Match.setAwayTeamGoals(1);
+        d11Match.setAwayTeamGoalsScored(-1);
+        assertFalse(d11Match.isValid(), "D11Match::isValid away team goals scored negative");
+        d11Match.setAwayTeamGoalsScored(1);
 
-        d11Match.setPreviousHomeTeamGoals(-1);
-        assertFalse(d11Match.isValid(), "D11Match::isValid previous home team goals negative");
-        d11Match.setPreviousHomeTeamGoals(1);
+        d11Match.setPreviousHomeTeamGoalsScored(-1);
+        assertFalse(d11Match.isValid(), "D11Match::isValid previous home team goals scored negative");
+        d11Match.setPreviousHomeTeamGoalsScored(1);
 
-        d11Match.setPreviousAwayTeamGoals(-1);
-        assertFalse(d11Match.isValid(), "D11Match::isValid previous away team goals negative");
-        d11Match.setPreviousAwayTeamGoals(1);
+        d11Match.setPreviousAwayTeamGoalsScored(-1);
+        assertFalse(d11Match.isValid(), "D11Match::isValid previous away team goals scored negative");
+        d11Match.setPreviousAwayTeamGoalsScored(1);
 
         d11Match.setElapsed(null);
         assertFalse(d11Match.isValid(), "D11Match::isValid elapsed null");
@@ -118,18 +118,18 @@ class D11MatchTests extends EasyRandomTests {
     void testIsWinner() {
         final D11Match d11Match = generate(D11Match.class);
 
-        d11Match.setHomeTeamGoals(1);
-        d11Match.setAwayTeamGoals(0);
+        d11Match.setHomeTeamGoalsScored(1);
+        d11Match.setAwayTeamGoalsScored(0);
 
         assertTrue(d11Match.isWinner(d11Match.getHomeD11Team()), "D11Match::isWinner home team winner");
         assertFalse(d11Match.isWinner(d11Match.getAwayD11Team()), "D11Match::isWinner away team not winner");
 
-        d11Match.setHomeTeamGoals(0);
+        d11Match.setHomeTeamGoalsScored(0);
 
         assertFalse(d11Match.isWinner(d11Match.getHomeD11Team()), "D11Match::isWinner home team draw");
         assertFalse(d11Match.isWinner(d11Match.getAwayD11Team()), "D11Match::isWinner away team draw");
 
-        d11Match.setAwayTeamGoals(1);
+        d11Match.setAwayTeamGoalsScored(1);
 
         assertFalse(d11Match.isWinner(d11Match.getHomeD11Team()), "D11Match::isWinner home team not winner");
         assertTrue(d11Match.isWinner(d11Match.getAwayD11Team()), "D11Match::isWinner away team winner");
@@ -142,18 +142,18 @@ class D11MatchTests extends EasyRandomTests {
     void testIsLoser() {
         final D11Match d11Match = generate(D11Match.class);
 
-        d11Match.setHomeTeamGoals(0);
-        d11Match.setAwayTeamGoals(1);
+        d11Match.setHomeTeamGoalsScored(0);
+        d11Match.setAwayTeamGoalsScored(1);
 
         assertTrue(d11Match.isLoser(d11Match.getHomeD11Team()), "D11Match::isLoser home team loser");
         assertFalse(d11Match.isLoser(d11Match.getAwayD11Team()), "D11Match::isLoser away team not loser");
 
-        d11Match.setAwayTeamGoals(0);
+        d11Match.setAwayTeamGoalsScored(0);
 
         assertFalse(d11Match.isLoser(d11Match.getHomeD11Team()), "D11Match::isLoser home team draw");
         assertFalse(d11Match.isLoser(d11Match.getAwayD11Team()), "D11Match::isLoser away team draw");
 
-        d11Match.setHomeTeamGoals(1);
+        d11Match.setHomeTeamGoalsScored(1);
 
         assertFalse(d11Match.isLoser(d11Match.getHomeD11Team()), "D11Match::isLoser home team not winner");
         assertTrue(d11Match.isLoser(d11Match.getAwayD11Team()), "D11Match::isLoser away team winner");
@@ -166,16 +166,16 @@ class D11MatchTests extends EasyRandomTests {
     void testIsDraw() {
         final D11Match d11Match = generate(D11Match.class);
 
-        d11Match.setHomeTeamGoals(1);
-        d11Match.setAwayTeamGoals(0);
+        d11Match.setHomeTeamGoalsScored(1);
+        d11Match.setAwayTeamGoalsScored(0);
 
         assertFalse(d11Match.isDraw(), "D11Match::isDraw home team winner");
 
-        d11Match.setHomeTeamGoals(0);
+        d11Match.setHomeTeamGoalsScored(0);
 
         assertTrue(d11Match.isDraw(), "D11Match::isDraw draw");
 
-        d11Match.setAwayTeamGoals(1);
+        d11Match.setAwayTeamGoalsScored(1);
 
         assertFalse(d11Match.isDraw(), "D11Match::isDraw away team winner");
     }
@@ -187,12 +187,12 @@ class D11MatchTests extends EasyRandomTests {
     void testGetGoalsFor() {
         final D11Match d11Match = generate(D11Match.class);
 
-        d11Match.setHomeTeamGoals(1);
-        d11Match.setAwayTeamGoals(0);
+        d11Match.setHomeTeamGoalsScored(1);
+        d11Match.setAwayTeamGoalsScored(0);
 
-        assertEquals(d11Match.getHomeTeamGoals(), d11Match.getGoalsFor(d11Match.getHomeD11Team()),
+        assertEquals(d11Match.getHomeTeamGoalsScored(), d11Match.getGoalsFor(d11Match.getHomeD11Team()),
                      "D11Match::getGoalsFor home team");
-        assertEquals(d11Match.getAwayTeamGoals(), d11Match.getGoalsFor(d11Match.getAwayD11Team()),
+        assertEquals(d11Match.getAwayTeamGoalsScored(), d11Match.getGoalsFor(d11Match.getAwayD11Team()),
                      "D11Match::getGoalsFor away team");
     }
 
@@ -203,12 +203,12 @@ class D11MatchTests extends EasyRandomTests {
     void testGetGoalsAgainst() {
         final D11Match d11Match = generate(D11Match.class);
 
-        d11Match.setHomeTeamGoals(1);
-        d11Match.setAwayTeamGoals(0);
+        d11Match.setHomeTeamGoalsScored(1);
+        d11Match.setAwayTeamGoalsScored(0);
 
-        assertEquals(d11Match.getAwayTeamGoals(), d11Match.getGoalsAgainst(d11Match.getHomeD11Team()),
+        assertEquals(d11Match.getAwayTeamGoalsScored(), d11Match.getGoalsAgainst(d11Match.getHomeD11Team()),
                      "D11Match::getGoalsAgainst home team");
-        assertEquals(d11Match.getHomeTeamGoals(), d11Match.getGoalsAgainst(d11Match.getAwayD11Team()),
+        assertEquals(d11Match.getHomeTeamGoalsScored(), d11Match.getGoalsAgainst(d11Match.getAwayD11Team()),
                      "D11Match::getGoalsAgainst away team");
     }
 
@@ -219,22 +219,22 @@ class D11MatchTests extends EasyRandomTests {
     void testGetPoints() {
         final D11Match d11Match = generate(D11Match.class);
 
-        d11Match.setHomeTeamGoals(1);
-        d11Match.setAwayTeamGoals(0);
+        d11Match.setHomeTeamGoalsScored(1);
+        d11Match.setAwayTeamGoalsScored(0);
 
         assertEquals(Match.WIN_POINTS, d11Match.getPoints(d11Match.getHomeD11Team()),
                      "D11Match::getPoints home team winner");
         assertEquals(Match.LOSS_POINTS, d11Match.getPoints(d11Match.getAwayD11Team()),
                      "D11Match::getPoints away team loser");
 
-        d11Match.setHomeTeamGoals(0);
+        d11Match.setHomeTeamGoalsScored(0);
 
         assertEquals(Match.DRAW_POINTS, d11Match.getPoints(d11Match.getHomeD11Team()),
                      "D11Match::getPoints home team draw");
         assertEquals(Match.DRAW_POINTS, d11Match.getPoints(d11Match.getAwayD11Team()),
                      "D11Match::getPoints away team draw");
 
-        d11Match.setAwayTeamGoals(1);
+        d11Match.setAwayTeamGoalsScored(1);
 
         assertEquals(Match.LOSS_POINTS, d11Match.getPoints(d11Match.getHomeD11Team()),
                      "D11Match::getPoints home team loser");
@@ -253,8 +253,8 @@ class D11MatchTests extends EasyRandomTests {
 
         // Add proper tests here when we have player match stats
 
-        assertEquals(0, d11Match.getHomeTeamGoals(), "D11Match::update home team goals equals");
-        assertEquals(0, d11Match.getAwayTeamGoals(), "D11Match::update away team goals equals");
+        assertEquals(0, d11Match.getHomeTeamGoalsScored(), "D11Match::update home team goals scored equals");
+        assertEquals(0, d11Match.getAwayTeamGoalsScored(), "D11Match::update away team goals scored equals");
         assertEquals(0, d11Match.getHomeTeamPoints(), "D11Match::update home team points equals");
         assertEquals(0, d11Match.getAwayTeamPoints(), "D11Match::update away team points equals");
     }
@@ -266,10 +266,10 @@ class D11MatchTests extends EasyRandomTests {
     void testReset() {
         final D11Match d11Match = generate(D11Match.class);
 
-        d11Match.setHomeTeamGoals(1);
-        d11Match.setAwayTeamGoals(1);
-        d11Match.setPreviousHomeTeamGoals(1);
-        d11Match.setPreviousAwayTeamGoals(1);
+        d11Match.setHomeTeamGoalsScored(1);
+        d11Match.setAwayTeamGoalsScored(1);
+        d11Match.setPreviousHomeTeamGoalsScored(1);
+        d11Match.setPreviousAwayTeamGoalsScored(1);
         d11Match.setHomeTeamPoints(1);
         d11Match.setAwayTeamPoints(1);
         d11Match.setPreviousHomeTeamPoints(1);
@@ -277,10 +277,12 @@ class D11MatchTests extends EasyRandomTests {
 
         d11Match.reset();
 
-        assertEquals(0, d11Match.getHomeTeamGoals(), "D11Match::reset home team goals equals");
-        assertEquals(0, d11Match.getAwayTeamGoals(), "D11Match::reset away team goals equals");
-        assertEquals(1, d11Match.getPreviousHomeTeamGoals(), "D11Match::reset previous home team goals equals");
-        assertEquals(1, d11Match.getPreviousAwayTeamGoals(), "D11Match::reset previous away team goals equals");
+        assertEquals(0, d11Match.getHomeTeamGoalsScored(), "D11Match::reset home team goals scored equals");
+        assertEquals(0, d11Match.getAwayTeamGoalsScored(), "D11Match::reset away team goals scored equals");
+        assertEquals(1, d11Match.getPreviousHomeTeamGoalsScored(),
+                     "D11Match::reset previous home team goals scored equals");
+        assertEquals(1, d11Match.getPreviousAwayTeamGoalsScored(),
+                     "D11Match::reset previous away team goals scored equals");
         assertEquals(0, d11Match.getHomeTeamPoints(), "D11Match::reset home team points equals");
         assertEquals(0, d11Match.getAwayTeamPoints(), "D11Match::reset away team points equals");
         assertEquals(1, d11Match.getPreviousHomeTeamPoints(), "D11Match::reset previous home team points equals");

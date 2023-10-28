@@ -52,13 +52,13 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
      * Number of goals scored by the home team.
      */
     @PositiveOrZero
-    private int homeTeamGoals;
+    private int homeTeamGoalsScored;
 
     /**
      * Number of goals scored by the away team.
      */
     @PositiveOrZero
-    private int awayTeamGoals;
+    private int awayTeamGoalsScored;
 
     /**
      * Number of points scored by the home team.
@@ -75,14 +75,14 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
      * This number can be used to keep track of scoring changes since the last update.
      */
     @PositiveOrZero
-    private int previousHomeTeamGoals;
+    private int previousHomeTeamGoalsScored;
 
     /**
      * Number of goals scored by the away team the previous time the match was updated.
      * This number can be used to keep track of scoring changes since the last update.
      */
     @PositiveOrZero
-    private int previousAwayTeamGoals;
+    private int previousAwayTeamGoalsScored;
 
     /**
      * Number of points scored by the home team the previous time the match was updated.
@@ -168,8 +168,8 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
      * @return True if the D11 team is the match winner (or leader), false if not.
      */
     public boolean isWinner(final D11Team d11Team) {
-        return d11Team.equals(this.homeD11Team) && this.homeTeamGoals > this.awayTeamGoals
-               || d11Team.equals(this.awayD11Team) && this.awayTeamGoals > this.homeTeamGoals;
+        return d11Team.equals(this.homeD11Team) && this.homeTeamGoalsScored > this.awayTeamGoalsScored
+               || d11Team.equals(this.awayD11Team) && this.awayTeamGoalsScored > this.homeTeamGoalsScored;
     }
 
     /**
@@ -179,8 +179,8 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
      * @return True if the D11 team is the match loser (or is losing), false if not.
      */
     public boolean isLoser(final D11Team d11Team) {
-        return d11Team.equals(this.homeD11Team) && this.homeTeamGoals < this.awayTeamGoals
-               || d11Team.equals(this.awayD11Team) && this.awayTeamGoals < this.homeTeamGoals;
+        return d11Team.equals(this.homeD11Team) && this.homeTeamGoalsScored < this.awayTeamGoalsScored
+               || d11Team.equals(this.awayD11Team) && this.awayTeamGoalsScored < this.homeTeamGoalsScored;
     }
 
     /**
@@ -189,7 +189,7 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
      * @return True if the match is a draw, false is not.
      */
     public boolean isDraw() {
-        return this.homeTeamGoals == this.awayTeamGoals;
+        return this.homeTeamGoalsScored == this.awayTeamGoalsScored;
     }
 
     /**
@@ -199,7 +199,7 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
      * @return The number of goals scored by the D11 team.
      */
     public int getGoalsFor(final D11Team d11Team) {
-        return d11Team.equals(this.homeD11Team) ? this.homeTeamGoals : this.awayTeamGoals;
+        return d11Team.equals(this.homeD11Team) ? this.homeTeamGoalsScored : this.awayTeamGoalsScored;
     }
 
     /**
@@ -209,7 +209,7 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
      * @return The number of goals conceded by the D11 team.
      */
     public int getGoalsAgainst(final D11Team d11Team) {
-        return d11Team.equals(this.homeD11Team) ? this.awayTeamGoals : this.homeTeamGoals;
+        return d11Team.equals(this.homeD11Team) ? this.awayTeamGoalsScored : this.homeTeamGoalsScored;
     }
 
     /**
@@ -233,8 +233,8 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
     public void update() {
         reset();
 
-        this.homeTeamGoals = this.homeTeamPoints > 0 ? this.homeTeamPoints / POINTS_GOAL_DIVIDER + 1 : 0;
-        this.awayTeamGoals = this.awayTeamPoints > 0 ? this.awayTeamPoints / POINTS_GOAL_DIVIDER + 1 : 0;
+        this.homeTeamGoalsScored = this.homeTeamPoints > 0 ? this.homeTeamPoints / POINTS_GOAL_DIVIDER + 1 : 0;
+        this.awayTeamGoalsScored = this.awayTeamPoints > 0 ? this.awayTeamPoints / POINTS_GOAL_DIVIDER + 1 : 0;
     }
 
     /**
@@ -244,13 +244,13 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
     public void reset() {
         this.status = Status.PENDING;
         this.elapsed = "N/A";
-        this.previousHomeTeamGoals = this.homeTeamGoals;
+        this.previousHomeTeamGoalsScored = this.homeTeamGoalsScored;
         this.previousHomeTeamPoints = this.homeTeamPoints;
-        this.previousAwayTeamGoals = this.awayTeamGoals;
+        this.previousAwayTeamGoalsScored = this.awayTeamGoalsScored;
         this.previousAwayTeamPoints = this.awayTeamPoints;
-        this.homeTeamGoals = 0;
+        this.homeTeamGoalsScored = 0;
         this.homeTeamPoints = 0;
-        this.awayTeamGoals = 0;
+        this.awayTeamGoalsScored = 0;
         this.awayTeamPoints = 0;
     }
 

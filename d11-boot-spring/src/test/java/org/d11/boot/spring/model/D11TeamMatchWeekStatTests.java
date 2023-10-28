@@ -67,8 +67,8 @@ class D11TeamMatchWeekStatTests extends EasyRandomTests {
                      "D11TeamMatchWeekStat::updateStats pending points equals");
 
         d11Match.setStatus(Status.FINISHED);
-        d11Match.setHomeTeamGoals(1);
-        d11Match.setAwayTeamGoals(0);
+        d11Match.setHomeTeamGoalsScored(1);
+        d11Match.setAwayTeamGoalsScored(0);
 
         d11TeamMatchWeekStat.updateStats();
 
@@ -89,7 +89,7 @@ class D11TeamMatchWeekStatTests extends EasyRandomTests {
         assertEquals(Match.WIN_POINTS, d11TeamMatchWeekStat.getPoints(),
                      "D11TeamMatchWeekStat::updateStats win points equals");
 
-        d11Match.setAwayTeamGoals(1);
+        d11Match.setAwayTeamGoalsScored(1);
         d11TeamMatchWeekStat.updateStats();
 
         assertEquals(1, d11TeamMatchWeekStat.getMatchesPlayed(),
@@ -109,7 +109,7 @@ class D11TeamMatchWeekStatTests extends EasyRandomTests {
         assertEquals(Match.DRAW_POINTS, d11TeamMatchWeekStat.getPoints(),
                      "D11TeamMatchWeekStat::updateStats draw points equals");
 
-        d11Match.setHomeTeamGoals(0);
+        d11Match.setHomeTeamGoalsScored(0);
         d11TeamMatchWeekStat.updateStats();
 
         assertEquals(1, d11TeamMatchWeekStat.getMatchesPlayed(),

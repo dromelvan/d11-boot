@@ -26,11 +26,11 @@ FROM(
                m.match_week_id,
                mw.season_id,
                CASE WHEN m.status IN (1,2,3) THEN 1 ELSE 0 END matches_played,
-               CASE WHEN m.status IN (1,2,3) AND m.home_team_goals > m.away_team_goals THEN 1 ELSE 0 END matches_won,
-               CASE WHEN m.status IN (1,2,3) AND m.home_team_goals = m.away_team_goals THEN 1 ELSE 0 END matches_drawn,
-               CASE WHEN m.status IN (1,2,3) AND m.home_team_goals < m.away_team_goals THEN 1 ELSE 0 END matches_lost,
-               m.home_team_goals goals_for,
-               m.away_team_goals goals_against
+               CASE WHEN m.status IN (1,2,3) AND m.home_team_goals_scored > m.away_team_goals_scored THEN 1 ELSE 0 END matches_won,
+               CASE WHEN m.status IN (1,2,3) AND m.home_team_goals_scored = m.away_team_goals_scored THEN 1 ELSE 0 END matches_drawn,
+               CASE WHEN m.status IN (1,2,3) AND m.home_team_goals_scored < m.away_team_goals_scored THEN 1 ELSE 0 END matches_lost,
+               m.home_team_goals_scored goals_for,
+               m.away_team_goals_scored goals_against
         FROM match m
         JOIN match_week mw ON m.match_week_id = mw.id
     ) base_query
@@ -47,11 +47,11 @@ FROM(
                m.match_week_id,
                mw.season_id,
                CASE WHEN m.status IN (1,2,3) THEN 1 ELSE 0 END matches_played,
-               CASE WHEN m.status IN (1,2,3) AND m.away_team_goals > m.home_team_goals THEN 1 ELSE 0 END matches_won,
-               CASE WHEN m.status IN (1,2,3) AND m.away_team_goals = m.home_team_goals THEN 1 ELSE 0 END matches_drawn,
-               CASE WHEN m.status IN (1,2,3) AND m.away_team_goals < m.home_team_goals THEN 1 ELSE 0 END matches_lost,
-               m.away_team_goals goals_for,
-               m.home_team_goals goals_against
+               CASE WHEN m.status IN (1,2,3) AND m.away_team_goals_scored > m.home_team_goals_scored THEN 1 ELSE 0 END matches_won,
+               CASE WHEN m.status IN (1,2,3) AND m.away_team_goals_scored = m.home_team_goals_scored THEN 1 ELSE 0 END matches_drawn,
+               CASE WHEN m.status IN (1,2,3) AND m.away_team_goals_scored < m.home_team_goals_scored THEN 1 ELSE 0 END matches_lost,
+               m.away_team_goals_scored goals_for,
+               m.home_team_goals_scored goals_against
         FROM match m
         JOIN match_week mw ON m.match_week_id = mw.id
     ) base_query
@@ -86,11 +86,11 @@ FROM(
                d11m.match_week_id,
                mw.season_id,
                CASE WHEN d11m.status IN (1,2,3) THEN 1 ELSE 0 END matches_played,
-               CASE WHEN d11m.status IN (1,2,3) AND d11m.home_team_goals > d11m.away_team_goals THEN 1 ELSE 0 END matches_won,
-               CASE WHEN d11m.status IN (1,2,3) AND d11m.home_team_goals = d11m.away_team_goals THEN 1 ELSE 0 END matches_drawn,
-               CASE WHEN d11m.status IN (1,2,3) AND d11m.home_team_goals < d11m.away_team_goals THEN 1 ELSE 0 END matches_lost,
-               d11m.home_team_goals goals_for,
-               d11m.away_team_goals goals_against
+               CASE WHEN d11m.status IN (1,2,3) AND d11m.home_team_goals_scored > d11m.away_team_goals_scored THEN 1 ELSE 0 END matches_won,
+               CASE WHEN d11m.status IN (1,2,3) AND d11m.home_team_goals_scored = d11m.away_team_goals_scored THEN 1 ELSE 0 END matches_drawn,
+               CASE WHEN d11m.status IN (1,2,3) AND d11m.home_team_goals_scored < d11m.away_team_goals_scored THEN 1 ELSE 0 END matches_lost,
+               d11m.home_team_goals_scored goals_for,
+               d11m.away_team_goals_scored goals_against
         FROM d11_match d11m
         JOIN match_week mw ON d11m.match_week_id = mw.id
     ) base_query
@@ -107,11 +107,11 @@ FROM(
                d11m.match_week_id,
                mw.season_id,
                CASE WHEN d11m.status IN (1,2,3) THEN 1 ELSE 0 END matches_played,
-               CASE WHEN d11m.status IN (1,2,3) AND d11m.away_team_goals > d11m.home_team_goals THEN 1 ELSE 0 END matches_won,
-               CASE WHEN d11m.status IN (1,2,3) AND d11m.away_team_goals = d11m.home_team_goals THEN 1 ELSE 0 END matches_drawn,
-               CASE WHEN d11m.status IN (1,2,3) AND d11m.away_team_goals < d11m.home_team_goals THEN 1 ELSE 0 END matches_lost,
-               d11m.away_team_goals goals_for,
-               d11m.home_team_goals goals_against
+               CASE WHEN d11m.status IN (1,2,3) AND d11m.away_team_goals_scored > d11m.home_team_goals_scored THEN 1 ELSE 0 END matches_won,
+               CASE WHEN d11m.status IN (1,2,3) AND d11m.away_team_goals_scored = d11m.home_team_goals_scored THEN 1 ELSE 0 END matches_drawn,
+               CASE WHEN d11m.status IN (1,2,3) AND d11m.away_team_goals_scored < d11m.home_team_goals_scored THEN 1 ELSE 0 END matches_lost,
+               d11m.away_team_goals_scored goals_for,
+               d11m.home_team_goals_scored goals_against
         FROM d11_match d11m
         JOIN match_week mw ON d11m.match_week_id = mw.id
     ) base_query

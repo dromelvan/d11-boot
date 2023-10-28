@@ -33,21 +33,21 @@ class MatchTests extends EasyRandomTests {
         assertFalse(match.isValid(), "Match::isValid datetime null");
         match.setDatetime(LocalDateTime.now());
 
-        match.setHomeTeamGoals(-1);
-        assertFalse(match.isValid(), "Match::isValid home team goals negative");
-        match.setHomeTeamGoals(1);
+        match.setHomeTeamGoalsScored(-1);
+        assertFalse(match.isValid(), "Match::isValid home team goals scored negative");
+        match.setHomeTeamGoalsScored(1);
 
-        match.setAwayTeamGoals(-1);
-        assertFalse(match.isValid(), "Match::isValid away team goals negative");
-        match.setAwayTeamGoals(1);
+        match.setAwayTeamGoalsScored(-1);
+        assertFalse(match.isValid(), "Match::isValid away team goals scored negative");
+        match.setAwayTeamGoalsScored(1);
 
-        match.setPreviousHomeTeamGoals(-1);
-        assertFalse(match.isValid(), "Match::isValid previous home team goals negative");
-        match.setPreviousHomeTeamGoals(1);
+        match.setPreviousHomeTeamGoalsScored(-1);
+        assertFalse(match.isValid(), "Match::isValid previous home team goals scored negative");
+        match.setPreviousHomeTeamGoalsScored(1);
 
-        match.setPreviousAwayTeamGoals(-1);
-        assertFalse(match.isValid(), "Match::isValid previous away team goals negative");
-        match.setPreviousAwayTeamGoals(1);
+        match.setPreviousAwayTeamGoalsScored(-1);
+        assertFalse(match.isValid(), "Match::isValid previous away team goals scored negative");
+        match.setPreviousAwayTeamGoalsScored(1);
 
         match.setElapsed(null);
         assertFalse(match.isValid(), "Match::isValid elapsed null");
@@ -126,18 +126,18 @@ class MatchTests extends EasyRandomTests {
     void testIsWinner() {
         final Match match = generate(Match.class);
 
-        match.setHomeTeamGoals(1);
-        match.setAwayTeamGoals(0);
+        match.setHomeTeamGoalsScored(1);
+        match.setAwayTeamGoalsScored(0);
 
         assertTrue(match.isWinner(match.getHomeTeam()), "Match::isWinner home team winner");
         assertFalse(match.isWinner(match.getAwayTeam()), "Match::isWinner away team not winner");
 
-        match.setHomeTeamGoals(0);
+        match.setHomeTeamGoalsScored(0);
 
         assertFalse(match.isWinner(match.getHomeTeam()), "Match::isWinner home team draw");
         assertFalse(match.isWinner(match.getAwayTeam()), "Match::isWinner away team draw");
 
-        match.setAwayTeamGoals(1);
+        match.setAwayTeamGoalsScored(1);
 
         assertFalse(match.isWinner(match.getHomeTeam()), "Match::isWinner home team not winner");
         assertTrue(match.isWinner(match.getAwayTeam()), "Match::isWinner away team winner");
@@ -150,18 +150,18 @@ class MatchTests extends EasyRandomTests {
     void testIsLoser() {
         final Match match = generate(Match.class);
 
-        match.setHomeTeamGoals(0);
-        match.setAwayTeamGoals(1);
+        match.setHomeTeamGoalsScored(0);
+        match.setAwayTeamGoalsScored(1);
 
         assertTrue(match.isLoser(match.getHomeTeam()), "Match::isLoser home team loser");
         assertFalse(match.isLoser(match.getAwayTeam()), "Match::isLoser away team not loser");
 
-        match.setAwayTeamGoals(0);
+        match.setAwayTeamGoalsScored(0);
 
         assertFalse(match.isLoser(match.getHomeTeam()), "Match::isLoser home team draw");
         assertFalse(match.isLoser(match.getAwayTeam()), "Match::isLoser away team draw");
 
-        match.setHomeTeamGoals(1);
+        match.setHomeTeamGoalsScored(1);
 
         assertFalse(match.isLoser(match.getHomeTeam()), "Match::isLoser home team not winner");
         assertTrue(match.isLoser(match.getAwayTeam()), "Match::isLoser away team winner");
@@ -174,16 +174,16 @@ class MatchTests extends EasyRandomTests {
     void testIsDraw() {
         final Match match = generate(Match.class);
 
-        match.setHomeTeamGoals(1);
-        match.setAwayTeamGoals(0);
+        match.setHomeTeamGoalsScored(1);
+        match.setAwayTeamGoalsScored(0);
 
         assertFalse(match.isDraw(), "Match::isDraw home team winner");
 
-        match.setHomeTeamGoals(0);
+        match.setHomeTeamGoalsScored(0);
 
         assertTrue(match.isDraw(), "Match::isDraw draw");
 
-        match.setAwayTeamGoals(1);
+        match.setAwayTeamGoalsScored(1);
 
         assertFalse(match.isDraw(), "Match::isDraw away team winner");
     }
@@ -195,11 +195,13 @@ class MatchTests extends EasyRandomTests {
     void testGetGoalsFor() {
         final Match match = generate(Match.class);
 
-        match.setHomeTeamGoals(1);
-        match.setAwayTeamGoals(0);
+        match.setHomeTeamGoalsScored(1);
+        match.setAwayTeamGoalsScored(0);
 
-        assertEquals(match.getHomeTeamGoals(), match.getGoalsFor(match.getHomeTeam()), "Match::getGoalsFor home team");
-        assertEquals(match.getAwayTeamGoals(), match.getGoalsFor(match.getAwayTeam()), "Match::getGoalsFor away team");
+        assertEquals(match.getHomeTeamGoalsScored(), match.getGoalsFor(match.getHomeTeam()),
+                     "Match::getGoalsFor home team");
+        assertEquals(match.getAwayTeamGoalsScored(), match.getGoalsFor(match.getAwayTeam()),
+                     "Match::getGoalsFor away team");
     }
 
     /**
@@ -209,12 +211,12 @@ class MatchTests extends EasyRandomTests {
     void testGetGoalsAgainst() {
         final Match match = generate(Match.class);
 
-        match.setHomeTeamGoals(1);
-        match.setAwayTeamGoals(0);
+        match.setHomeTeamGoalsScored(1);
+        match.setAwayTeamGoalsScored(0);
 
-        assertEquals(match.getAwayTeamGoals(), match.getGoalsAgainst(match.getHomeTeam()),
+        assertEquals(match.getAwayTeamGoalsScored(), match.getGoalsAgainst(match.getHomeTeam()),
                      "Match::getGoalsAgainst home team");
-        assertEquals(match.getHomeTeamGoals(), match.getGoalsAgainst(match.getAwayTeam()),
+        assertEquals(match.getHomeTeamGoalsScored(), match.getGoalsAgainst(match.getAwayTeam()),
                      "Match::getGoalsAgainst away team");
     }
 
@@ -225,18 +227,18 @@ class MatchTests extends EasyRandomTests {
     void testGetPoints() {
         final Match match = generate(Match.class);
 
-        match.setHomeTeamGoals(1);
-        match.setAwayTeamGoals(0);
+        match.setHomeTeamGoalsScored(1);
+        match.setAwayTeamGoalsScored(0);
 
         assertEquals(Match.WIN_POINTS, match.getPoints(match.getHomeTeam()), "Match::getPoints home team winner");
         assertEquals(Match.LOSS_POINTS, match.getPoints(match.getAwayTeam()), "Match::getPoints away team loser");
 
-        match.setHomeTeamGoals(0);
+        match.setHomeTeamGoalsScored(0);
 
         assertEquals(Match.DRAW_POINTS, match.getPoints(match.getHomeTeam()), "Match::getPoints home team draw");
         assertEquals(Match.DRAW_POINTS, match.getPoints(match.getAwayTeam()), "Match::getPoints away team draw");
 
-        match.setAwayTeamGoals(1);
+        match.setAwayTeamGoalsScored(1);
 
         assertEquals(Match.LOSS_POINTS, match.getPoints(match.getHomeTeam()), "Match::getPoints home team loser");
         assertEquals(Match.WIN_POINTS, match.getPoints(match.getAwayTeam()), "Match::getPoints away team winner");
@@ -267,17 +269,17 @@ class MatchTests extends EasyRandomTests {
     void testReset() {
         final Match match = generate(Match.class);
 
-        match.setHomeTeamGoals(1);
-        match.setAwayTeamGoals(1);
-        match.setPreviousHomeTeamGoals(1);
-        match.setPreviousAwayTeamGoals(1);
+        match.setHomeTeamGoalsScored(1);
+        match.setAwayTeamGoalsScored(1);
+        match.setPreviousHomeTeamGoalsScored(1);
+        match.setPreviousAwayTeamGoalsScored(1);
 
         match.reset();
 
-        assertEquals(0, match.getHomeTeamGoals(), "Match::reset home team goals equals");
-        assertEquals(0, match.getAwayTeamGoals(), "Match::reset away team goals equals");
-        assertEquals(1, match.getPreviousHomeTeamGoals(), "Match::reset previous home team goals equals");
-        assertEquals(1, match.getPreviousAwayTeamGoals(), "Match::reset previous away team goals equals");
+        assertEquals(0, match.getHomeTeamGoalsScored(), "Match::reset home team goals scored equals");
+        assertEquals(0, match.getAwayTeamGoalsScored(), "Match::reset away team goals scored equals");
+        assertEquals(1, match.getPreviousHomeTeamGoalsScored(), "Match::reset previous home team goals scored equals");
+        assertEquals(1, match.getPreviousAwayTeamGoalsScored(), "Match::reset previous away team goals scored equals");
     }
 
 }

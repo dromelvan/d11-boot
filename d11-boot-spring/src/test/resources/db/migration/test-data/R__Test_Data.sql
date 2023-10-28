@@ -88,55 +88,55 @@ INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_i
 VALUES(2, null, null, null, 4, CURRENT_DATE + 2, 0, 0);
 
 -- Match
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
-                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+                   previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(1, 2, 1, 1, 1, '2020-01-01 17:00:00', 0, 1, 0, 0, 'FT', 3);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
-                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+                   previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(3, 4, 1, 2, 2, '2020-01-02 17:00:00', 2, 1, 1, 0, 'FT', 3);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
-                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+                   previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(2, 1, 2, 1, 3, '2020-02-01 17:00:00', 0, 1, 0, 0, 'FT', 2);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
-                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+                   previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(4, 3, 2, 2, 4, '2020-02-02 17:00:00', 2, 1, 1, 0, 'FT', 2);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
-                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+                   previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(1, 2, 3, 1, 5, '2021-01-01 17:00:00', 0, 1, 0, 0, 'HT', 1);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
-                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+                   previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(3, 4, 3, 2, 6, '2021-01-02 17:00:00', 2, 1, 1, 0, '55', 1);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
-                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+                   previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(2, 1, 4, 1, 7, '2021-02-01 22:00:00', 0, 1, 0, 0, 'N/A', 0);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals, away_team_goals,
-                   previous_home_team_goals, previous_away_team_goals, elapsed, status)
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+                   previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(4, 3, 4, 2, 8, '2021-02-01 17:00:00', 2, 1, 1, 0, 'N/A', 4);
 
 -- D11 Match
-INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
-                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals_scored, away_team_goals_scored, home_team_points, away_team_points,
+                       previous_home_team_goals_scored, previous_away_team_goals_scored, previous_home_team_points, previous_away_team_points, elapsed, status)
 VALUES(1, 2, 1, '2020-01-01', 0, 1, 0, 1, 0, 0, 0, 0, 'FT', 2);
-INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
-                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals_scored, away_team_goals_scored, home_team_points, away_team_points,
+                       previous_home_team_goals_scored, previous_away_team_goals_scored, previous_home_team_points, previous_away_team_points, elapsed, status)
 VALUES(3, 4, 1, '2020-01-02', 2, 1, 5, 1, 0, 0, 0, 0, 'FT', 2);
-INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
-                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals_scored, away_team_goals_scored, home_team_points, away_team_points,
+                       previous_home_team_goals_scored, previous_away_team_goals_scored, previous_home_team_points, previous_away_team_points, elapsed, status)
 VALUES(2, 1, 2, '2020-02-01', 0, 1, 0, 1, 0, 0, 0, 0, 'FT', 2);
-INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
-                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals_scored, away_team_goals_scored, home_team_points, away_team_points,
+                       previous_home_team_goals_scored, previous_away_team_goals_scored, previous_home_team_points, previous_away_team_points, elapsed, status)
 VALUES(4, 3, 2, '2020-02-02', 2, 1, 5, 1, 0, 0, 0, 0, 'FT', 2);
-INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
-                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals_scored, away_team_goals_scored, home_team_points, away_team_points,
+                       previous_home_team_goals_scored, previous_away_team_goals_scored, previous_home_team_points, previous_away_team_points, elapsed, status)
 VALUES(1, 2, 3, '2021-01-01', 0, 1, 0, 1, 0, 0, 0, 0, 'HT', 1);
-INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
-                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals_scored, away_team_goals_scored, home_team_points, away_team_points,
+                       previous_home_team_goals_scored, previous_away_team_goals_scored, previous_home_team_points, previous_away_team_points, elapsed, status)
 VALUES(3, 4, 3, '2021-01-02', 2, 1, 5, 1, 0, 0, 0, 0, '55', 1);
-INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
-                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals_scored, away_team_goals_scored, home_team_points, away_team_points,
+                       previous_home_team_goals_scored, previous_away_team_goals_scored, previous_home_team_points, previous_away_team_points, elapsed, status)
 VALUES(2, 1, 4, '2020-02-01', 0, 1, 0, 1, 0, 0, 0, 0, 'N/A', 0);
-INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals, away_team_goals, home_team_points, away_team_points,
-                       previous_home_team_goals, previous_away_team_goals, previous_home_team_points, previous_away_team_points, elapsed, status)
+INSERT INTO d11_match (home_d11_team_id, away_d11_team_id, match_week_id, datetime, home_team_goals_scored, away_team_goals_scored, home_team_points, away_team_points,
+                       previous_home_team_goals_scored, previous_away_team_goals_scored, previous_home_team_points, previous_away_team_points, elapsed, status)
 VALUES(4, 3, 4, '2020-02-02', 2, 1, 5, 1, 0, 0, 0, 0, 'N/A', 0);
 
 -- Goal
