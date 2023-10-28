@@ -6,6 +6,8 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -16,8 +18,11 @@ import org.d11.boot.spring.model.converter.StatusConverter;
 import org.d11.boot.util.Status;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * A Premier League match.
@@ -120,6 +125,15 @@ public class Match extends D11Entity implements Comparable<Match> {
     private Team awayTeam;
 
     /**
+     * List of goals that were scored in this match.
+     */
+    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
+    @OrderBy("time, addedTime ASC")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Goal> goals = new ArrayList<>();
+
+    /**
      * The match week the match is played in.
      */
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -188,6 +202,28 @@ public class Match extends D11Entity implements Comparable<Match> {
      */
     public boolean isDraw() {
         return this.homeTeamGoalsScored == this.awayTeamGoalsScored;
+    }
+
+    /**
+     * Gets a list of goals scored by the home team.
+     *
+     * @return List of goals scored by the home team.
+     */
+    public List<Goal> getHomeTeamGoals() {
+        return this.goals.stream()
+                .filter(goal -> goal.getTeam().equals(this.homeTeam))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets a list of goals scored by the away team.
+     *
+     * @return List of goals scored by the away team.
+     */
+    public List<Goal> getAwayTeamGoals() {
+        return this.goals.stream()
+                .filter(goal -> goal.getTeam().equals(this.awayTeam))
+                .collect(Collectors.toList());
     }
 
     /**

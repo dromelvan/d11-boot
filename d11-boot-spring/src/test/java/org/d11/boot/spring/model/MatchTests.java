@@ -5,9 +5,11 @@ import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -186,6 +188,54 @@ class MatchTests extends EasyRandomTests {
         match.setAwayTeamGoalsScored(1);
 
         assertFalse(match.isDraw(), "Match::isDraw away team winner");
+    }
+
+    /**
+     * Tests Match::getHomeTeamGoals.
+     */
+    @Test
+    void testGetHomeTeamGoals() {
+        final Match match = generate(Match.class);
+
+        final List<Goal> homeTeamGoals = generateList(Goal.class);
+        homeTeamGoals.forEach(goal -> goal.setTeam(match.getHomeTeam()));
+
+        final List<Goal> awayTeamGoals = generateList(Goal.class);
+        awayTeamGoals.forEach(goal -> goal.setTeam(match.getAwayTeam()));
+
+        match.getGoals().clear();
+        match.getGoals().addAll(awayTeamGoals);
+        match.getGoals().addAll(homeTeamGoals);
+
+        final List<Goal> result = match.getHomeTeamGoals();
+
+        assertNotNull(result, "Match::getHomeTeamGoals is not null");
+        assertFalse(result.isEmpty(), "Match::getHomeTeamGoals is empty");
+        assertEquals(homeTeamGoals, result, "Match::getHomeTeamGoals equals");
+    }
+
+    /**
+     * Tests Match::getAwayTeamGoals.
+     */
+    @Test
+    void testGetAwayTeamGoals() {
+        final Match match = generate(Match.class);
+
+        final List<Goal> homeTeamGoals = generateList(Goal.class);
+        homeTeamGoals.forEach(goal -> goal.setTeam(match.getHomeTeam()));
+
+        final List<Goal> awayTeamGoals = generateList(Goal.class);
+        awayTeamGoals.forEach(goal -> goal.setTeam(match.getAwayTeam()));
+
+        match.getGoals().clear();
+        match.getGoals().addAll(awayTeamGoals);
+        match.getGoals().addAll(homeTeamGoals);
+
+        final List<Goal> result = match.getAwayTeamGoals();
+
+        assertNotNull(result, "Match::getAwayTeamGoals is not null");
+        assertFalse(result.isEmpty(), "Match::getAwayTeamGoals is empty");
+        assertEquals(awayTeamGoals, result, "Match::getAwayTeamGoals equals");
     }
 
     /**
