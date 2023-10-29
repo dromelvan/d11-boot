@@ -1164,29 +1164,30 @@ components:
       required:
         - id
         - matchWeekNumber
-        - date
-        - elapsed
-        - status
       properties:
         id:
           $ref: '#/components/schemas/Id'
         matchWeekNumber:
           type: integer
           format: int32
-        date:
-          type: string
-          format: date
-        elapsed:
-          type: integer
-          format: int32
-        status:
-          $ref: '#/components/schemas/Status'
 
     MatchWeek:
       allOf:
         - $ref: '#/components/schemas/MatchWeekBase'
         - type: object
+          required:
+            - date
+            - elapsed
+            - status
           properties:
+            date:
+              type: string
+              format: date
+            elapsed:
+              type: integer
+              format: int32
+            status:
+              $ref: '#/components/schemas/Status'
             mostValuablePlayer:
               $ref: '#/components/schemas/MostValuablePlayer'
 
