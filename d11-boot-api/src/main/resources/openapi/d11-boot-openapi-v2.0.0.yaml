@@ -451,6 +451,37 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  # Matches ------------------------------------------------------------------------------------------------------------
+
+  /v2/matches/{matchId}:
+    get:
+      tags:
+        - match
+      summary: Get a match by id.
+      security: []
+      operationId: getMatchById
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          description: Id of the match.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Transfer window-----------------------------------------------------------------------------------------------------
 
   /v2/transfer-windows:
@@ -890,6 +921,33 @@ components:
           items:
             $ref: '#/components/schemas/Country'
 
+    # Stadium ----------------------------------------------------------------------------------------------------------
+
+    Stadium:
+      type: object
+      required:
+        - id
+        - name
+        - city
+        - capacity
+        - opened
+        - photoFileName
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          type: string
+        city:
+          type: string
+        capacity:
+          type: integer
+          format: int32
+        opened:
+          type: integer
+          format: int32
+        photoFileName:
+          type: string
+
     # Team -------------------------------------------------------------------------------------------------------------
 
     Team:
@@ -1200,6 +1258,123 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MatchWeek'
+
+    # Match ------------------------------------------------------------------------------------------------------------
+
+    MatchBase:
+      type: object
+      required:
+        - id
+        - datetime
+        - home_team_goals_scored
+        - away_team_goals_scored
+        - homeTeam
+        - awayTeam
+        - matchWeek
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        datetime:
+          type: string
+          format: date-time
+        homeTeamGoalsScored:
+          type: integer
+          format: int32
+        awayTeamGoalsScored:
+          type: integer
+          format: int32
+        homeTeam:
+          $ref: '#/components/schemas/TeamBase'
+        awayTeam:
+          $ref: '#/components/schemas/TeamBase'
+        matchWeek:
+          $ref: '#/components/schemas/MatchWeekBase'
+
+    Match:
+      allOf:
+        - $ref: '#/components/schemas/MatchBase'
+        - type: object
+          required:
+            - whoscoredId
+            - previous_home_team_goals_scored
+            - previous_away_team_goals_scored
+            - elapsed
+            - status
+            #- homeTeamGoals
+            #- awayTeamGoals
+          properties:
+            whoscoredId:
+              type: integer
+              format: int64
+            previousHomeTeamGoalsScored:
+              type: integer
+              format: int32
+            previousAwayTeamGoalsScored:
+              type: integer
+              format: int32
+            elapsed:
+              type: string
+            status:
+              $ref: '#/components/schemas/Status'
+            homeTeamGoals:
+              type: array
+              items:
+                $ref: "#/components/schemas/GoalBase"
+            awayTeamGoals:
+              type: array
+              items:
+                $ref: "#/components/schemas/GoalBase"
+
+    MatchResponseBody:
+      type: object
+      required:
+        - match
+        - stadium
+      properties:
+        match:
+          $ref: '#/components/schemas/Match'
+        stadium:
+          $ref: '#/components/schemas/Stadium'
+
+    # Goal -------------------------------------------------------------------------------------------------------------
+
+    GoalBase:
+      type: object
+      required:
+        - id
+        - time
+        - addedTime
+        - penalty
+        - ownGoal
+        - player
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        time:
+          type: integer
+          format: int32
+        addedTime:
+          type: integer
+          format: int32
+        penalty:
+          type: boolean
+        ownGoal:
+          type: boolean
+        player:
+          $ref: '#/components/schemas/PlayerBase'
+
+    Goal:
+      allOf:
+        - $ref: '#/components/schemas/GoalBase'
+        - type: object
+          required:
+            - match
+            - team
+          properties:
+            match:
+             $ref: '#/components/schemas/MatchBase'
+            team:
+              $ref: '#/components/schemas/TeamBase'
 
     # Most valuable player ---------------------------------------------------------------------------------------------
 

@@ -6,6 +6,9 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.validation.constraints.NotNull;
@@ -29,7 +32,31 @@ import java.util.stream.Collectors;
  */
 @Data
 @Entity
+@NamedEntityGraph(name = Match.MATCH_ASSOCIATIONS,
+                  attributeNodes = {
+                          @NamedAttributeNode("homeTeam"),
+                          @NamedAttributeNode("awayTeam"),
+                          @NamedAttributeNode("matchWeek"),
+                          @NamedAttributeNode("stadium"),
+                          @NamedAttributeNode(value = "goals", subgraph = "goals-subgraph")
+                  },
+                  subgraphs = {
+                          @NamedSubgraph(
+                                  name = "goals-subgraph",
+                                  attributeNodes = {
+                                          @NamedAttributeNode("player"),
+                                          @NamedAttributeNode("team")
+                                  }
+                          )
+                  }
+)
+@SuppressWarnings({ "checkstyle:ClassFanOutComplexity", "checkstyle:Indentation" })
 public class Match extends D11Entity implements Comparable<Match> {
+
+    /**
+     * Name of the entity graph that includes goals.
+     */
+    public static final String MATCH_ASSOCIATIONS = "Match.associations";
 
     /**
      * Max length for elapsed time string.

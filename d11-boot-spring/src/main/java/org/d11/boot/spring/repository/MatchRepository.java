@@ -2,6 +2,7 @@ package org.d11.boot.spring.repository;
 
 
 import org.d11.boot.spring.model.Match;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,16 @@ import java.util.Optional;
  */
 @Repository
 public interface MatchRepository extends D11EntityRepository<Match> {
+
+    /**
+     * Overrides parent method with Match.MATCH_ASSOCIATIONS named entity graph applied.
+     *
+     * @param id Match id.
+     * @return Optional with the match or empty optional if none was found.
+     */
+    @Override
+    @EntityGraph(Match.MATCH_ASSOCIATIONS)
+    Optional<Match> findById(Long id);
 
     /**
      * Finds a match by WhoScored id.
