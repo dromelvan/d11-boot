@@ -5030,6 +5030,7 @@
 															"",
 															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
 															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
 															"});",
 															""
 														],
@@ -5100,6 +5101,249 @@
 													"path": [
 														"v2",
 														"match-weeks"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "matches",
+					"item": [
+						{
+							"name": "GET matches/{matchId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET matches/{matchId} - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET match status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET match response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"match\");",
+															"",
+															"  const match = JSON.parse(pm.environment.get(\"match\"));",
+															"",
+															"  pm.expect(body.match.id).to.eq(match.id);",
+															"  pm.expect(body.match.datetime).to.eq(match.datetime);",
+															"  pm.expect(body.match.homeTeamGoalsScored).to.eq(match.homeTeamGoalsScored);",
+															"  pm.expect(body.match.awayTeamGoalsScored).to.eq(match.awayTeamGoalsScored);",
+															"",
+															"  const matchHomeTeam = body.match.homeTeam;",
+															"  const homeTeam = match.homeTeam;",
+															"",
+															"  pm.expect(matchHomeTeam.id).to.eq(homeTeam.id);",
+															"  pm.expect(matchHomeTeam.name).to.eq(homeTeam.name);",
+															"  pm.expect(matchHomeTeam.shortName).to.eq(homeTeam.shortName);",
+															"  pm.expect(matchHomeTeam.code).to.eq(homeTeam.code);",
+															"  pm.expect(matchHomeTeam.dummy).to.eq(homeTeam.dummy);",
+															"  pm.expect(matchHomeTeam.photoFileName).to.eq(homeTeam.photoFileName);",
+															"  pm.expect(matchHomeTeam.whoscoredId).to.eq(homeTeam.whoscoredId);",
+															"  pm.expect(matchHomeTeam.previousHomeTeamGoalsScored).to.eq(homeTeam.previousHomeTeamGoalsScored);",
+															"  pm.expect(matchHomeTeam.previousAwayTeamGoalsScored).to.eq(homeTeam.previousAwayTeamGoalsScored);",
+															"  pm.expect(matchHomeTeam.elapsed).to.eq(homeTeam.elapsed);",
+															"  pm.expect(matchHomeTeam.status).to.eq(homeTeam.status);",
+															"",
+															"  const matchAwayTeam = body.match.awayTeam;",
+															"  const awayTeam = match.awayTeam;",
+															"",
+															"  pm.expect(matchAwayTeam.id).to.eq(awayTeam.id);",
+															"  pm.expect(matchAwayTeam.name).to.eq(awayTeam.name);",
+															"  pm.expect(matchAwayTeam.shortName).to.eq(awayTeam.shortName);",
+															"  pm.expect(matchAwayTeam.code).to.eq(awayTeam.code);",
+															"  pm.expect(matchAwayTeam.dummy).to.eq(awayTeam.dummy);",
+															"  pm.expect(matchAwayTeam.photoFileName).to.eq(awayTeam.photoFileName);",
+															"",
+															"  const matchMatchWeek = body.match.matchWeek;",
+															"  const matchWeek = match.matchWeek;",
+															"",
+															"  pm.expect(matchMatchWeek.id).to.eq(matchWeek.id);",
+															"  pm.expect(matchMatchWeek.matchWeekNumber).to.eq(matchWeek.matchWeekNumber);",
+															"",
+															"  const matchHomeTeamGoals = body.match.homeTeamGoals;",
+															"  const homeTeamGoals = match.homeTeamGoals;",
+															"",
+															"  pm.expect(matchHomeTeamGoals.length).to.eq(homeTeamGoals.length);",
+															"",
+															"  for (let i = 0; i < matchHomeTeamGoals.length; ++i) {",
+															"    pm.expect(matchHomeTeamGoals[i].id).to.eq(homeTeamGoals[i].id);",
+															"    pm.expect(matchHomeTeamGoals[i].time).to.eq(homeTeamGoals[i].time);",
+															"    pm.expect(matchHomeTeamGoals[i].addedTime).to.eq(homeTeamGoals[i].addedTime);",
+															"    pm.expect(matchHomeTeamGoals[i].penalty).to.eq(homeTeamGoals[i].penalty);",
+															"    pm.expect(matchHomeTeamGoals[i].ownGoal).to.eq(homeTeamGoals[i].ownGoal);",
+															"",
+															"    const goalPlayer = matchHomeTeamGoals[i].player;",
+															"    const player = homeTeamGoals[i].player;",
+															"",
+															"    pm.expect(goalPlayer.id).to.eq(player.id);",
+															"    pm.expect(goalPlayer.firstName).to.eq(player.firstName);",
+															"    pm.expect(goalPlayer.lastName).to.eq(player.lastName);",
+															"    pm.expect(goalPlayer.name).to.eq(player.name);",
+															"    pm.expect(goalPlayer.shortName).to.eq(player.shortName);",
+															"    pm.expect(goalPlayer.parameterizedName).to.eq(player.parameterizedName);",
+															"    pm.expect(goalPlayer.photoFileName).to.eq(player.photoFileName);",
+															"  }",
+															"",
+															"  const matchAwayTeamGoals = body.match.awayTeamGoals;",
+															"  const awayTeamGoals = match.awayTeamGoals;",
+															"",
+															"  pm.expect(matchAwayTeamGoals.length).to.eq(awayTeamGoals.length);",
+															"",
+															"  for (let i = 0; i < matchAwayTeamGoals.length; ++i) {",
+															"    pm.expect(matchAwayTeamGoals[i].id).to.eq(awayTeamGoals[i].id);",
+															"    pm.expect(matchAwayTeamGoals[i].time).to.eq(awayTeamGoals[i].time);",
+															"    pm.expect(matchAwayTeamGoals[i].addedTime).to.eq(awayTeamGoals[i].addedTime);",
+															"    pm.expect(matchAwayTeamGoals[i].penalty).to.eq(awayTeamGoals[i].penalty);",
+															"    pm.expect(matchAwayTeamGoals[i].ownGoal).to.eq(awayTeamGoals[i].ownGoal);",
+															"",
+															"    const goalPlayer = matchAwayTeamGoals[i].player;",
+															"    const player = awayTeamGoals[i].player;",
+															"",
+															"    pm.expect(goalPlayer.id).to.eq(player.id);",
+															"    pm.expect(goalPlayer.firstName).to.eq(player.firstName);",
+															"    pm.expect(goalPlayer.lastName).to.eq(player.lastName);",
+															"    pm.expect(goalPlayer.name).to.eq(player.name);",
+															"    pm.expect(goalPlayer.shortName).to.eq(player.shortName);",
+															"    pm.expect(goalPlayer.parameterizedName).to.eq(player.parameterizedName);",
+															"    pm.expect(goalPlayer.photoFileName).to.eq(player.photoFileName);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/matches/{{matchId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"matches",
+														"{{matchId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET matches/{matchd} - Bad Request Invalid Match Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET match invalid match id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET match invalid match id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/matches/invalid\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"matchId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/matches/invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"matches",
+														"invalid"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "404 Not Found",
+									"item": [
+										{
+											"name": "GET matches/{matchId} - Not Found",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET match not found status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"GET match not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"  pm.expect(body.resource).to.eq('Match');",
+															"  pm.expect(body.id).to.eq(0);",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/matches/0\");",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/matches/0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"matches",
+														"0"
 													]
 												}
 											},
