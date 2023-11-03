@@ -6,6 +6,8 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -25,7 +27,20 @@ import java.util.Objects;
 @Data
 @Entity
 @Table(name = "d11_match")
+@NamedEntityGraph(name = D11Match.D11_MATCH_ASSOCIATIONS,
+                  attributeNodes = {
+                          @NamedAttributeNode("homeD11Team"),
+                          @NamedAttributeNode("awayD11Team"),
+                          @NamedAttributeNode("matchWeek")
+                  }
+)
+@SuppressWarnings("checkstyle:Indentation")
 public class D11Match extends D11Entity implements Comparable<D11Match> {
+
+    /**
+     * Name of the entity graph that includes associations.
+     */
+    public static final String D11_MATCH_ASSOCIATIONS = "D11Match.associations";
 
     /**
      * Max length for elapsed time string.

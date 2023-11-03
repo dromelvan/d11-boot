@@ -2,17 +2,29 @@ package org.d11.boot.spring.repository;
 
 
 import org.d11.boot.spring.model.D11Match;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository for D11Match entities.
  */
 @Repository
 public interface D11MatchRepository extends D11EntityRepository<D11Match> {
+
+    /**
+     * Overrides parent method with D11Match.D11_MATCH_ASSOCIATIONS named entity graph applied.
+     *
+     * @param id D11 match id.
+     * @return Optional with the D11 match or empty optional if none was found.
+     */
+    @Override
+    @EntityGraph(D11Match.D11_MATCH_ASSOCIATIONS)
+    Optional<D11Match> findById(Long id);
 
     /**
      * Gets D11 matches by D11 team and season ordered by datetime.
