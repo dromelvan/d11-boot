@@ -33,7 +33,7 @@ class MatchControllerV2Tests extends D11BootControllerV2Tests {
      * Tests MatchController::getMatchById.
      */
     @Test
-    void testGetSeasonById() {
+    void testGetMatchById() {
         final MatchApi matchApi = getApi(MatchApi.class);
         final List<Match> matches = this.matchRepository.findAll();
 

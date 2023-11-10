@@ -451,7 +451,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  # Matches ------------------------------------------------------------------------------------------------------------
+  # Match --------------------------------------------------------------------------------------------------------------
 
   /v2/matches/{matchId}:
     get:
@@ -475,6 +475,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MatchResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  # D11 match ----------------------------------------------------------------------------------------------------------
+
+  /v2/d11-matches/{d11MatchId}:
+    get:
+      tags:
+        - d11Match
+      summary: Get a D11 match by id.
+      security: []
+      operationId: getD11MatchById
+      parameters:
+        - name: d11MatchId
+          in: path
+          required: true
+          description: Id of the D11 match.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/D11MatchResponseBody"
         400:
           $ref: '#/components/responses/BadRequest'
         404:
@@ -1300,8 +1331,6 @@ components:
             - previous_away_team_goals_scored
             - elapsed
             - status
-            #- homeTeamGoals
-            #- awayTeamGoals
           properties:
             whoscoredId:
               type: integer
@@ -1335,6 +1364,82 @@ components:
           $ref: '#/components/schemas/Match'
         stadium:
           $ref: '#/components/schemas/Stadium'
+
+    # D11 match --------------------------------------------------------------------------------------------------------
+
+    D11MatchBase:
+      type: object
+      required:
+        - id
+        - datetime
+        - home_team_goals_scored
+        - away_team_goals_scored
+        - home_team_points
+        - away_team_points
+        - homeD11Team
+        - awayD11Team
+        - matchWeek
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        datetime:
+          type: string
+          format: date-time
+        homeTeamGoalsScored:
+          type: integer
+          format: int32
+        awayTeamGoalsScored:
+          type: integer
+          format: int32
+        homeTeamPoints:
+          type: integer
+          format: int32
+        awayTeamPoints:
+          type: integer
+          format: int32
+        homeD11Team:
+          $ref: '#/components/schemas/D11TeamBase'
+        awayD11Team:
+          $ref: '#/components/schemas/D11TeamBase'
+        matchWeek:
+          $ref: '#/components/schemas/MatchWeekBase'
+
+    D11Match:
+      allOf:
+        - $ref: '#/components/schemas/D11MatchBase'
+        - type: object
+          required:
+            - previous_home_team_goals_scored
+            - previous_away_team_goals_scored
+            - previous_home_team_points
+            - previous_away_team_points
+            - elapsed
+            - status
+          properties:
+            previousHomeTeamGoalsScored:
+              type: integer
+              format: int32
+            previousAwayTeamGoalsScored:
+              type: integer
+              format: int32
+            previousHomeTeamPoints:
+              type: integer
+              format: int32
+            previousAwayTeamPoints:
+              type: integer
+              format: int32
+            elapsed:
+              type: string
+            status:
+              $ref: '#/components/schemas/Status'
+
+    D11MatchResponseBody:
+      type: object
+      required:
+        - d11Match
+      properties:
+        d11Match:
+          $ref: '#/components/schemas/D11Match'
 
     # Goal -------------------------------------------------------------------------------------------------------------
 
