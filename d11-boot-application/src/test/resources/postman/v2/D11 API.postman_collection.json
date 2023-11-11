@@ -5305,6 +5305,177 @@
 					]
 				},
 				{
+					"name": "d11-matches",
+					"item": [
+						{
+							"name": "GET d11-matches/{d11MatchId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET d11-matches/{d11MatchId} - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 match status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"",
+															"pm.test(\"GET D11 match response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"d11Match\");",
+															"",
+															"  const d11Match = JSON.parse(pm.environment.get(\"d11Match\"));",
+															"",
+															"  // Check D11 match",
+															"  expect.d11MatchToEq(pm, body.d11Match, d11Match);",
+															"",
+															"  // Check D11 teams",
+															"  expect.d11TeamToEq(pm, body.d11Match.homeD11Team, d11Match.homeD11Team);",
+															"  expect.d11TeamToEq(pm, body.d11Match.awayD11Team, d11Match.awayD11Team);",
+															"",
+															"  // Check match week",
+															"  pm.expect(body.d11Match.matchWeek.id).to.eq(d11Match.matchWeek.id);",
+															"  pm.expect(body.d11Match.matchWeek.matchWeekNumber).to.eq(d11Match.matchWeek.matchWeekNumber);",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-matches/{{d11MatchId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-matches",
+														"{{d11MatchId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET d11-matches/{d11Matchd} - Bad Request Invalid D11 Match Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 match invalid match id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET D11 match invalid match id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/d11-matches/invalid\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"d11MatchId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-matches/invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-matches",
+														"invalid"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "404 Not Found",
+									"item": [
+										{
+											"name": "GET d11-matches/{d11MatchId} - Not Found",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 match not found status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"GET D11 match not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"  pm.expect(body.resource).to.eq('D11Match');",
+															"  pm.expect(body.id).to.eq(0);",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/d11-matches/0\");",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-matches/0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-matches",
+														"0"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
 					"name": "transfer-windows",
 					"item": [
 						{
@@ -7087,6 +7258,29 @@
 					"        pm.expect(goal1.addedTime).to.eq(goal2.addedTime);",
 					"        pm.expect(goal1.penalty).to.eq(goal2.penalty);",
 					"        pm.expect(goal1.ownGoal).to.eq(goal2.ownGoal);",
+					"    },",
+					"    d11MatchToEq: function(pm, d11Match1, d11Match2) {",
+					"        pm.expect(d11Match1.id).to.eq(d11Match2.id);",
+					"        pm.expect(d11Match1.datetime).to.eq(d11Match2.datetime);",
+					"        pm.expect(d11Match1.homeTeamGoalsScored).to.eq(d11Match2.homeTeamGoalsScored);",
+					"        pm.expect(d11Match1.awayTeamGoalsScored).to.eq(d11Match2.awayTeamGoalsScored);",
+					"        pm.expect(d11Match1.homeTeamPoints).to.eq(d11Match2.homeTeamPoints);",
+					"        pm.expect(d11Match1.awayTeamPoints).to.eq(d11Match2.awayTeamPoints);",
+					"        pm.expect(d11Match1.previousHomeTeamGoalsScored).to.eq(d11Match2.previousHomeTeamGoalsScored);",
+					"        pm.expect(d11Match1.previousAwayTeamGoalsScored).to.eq(d11Match2.previousAwayTeamGoalsScored);",
+					"        pm.expect(d11Match1.previousHomeTeamPoints).to.eq(d11Match2.previousHomeTeamPoints);",
+					"        pm.expect(d11Match1.previousAwayTeamPoints).to.eq(d11Match2.previousAwayTeamPoints);",
+					"",
+					"        pm.expect(d11Match1.elapsed).to.eq(d11Match2.elapsed);                        ",
+					"        pm.expect(d11Match1.status).to.eq(d11Match2.status);",
+					"    },",
+					"    d11TeamToEq: function(pm, d11Team1, d11Team2) {",
+					"        pm.expect(d11Team1.id).to.eq(d11Team2.id);",
+					"        pm.expect(d11Team1.name).to.eq(d11Team2.name);",
+					"        pm.expect(d11Team1.shortName).to.eq(d11Team2.shortName);",
+					"        pm.expect(d11Team1.code).to.eq(d11Team2.code);",
+					"        pm.expect(d11Team1.dummy).to.eq(d11Team2.dummy);",
+					"        pm.expect(d11Team1.photoFileName).to.eq(d11Team2.photoFileName);",
 					"    },",
 					"    playerToEq: function(pm, player1, player2) {",
 					"        pm.expect(player1.id).to.eq(player2.id);",
