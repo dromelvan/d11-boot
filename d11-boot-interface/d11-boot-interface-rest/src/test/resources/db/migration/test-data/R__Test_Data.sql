@@ -349,3 +349,13 @@ INSERT INTO transfer_window (match_week_id, transfer_window_number, draft, statu
 VALUES(1, 0, true, 3, CURRENT_DATE - 2);
 INSERT INTO transfer_window (match_week_id, transfer_window_number, draft, status, datetime)
 VALUES(2, 0, true, 0, CURRENT_DATE - 1);
+
+-- Transfer day
+INSERT INTO transfer_day (transfer_window_id, transfer_day_number, status, datetime)
+VALUES(1, 1, 3, CURRENT_DATE - 2);
+INSERT INTO transfer_day (transfer_window_id, transfer_day_number, status, datetime)
+VALUES(1, 2, 3, CURRENT_DATE - 1);
+INSERT INTO transfer_day (transfer_window_id, transfer_day_number, status, datetime)
+VALUES(2, 1, 1, CURRENT_DATE - 1);
+INSERT INTO transfer_day (transfer_window_id, transfer_day_number, status, datetime)
+VALUES(2, 2, 0, CURRENT_DATE + 1);

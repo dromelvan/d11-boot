@@ -608,6 +608,37 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  # Transfer day--------------------------------------------------------------------------------------------------------
+
+  /v2/transfer-days/{transferDayId}:
+    get:
+      tags:
+        - transferDay
+      summary: Get a transfer day by id.
+      security: []
+      operationId: getTransferDayById
+      parameters:
+        - name: transferDayId
+          in: path
+          required: true
+          description: Id of the transfer day.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferDayResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
 # Components -----------------------------------------------------------------------------------------------------------
 
 components:
@@ -1577,6 +1608,20 @@ components:
         datetime:
           type: string
           format: date-time
+
+    TransferDayResponseBody:
+      type: object
+      required:
+        - transferDay
+        - transferWindow
+        - matchWeek
+      properties:
+        transferDay:
+          $ref: '#/components/schemas/TransferDay'
+        transferWindow:
+          $ref: '#/components/schemas/TransferWindow'
+        matchWeek:
+          $ref: '#/components/schemas/MatchWeek'
 
   # Security schemes ---------------------------------------------------------------------------------------------------
 
