@@ -5485,7 +5485,7 @@
 									"name": "200 OK",
 									"item": [
 										{
-											"name": "GET transfer-windows/{transferWindowId} - OK",
+											"name": "GET transfer-windows/{{transferWindowId}}",
 											"event": [
 												{
 													"listen": "test",
@@ -7184,6 +7184,175 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "transfer-days",
+					"item": [
+						{
+							"name": "GET transfer-days/{transferDayId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET transfer-days/{transferDayId} - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer day status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET transfer day response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"transferDay\");",
+															"",
+															"  // CHeck transfer day",
+															"  const transferDay = JSON.parse(pm.environment.get(\"transferDay\"));",
+															"  expect.transferDayToEq(pm, body.transferDay, transferDay)",
+															"",
+															"  // Check transfer window",
+															"  const transferWindow = JSON.parse(pm.environment.get(\"transferDayTransferWindow\"));",
+															"  expect.transferWindowToEq(pm, body.transferWindow, transferWindow)",
+															"",
+															"  // Check match week",
+															"  const matchWeek = JSON.parse(pm.environment.get(\"transferDayMatchWeek\"));",
+															"  expect.matchWeekToEq(pm, body.matchWeek, matchWeek)",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-days/{{transferDayId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-days",
+														"{{transferDayId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET transfer-days/{transferDayId} - Bad Request Invalid Transfer Day Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer invalid transfer day id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfer invalid transfer day response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-days/invalid\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"transferDayId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-days/invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-days",
+														"invalid"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "404 Not Found",
+									"item": [
+										{
+											"name": "GET transfer-days/{transferDayId} - Not Found",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer day not found status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"GET transfer day not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"  pm.expect(body.resource).to.eq('TransferDay');",
+															"  pm.expect(body.id).to.eq(0);",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-days/0\");",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-days/0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-days",
+														"0"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
 				}
 			]
 		}
@@ -7244,6 +7413,13 @@
 					"        pm.expect(match1.elapsed).to.eq(match2.elapsed);                        ",
 					"        pm.expect(match1.status).to.eq(match2.status);",
 					"    },",
+					"    matchWeekToEq: function(pm, matchWeek1, matchWeek2) {",
+					"        pm.expect(matchWeek1.id).to.eq(matchWeek2.id);",
+					"        pm.expect(matchWeek1.id).to.eq(matchWeek2.id);",
+					"        pm.expect(matchWeek1.matchWeekNumber).to.eq(matchWeek2.matchWeekNumber);",
+					"        pm.expect(matchWeek1.date).to.eq(matchWeek2.date);",
+					"        pm.expect(matchWeek1.status).to.eq(matchWeek2.status);",
+					"    },",
 					"    teamToEq: function(pm, team1, team2) {",
 					"        pm.expect(team1.id).to.eq(team2.id);",
 					"        pm.expect(team1.name).to.eq(team2.name);",
@@ -7290,7 +7466,14 @@
 					"        pm.expect(player1.shortName).to.eq(player2.shortName);",
 					"        pm.expect(player1.parameterizedName).to.eq(player2.parameterizedName);",
 					"        pm.expect(player1.photoFileName).to.eq(player2.photoFileName);",
-					"    }",
+					"    },",
+					"    transferWindowToEq: function(pm, transferWindow1, transferWindow2) {",
+					"        pm.expect(transferWindow1.id).to.eq(transferWindow2.id);",
+					"    },",
+					"    transferDayToEq: function(pm, transferDay1, transferDay2) {",
+					"        pm.expect(transferDay1.id).to.eq(transferDay2.id);",
+					"    },",
+					"",
 					"}"
 				]
 			}
