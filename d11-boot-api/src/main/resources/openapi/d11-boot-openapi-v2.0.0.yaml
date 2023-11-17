@@ -647,7 +647,7 @@ paths:
         - transferListing
       summary: Get transfer listings by transfer day id.
       security: []
-      operationId: getTransferListings
+      operationId: getTransferListingsByTransferDayId
       parameters:
         - name: transferDayId
           in: query
