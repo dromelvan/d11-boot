@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Transfer listing service.
@@ -60,14 +61,18 @@ public class TransferListingService extends RepositoryService<TransferListing, T
             throw new BadRequestException("page", "must be non-negative");
         }
 
-        final TransferDay transferDay = this.transferDayRepository.findById(transferDayId).orElse(null);
+        final List<TransferListing> transferListings = new ArrayList<>();
 
-        if (transferDay != null && Status.PENDING.equals(transferDay.getStatus())) {
-            return new ArrayList<>();
-        }
+        final Optional<TransferDay> optional = this.transferDayRepository.findById(transferDayId);
 
-        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("ranking"));
-        return getJpaRepository().findByTransferDayIdOrderByRanking(transferDayId, pageable);
+        optional.ifPresent(transferDay -> {
+            if (!Status.PENDING.equals(transferDay.getStatus())) {
+                final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("ranking"));
+                transferListings.addAll(getJpaRepository().findByTransferDayIdOrderByRanking(transferDayId, pageable));
+            }
+        });
+
+        return transferListings;
     }
 
 }
