@@ -4916,13 +4916,13 @@
 					"name": "match-weeks",
 					"item": [
 						{
-							"name": "GET match-weeks",
+							"name": "GET match-weeks?seasonId={seasonId}",
 							"item": [
 								{
 									"name": "200 OK",
 									"item": [
 										{
-											"name": "GET match-weeks - OK",
+											"name": "GET match-weeks?seasonId={seasonId} - OK",
 											"event": [
 												{
 													"listen": "test",
@@ -5009,7 +5009,7 @@
 									"name": "400 Bad Request",
 									"item": [
 										{
-											"name": "GET match-weeks - Bad Request Invalid Season Id",
+											"name": "GET match-weeks?seasonId={seasonId} - Bad Request Invalid Season Id",
 											"event": [
 												{
 													"listen": "test",
@@ -5061,7 +5061,7 @@
 											"response": []
 										},
 										{
-											"name": "GET match-weeks - Bad Request Missing Season Id",
+											"name": "GET match-weeks?seasonId={seasonId} - Bad Request Missing Season Id",
 											"event": [
 												{
 													"listen": "test",
@@ -7353,6 +7353,410 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "transfer-listings",
+					"item": [
+						{
+							"name": "GET transfer-listings?transferDayId={transferDayId}&page={page}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET transfer-listings?transferDayId={transferDayId}&page={page} - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer listings status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET transfer listings response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  const transferListings = JSON.parse(pm.environment.get(\"transferDayTransferListings\"));",
+															"",
+															"  pm.expect(body.transferListings.length).to.gt(0);",
+															"  pm.expect(body.transferListings.length).to.eq(transferListings.length);",
+															"",
+															"  for (let i = 0; i < body.transferListings.length; ++i) {",
+															"    expect.transferListingToEq(pm, body.transferListings[i], transferListings[i]);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-listings?transferDayId={{transferDayId}}&page=0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-listings"
+													],
+													"query": [
+														{
+															"key": "transferDayId",
+															"value": "{{transferDayId}}"
+														},
+														{
+															"key": "page",
+															"value": "0"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET transfer-listings?transferDayId={transferDayId}&page={page} - Bad Request Missing Transfer Day Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer listings missing transfer day id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfer listings missing transfer day id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-listings\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"transferDayId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-listings?page=0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-listings"
+													],
+													"query": [
+														{
+															"key": "page",
+															"value": "0"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET transfer-listings?transferDayId={transferDayId}&page={page} - Bad Request Invalid Transfer Day Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer listings invalid transfer day id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfer listings invalid transfer day id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-listings\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"transferDayId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-listings?transferDayId=invalid&page=0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-listings"
+													],
+													"query": [
+														{
+															"key": "transferDayId",
+															"value": "invalid"
+														},
+														{
+															"key": "page",
+															"value": "0"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET transfer-listings?transferDayId={transferDayId}&page={page} - Bad Request Negative Transfer Day Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer listings non positive transfer day id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfer listings non positive transfer day id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-listings\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"transferDayId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be positive\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-listings?transferDayId=-1&page=0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-listings"
+													],
+													"query": [
+														{
+															"key": "transferDayId",
+															"value": "-1"
+														},
+														{
+															"key": "page",
+															"value": "0"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET transfer-listings?transferDayId={transferDayId}&page={page} - Bad Request Missing Page",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer listings missing page status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfer listings missing page response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-listings\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"page\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-listings?transferDayId={{transferDayId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-listings"
+													],
+													"query": [
+														{
+															"key": "transferDayId",
+															"value": "{{transferDayId}}"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET transfer-listings?transferDayId={transferDayId}&page={page} - Bad Request Invalid Page",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer listings invalid page status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfer listings invalid page response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-listings\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"page\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-listings?transferDayId={{transferDayId}}&page=invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-listings"
+													],
+													"query": [
+														{
+															"key": "transferDayId",
+															"value": "{{transferDayId}}"
+														},
+														{
+															"key": "page",
+															"value": "invalid"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET transfer-listings?transferDayId={transferDayId}&page={page} - Bad Request Negative Page",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer listings negative page status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfer listings negative page response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-listings\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"page\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be non-negative\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-listings?transferDayId={{transferDayId}}&page=-1",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-listings"
+													],
+													"query": [
+														{
+															"key": "transferDayId",
+															"value": "{{transferDayId}}"
+														},
+														{
+															"key": "page",
+															"value": "-1"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
 				}
 			]
 		}
@@ -7472,6 +7876,10 @@
 					"    },",
 					"    transferDayToEq: function(pm, transferDay1, transferDay2) {",
 					"        pm.expect(transferDay1.id).to.eq(transferDay2.id);",
+					"    },",
+					"    transferListingToEq: function(pm, transferListing1, transferListing2) {",
+					"        pm.expect(transferListing1.id).to.eq(transferListing1.id);",
+					"        pm.expect(transferListing1.ranking).to.eq(transferListing1.ranking);",
 					"    },",
 					"",
 					"}"
