@@ -5,7 +5,9 @@ import jakarta.transaction.Transactional;
 import org.d11.boot.api.v2.client.TransferBidApi;
 import org.d11.boot.api.v2.model.TransferBidDTO;
 import org.d11.boot.api.v2.model.TransferBidsResponseBodyDTO;
+import org.d11.boot.spring.model.TransferBid;
 import org.d11.boot.spring.model.TransferDay;
+import org.d11.boot.spring.repository.TransferBidRepository;
 import org.d11.boot.spring.repository.TransferDayRepository;
 import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,12 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Autowired
     private TransferDayRepository transferDayRepository;
+
+    /**
+     * Transfer bid repository.
+     */
+    @Autowired
+    private TransferBidRepository transferBidRepository;
 
     /**
      * Tests TransferBidControllerV2::getTransferBidsByTransferDayId.
@@ -66,7 +74,11 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
 
             if (Status.FINISHED.equals(transferDay.getStatus())) {
                 assertFalse(result.isEmpty(), "TransferBidControllerV2::getTransferBidsByTransferDayId empty");
-                assertEquals(map(transferDay.getTransferBids(), TransferBidDTO.class), result,
+
+                final List<TransferBid> transferBids = this.transferBidRepository
+                        .findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(transferDay.getId());
+
+                assertEquals(map(transferBids, TransferBidDTO.class), result,
                              "TransferBidControllerV2::getTransferBidsByTransferDayId equals");
                 ++finishedCount;
             } else {

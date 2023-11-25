@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
@@ -73,7 +72,6 @@ public class TransferDay extends D11Entity implements Comparable<TransferDay> {
      * List of transfer bids in this transfer day.
      */
     @OneToMany(mappedBy = "transferDay", cascade = CascadeType.PERSIST)
-    @OrderBy("playerRanking, activeFee DESC, d11TeamRanking DESC")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<TransferBid> transferBids = new ArrayList<>();
