@@ -7757,6 +7757,238 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "transfer-bids",
+					"item": [
+						{
+							"name": "GET transfer-bids?transferDayId={transferDayId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET transfer-bids?transferDayId={transferDayId} - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer bids status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET transfer bids response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  const transferBids = JSON.parse(pm.environment.get(\"transferDayTransferBids\"));",
+															"",
+															"  pm.expect(body.transferBids.length).to.gt(0);",
+															"  pm.expect(body.transferBids.length).to.eq(transferBids.length);",
+															"",
+															"  for (let i = 0; i < body.transferBids.length; ++i) {",
+															"    expect.transferBidToEq(pm, body.transferBids[i], transferBids[i]);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-bids?transferDayId={{transferDayId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-bids"
+													],
+													"query": [
+														{
+															"key": "transferDayId",
+															"value": "{{transferDayId}}"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET transfer-bids?transferDayId={transferDayId} - Bad Request Missing Transfer Day Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer bids missing transfer day id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfer bids missing transfer day id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-bids\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"transferDayId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-bids?page=0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-bids"
+													],
+													"query": [
+														{
+															"key": "page",
+															"value": "0"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET transfer-bids?transferDayId={transferDayId} - Bad Request Invalid Transfer Day Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer bids invalid transfer day id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfer bids invalid transfer day id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-bids\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"transferDayId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-bids?transferDayId=invalid&page=0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-bids"
+													],
+													"query": [
+														{
+															"key": "transferDayId",
+															"value": "invalid"
+														},
+														{
+															"key": "page",
+															"value": "0"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET transfer-bids?transferDayId={transferDayId} - Bad Request Negative Transfer Day Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer bids non positive transfer day id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfer bids non positive transfer day id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-bids\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"transferDayId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be positive\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-bids?transferDayId=-1",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-bids"
+													],
+													"query": [
+														{
+															"key": "transferDayId",
+															"value": "-1"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
 				}
 			]
 		}
@@ -7921,13 +8153,22 @@
 					"            pm.expect(transferListing1.formMatchPoints[i]).to.eq(transferListing2.formMatchPoints[i]);",
 					"        }",
 					"",
-					"",
 					"        expect.playerToEq(pm, transferListing1.player, transferListing2.player);",
 					"        expect.teamToEq(pm, transferListing1.team, transferListing2.team);",
 					"        expect.d11TeamToEq(pm, transferListing1.d11Team, transferListing2.d11Team);",
 					"        expect.positionToEq(pm, transferListing1.position, transferListing2.position);",
 					"    },",
+					"    transferBidToEq: function(pm, transferBid1, transferBid2) {",
+					"        pm.expect(transferBid1.id).to.eq(transferBid2.id);",
+					"        pm.expect(transferBid1.playerRanking).to.eq(transferBid2.playerRanking);",
+					"        pm.expect(transferBid1.d11TeamRanking).to.eq(transferBid2.d11TeamRanking);        ",
+					"        pm.expect(transferBid1.fee).to.eq(transferBid2.fee);",
+					"        pm.expect(transferBid1.activeFee).to.eq(transferBid2.activeFee);        ",
+					"        pm.expect(transferBid1.successful).to.eq(transferBid2.successful);",
 					"",
+					"        expect.playerToEq(pm, transferBid1.player, transferBid2.player);",
+					"        expect.d11TeamToEq(pm, transferBid1.d11Team, transferBid2.d11Team);",
+					"    },",
 					"}"
 				]
 			}
