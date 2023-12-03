@@ -3,6 +3,7 @@ package org.d11.boot.interfaces.rest.v2.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import org.d11.boot.api.v2.model.BadRequestResponseBodyDTO;
 import org.d11.boot.util.exception.BadRequestException;
+import org.d11.boot.util.exception.ForbiddenException;
 import org.d11.boot.util.exception.UnauthorizedException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -87,6 +88,26 @@ class ControllerExceptionHandlerV2Tests {
         assertEquals(responseEntity.getStatusCode(), HttpStatus.UNAUTHORIZED,
                      "ControllerExceptionHandlerV2::handle(UnauthorizedException) status equals");
         assertNull(responseEntity.getBody(), "ControllerExceptionHandlerV2::handle(UnauthorizedException) body null");
+    }
+
+    /**
+     * Tests ControllerExceptionHandlerV2::handle(ForbiddenException).
+     */
+    @Test
+    void testHandleForbiddenException() {
+        final ForbiddenException e = new ForbiddenException();
+
+        final HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(httpServletRequest.getRequestURI()).thenReturn(REQUEST_URI);
+        when(httpServletRequest.getMethod()).thenReturn(METHOD);
+
+        final ControllerExceptionHandlerV2 controllerExceptionHandlerV2 = new ControllerExceptionHandlerV2();
+
+        final ResponseEntity<?> responseEntity = controllerExceptionHandlerV2.handle(e, httpServletRequest);
+
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.FORBIDDEN,
+                     "ControllerExceptionHandlerV2::handle(ForbiddenException) status equals");
+        assertNull(responseEntity.getBody(), "ControllerExceptionHandlerV2::handle(ForbiddenException) body null");
     }
 
 }
