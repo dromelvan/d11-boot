@@ -2,8 +2,10 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.d11.boot.api.v2.model.BadRequestResponseBodyDTO;
+import org.d11.boot.api.v2.model.NotFoundResponseBodyDTO;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ForbiddenException;
+import org.d11.boot.util.exception.NotFoundException;
 import org.d11.boot.util.exception.UnauthorizedException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -108,6 +110,43 @@ class ControllerExceptionHandlerV2Tests {
         assertEquals(responseEntity.getStatusCode(), HttpStatus.FORBIDDEN,
                      "ControllerExceptionHandlerV2::handle(ForbiddenException) status equals");
         assertNull(responseEntity.getBody(), "ControllerExceptionHandlerV2::handle(ForbiddenException) body null");
+    }
+
+    /**
+     * Tests ControllerExceptionHandlerV2::handle(NotFoundException).
+     */
+    @Test
+    void testHandleNotFoundException() {
+        final NotFoundException e = new NotFoundException(1L, NotFoundException.class);
+
+        final HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(httpServletRequest.getRequestURI()).thenReturn(REQUEST_URI);
+        when(httpServletRequest.getMethod()).thenReturn(METHOD);
+
+        final ControllerExceptionHandlerV2 controllerExceptionHandlerV2 = new ControllerExceptionHandlerV2();
+
+        final ResponseEntity<NotFoundResponseBodyDTO> responseEntity =
+                controllerExceptionHandlerV2.handle(e, httpServletRequest);
+
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.NOT_FOUND,
+                     "ControllerExceptionHandlerV2::handle(NotFoundException) status equals");
+
+        final NotFoundResponseBodyDTO notFoundResponseBodyDTO = responseEntity.getBody();
+
+        assertNotNull(notFoundResponseBodyDTO, "ControllerExceptionHandlerV2::handle(NotFoundException) body null");
+
+        assertNotNull(notFoundResponseBodyDTO.getTimestamp(),
+                      "ControllerExceptionHandlerV2::handle(NotFoundException) timestamp not null");
+        assertEquals(HttpStatus.NOT_FOUND.getReasonPhrase(), notFoundResponseBodyDTO.getError(),
+                     "ControllerExceptionHandlerV2::handle(NotFoundException) error equals");
+        assertEquals(e.getResource(), notFoundResponseBodyDTO.getResource(),
+                     "ControllerExceptionHandlerV2::handle(NotFoundException) resource equals");
+        assertEquals(e.getId(), notFoundResponseBodyDTO.getId(),
+                     "ControllerExceptionHandlerV2::handle(NotFoundException) id equals");
+        assertEquals(httpServletRequest.getMethod(), notFoundResponseBodyDTO.getMethod(),
+                     "ControllerExceptionHandlerV2::handle(NotFoundException) method equals");
+        assertEquals(httpServletRequest.getRequestURI(), notFoundResponseBodyDTO.getPath(),
+                     "ControllerExceptionHandlerV2::handle(NotFoundException) path equals");
     }
 
 }
