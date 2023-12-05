@@ -2,8 +2,10 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.d11.boot.api.v2.model.BadRequestResponseBodyDTO;
+import org.d11.boot.api.v2.model.ConflictResponseBodyDTO;
 import org.d11.boot.api.v2.model.NotFoundResponseBodyDTO;
 import org.d11.boot.util.exception.BadRequestException;
+import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ForbiddenException;
 import org.d11.boot.util.exception.NotFoundException;
 import org.d11.boot.util.exception.UnauthorizedException;
@@ -147,6 +149,41 @@ class ControllerExceptionHandlerV2Tests {
                      "ControllerExceptionHandlerV2::handle(NotFoundException) method equals");
         assertEquals(httpServletRequest.getRequestURI(), notFoundResponseBodyDTO.getPath(),
                      "ControllerExceptionHandlerV2::handle(NotFoundException) path equals");
+    }
+
+    /**
+     * Tests ControllerExceptionHandlerV2::handle(ConflictException).
+     */
+    @Test
+    void testHandleConflictException() {
+        final ConflictException e = new ConflictException("Conflict");
+
+        final HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(httpServletRequest.getRequestURI()).thenReturn(REQUEST_URI);
+        when(httpServletRequest.getMethod()).thenReturn(METHOD);
+
+        final ControllerExceptionHandlerV2 controllerExceptionHandlerV2 = new ControllerExceptionHandlerV2();
+
+        final ResponseEntity<ConflictResponseBodyDTO> responseEntity =
+                controllerExceptionHandlerV2.handle(e, httpServletRequest);
+
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.CONFLICT,
+                     "ControllerExceptionHandlerV2::handle(ConflictException) status equals");
+
+        final ConflictResponseBodyDTO conflictResponseBodyDTO = responseEntity.getBody();
+
+        assertNotNull(conflictResponseBodyDTO, "ControllerExceptionHandlerV2::handle(ConflictException) body null");
+
+        assertNotNull(conflictResponseBodyDTO.getTimestamp(),
+                      "ControllerExceptionHandlerV2::handle(ConflictException) timestamp not null");
+        assertEquals(HttpStatus.CONFLICT.getReasonPhrase(), conflictResponseBodyDTO.getError(),
+                     "ControllerExceptionHandlerV2::handle(ConflictException) error equals");
+        assertEquals(e.getMessage(), conflictResponseBodyDTO.getMessage(),
+                     "ControllerExceptionHandlerV2::handle(ConflictException) message equals");
+        assertEquals(httpServletRequest.getMethod(), conflictResponseBodyDTO.getMethod(),
+                     "ControllerExceptionHandlerV2::handle(ConflictException) method equals");
+        assertEquals(httpServletRequest.getRequestURI(), conflictResponseBodyDTO.getPath(),
+                     "ControllerExceptionHandlerV2::handle(ConflictException) path equals");
     }
 
 }
