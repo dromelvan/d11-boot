@@ -12,6 +12,7 @@ import org.d11.boot.util.exception.UnauthorizedException;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -184,6 +185,72 @@ class ControllerExceptionHandlerV2Tests {
                      "ControllerExceptionHandlerV2::handle(ConflictException) method equals");
         assertEquals(httpServletRequest.getRequestURI(), conflictResponseBodyDTO.getPath(),
                      "ControllerExceptionHandlerV2::handle(ConflictException) path equals");
+    }
+
+    /**
+     * Tests ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException).
+     */
+    @Test
+    void testHandleMethodArgumentTypeMismatchException() {
+        final MethodArgumentTypeMismatchException e = mock(MethodArgumentTypeMismatchException.class);
+
+        when(e.getPropertyName()).thenReturn(MethodArgumentTypeMismatchException.class.getName());
+        when(e.getCause()).thenReturn(null);
+
+        final HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(httpServletRequest.getRequestURI()).thenReturn(REQUEST_URI);
+        when(httpServletRequest.getMethod()).thenReturn(METHOD);
+
+        final ControllerExceptionHandlerV2 controllerExceptionHandlerV2 = new ControllerExceptionHandlerV2();
+
+        ResponseEntity<BadRequestResponseBodyDTO> responseEntity =
+                controllerExceptionHandlerV2.handle(e, httpServletRequest);
+
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.BAD_REQUEST,
+                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) status equals");
+
+        final BadRequestResponseBodyDTO badRequestResponseBodyDTO = responseEntity.getBody();
+
+        assertNotNull(badRequestResponseBodyDTO,
+                      "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) body null");
+
+        assertNotNull(badRequestResponseBodyDTO.getTimestamp(),
+                      "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) timestamp not null");
+        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), badRequestResponseBodyDTO.getError(),
+                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) error equals");
+        assertEquals(httpServletRequest.getMethod(), badRequestResponseBodyDTO.getMethod(),
+                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) method equals");
+        assertEquals(httpServletRequest.getRequestURI(), badRequestResponseBodyDTO.getPath(),
+                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) path equals");
+
+        assertEquals(1, badRequestResponseBodyDTO.getValidationErrors().size(),
+                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatch) validationErrors size equals");
+        assertEquals(e.getPropertyName(), badRequestResponseBodyDTO.getValidationErrors().get(0).getProperty(),
+                     "ControllerExceptionHandlerV2::handle(MethodArgumentType) validationError property equals");
+        assertEquals(e.getMessage(), badRequestResponseBodyDTO.getValidationErrors().get(0).getError(),
+                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatch) validationError error equals");
+
+        when(e.getCause()).thenReturn(new NumberFormatException());
+
+        responseEntity = controllerExceptionHandlerV2.handle(e, httpServletRequest);
+
+        assertNotNull(responseEntity.getBody(),
+                      "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) NFE body null");
+        assertEquals("is invalid", responseEntity.getBody().getValidationErrors().get(0).getError(),
+                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatch) NFE error equals");
+
+        final NullPointerException nullPointerException = mock(NullPointerException.class);
+
+        when(nullPointerException.getMessage()).thenReturn("NullPointerException");
+        when(e.getCause()).thenReturn(nullPointerException);
+
+        responseEntity = controllerExceptionHandlerV2.handle(e, httpServletRequest);
+
+        assertNotNull(responseEntity.getBody(),
+                      "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) other body null");
+        assertEquals(nullPointerException.getMessage(),
+                     responseEntity.getBody().getValidationErrors().get(0).getError(),
+                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatch) other error equals");
     }
 
 }
