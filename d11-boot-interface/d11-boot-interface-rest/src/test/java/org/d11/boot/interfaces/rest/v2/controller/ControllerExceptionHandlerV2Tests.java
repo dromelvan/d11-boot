@@ -1,5 +1,6 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import jakarta.servlet.http.HttpServletRequest;
 import org.d11.boot.api.v2.model.BadRequestResponseBodyDTO;
 import org.d11.boot.api.v2.model.ConflictResponseBodyDTO;
@@ -191,6 +192,8 @@ class ControllerExceptionHandlerV2Tests {
      * Tests ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException).
      */
     @Test
+    @SuppressFBWarnings(value = "NP",
+                        justification = "We know there's no NullPointerException here")
     void testHandleMethodArgumentTypeMismatchException() {
         final MethodArgumentTypeMismatchException e = mock(MethodArgumentTypeMismatchException.class);
 
