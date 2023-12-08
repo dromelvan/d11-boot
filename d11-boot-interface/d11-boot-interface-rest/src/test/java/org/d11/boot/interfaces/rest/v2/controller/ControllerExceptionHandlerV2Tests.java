@@ -227,20 +227,35 @@ class ControllerExceptionHandlerV2Tests {
                      "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) path equals");
 
         assertEquals(1, badRequestResponseBodyDTO.getValidationErrors().size(),
-                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatch) validationErrors size equals");
+                     """
+                     ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) validationErrors
+                     size equals
+                     """);
         assertEquals(e.getPropertyName(), badRequestResponseBodyDTO.getValidationErrors().get(0).getProperty(),
-                     "ControllerExceptionHandlerV2::handle(MethodArgumentType) validationError property equals");
+                     """
+                     ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) validationError
+                     property equals
+                     """);
         assertEquals(e.getMessage(), badRequestResponseBodyDTO.getValidationErrors().get(0).getError(),
-                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatch) validationError error equals");
+                     """
+                     ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) validationError
+                     error equals
+                     """);
 
         when(e.getCause()).thenReturn(new NumberFormatException());
 
         responseEntity = controllerExceptionHandlerV2.handle(e, httpServletRequest);
 
         assertNotNull(responseEntity.getBody(),
-                      "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) NFE body null");
+                      """
+                      ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) NumberFormatException
+                      body null
+                      """);
         assertEquals("is invalid", responseEntity.getBody().getValidationErrors().get(0).getError(),
-                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatch) NFE error equals");
+                     """
+                     ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) NumberFormatException
+                     error equals
+                     """);
 
         final NullPointerException nullPointerException = mock(NullPointerException.class);
 
@@ -253,7 +268,7 @@ class ControllerExceptionHandlerV2Tests {
                       "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) other body null");
         assertEquals(nullPointerException.getMessage(),
                      responseEntity.getBody().getValidationErrors().get(0).getError(),
-                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatch) other error equals");
+                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) other error equals");
     }
 
 }
