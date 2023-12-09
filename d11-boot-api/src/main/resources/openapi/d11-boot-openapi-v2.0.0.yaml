@@ -513,6 +513,35 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  # D11 team season stat -----------------------------------------------------------------------------------------------
+
+  /v2/d11-team-season-stats:
+    get:
+      tags:
+        - d11TeamSeasonStat
+      summary: Gets all D11 team season stats for a season.
+      security: [ ]
+      operationId: getD11TeamSeasonStatsBySeasonId
+      parameters:
+        - in: query
+          required: true
+          name: seasonId
+          schema:
+            type: integer
+            format: int64
+          description: The season id.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/D11TeamSeasonStatsResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Transfer window-----------------------------------------------------------------------------------------------------
 
   /v2/transfer-windows:
@@ -1629,6 +1658,87 @@ components:
           $ref: '#/components/schemas/TeamBase'
         d11Team:
           $ref: '#/components/schemas/D11TeamBase'
+
+    # D11 team season stat ---------------------------------------------------------------------------------------------
+
+    D11TeamSeasonStat:
+      type: object
+      required:
+        - id
+        - winCount
+        - matchesPlayed
+        - matchesWon
+        - matchesDrawn
+        - matchesLost
+        - goalsFor
+        - goalsAgainst
+        - goalDifference
+        - points
+        - formPoints
+        - formMatchPoints
+        - ranking
+        - previousRanking
+        - d11Team
+        - season
+      properties:
+        id:
+          type: integer
+          format: int64
+        winCount:
+          type: integer
+          format: int32
+        matchesPlayed:
+          type: integer
+          format: int32
+        matchesWon:
+          type: integer
+          format: int32
+        matchesDrawn:
+          type: integer
+          format: int32
+        matchesLost:
+          type: integer
+          format: int32
+        goalsFor:
+          type: integer
+          format: int32
+        goalsAgainst:
+          type: integer
+          format: int32
+        goalDifference:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        formPoints:
+          type: integer
+          format: int32
+        formMatchPoints:
+          type: array
+          items:
+            type: integer
+            format: int32
+        ranking:
+          type: integer
+          format: int32
+        previousRanking:
+          type: integer
+          format: int32
+        d11Team:
+          $ref: '#/components/schemas/D11TeamBase'
+        season:
+          $ref: '#/components/schemas/Season'
+
+    D11TeamSeasonStatsResponseBody:
+      type: object
+      required:
+        - d11TeamSeasonStats
+      properties:
+        d11TeamSeasonStats:
+          type: array
+          items:
+            $ref: '#/components/schemas/D11TeamSeasonStat'
 
     # Transfer window --------------------------------------------------------------------------------------------------
 
