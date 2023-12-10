@@ -5476,6 +5476,177 @@
 					]
 				},
 				{
+					"name": "d11-team-season-stats",
+					"item": [
+						{
+							"name": "GET d11-team-season-stats?seasonId={seasonId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET d11-team-season-stats?seasonId={seasonId} - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 team season stats status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET D11 team season stats response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"d11TeamSeasonStats\");",
+															"",
+															"  const d11TeamSeasonStats = JSON.parse(pm.environment.get(\"d11TeamSeasonStats\"));",
+															"",
+															"  pm.expect(body.d11TeamSeasonStats.length).to.eq(d11TeamSeasonStats.length);",
+															"",
+															"  for (let i = 0; i < body.d11TeamSeasonStats.length; ++i) {",
+															"    expect.d11TeamSeasonStatToEq(pm, body.d11TeamSeasonStats[i], d11TeamSeasonStats[i]);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-team-season-stats?seasonId={{seasonId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-team-season-stats"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "{{seasonId}}"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET d11-team-season-stats?seasonId={seasonId} - Bad Request Invalid Season Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 team season stats invalid season id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET D11 team season stats invalid season id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/d11-team-season-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-team-season-stats?seasonId=invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-team-season-stats"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "invalid"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET d11-team-season-stats?seasonId={seasonId} - Bad Request Missing Season Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 team season stats invalid season id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET D11 team season stats invalid season id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/d11-team-season-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-team-season-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-team-season-stats"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
 					"name": "transfer-windows",
 					"item": [
 						{
@@ -8278,6 +8449,16 @@
 					"        pm.expect(position1.defender).to.eq(position2.defender);   ",
 					"        pm.expect(position1.sortOrder).to.eq(position2.sortOrder);   ",
 					"    },",
+					"    seasonToEq: function(pm, season1, season2) {",
+					"        pm.expect(season1.id).to.eq(season2.id);",
+					"        pm.expect(season1.name).to.eq(season2.name);",
+					"        pm.expect(season1.shortName).to.eq(season2.shortName);",
+					"        pm.expect(season1.d11TeamBudget).to.eq(season2.d11TeamBudget);",
+					"        pm.expect(season1.d11TeamMaxTransfers).to.eq(season2.d11TeamMaxTransfers);",
+					"        pm.expect(season1.status).to.eq(season2.status);",
+					"        pm.expect(season1.date).to.eq(season2.date);",
+					"        pm.expect(season1.legacy).to.eq(season2.legacy);",
+					"    },",
 					"    matchToEq: function(pm, match1, match2) {",
 					"        pm.expect(match1.id).to.eq(match2.id);",
 					"        pm.expect(match1.whoscoredId).to.eq(match2.whoscoredId);",
@@ -8342,6 +8523,31 @@
 					"        pm.expect(player1.shortName).to.eq(player2.shortName);",
 					"        pm.expect(player1.parameterizedName).to.eq(player2.parameterizedName);",
 					"        pm.expect(player1.photoFileName).to.eq(player2.photoFileName);",
+					"    },",
+					"    d11TeamSeasonStatToEq: function(pm, d11TeamSeasonStat1, d11TeamSeasonStat2) {",
+					"        pm.expect(d11TeamSeasonStat1.id).to.eq(d11TeamSeasonStat2.id);",
+					"",
+					"        pm.expect(d11TeamSeasonStat1.winCount).to.eq(d11TeamSeasonStat2.winCount);",
+					"        pm.expect(d11TeamSeasonStat1.matchesPlayed).to.eq(d11TeamSeasonStat2.matchesPlayed);",
+					"        pm.expect(d11TeamSeasonStat1.matchesWon).to.eq(d11TeamSeasonStat2.matchesWon);",
+					"        pm.expect(d11TeamSeasonStat1.matchesDrawn).to.eq(d11TeamSeasonStat2.matchesDrawn);",
+					"        pm.expect(d11TeamSeasonStat1.matchesLost).to.eq(d11TeamSeasonStat2.matchesLost);",
+					"        pm.expect(d11TeamSeasonStat1.goalsFor).to.eq(d11TeamSeasonStat2.goalsFor);",
+					"        pm.expect(d11TeamSeasonStat1.goalsAgainst).to.eq(d11TeamSeasonStat2.goalsAgainst);",
+					"        pm.expect(d11TeamSeasonStat1.goalDifference).to.eq(d11TeamSeasonStat2.goalDifference);",
+					"        pm.expect(d11TeamSeasonStat1.points).to.eq(d11TeamSeasonStat2.points);",
+					"        pm.expect(d11TeamSeasonStat1.formPoints).to.eq(d11TeamSeasonStat2.formPoints);        ",
+					"        pm.expect(d11TeamSeasonStat1.ranking).to.eq(d11TeamSeasonStat2.ranking);",
+					"        pm.expect(d11TeamSeasonStat1.previousRanking).to.eq(d11TeamSeasonStat2.previousRanking);",
+					"",
+					"        pm.expect(d11TeamSeasonStat1.formMatchPoints.length).to.eq(d11TeamSeasonStat2.formMatchPoints.length);",
+					"        for (let i = 0; i < d11TeamSeasonStat1.formMatchPoints.length; ++i) {",
+					"            pm.expect(d11TeamSeasonStat1.formMatchPoints[i]).to.eq(d11TeamSeasonStat2.formMatchPoints[i]);",
+					"        }   ",
+					"",
+					"        expect.d11TeamToEq(pm, d11TeamSeasonStat1.d11Team, d11TeamSeasonStat2.d11Team);",
+					"        expect.seasonToEq(pm, d11TeamSeasonStat1.season, d11TeamSeasonStat2.season);",
+					"",
 					"    },",
 					"    transferWindowToEq: function(pm, transferWindow1, transferWindow2) {",
 					"        pm.expect(transferWindow1.id).to.eq(transferWindow2.id);",
