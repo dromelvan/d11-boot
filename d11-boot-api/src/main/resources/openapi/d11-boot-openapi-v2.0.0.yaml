@@ -1754,7 +1754,7 @@ components:
         previousRanking:
           type: integer
           format: int32
-        d11Team:
+        team:
           $ref: '#/components/schemas/TeamBase'
         season:
           $ref: '#/components/schemas/Season'
