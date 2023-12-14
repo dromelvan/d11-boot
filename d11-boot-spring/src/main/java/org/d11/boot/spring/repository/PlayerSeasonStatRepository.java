@@ -1,6 +1,7 @@
 package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.PlayerSeasonStat;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -27,5 +28,14 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
      * @return Player season stats for the season.
      */
     List<PlayerSeasonStat> findBySeasonId(@Param("seasonId") Long seasonId);
+
+    /**
+     * Finds player season stats by season id, paged.
+     *
+     * @param seasonId The season id.
+     * @param pageable Pageable that defines page number, page size and sorting of the result.
+     * @return Player season stat for the season, paged
+     */
+    List<PlayerSeasonStat> findBySeasonId(@Param("seasonId") Long seasonId, Pageable pageable);
 
 }

@@ -4,6 +4,9 @@ import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Season;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.Comparator;
 import java.util.List;
@@ -75,6 +78,42 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
             assertNotNull(result, "PlayerSeasonStatRepository::findBySeasonId not null ");
             assertFalse(result.isEmpty(), "PlayerSeasonStatRepository::findBySeasonId empty");
             assertEquals(expected, result, "PlayerSeasonStatRepository::findBySeasonId equals");
+        }
+    }
+
+    /**
+     * Tests PlayerSeasonStatRepository::findBySeasonIdPaged.
+     */
+    @Test
+    void testFindBySeasonIdPaged() {
+        final List<PlayerSeasonStat> entities = getEntities();
+
+        final Set<Season> seasons = entities.stream().map(PlayerSeasonStat::getSeason).collect(Collectors.toSet());
+
+        assertTrue(seasons.size() > 1, "PlayerSeasonStatRepository::findBySeasonIdPaged seasons size > 1");
+
+        final int pageSize = 2;
+        final String sortProperty = "ranking";
+
+        for (final Season season : seasons) {
+            final List<PlayerSeasonStat> expected = entities.stream()
+                    .filter(playerSeasonStat -> playerSeasonStat.getSeason().equals(season))
+                    .sorted(Comparator.comparing(PlayerSeasonStat::getRanking))
+                    .toList();
+
+            final Pageable page1 = PageRequest.of(0, pageSize, Sort.by(sortProperty));
+            final List<PlayerSeasonStat> page1Result = getRepository().findBySeasonId(season.getId(), page1);
+
+            assertNotNull(page1Result, "PlayerSeasonStatRepository::findBySeasonIdPaged page 1 not null");
+            assertEquals(expected.subList(0, pageSize), page1Result,
+                         "PlayerSeasonStatRepository::findBySeasonIdPaged page 1 equals");
+
+            final Pageable page2 = PageRequest.of(1, pageSize, Sort.by(sortProperty));
+            final List<PlayerSeasonStat> page2Result = getRepository().findBySeasonId(season.getId(), page2);
+
+            assertNotNull(page2Result, "PlayerSeasonStatRepository::findBySeasonIdPaged page 2 not null");
+            assertEquals(expected.subList(pageSize, pageSize + 1), page2Result,
+                         "PlayerSeasonStatRepository::findBySeasonIdPaged page 2 equals");
         }
     }
 
