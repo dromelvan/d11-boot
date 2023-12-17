@@ -34,7 +34,7 @@ public class TeamSeasonStatControllerV2 extends RepositoryServiceController<Team
         final List<TeamSeasonStat> teamSeasonStats = getRepositoryService().getBySeasonId(seasonId);
 
         return ResponseEntity.ok(new TeamSeasonStatsResponseBodyDTO()
-                                         .teamSeasonStats(getMapper().map(teamSeasonStats, TeamSeasonStatDTO.class)));
+                .teamSeasonStats(getMapper().map(teamSeasonStats, TeamSeasonStatDTO.class)));
     }
 
 }
