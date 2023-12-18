@@ -36,12 +36,16 @@ class TeamSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
      * Tests TeamSeasonStatController::getTeamSeasonStatsBySeasonId.
      */
     @Test
-    void testGetD11TeamSeasonStatsBySeasonId() {
+    void testGetTeamSeasonStatsBySeasonId() {
         final TeamSeasonStatApi teamSeasonStatApi = getApi(TeamSeasonStatApi.class);
 
         assertThrows(FeignException.BadRequest.class,
                      () -> teamSeasonStatApi.getTeamSeasonStatsBySeasonId((Long) null),
                      "TeamSeasonStatController::getTeamSeasonStatsBySeasonId seasonId null throws");
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> teamSeasonStatApi.getTeamSeasonStatsBySeasonId(-1L),
+                     "TeamSeasonStatController::getTeamSeasonStatsBySeasonId seasonId negative throws");
 
         final List<TeamSeasonStat> teamSeasonStats = this.teamSeasonStatRepository.findAll();
         teamSeasonStats.sort(Comparator.comparing(TeamSeasonStat::getRanking));
