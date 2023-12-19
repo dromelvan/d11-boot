@@ -5476,6 +5476,299 @@
 					]
 				},
 				{
+					"name": "player-season-stats",
+					"item": [
+						{
+							"name": "GET player-season-stats?seasonId={seasonId}&page={page}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET player-season-stats?seasonId={seasonId}&page={page} - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET player season stats status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET player season stats response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"playerSeasonStats\");",
+															"",
+															"  const playerSeasonStats = JSON.parse(pm.environment.get(\"playerSeasonStats\"));",
+															"",
+															"  pm.expect(body.playerSeasonStats.length).to.eq(playerSeasonStats.length);",
+															"",
+															"  for (let i = 0; i < body.playerSeasonStats.length; ++i) {",
+															"    expect.playerSeasonStatToEq(pm, body.playerSeasonStats[i], playerSeasonStats[i]);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats?seasonId={{seasonId}}&page=0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "{{seasonId}}"
+														},
+														{
+															"key": "page",
+															"value": "0"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET player-season-stats?seasonId={seasonId}&page={page} - Bad Request Invalid Season Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET player season stats invalid season id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET player season stats invalid season id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/player-season-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats?seasonId=invalid&page=0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "invalid"
+														},
+														{
+															"key": "page",
+															"value": "0"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET player-season-stats?seasonId={seasonId}&page={page} - Bad Request Missing Season Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET player season stats missing season id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET player season stats missing season id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/player-season-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats?page=0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
+													],
+													"query": [
+														{
+															"key": "page",
+															"value": "0"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET player-season-stats?seasonId={seasonId}&page={page} - Bad Request Invalid Page",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET player season stats invalid page status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET player season stats invalid page response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/player-season-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"page\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats?seasonId={{seasonId}}&page=invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "{{seasonId}}"
+														},
+														{
+															"key": "page",
+															"value": "invalid"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET player-season-stats?seasonId={seasonId}&page={page} - Bad Request Missing Page",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET player season stats missing page status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET player season stats missing page response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/player-season-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"page\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats?seasonId={{seasonId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "{{seasonId}}"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
 					"name": "team-season-stats",
 					"item": [
 						{
@@ -8717,6 +9010,44 @@
 					"        pm.expect(player1.shortName).to.eq(player2.shortName);",
 					"        pm.expect(player1.parameterizedName).to.eq(player2.parameterizedName);",
 					"        pm.expect(player1.photoFileName).to.eq(player2.photoFileName);",
+					"    },",
+					"    playerSeasonStatToEq: function(pm, playerSeasonStat1, playerSeasonStat2) {",
+					"        pm.expect(playerSeasonStat1.id).to.eq(playerSeasonStat2.id);",
+					"",
+					"        pm.expect(playerSeasonStat1.shirtNumber).to.eq(playerSeasonStat2.shirtNumber);",
+					"        pm.expect(playerSeasonStat1.fee).to.eq(playerSeasonStat2.fee);",
+					"        pm.expect(playerSeasonStat1.winCount).to.eq(playerSeasonStat2.winCount);",
+					"        pm.expect(playerSeasonStat1.ranking).to.eq(playerSeasonStat2.ranking);",
+					"        pm.expect(playerSeasonStat1.points).to.eq(playerSeasonStat2.points);",
+					"        pm.expect(playerSeasonStat1.formPoints).to.eq(playerSeasonStat2.formPoints);",
+					"        pm.expect(playerSeasonStat1.pointsPerAppearance).to.eq(playerSeasonStat2.pointsPerAppearance);            ",
+					"        pm.expect(playerSeasonStat1.goals).to.eq(playerSeasonStat2.goals);",
+					"        pm.expect(playerSeasonStat1.goalAssists).to.eq(playerSeasonStat2.goalAssists);",
+					"        pm.expect(playerSeasonStat1.ownGoals).to.eq(playerSeasonStat2.ownGoals);",
+					"        pm.expect(playerSeasonStat1.goalsConceded).to.eq(playerSeasonStat2.goalsConceded);",
+					"        pm.expect(playerSeasonStat1.cleanSheets).to.eq(playerSeasonStat2.cleanSheets);",
+					"        pm.expect(playerSeasonStat1.yellowCards).to.eq(playerSeasonStat2.yellowCards);",
+					"        pm.expect(playerSeasonStat1.redCards).to.eq(playerSeasonStat2.redCards);",
+					"        pm.expect(playerSeasonStat1.substitutionsOn).to.eq(playerSeasonStat2.substitutionsOn);",
+					"        pm.expect(playerSeasonStat1.substitutionsOff).to.eq(playerSeasonStat2.substitutionsOff);",
+					"        pm.expect(playerSeasonStat1.manOfTheMatch).to.eq(playerSeasonStat2.manOfTheMatch);",
+					"        pm.expect(playerSeasonStat1.sharedManOfTheMatch).to.eq(playerSeasonStat2.sharedManOfTheMatch);",
+					"        pm.expect(playerSeasonStat1.rating).to.eq(playerSeasonStat2.rating);",
+					"        pm.expect(playerSeasonStat1.gamesStarted).to.eq(playerSeasonStat2.gamesStarted);",
+					"        pm.expect(playerSeasonStat1.gamesSubstitute).to.eq(playerSeasonStat2.gamesSubstitute);",
+					"        pm.expect(playerSeasonStat1.gamesDidNotParticipate).to.eq(playerSeasonStat2.gamesDidNotParticipate);",
+					"        pm.expect(playerSeasonStat1.minutesPlayed).to.eq(playerSeasonStat2.minutesPlayed);",
+					"",
+					"        pm.expect(playerSeasonStat1.formMatchPoints.length).to.eq(playerSeasonStat2.formMatchPoints.length);",
+					"        for (let i = 0; i < playerSeasonStat1.formMatchPoints.length; ++i) {",
+					"            pm.expect(playerSeasonStat1.formMatchPoints[i]).to.eq(playerSeasonStat2.formMatchPoints[i]);",
+					"        }",
+					"",
+					"        expect.playerToEq(pm, playerSeasonStat1.player, playerSeasonStat2.player);  ",
+					"        expect.teamToEq(pm, playerSeasonStat1.team, playerSeasonStat2.team);",
+					"        expect.d11TeamToEq(pm, playerSeasonStat1.d11Team, playerSeasonStat2.d11Team);",
+					"        expect.seasonToEq(pm, playerSeasonStat1.season, playerSeasonStat2.season);",
+					"        expect.positionToEq(pm, playerSeasonStat1.position, playerSeasonStat2.position);",
 					"    },",
 					"    d11TeamSeasonStatToEq: function(pm, d11TeamSeasonStat1, d11TeamSeasonStat2) {",
 					"        pm.expect(d11TeamSeasonStat1.id).to.eq(d11TeamSeasonStat2.id);",
