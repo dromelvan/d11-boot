@@ -145,4 +145,32 @@ class PlayerRepositoryTests extends AbstractRepositoryTests<Player, PlayerReposi
         }
     }
 
+    /**
+     * Tests PlayerRepository::findByParameterizedNameExact.
+     */
+    @Test
+    void testFindByParameterizedNameExact() {
+        final List<Player> players = getRepository().findAll().stream()
+               .sorted(Comparator.comparing(Player::getName))
+               .toList();
+
+        assertFalse(players.isEmpty(), "PlayerRepository::findByParameterizedNameExact players isEmpty");
+
+        for (final Player player : players) {
+            final List<PlayerSearchResult> result =
+                    getRepository().findByParameterizedNameExact(player.getParameterizedName());
+
+            assertEquals(1, result.size(), "PlayerRepository::findByParameterizedNameExact size isEquals");
+
+            assertEquals(player.getId(), result.get(0).getId(),
+                         "PlayerRepository::findByParameterizedNameExact id equals");
+            assertEquals(player.getName(), result.get(0).getName(),
+                         "PlayerRepository::findByParameterizedNameExact name equals");
+            assertTrue(result.get(0).getTeamId() > 0,
+                       "PlayerRepository::findByParameterizedNameExact teamId greaterThan");
+            assertTrue(StringUtils.isNotBlank(result.get(0).getTeamName()),
+                       "PlayerRepository::findByParameterizedNameExact teamName not blank");
+        }
+    }
+
 }
