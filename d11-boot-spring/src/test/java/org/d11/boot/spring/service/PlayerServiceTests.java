@@ -40,15 +40,23 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
     private PlayerService playerService;
 
     /**
-     * Tests PlayerService::findByName.
+     * Tests PlayerService::searchByName.
      */
     @Test
     void testFindByName() {
+        final String nameProperty = "name";
+
         final BadRequestException nullNameException =
-                assertThrows(BadRequestException.class, () -> this.playerService.findByName(null),
-                             "PlayerService::findByName null name throws");
-        assertEquals("name", nullNameException.getParameter(),
-                     "PlayerService::findByName property equals null");
+                assertThrows(BadRequestException.class, () -> this.playerService.searchByName(null),
+                             "PlayerService::searchByName null name throws");
+        assertEquals(nameProperty, nullNameException.getParameter(),
+                     "PlayerService::searchByName property equals null");
+
+        final BadRequestException emptyNameException =
+                assertThrows(BadRequestException.class, () -> this.playerService.searchByName(null),
+                             "PlayerService::searchByName empty name throws");
+        assertEquals(nameProperty, emptyNameException.getParameter(),
+                     "PlayerService::searchByName property equals empty");
 
         final List<Player> players = generateList(Player.class);
 
@@ -65,10 +73,10 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
                     .findByParameterizedNameLike(eq(PlayerService.SQL_LIKE + likeName + PlayerService.SQL_LIKE)))
                     .thenReturn(Collections.singletonList(playerSearchResult));
 
-            final List<PlayerSearchResult> likeResult = this.playerService.findByName(player.getName());
+            final List<PlayerSearchResult> likeResult = this.playerService.searchByName(player.getName());
 
-            assertEquals(1, likeResult.size(), "PlayerService::findByName like size equals");
-            assertEquals(playerSearchResult, likeResult.get(0), "PlayerService::findByName like result equals");
+            assertEquals(1, likeResult.size(), "PlayerService::searchByName like size equals");
+            assertEquals(playerSearchResult, likeResult.get(0), "PlayerService::searchByName like result equals");
 
             // Update mocked parameterized name since it won't be correct otherwise
             player.preUpdate();
@@ -78,10 +86,10 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
                     .thenReturn(Collections.singletonList(playerSearchResult));
 
             final List<PlayerSearchResult> exactResult =
-                    this.playerService.findByName(exact + player.getName() + exact);
+                    this.playerService.searchByName(exact + player.getName() + exact);
 
-            assertEquals(1, exactResult.size(), "PlayerService::findByName exact size equals");
-            assertEquals(playerSearchResult, exactResult.get(0), "PlayerService::findByName exact result equals");
+            assertEquals(1, exactResult.size(), "PlayerService::searchByName exact size equals");
+            assertEquals(playerSearchResult, exactResult.get(0), "PlayerService::searchByName exact result equals");
 
             verify(this.playerRepository, times(1))
                     .findByParameterizedNameLike(eq(PlayerService.SQL_LIKE + likeName + PlayerService.SQL_LIKE));

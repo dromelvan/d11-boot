@@ -1,5 +1,6 @@
 package org.d11.boot.spring.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.repository.PlayerRepository;
@@ -46,8 +47,8 @@ public class PlayerService extends RepositoryService<Player, PlayerRepository> {
      * @param name The name to search for.
      * @return Player search results by name.
      */
-    public List<PlayerSearchResult> findByName(final String name) {
-        if (name == null) {
+    public List<PlayerSearchResult> searchByName(final String name) {
+        if (StringUtils.isBlank(name)) {
             throw new BadRequestException("name", "is missing");
         }
 
