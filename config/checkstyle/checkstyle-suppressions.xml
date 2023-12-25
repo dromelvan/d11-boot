@@ -7,4 +7,5 @@
 <suppressions>
     <suppress files=".*Application" checks="HideUtilityClassConstructor"/>
     <suppress checks="MagicNumber" files=".*Tests\.java" />
+    <suppress checks="MultipleStringLiterals" files=".*Tests\.java" />
 </suppressions>

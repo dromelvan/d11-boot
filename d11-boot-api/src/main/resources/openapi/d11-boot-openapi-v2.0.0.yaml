@@ -296,6 +296,32 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  # Players ------------------------------------------------------------------------------------------------------------
+
+  /v2/players/search:
+    get:
+      tags:
+        - player
+      summary: Searches players by name.
+      security: []
+      operationId: searchPlayersByName
+      parameters:
+        - in: query
+          required: true
+          name: name
+          schema:
+            type: string
+          description: The name.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerSearchResultsResponseBody"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Positions ----------------------------------------------------------------------------------------------------------
 
   /v2/positions:
@@ -1366,6 +1392,35 @@ components:
           type: string
         photoFileName:
           type: string
+
+    PlayerSearchResult:
+      type: object
+      required:
+        - id
+        - name
+        - teamId
+        - teamName
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        teamId:
+          type: integer
+          format: int64
+        teamName:
+          type: string
+
+    PlayerSearchResultsResponseBody:
+      type: object
+      required:
+        - players
+      properties:
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerSearchResult'
 
     # Position----------------------------------------------------------------------------------------------------------
 
