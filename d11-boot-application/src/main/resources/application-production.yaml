@@ -6,6 +6,11 @@ spring:
 
 # Put other production configs here
 
+server:
+  port: 8443
+  ssl:
+    enabled: true
+
 spring:
   artemis:
     broker-url: tcp://artemis:61616

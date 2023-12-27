@@ -4,6 +4,15 @@ d11:
     # Provide user data dir only if using a standalone application Selenium
     userDataDir: .chrome
 
+server:
+  ssl:
+    enabled: false
+    key-store: classpath:keys/ssl-keystore.jks
+    # key-store-password: Provide in environment secrets
+    # key-password: Provide in environment secrets
+    key-store-type: JKS
+    key-alias: d11
+
 spring:
   flyway:
     locations: classpath:db/migration/table,classpath:db/migration/procedure/postgres
