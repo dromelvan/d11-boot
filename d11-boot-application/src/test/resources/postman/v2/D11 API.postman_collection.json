@@ -5476,6 +5476,181 @@
 					]
 				},
 				{
+					"name": "players",
+					"item": [
+						{
+							"name": "GET players/search?name={name}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET players/search?name={name} - OK Like",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET player search like status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET player search like response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"players\");",
+															"",
+															"  const players = JSON.parse(pm.environment.get(\"playerSearchResultLike\"));",
+															"",
+															"  pm.expect(body.players.length).to.eq(players.length);",
+															"",
+															"  for (let i = 0; i < body.players.length; ++i) {",
+															"    pm.expect(body.players[i].id).to.eq(players[i].id);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/players/search?name={{playerSearchName}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players",
+														"search"
+													],
+													"query": [
+														{
+															"key": "name",
+															"value": "{{playerSearchName}}"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET players/search?name={name} - OK Exact",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET player search exact status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET player search exact response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"players\");",
+															"",
+															"  const players = JSON.parse(pm.environment.get(\"playerSearchResultExact\"));",
+															"",
+															"  pm.expect(body.players.length).to.eq(players.length);",
+															"",
+															"  for (let i = 0; i < body.players.length; ++i) {",
+															"    pm.expect(body.players[i].id).to.eq(players[i].id);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/players/search?name=\"{{playerSearchName}}\"",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players",
+														"search"
+													],
+													"query": [
+														{
+															"key": "name",
+															"value": "\"{{playerSearchName}}\""
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET players/search?name={name} - Bad Request Missing Name",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET player search missing name status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET player search missing name response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/players/search\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"name\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/players/search",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players",
+														"search"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
 					"name": "player-season-stats",
 					"item": [
 						{
