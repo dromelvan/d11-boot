@@ -5,6 +5,7 @@ import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.util.Parameterizer;
 import org.d11.boot.util.exception.BadRequestException;
+import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -12,10 +13,13 @@ import org.mockito.Mock;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -38,6 +42,27 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
      */
     @InjectMocks
     private PlayerService playerService;
+
+    /**
+     * Tests PlayerService::getById.
+     */
+    @Test
+    void testGetById() {
+        final List<Player> players = generateList(Player.class);
+        when(this.playerRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        for (final Player player : players) {
+            when(this.playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
+
+            final Player result = this.playerService.getById(player.getId());
+            assertNotNull(result, "PlayerService::getById not null");
+            assertEquals(player, result, "PlayerService::getById");
+        }
+
+        assertThrows(NotFoundException.class,
+                     () -> this.playerService.getById(-1L),
+                     "PlayerService::getById not found");
+    }
 
     /**
      * Tests PlayerService::searchByName.
