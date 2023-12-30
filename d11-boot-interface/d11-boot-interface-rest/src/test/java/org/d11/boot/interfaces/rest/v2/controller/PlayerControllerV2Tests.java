@@ -2,8 +2,11 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import feign.FeignException;
 import org.d11.boot.api.v2.client.PlayerApi;
+import org.d11.boot.api.v2.model.PlayerDTO;
+import org.d11.boot.api.v2.model.PlayerResponseBodyDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultsResponseBodyDTO;
+import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.repository.PlayerRepository;
 import org.junit.jupiter.api.Test;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,6 +30,28 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Autowired
     private PlayerRepository playerRepository;
+
+    /**
+     * Tests PlayerController::getPlayerById.
+     */
+    @Test
+    void testGetPlayerById() {
+        final PlayerApi playerApi = getApi(PlayerApi.class);
+
+        assertThrows(FeignException.NotFound.class, () -> playerApi.getPlayerById(0L),
+                     "PlayerController::getPlayerById not found");
+
+        final List<Player> players = this.playerRepository.findAll();
+
+        assertFalse(players.isEmpty(), "PlayerController::getPlayerById players not empty");
+
+        for (final Player player : players) {
+            final PlayerResponseBodyDTO result = playerApi.getPlayerById(player.getId());
+            assertNotNull(result, "PlayerController::getPlayerById not null");
+            assertEquals(getMapper().map(player, PlayerDTO.class), result.getPlayer(),
+                         "PlayerController::getPlayerById equals");
+        }
+    }
 
     /**
      * Tests PlayerController::searchPlayersByName.
