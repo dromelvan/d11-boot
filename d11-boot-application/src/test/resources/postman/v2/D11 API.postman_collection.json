@@ -5479,6 +5479,163 @@
 					"name": "players",
 					"item": [
 						{
+							"name": "GET players/{playerId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET player/{playerId} - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET player status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET player response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"player\");",
+															"",
+															"  const player = JSON.parse(pm.environment.get(\"player\"));",
+															"",
+															"  pm.expect(body.player.id).to.eq(player.id);",
+															"",
+															"  expect.playerToEq(pm, body.player, player);",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/players/{{playerId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players",
+														"{{playerId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET players/{playerId} - Bad Request Invalid Season Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET player invalid player id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET player invalid player id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/players/invalid\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"playerId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/players/invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players",
+														"invalid"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "404 Not Found",
+									"item": [
+										{
+											"name": "GET players/{playerId} - Not Found",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET players not found status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"GET player not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"  pm.expect(body.resource).to.eq('Player');",
+															"  pm.expect(body.id).to.eq(0);",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/players/0\");",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/players/0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players",
+														"0"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
 							"name": "GET players/search?name={name}",
 							"item": [
 								{
@@ -9179,12 +9336,18 @@
 					"    },",
 					"    playerToEq: function(pm, player1, player2) {",
 					"        pm.expect(player1.id).to.eq(player2.id);",
+					"        pm.expect(player1.whoscoredId).to.eq(player2.whoscoredId);",
+					"        pm.expect(player1.premierLeagueId).to.eq(player2.premierLeagueId);",
 					"        pm.expect(player1.firstName).to.eq(player2.firstName);",
 					"        pm.expect(player1.lastName).to.eq(player2.lastName);",
 					"        pm.expect(player1.name).to.eq(player2.name);",
 					"        pm.expect(player1.shortName).to.eq(player2.shortName);",
+					"        pm.expect(player1.fullName).to.eq(player2.fullName);",
 					"        pm.expect(player1.parameterizedName).to.eq(player2.parameterizedName);",
+					"        pm.expect(player1.dateOfBirth).to.eq(player2.dateOfBirth);",
+					"        pm.expect(player1.height).to.eq(player2.height);",
 					"        pm.expect(player1.photoFileName).to.eq(player2.photoFileName);",
+					"        pm.expect(player1.verified).to.eq(player2.verified);        ",
 					"    },",
 					"    playerSeasonStatToEq: function(pm, playerSeasonStat1, playerSeasonStat2) {",
 					"        pm.expect(playerSeasonStat1.id).to.eq(playerSeasonStat2.id);",
