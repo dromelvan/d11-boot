@@ -1,7 +1,10 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
 import org.d11.boot.api.v2.TeamApi;
+import org.d11.boot.api.v2.model.StadiumDTO;
+import org.d11.boot.api.v2.model.TeamBaseDTO;
 import org.d11.boot.api.v2.model.TeamDTO;
+import org.d11.boot.api.v2.model.TeamResponseBodyDTO;
 import org.d11.boot.api.v2.model.TeamsResponseBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.Team;
@@ -33,7 +36,16 @@ public class TeamControllerV2 extends RepositoryServiceController<TeamService> i
         final List<Team> teams = getRepositoryService().getTeams();
 
         return ResponseEntity.ok(new TeamsResponseBodyDTO()
-                .teams(getMapper().map(teams, TeamDTO.class)));
+                .teams(getMapper().map(teams, TeamBaseDTO.class)));
+    }
+
+    @Override
+    public ResponseEntity<TeamResponseBodyDTO> getTeamById(final Long teamId) {
+        final Team team = getRepositoryService().getById(teamId);
+
+        return ResponseEntity.ok(new TeamResponseBodyDTO()
+                .team(getMapper().map(team, TeamDTO.class))
+                .stadium(getMapper().map(team.getStadium(), StadiumDTO.class)));
     }
 
 }
