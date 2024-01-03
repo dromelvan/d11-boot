@@ -3627,16 +3627,7 @@
 													"  pm.expect(body.teams.length).to.eq(teams.length);",
 													"",
 													"  for (let i = 0; i < body.teams.length; ++i) {",
-													"    pm.expect(body.teams[i].id).to.eq(teams[i].id);",
-													"    pm.expect(body.teams[i].whoscoredId).to.eq(teams[i].whoscoredId);",
-													"    pm.expect(body.teams[i].premierLeagueId).to.eq(teams[i].premierLeagueId);",
-													"    pm.expect(body.teams[i].name).to.eq(teams[i].name);",
-													"    pm.expect(body.teams[i].shortName).to.eq(teams[i].shortName);",
-													"    pm.expect(body.teams[i].code).to.eq(teams[i].code);",
-													"    pm.expect(body.teams[i].color).to.eq(teams[i].color);",
-													"    pm.expect(body.teams[i].dummy).to.eq(teams[i].dummy);",
-													"    pm.expect(body.teams[i].photoFileName).to.eq(teams[i].photoFileName);",
-													"    pm.expect(body.teams[i].url).to.eq(teams[i].url);",
+													"    expect.teamToEq(pm, body.teams[i], teams[i]);",
 													"  }",
 													"",
 													"});",
@@ -3661,6 +3652,168 @@
 										}
 									},
 									"response": []
+								}
+							]
+						},
+						{
+							"name": "GET teams/{teamId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET teams/{teamId} - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET team status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET team response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"team\");",
+															"",
+															"  const team = JSON.parse(pm.environment.get(\"team\"));",
+															"",
+															"  expect.teamToEq(pm, body.team, team);",
+															"",
+															"  pm.expect(body).to.have.property(\"stadium\");",
+															"",
+															"  const stadium = JSON.parse(pm.environment.get(\"stadium\"));",
+															"",
+															"  expect.stadiumToEq(pm, body.stadium, stadium);",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/teams/{{teamId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"teams",
+														"{{teamId}}"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET teams/{teamId} - Bad Request Invalid Season Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET team invalid player id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET team invalid player id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/teams/invalid\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"teamId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/teams/invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"teams",
+														"invalid"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "404 Not Found",
+									"item": [
+										{
+											"name": "GET teams/{teamId} - Not Found",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET teams not found status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"GET teams not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"  pm.expect(body.resource).to.eq('Team');",
+															"  pm.expect(body.id).to.eq(0);",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/teams/0\");",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/teams/0",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"teams",
+														"0"
+													]
+												}
+											},
+											"response": []
+										}
+									]
 								}
 							]
 						}
@@ -5485,7 +5638,7 @@
 									"name": "200 OK",
 									"item": [
 										{
-											"name": "GET player/{playerId} - OK",
+											"name": "GET players/{playerId} - OK",
 											"event": [
 												{
 													"listen": "test",
@@ -9275,11 +9428,16 @@
 					"    },",
 					"    teamToEq: function(pm, team1, team2) {",
 					"        pm.expect(team1.id).to.eq(team2.id);",
+					"        pm.expect(team1.whoscoredId).to.eq(team2.whoscoredId);",
+					"        pm.expect(team1.premierLeagueId).to.eq(team2.premierLeagueId);",
 					"        pm.expect(team1.name).to.eq(team2.name);",
 					"        pm.expect(team1.shortName).to.eq(team2.shortName);",
 					"        pm.expect(team1.code).to.eq(team2.code);",
+					"        pm.expect(team1.established).to.eq(team2.established);",
+					"        pm.expect(team1.color).to.eq(team2.color);",
 					"        pm.expect(team1.dummy).to.eq(team2.dummy);",
 					"        pm.expect(team1.photoFileName).to.eq(team2.photoFileName);",
+					"        pm.expect(team1.url).to.eq(team2.url);",
 					"    },",
 					"    teamSeasonStatToEq: function(pm, teamSeasonStat1, teamSeasonStat2) {",
 					"        pm.expect(teamSeasonStat1.id).to.eq(teamSeasonStat2.id);",
