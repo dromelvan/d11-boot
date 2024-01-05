@@ -325,6 +325,35 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/d11-teams/{d11TeamId}:
+    get:
+      tags:
+        - d11Team
+      summary: Get a D11 team by id.
+      security: []
+      operationId: getD11TeamById
+      parameters:
+        - name: d11TeamId
+          in: path
+          required: true
+          description: Id of the D11 team.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/D11TeamResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Players ------------------------------------------------------------------------------------------------------------
 
   /v2/players/{playerId}:
@@ -1395,6 +1424,14 @@ components:
           type: boolean
         photoFileName:
           type: string
+
+    D11TeamResponseBody:
+      type: object
+      required:
+        - d11Team
+      properties:
+        d11Team:
+          $ref: '#/components/schemas/D11Team'
 
     D11TeamsResponseBody:
       type: object

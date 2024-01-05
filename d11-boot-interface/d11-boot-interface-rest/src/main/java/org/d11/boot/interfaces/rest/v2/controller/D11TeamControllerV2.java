@@ -2,6 +2,7 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import org.d11.boot.api.v2.D11TeamApi;
 import org.d11.boot.api.v2.model.D11TeamDTO;
+import org.d11.boot.api.v2.model.D11TeamResponseBodyDTO;
 import org.d11.boot.api.v2.model.D11TeamsResponseBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.D11Team;
@@ -34,6 +35,14 @@ public class D11TeamControllerV2 extends RepositoryServiceController<D11TeamServ
 
         return ResponseEntity.ok(new D11TeamsResponseBodyDTO()
                 .d11Teams(getMapper().map(d11Teams, D11TeamDTO.class)));
+    }
+
+    @Override
+    public ResponseEntity<D11TeamResponseBodyDTO> getD11TeamById(final Long d11TeamId) {
+        final D11Team d11Team = getRepositoryService().getById(d11TeamId);
+
+        return ResponseEntity.ok(new D11TeamResponseBodyDTO()
+                .d11Team(getMapper().map(d11Team, D11TeamDTO.class)));
     }
 
 }
