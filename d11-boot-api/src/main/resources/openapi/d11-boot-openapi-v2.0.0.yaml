@@ -1497,52 +1497,35 @@ components:
           type: string
 
     Player:
-      type: object
-      required:
-        - id
-        - whoscoredId
-        - premierLeagueId
-        - firstName
-        - lastName
-        - name
-        - shortName
-        - fullName
-        - parameterizedName
-        - dateOfBirth
-        - height
-        - verified
-      properties:
-        id:
-          type: integer
-          format: int64
-        whoscoredId:
-          type: integer
-          format: int32
-        premierLeagueId:
-          type: integer
-          format: int32
-        firstName:
-          type: string
-        lastName:
-          type: string
-        name:
-          type: string
-        shortName:
-          type: string
-        fullName:
-          type: string
-        parameterizedName:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date
-        height:
-          type: integer
-          format: int32
-        verified:
-          type: boolean
-        photoFileName:
-          type: string
+      allOf:
+        - $ref: '#/components/schemas/PlayerBase'
+        - type: object
+          required:
+            - whoscoredId
+            - premierLeagueId
+            - fullName
+            - dateOfBirth
+            - height
+            - verified
+          properties:
+            whoscoredId:
+              type: integer
+              format: int32
+            premierLeagueId:
+              type: integer
+              format: int32
+            fullName:
+              type: string
+            dateOfBirth:
+              type: string
+              format: date
+            height:
+              type: integer
+              format: int32
+            verified:
+              type: boolean
+            photoFileName:
+              type: string
 
     PlayerSearchResult:
       type: object
