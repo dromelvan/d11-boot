@@ -2,6 +2,7 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import org.d11.boot.api.v2.MatchWeekApi;
 import org.d11.boot.api.v2.model.MatchWeekDTO;
+import org.d11.boot.api.v2.model.MatchWeekResponseBodyDTO;
 import org.d11.boot.api.v2.model.MatchWeeksResponseBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.MatchWeek;
@@ -34,6 +35,14 @@ public class MatchWeekControllerV2 extends RepositoryServiceController<MatchWeek
 
         return ResponseEntity.ok(new MatchWeeksResponseBodyDTO()
                                          .matchWeeks(getMapper().map(matchWeeks, MatchWeekDTO.class)));
+    }
+
+    @Override
+    public ResponseEntity<MatchWeekResponseBodyDTO> getMatchWeekById(final Long matchWeekId) {
+        final MatchWeek matchWeek = getRepositoryService().getById(matchWeekId);
+
+        return ResponseEntity.ok(new MatchWeekResponseBodyDTO()
+                .matchWeek(getMapper().map(matchWeek, MatchWeekDTO.class)));
     }
 
 }

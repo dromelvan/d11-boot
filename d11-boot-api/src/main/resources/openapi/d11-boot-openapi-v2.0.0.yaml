@@ -564,6 +564,35 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/match-weeks/{matchWeekId}:
+    get:
+      tags:
+        - matchWeek
+      summary: Get a match week by id.
+      security: []
+      operationId: getMatchWeekById
+      parameters:
+        - name: matchWeekId
+          in: path
+          required: true
+          description: Id of the match week.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchWeekResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Match --------------------------------------------------------------------------------------------------------------
 
   /v2/matches/{matchId}:
@@ -1695,6 +1724,14 @@ components:
               $ref: '#/components/schemas/Status'
             mostValuablePlayer:
               $ref: '#/components/schemas/MostValuablePlayer'
+
+    MatchWeekResponseBody:
+      type: object
+      required:
+        - matchWeek
+      properties:
+        matchWeek:
+          $ref: '#/components/schemas/MatchWeek'
 
     MatchWeeksResponseBody:
       type: object

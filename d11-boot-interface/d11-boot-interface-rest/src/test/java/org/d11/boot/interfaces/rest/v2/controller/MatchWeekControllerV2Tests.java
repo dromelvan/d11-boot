@@ -3,6 +3,7 @@ package org.d11.boot.interfaces.rest.v2.controller;
 import feign.FeignException;
 import org.d11.boot.api.v2.client.MatchWeekApi;
 import org.d11.boot.api.v2.model.MatchWeekDTO;
+import org.d11.boot.api.v2.model.MatchWeekResponseBodyDTO;
 import org.d11.boot.api.v2.model.MatchWeeksResponseBodyDTO;
 import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.model.Season;
@@ -31,6 +32,29 @@ class MatchWeekControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Autowired
     private MatchWeekRepository matchWeekRepository;
+
+    /**
+     * Tests MatchWeekController::getMatchWeekById.
+     */
+    @Test
+    void testGetMatchWeekById() {
+        final MatchWeekApi matchWeekApi = getApi(MatchWeekApi.class);
+
+        assertThrows(FeignException.NotFound.class, () -> matchWeekApi.getMatchWeekById(0L),
+                "MatchWeekController::getMatchWeekById not found");
+
+        final List<MatchWeek> matchWeeks = this.matchWeekRepository.findAll();
+
+        assertFalse(matchWeeks.isEmpty(), "MatchWeekController::getMatchWeekById matchWeeks not empty");
+
+        for (final MatchWeek matchWeek : matchWeeks) {
+            final MatchWeekResponseBodyDTO result = matchWeekApi.getMatchWeekById(matchWeek.getId());
+            assertNotNull(result, "MatchWeekController::getMatchWeekById not null");
+            assertEquals(getMapper().map(matchWeek, MatchWeekDTO.class),
+                         result.getMatchWeek(),
+                         "MatchWeekController::getMatchWeekById equals");
+        }
+    }
 
     /**
      * Tests MatchWeekController::getMatchWeeksBySeasonId.
