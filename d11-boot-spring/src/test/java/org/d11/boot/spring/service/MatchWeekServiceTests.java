@@ -2,11 +2,14 @@ package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.repository.MatchWeekRepository;
+import org.d11.boot.util.Status;
+import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,6 +56,35 @@ class MatchWeekServiceTests extends BaseD11BootServiceTests {
 
         assertThrows(NotFoundException.class, () -> this.matchWeekService.getById(-1L),
                      "MatchWeekService::getById not found");
+    }
+
+    /**
+     * Tests MatchWeekService::getCurrentMatchWeek.
+     */
+    @Test
+    void testGetCurrentMatchWeek() {
+        final MatchWeek current = generate(MatchWeek.class);
+        final MatchWeek pending = generate(MatchWeek.class);
+
+        when(this.matchWeekRepository.findFirstByDateLessThanEqualOrderByDateDesc(any(LocalDate.class)))
+                .thenReturn(Optional.empty());
+        when(this.matchWeekRepository.findFirstBySeasonStatusOrderByDateAsc(Status.PENDING))
+                .thenReturn(Optional.empty());
+
+        assertThrows(ConflictException.class, () -> this.matchWeekService.getCurrentMatchWeek(),
+                     "MatchWeekService::getCurrentMatchWeek conflict");
+
+        when(this.matchWeekRepository.findFirstByDateLessThanEqualOrderByDateDesc(any(LocalDate.class)))
+                .thenReturn(Optional.of(current));
+
+        assertEquals(current, this.matchWeekService.getCurrentMatchWeek(),
+                     "MatchWeekService::getCurrentMatchWeek current");
+
+        when(this.matchWeekRepository.findFirstBySeasonStatusOrderByDateAsc(Status.PENDING))
+                .thenReturn(Optional.of(pending));
+
+        assertEquals(pending, this.matchWeekService.getCurrentMatchWeek(),
+                     "MatchWeekService::getCurrentMatchWeek pending");
     }
 
     /**
