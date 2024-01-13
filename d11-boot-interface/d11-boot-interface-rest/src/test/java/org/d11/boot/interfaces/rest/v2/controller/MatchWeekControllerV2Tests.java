@@ -11,8 +11,10 @@ import org.d11.boot.spring.repository.MatchWeekRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,6 +56,27 @@ class MatchWeekControllerV2Tests extends D11BootControllerV2Tests {
                          result.getMatchWeek(),
                          "MatchWeekController::getMatchWeekById equals");
         }
+    }
+
+    /**
+     * Tests MatchWeekController::getCurrentMatchWeek.
+     */
+    @Test
+    void testGetCurrentMatchWeek() {
+        final MatchWeekApi matchWeekApi = getApi(MatchWeekApi.class);
+
+        final Optional<MatchWeek> optional =
+                this.matchWeekRepository.findFirstByDateLessThanEqualOrderByDateDesc(LocalDate.now());
+
+        assertFalse(optional.isEmpty(), "MatchWeekController::getCurrentMatchWeek matchWeek present");
+
+        optional.ifPresent(matchWeek -> {
+            final MatchWeekResponseBodyDTO result = matchWeekApi.getCurrentMatchWeek();
+            assertNotNull(result, "MatchWeekController::getCurrentMatchWeek not null");
+            assertEquals(getMapper().map(matchWeek, MatchWeekDTO.class),
+                         result.getMatchWeek(),
+                         "MatchWeekController::getCurrentMatchWeek equals");
+        });
     }
 
     /**

@@ -34,12 +34,20 @@ public class MatchWeekControllerV2 extends RepositoryServiceController<MatchWeek
         final List<MatchWeek> matchWeeks = getRepositoryService().getBySeasonId(seasonId);
 
         return ResponseEntity.ok(new MatchWeeksResponseBodyDTO()
-                                         .matchWeeks(getMapper().map(matchWeeks, MatchWeekDTO.class)));
+                .matchWeeks(getMapper().map(matchWeeks, MatchWeekDTO.class)));
     }
 
     @Override
     public ResponseEntity<MatchWeekResponseBodyDTO> getMatchWeekById(final Long matchWeekId) {
         final MatchWeek matchWeek = getRepositoryService().getById(matchWeekId);
+
+        return ResponseEntity.ok(new MatchWeekResponseBodyDTO()
+                .matchWeek(getMapper().map(matchWeek, MatchWeekDTO.class)));
+    }
+
+    @Override
+    public ResponseEntity<MatchWeekResponseBodyDTO> getCurrentMatchWeek() {
+        final MatchWeek matchWeek = getRepositoryService().getCurrentMatchWeek();
 
         return ResponseEntity.ok(new MatchWeekResponseBodyDTO()
                 .matchWeek(getMapper().map(matchWeek, MatchWeekDTO.class)));

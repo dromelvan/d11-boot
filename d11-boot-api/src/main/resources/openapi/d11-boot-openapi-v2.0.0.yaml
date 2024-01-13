@@ -593,6 +593,23 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/match-weeks/current:
+    get:
+      tags:
+        - matchWeek
+      summary: Get the current match week.
+      security: []
+      operationId: getCurrentMatchWeek
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchWeekResponseBody"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Match --------------------------------------------------------------------------------------------------------------
 
   /v2/matches/{matchId}:
