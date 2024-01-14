@@ -5544,6 +5544,60 @@
 									]
 								}
 							]
+						},
+						{
+							"name": "GET match-weeks/current",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET match-weeks/current - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET match week status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"",
+															"pm.test(\"GET match response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"matchWeek\");",
+															"",
+															"  const currentMatchWeek = JSON.parse(pm.environment.get(\"currentMatchWeek\"));",
+															"",
+															"  expect.matchWeekToEq(pm, body.matchWeek, currentMatchWeek);",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/match-weeks/current",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"match-weeks",
+														"current"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
 						}
 					]
 				},
