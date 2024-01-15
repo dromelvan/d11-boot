@@ -14,12 +14,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 /**
  * Transfer window service.
  */
 @Service
 public class TransferWindowService extends RepositoryService<TransferWindow, TransferWindowRepository> {
+
+    /**
+     * Message for conflict exceptions.
+     */
+    private static final String CONFLICT_MESSAGE = "Current transfer window does not exist";
 
     /**
      * Repository used to find the correct match week for a new transfer window.
@@ -40,6 +46,17 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
     }
 
     /**
+     * Gets the current transfer window.
+     *
+     * @return The current transfer window.
+     */
+    public TransferWindow getCurrentTransferWindow() {
+        final Optional<TransferWindow> optional = getJpaRepository().findFirstByOrderByDatetimeDesc();
+
+        return optional.orElseThrow(() -> new ConflictException(CONFLICT_MESSAGE));
+    }
+
+    /**
      * Creates a new transfer window.
      *
      * @param datetime         Transfer window transfer listing deadline.
@@ -57,7 +74,7 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
         }
 
         final TransferWindow currentTransferWindow = getJpaRepository().findFirstByOrderByDatetimeDesc()
-                .orElseThrow(() -> new ConflictException("Current transfer window does not exist"));
+                .orElseThrow(() -> new ConflictException(CONFLICT_MESSAGE));
 
         final MatchWeek matchWeek =
                 this.matchWeekRepository.findFirstByDateGreaterThanOrderByDateAsc(datetime.toLocalDate())

@@ -52,6 +52,24 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
     private TransferWindowService transferWindowService;
 
     /**
+     * Tests TransferWindowService::getCurrentTransferWindow.
+     */
+    @Test
+    void testGetCurrentMatchWeek() {
+        final TransferWindow current = generate(TransferWindow.class);
+
+        when(this.transferWindowRepository.findFirstByOrderByDatetimeDesc()).thenReturn(Optional.empty());
+
+        assertThrows(ConflictException.class, () -> this.transferWindowService.getCurrentTransferWindow(),
+                     "MatchWeekService::getCurrentMatchWeek conflict");
+
+        when(this.transferWindowRepository.findFirstByOrderByDatetimeDesc()).thenReturn(Optional.of(current));
+
+        assertEquals(current, this.transferWindowService.getCurrentTransferWindow(),
+                     "MatchWeekService::getCurrentMatchWeek current");
+    }
+
+    /**
      * Tests TransferWindowService::createTransferWindow.
      */
     @Test
