@@ -29,6 +29,7 @@ public interface TransferWindowRepository extends D11EntityRepository<TransferWi
      *
      * @return The current transfer window.
      */
+    @EntityGraph(TransferWindow.TRANSFER_WINDOW_ASSOCIATIONS)
     Optional<TransferWindow> findFirstByOrderByDatetimeDesc();
 
     /**

@@ -861,6 +861,23 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/transfer-windows/current:
+    get:
+      tags:
+        - transferWindow
+      summary: Gets the current transfer window.
+      security: []
+      operationId: getCurrentTransferWindow
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferWindowResponseBody"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Transfer day -------------------------------------------------------------------------------------------------------
 
   /v2/transfer-days/{transferDayId}:

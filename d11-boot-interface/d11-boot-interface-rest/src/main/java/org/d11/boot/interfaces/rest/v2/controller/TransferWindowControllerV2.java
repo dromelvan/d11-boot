@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Transfer window API REST controller implementation.
  */
 @RestController
-public class TransferWindowControllerV2
-        extends RepositoryServiceController<TransferWindowService> implements TransferWindowApi {
+public class TransferWindowControllerV2 extends RepositoryServiceController<TransferWindowService>
+        implements TransferWindowApi {
 
     /**
      * Create a new controller.
@@ -40,6 +40,16 @@ public class TransferWindowControllerV2
                 .transferDays(map(transferWindow.getTransferDays(), TransferDayDTO.class));
 
         return ResponseEntity.ok(responseBody);
+    }
+
+    @Override
+    public ResponseEntity<TransferWindowResponseBodyDTO> getCurrentTransferWindow() {
+        final TransferWindow transferWindow = getRepositoryService().getCurrentTransferWindow();
+
+        return ResponseEntity.ok(new TransferWindowResponseBodyDTO()
+                .transferWindow(getMapper().map(transferWindow, TransferWindowDTO.class))
+                .matchWeek(getMapper().map(transferWindow.getMatchWeek(), MatchWeekBaseDTO.class))
+                .transferDays(map(transferWindow.getTransferDays(), TransferDayDTO.class)));
     }
 
     @Override
