@@ -3,6 +3,8 @@ package org.d11.boot.interfaces.rest.v2.controller;
 import feign.FeignException;
 import org.d11.boot.api.v2.client.TransferWindowApi;
 import org.d11.boot.api.v2.model.CreateTransferWindowRequestBodyDTO;
+import org.d11.boot.api.v2.model.MatchWeekBaseDTO;
+import org.d11.boot.api.v2.model.TransferDayDTO;
 import org.d11.boot.api.v2.model.TransferWindowDTO;
 import org.d11.boot.api.v2.model.TransferWindowResponseBodyDTO;
 import org.d11.boot.spring.model.MatchWeek;
@@ -87,6 +89,39 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
                              "TransferWindowController::getTransferWindowById transferDay id equals");
             }
         }
+    }
+
+    /**
+     * Tests TransferWindowController::getCurrentTransferWindow.
+     */
+    @Test
+    void testGetCurrentTransferWindow() {
+        final TransferWindowApi transferWindowApi = getApi(TransferWindowApi.class);
+
+        final Optional<TransferWindow> optional = this.transferWindowRepository.findFirstByOrderByDatetimeDesc();
+
+        assertFalse(optional.isEmpty(), "TransferWindowController::getCurrentTransferWindow transferWindow present");
+
+        optional.ifPresent(transferWindow -> {
+            final TransferWindowResponseBodyDTO result = transferWindowApi.getCurrentTransferWindow();
+            assertNotNull(result, "TransferWindowController::getCurrentTransferWindow not null");
+            assertEquals(getMapper().map(transferWindow, TransferWindowDTO.class),
+                         result.getTransferWindow(),
+                         "TransferWindowController::getCurrentTransferWindow equals");
+
+            assertNotNull(result.getMatchWeek(), "TransferWindowController::getCurrentTransferWindow matchWeek null");
+            assertEquals(getMapper().map(transferWindow.getMatchWeek(), MatchWeekBaseDTO.class),
+                         result.getMatchWeek(),
+                         "TransferWindowController::getCurrentTransferWindow matchWeek equals");
+
+            assertNotNull(result.getTransferDays(),
+                          "TransferWindowController::getCurrentTransferWindow transferDays null");
+            assertFalse(result.getTransferDays().isEmpty(),
+                        "TransferWindowController::getCurrentTransferWindow transferDays empty");
+            assertEquals(getMapper().map(transferWindow.getTransferDays(), TransferDayDTO.class),
+                         result.getTransferDays(),
+                         "TransferWindowController::getCurrentTransferWindow transferDays equals");
+        });
     }
 
     /**
