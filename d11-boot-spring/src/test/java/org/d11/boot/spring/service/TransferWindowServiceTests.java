@@ -61,12 +61,13 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
         when(this.transferWindowRepository.findFirstByOrderByDatetimeDesc()).thenReturn(Optional.empty());
 
         assertThrows(ConflictException.class, () -> this.transferWindowService.getCurrentTransferWindow(),
-                     "MatchWeekService::getCurrentMatchWeek conflict");
+                     "TransferWindowService::getCurrentTransferWindow conflict");
 
-        when(this.transferWindowRepository.findFirstByOrderByDatetimeDesc()).thenReturn(Optional.of(current));
+        when(this.transferWindowRepository.findFirstByOrderByDatetimeDesc())
+                .thenReturn(Optional.of(current));
 
         assertEquals(current, this.transferWindowService.getCurrentTransferWindow(),
-                     "MatchWeekService::getCurrentMatchWeek current");
+                     "TransferWindowService::getCurrentTransferWindow current");
     }
 
     /**
@@ -104,7 +105,7 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
         final TransferWindow currentTransferWindow = new TransferWindow();
         currentTransferWindow.setStatus(Status.PENDING);
 
-        when(this.transferWindowRepository.findFirstByOrderByDatetimeDesc())
+        when(this.transferWindowRepository.findFirstByOrderByDatetimeDescNoEntityGraph())
                 .thenReturn(Optional.of(currentTransferWindow));
 
         assertThrows(ConflictException.class,

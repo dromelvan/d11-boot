@@ -2,6 +2,7 @@ package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.TransferWindow;
 import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +32,14 @@ public interface TransferWindowRepository extends D11EntityRepository<TransferWi
      */
     @EntityGraph(TransferWindow.TRANSFER_WINDOW_ASSOCIATIONS)
     Optional<TransferWindow> findFirstByOrderByDatetimeDesc();
+
+    /**
+     * Finds the latest transfer window. This is the current one. This method does not fetch the entity graph.
+     *
+     * @return The current transfer window.
+     */
+    @Query("SELECT tw FROM TransferWindow tw ORDER BY tw.datetime DESC LIMIT 1")
+    Optional<TransferWindow> findFirstByOrderByDatetimeDescNoEntityGraph();
 
     /**
      * Finds transfer windows by match week season id ordered by datetime desc.

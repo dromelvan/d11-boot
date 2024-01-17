@@ -42,6 +42,24 @@ class TransferWindowRepositoryTests extends AbstractRepositoryTests<TransferWind
     }
 
     /**
+     * Tests TransferWindowRepository::findFirstByOrderByDatetimeDescNoEntityGraph.
+     */
+    @Test
+    void testFindFirstByOrderByDatetimeDescNoEntityGraph() {
+        final List<TransferWindow> entities = getEntities();
+        entities.sort(Comparator.naturalOrder());
+
+        final TransferWindow transferWindow = entities.get(0);
+
+        final Optional<TransferWindow> optional = getRepository().findFirstByOrderByDatetimeDescNoEntityGraph();
+
+        assertTrue(optional.isPresent(),
+                   "TransferWindowRepository::findFirstByOrderByDatetimeDescNoEntityGraph present");
+        optional.ifPresent(result -> assertEquals(transferWindow, result,
+                "TransferWindowRepository::findFirstByOrderByDatetimeDescNoEntityGraph equals"));
+    }
+
+    /**
      * Tests TransferWindowRepository::findByMatchWeekSeasonIdOrderByDatetimeDesc.
      */
     @Test
