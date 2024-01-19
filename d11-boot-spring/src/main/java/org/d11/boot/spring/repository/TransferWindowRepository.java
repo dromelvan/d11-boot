@@ -26,20 +26,20 @@ public interface TransferWindowRepository extends D11EntityRepository<TransferWi
     Optional<TransferWindow> findById(Long id);
 
     /**
-     * Finds the latest transfer window. This is the current one.
+     * Finds the current transfer window and its match week and transfer days..
      *
      * @return The current transfer window.
      */
     @EntityGraph(TransferWindow.TRANSFER_WINDOW_ASSOCIATIONS)
-    Optional<TransferWindow> findFirstByOrderByDatetimeDesc();
+    @Query("SELECT tw FROM TransferWindow tw ORDER BY tw.datetime DESC LIMIT 1")
+    Optional<TransferWindow> findCurrentTransferWindow();
 
     /**
-     * Finds the latest transfer window. This is the current one. This method does not fetch the entity graph.
+     * Finds the latest transfer window. This is the current one.
      *
      * @return The current transfer window.
      */
-    @Query("SELECT tw FROM TransferWindow tw ORDER BY tw.datetime DESC LIMIT 1")
-    Optional<TransferWindow> findFirstByOrderByDatetimeDescNoEntityGraph();
+    Optional<TransferWindow> findFirstByOrderByDatetimeDesc();
 
     /**
      * Finds transfer windows by match week season id ordered by datetime desc.

@@ -98,7 +98,7 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
     void testGetCurrentTransferWindow() {
         final TransferWindowApi transferWindowApi = getApi(TransferWindowApi.class);
 
-        final Optional<TransferWindow> optional = this.transferWindowRepository.findFirstByOrderByDatetimeDesc();
+        final Optional<TransferWindow> optional = this.transferWindowRepository.findCurrentTransferWindow();
 
         assertFalse(optional.isEmpty(), "TransferWindowController::getCurrentTransferWindow transferWindow present");
 
@@ -179,7 +179,7 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
 
         // 201 Created -------------------------------------------------------------------------------------------------
 
-        final TransferWindow currentTransferWindow = this.transferWindowRepository.findFirstByOrderByDatetimeDesc()
+        final TransferWindow currentTransferWindow = this.transferWindowRepository.findCurrentTransferWindow()
                 .orElse(null);
         assertNotNull(currentTransferWindow,
                       "TransferWindowController::createTransferWindow currentTransferWindow not null");
@@ -267,7 +267,7 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
 
         // 409 Conflict ------------------------------------------------------------------------------------------------
 
-        final TransferWindow currentTransferWindow = this.transferWindowRepository.findFirstByOrderByDatetimeDesc()
+        final TransferWindow currentTransferWindow = this.transferWindowRepository.findCurrentTransferWindow()
                 .orElse(null);
         assertNotNull(currentTransferWindow,
                       "TransferWindowController::deleteTransferWindow currentTransferWindow not null");

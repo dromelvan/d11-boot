@@ -25,6 +25,23 @@ class TransferWindowRepositoryTests extends AbstractRepositoryTests<TransferWind
     private MatchWeekRepository matchWeekRepository;
 
     /**
+     * Tests TransferWindowRepository::findCurrentTransferWindow.
+     */
+    @Test
+    void testFindCurrentTransferWindow() {
+        final List<TransferWindow> entities = getEntities();
+        entities.sort(Comparator.naturalOrder());
+
+        final TransferWindow transferWindow = entities.get(0);
+
+        final Optional<TransferWindow> optional = getRepository().findCurrentTransferWindow();
+
+        assertTrue(optional.isPresent(), "TransferWindowRepository::findFirstByOrderByDatetimeDesc present");
+        optional.ifPresent(result -> assertEquals(transferWindow, result,
+                                                  "TransferWindowRepository::findFirstByOrderByDatetimeDesc equals"));
+    }
+
+    /**
      * Tests TransferWindowRepository::findFirstByOrderByDatetimeDesc.
      */
     @Test
@@ -36,27 +53,10 @@ class TransferWindowRepositoryTests extends AbstractRepositoryTests<TransferWind
 
         final Optional<TransferWindow> optional = getRepository().findFirstByOrderByDatetimeDesc();
 
-        assertTrue(optional.isPresent(), "TransferWindowRepository::findFirstByOrderByDatetimeDesc present");
-        optional.ifPresent(result -> assertEquals(transferWindow, result,
-                                                  "TransferWindowRepository::findFirstByOrderByDatetimeDesc equals"));
-    }
-
-    /**
-     * Tests TransferWindowRepository::findFirstByOrderByDatetimeDescNoEntityGraph.
-     */
-    @Test
-    void testFindFirstByOrderByDatetimeDescNoEntityGraph() {
-        final List<TransferWindow> entities = getEntities();
-        entities.sort(Comparator.naturalOrder());
-
-        final TransferWindow transferWindow = entities.get(0);
-
-        final Optional<TransferWindow> optional = getRepository().findFirstByOrderByDatetimeDescNoEntityGraph();
-
         assertTrue(optional.isPresent(),
-                   "TransferWindowRepository::findFirstByOrderByDatetimeDescNoEntityGraph present");
+                   "TransferWindowRepository::findFirstByOrderByDatetimeDesc present");
         optional.ifPresent(result -> assertEquals(transferWindow, result,
-                "TransferWindowRepository::findFirstByOrderByDatetimeDescNoEntityGraph equals"));
+                "TransferWindowRepository::findFirstByOrderByDatetimeDesc equals"));
     }
 
     /**
