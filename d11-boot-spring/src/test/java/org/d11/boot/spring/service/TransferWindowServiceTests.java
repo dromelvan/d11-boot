@@ -55,7 +55,7 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
      * Tests TransferWindowService::getCurrentTransferWindow.
      */
     @Test
-    void testGetCurrentMatchWeek() {
+    void testGetTransferWindow() {
         final TransferWindow current = generate(TransferWindow.class);
 
         when(this.transferWindowRepository.findCurrentTransferWindow()).thenReturn(Optional.empty());

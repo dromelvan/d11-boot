@@ -51,7 +51,7 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
      * @return The current transfer window.
      */
     public TransferWindow getCurrentTransferWindow() {
-        final Optional<TransferWindow> optional = getJpaRepository().findFirstByOrderByDatetimeDesc();
+        final Optional<TransferWindow> optional = getJpaRepository().findCurrentTransferWindow();
 
         return optional.orElseThrow(() -> new ConflictException(CONFLICT_MESSAGE));
     }
