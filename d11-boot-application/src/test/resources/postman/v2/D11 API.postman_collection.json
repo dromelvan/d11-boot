@@ -7117,6 +7117,80 @@
 							]
 						},
 						{
+							"name": "GET transfer-windows/current",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET transfer-windows/current - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET current transfer window status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"",
+															"pm.test(\"GET current transfer window response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"transferWindow\");",
+															"",
+															"  const currentTransferWindow = JSON.parse(pm.environment.get(\"currentTransferWindow\"));",
+															"",
+															"  expect.transferWindowToEq(pm, body.transferWindow, currentTransferWindow);",
+															"",
+															"  pm.expect(body).to.have.property(\"matchWeek\");",
+															"",
+															"  const transferWindowMatchWeek = JSON.parse(pm.environment.get(\"currentTransferWindowMatchWeek\"));",
+															"  ",
+															"  pm.expect(body.matchWeek.id).to.eq(transferWindowMatchWeek.id);",
+															"  pm.expect(body.matchWeek.matchWeekNumber).to.eq(transferWindowMatchWeek.matchWeekNumber);",
+															"",
+															"  pm.expect(body).to.have.property(\"transferDays\");",
+															"",
+															"  const transferWindowTransferDays = JSON.parse(pm.environment.get(\"currentTransferWindowTransferDays\"));",
+															"  ",
+															"  pm.expect(body.transferDays.length).to.eq(1);",
+															"",
+															"  for (let i = 0; i < body.transferDays.length; i++) {",
+															"    pm.expect(body.transferDays[i].id).to.eq(transferWindowTransferDays[i].id);",
+															"    pm.expect(body.transferDays[i].transferDayNumber).to.eq(transferWindowTransferDays[i].transferDayNumber);",
+															"    pm.expect(body.transferDays[i].status).to.eq(transferWindowTransferDays[i].status);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-windows/current",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-windows",
+														"current"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
 							"name": "POST transfer-windows",
 							"item": [
 								{
