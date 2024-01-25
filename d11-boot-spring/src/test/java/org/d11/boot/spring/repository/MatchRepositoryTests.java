@@ -1,6 +1,7 @@
 package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.Match;
+import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.Team;
 import org.junit.jupiter.api.Test;
@@ -79,6 +80,38 @@ class MatchRepositoryTests extends AbstractRepositoryTests<Match, MatchRepositor
                 assertEquals(expected, result,
                              "MatchRepository::findByTeamIdAndMatchWeekSeasonIdOrderByDatetime equals");
             }
+        }
+    }
+
+    /**
+     * Tests MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc.
+     */
+    @Test
+    void testFindByMatchWeekIdOrderByDatetimeAscIdAsc() {
+        final List<Match> entities = getEntities();
+        entities.sort(Comparator.comparing(Match::getDatetime)
+                .thenComparing(Match::getId));
+
+        final Set<MatchWeek> matchWeeks = entities.stream()
+                .map(Match::getMatchWeek)
+                .collect(Collectors.toSet());
+
+        assertTrue(matchWeeks.size() > 1,
+                "MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc matchWeeks size > 1");
+
+        for (final MatchWeek matchWeek : matchWeeks) {
+            final List<Match> expected = entities.stream()
+                    .filter(match -> match.getMatchWeek().equals(matchWeek))
+                    .toList();
+
+            assertTrue(expected.size() > 1,
+                    "MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc expected size > 1");
+
+            final List<Match> result = getRepository().findByMatchWeekIdOrderByDatetimeAscIdAsc(matchWeek.getId());
+
+            assertNotNull(result, "MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc not null");
+            assertFalse(result.isEmpty(), "MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc empty");
+            assertEquals(expected, result, "MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc equals");
         }
     }
 

@@ -40,7 +40,7 @@ public interface MatchRepository extends D11EntityRepository<Match> {
      *
      * @param teamId   The team id.
      * @param seasonId The season id.
-     * @return Match ids for the team and the season.
+     * @return Matches for the team and the season.
      */
     @Query("""
            SELECT match FROM Match match
@@ -49,5 +49,13 @@ public interface MatchRepository extends D11EntityRepository<Match> {
            """)
     List<Match> findByTeamIdAndMatchWeekSeasonIdOrderByDatetime(@Param("teamId") Long teamId,
                                                                 @Param("seasonId") Long seasonId);
+
+    /**
+     * Gets matches by match week ordered by datetime and id.
+     *
+     * @param matchWeekId The match week id.
+     * @return Matches for the match week.
+     */
+    List<Match> findByMatchWeekIdOrderByDatetimeAscIdAsc(@Param("matchWeekId") Long matchWeekId);
 
 }
