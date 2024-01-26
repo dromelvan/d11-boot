@@ -2,6 +2,7 @@ package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.Match;
 import org.d11.boot.spring.repository.MatchRepository;
+import org.d11.boot.util.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,20 @@ public class MatchService extends RepositoryService<Match, MatchRepository> {
      */
     public List<Match> getByTeamIdAmdSeasonId(final Long teamId, final Long seasonId) {
         return getJpaRepository().findByTeamIdAndMatchWeekSeasonIdOrderByDatetime(teamId, seasonId);
+    }
+
+    /**
+     * Get matches by match week id ordered by ranking.
+     *
+     * @param matchWeekId The match week id.
+     * @return Matches by match week id ordered by ranking.
+     */
+    public List<Match> getByMatchWeekId(final Long matchWeekId) {
+        if (matchWeekId == null || matchWeekId <= 0) {
+            throw new BadRequestException("matchWeekId", "must be positive");
+        }
+
+        return getJpaRepository().findByMatchWeekIdOrderByDatetimeAscIdAsc(matchWeekId);
     }
 
 }
