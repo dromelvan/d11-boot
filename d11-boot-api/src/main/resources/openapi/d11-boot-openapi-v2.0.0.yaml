@@ -612,6 +612,33 @@ paths:
 
   # Match --------------------------------------------------------------------------------------------------------------
 
+  /v2/matches:
+    get:
+      tags:
+        - match
+      summary: Get matches by match week id.
+      security: []
+      operationId: getMatchesByMatchWeekId
+      parameters:
+        - name: matchWeekId
+          in: query
+          required: true
+          description: Id of the match week.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchesResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /v2/matches/{matchId}:
     get:
       tags:
@@ -1851,6 +1878,16 @@ components:
           $ref: '#/components/schemas/Match'
         stadium:
           $ref: '#/components/schemas/Stadium'
+
+    MatchesResponseBody:
+      type: object
+      required:
+        - matches
+      properties:
+        matches:
+          type: array
+          items:
+            $ref: '#/components/schemas/MatchBase'
 
     # D11 match --------------------------------------------------------------------------------------------------------
 
