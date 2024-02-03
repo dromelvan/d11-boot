@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS team_season_stat(
     goals_against INTEGER NOT NULL DEFAULT 0,
     goal_difference INTEGER NOT NULL DEFAULT 0,
     points INTEGER NOT NULL DEFAULT 0,
+    points_penalty INTEGER NOT NULL DEFAULT 0,
     form_points INTEGER NOT NULL DEFAULT 0,
     form_match_points VARCHAR(255) NOT NULL,
     ranking INTEGER NOT NULL DEFAULT 0,

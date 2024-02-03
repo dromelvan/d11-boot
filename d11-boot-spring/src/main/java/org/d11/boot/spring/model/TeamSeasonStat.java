@@ -6,6 +6,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -22,6 +23,12 @@ public class TeamSeasonStat extends TableStat {
      */
     @Positive
     private Integer winCount;
+
+    /**
+     * Number of points the team has been penalized.
+     */
+    @PositiveOrZero
+    private int pointsPenalty;
 
     /**
      * The team this team season stat belongs to.
@@ -42,5 +49,28 @@ public class TeamSeasonStat extends TableStat {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Season season;
+
+    /**
+     * Resets all stats to 0.
+     */
+    public void reset() {
+        super.reset();
+        this.winCount = 0;
+        this.pointsPenalty = 0;
+    }
+
+    /**
+     * Adds the stats in the provided table stat to this table stat.
+     *
+     * @param previousTableStat The table stats that will be added to this table stat.
+     */
+    public void updateCumulativeStats(final TableStat previousTableStat) {
+        super.updateCumulativeStats(previousTableStat);
+        if (previousTableStat != null) {
+            final TeamSeasonStat previousTeamSeasonStat = (TeamSeasonStat)previousTableStat;
+            this.winCount += previousTeamSeasonStat.getWinCount();
+            this.pointsPenalty += previousTeamSeasonStat.getPointsPenalty();
+        }
+    }
 
 }

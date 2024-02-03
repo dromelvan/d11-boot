@@ -232,7 +232,7 @@ BEGIN
         goals_for = sub_query.goals_for,
         goals_against = sub_query.goals_against,
         goal_difference = sub_query.goal_difference,
-        points = sub_query.points
+        points = sub_query.points + (points_penalty * -1)
     FROM(
         SELECT team_id,
                season_id,
