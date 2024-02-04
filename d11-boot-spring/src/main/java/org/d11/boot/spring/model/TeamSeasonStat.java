@@ -53,6 +53,7 @@ public class TeamSeasonStat extends TableStat {
     /**
      * Resets all stats to 0.
      */
+    @Override
     public void reset() {
         super.reset();
         this.winCount = 0;
@@ -64,10 +65,11 @@ public class TeamSeasonStat extends TableStat {
      *
      * @param previousTableStat The table stats that will be added to this table stat.
      */
+    @Override
     public void updateCumulativeStats(final TableStat previousTableStat) {
         super.updateCumulativeStats(previousTableStat);
         if (previousTableStat != null) {
-            final TeamSeasonStat previousTeamSeasonStat = (TeamSeasonStat)previousTableStat;
+            final TeamSeasonStat previousTeamSeasonStat = (TeamSeasonStat) previousTableStat;
             this.winCount += previousTeamSeasonStat.getWinCount();
             this.pointsPenalty += previousTeamSeasonStat.getPointsPenalty();
         }
