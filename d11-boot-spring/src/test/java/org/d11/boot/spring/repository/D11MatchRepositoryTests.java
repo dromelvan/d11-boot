@@ -2,6 +2,7 @@ package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.D11Match;
 import org.d11.boot.spring.model.D11Team;
+import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.model.Season;
 import org.junit.jupiter.api.Test;
 
@@ -64,6 +65,38 @@ class D11MatchRepositoryTests extends AbstractRepositoryTests<D11Match, D11Match
                 assertEquals(expected, result,
                              "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime equals");
             }
+        }
+    }
+
+    /**
+     * Tests D11MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc.
+     */
+    @Test
+    void testFindByMatchWeekIdOrderByDatetimeAscIdAsc() {
+        final List<D11Match> entities = getEntities();
+        entities.sort(Comparator.comparing(D11Match::getDatetime)
+                .thenComparing(D11Match::getId));
+
+        final Set<MatchWeek> matchWeeks = entities.stream()
+                .map(D11Match::getMatchWeek)
+                .collect(Collectors.toSet());
+
+        assertTrue(matchWeeks.size() > 1,
+                "D11MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc matchWeeks size > 1");
+
+        for (final MatchWeek matchWeek : matchWeeks) {
+            final List<D11Match> expected = entities.stream()
+                    .filter(d11Match -> d11Match.getMatchWeek().equals(matchWeek))
+                    .toList();
+
+            assertTrue(expected.size() > 1,
+                    "D11MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc expected size > 1");
+
+            final List<D11Match> result = getRepository().findByMatchWeekIdOrderByDatetimeAscIdAsc(matchWeek.getId());
+
+            assertNotNull(result, "D11MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc not null");
+            assertFalse(result.isEmpty(), "D11MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc empty");
+            assertEquals(expected, result, "D11MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc equals");
         }
     }
 

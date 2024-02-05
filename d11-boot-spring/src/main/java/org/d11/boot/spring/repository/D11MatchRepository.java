@@ -43,4 +43,12 @@ public interface D11MatchRepository extends D11EntityRepository<D11Match> {
     List<D11Match> findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime(@Param("d11TeamId") Long d11TeamId,
                                                                       @Param("seasonId") Long seasonId);
 
+    /**
+     * Gets D11 matches by match week ordered by datetime and id.
+     *
+     * @param matchWeekId The match week id.
+     * @return D11 matches for the match week.
+     */
+    List<D11Match> findByMatchWeekIdOrderByDatetimeAscIdAsc(@Param("matchWeekId") Long matchWeekId);
+
 }
