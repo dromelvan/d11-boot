@@ -31,15 +31,15 @@ public class MatchService extends RepositoryService<Match, MatchRepository> {
      * @param seasonId The season id.
      * @return List of all match weeks ordered by date.
      */
-    public List<Match> getByTeamIdAmdSeasonId(final Long teamId, final Long seasonId) {
+    public List<Match> getByTeamIdAndSeasonId(final Long teamId, final Long seasonId) {
         return getJpaRepository().findByTeamIdAndMatchWeekSeasonIdOrderByDatetime(teamId, seasonId);
     }
 
     /**
-     * Get matches by match week id ordered by ranking.
+     * Get matches by match week id ordered by datetime and id.
      *
      * @param matchWeekId The match week id.
-     * @return Matches by match week id ordered by ranking.
+     * @return Matches by match week id ordered by datetime and id.
      */
     public List<Match> getByMatchWeekId(final Long matchWeekId) {
         if (matchWeekId == null || matchWeekId <= 0) {

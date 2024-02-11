@@ -42,7 +42,7 @@ class MatchServiceTests extends BaseD11BootServiceTests {
         when(this.matchRepository.findByTeamIdAndMatchWeekSeasonIdOrderByDatetime(any(Long.class), any(Long.class)))
                 .thenReturn(matches);
 
-        final List<Match> result = this.matchService.getByTeamIdAmdSeasonId(1L, 1L);
+        final List<Match> result = this.matchService.getByTeamIdAndSeasonId(1L, 1L);
 
         assertNotNull(result, "MatchService::getByTeamIdAmdSeasonId not null");
         assertFalse(result.isEmpty(), "MatchService::getByTeamIdAmdSeasonId isEmpty");
