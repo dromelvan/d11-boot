@@ -670,6 +670,33 @@ paths:
 
   # D11 match ----------------------------------------------------------------------------------------------------------
 
+  /v2/d11-matches:
+    get:
+      tags:
+        - d11Match
+      summary: Get D11 matches by match week id.
+      security: []
+      operationId: getD11MatchesByMatchWeekId
+      parameters:
+        - name: matchWeekId
+          in: query
+          required: true
+          description: Id of the match week.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/D11MatchesResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /v2/d11-matches/{d11MatchId}:
     get:
       tags:
@@ -1964,6 +1991,16 @@ components:
       properties:
         d11Match:
           $ref: '#/components/schemas/D11Match'
+
+    D11MatchesResponseBody:
+      type: object
+      required:
+        - d11Matches
+      properties:
+        d11Matches:
+          type: array
+          items:
+            $ref: '#/components/schemas/D11MatchBase'
 
     # Goal -------------------------------------------------------------------------------------------------------------
 
