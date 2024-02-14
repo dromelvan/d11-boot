@@ -1,12 +1,17 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
 import feign.FeignException;
+import jakarta.transaction.Transactional;
 import org.d11.boot.api.v2.client.D11MatchApi;
+import org.d11.boot.api.v2.model.D11MatchBaseDTO;
 import org.d11.boot.api.v2.model.D11MatchDTO;
 import org.d11.boot.api.v2.model.D11MatchResponseBodyDTO;
+import org.d11.boot.api.v2.model.D11MatchesResponseBodyDTO;
 import org.d11.boot.spring.model.D11Entity;
 import org.d11.boot.spring.model.D11Match;
+import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.repository.D11MatchRepository;
+import org.d11.boot.spring.repository.MatchWeekRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * D11 match controller tests.
@@ -27,6 +33,12 @@ class D11MatchControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Autowired
     private D11MatchRepository d11MatchRepository;
+
+    /**
+     * Match week repository.
+     */
+    @Autowired
+    private MatchWeekRepository matchWeekRepository;
 
     /**
      * Tests D11MatchController::getD11MatchById.
@@ -53,6 +65,46 @@ class D11MatchControllerV2Tests extends D11BootControllerV2Tests {
 
         assertThrows(FeignException.NotFound.class, () -> d11MatchApi.getD11MatchById(0L),
                      "D11MatchController::getD11MatchById not found");
+    }
+
+    /**
+     * Tests D11MatchController::getD11MatchesByMatchWeekId.
+     */
+    @Test
+    @Transactional
+    void testGetMatchesByMatchWeekId() {
+        final D11MatchApi d11MatchApi = getApi(D11MatchApi.class);
+
+        assertThrows(FeignException.BadRequest.class,
+                () -> d11MatchApi.getD11MatchesByMatchWeekId((Long) null),
+                "D11MatchController::getD11MatchesByMatchWeekId matchWeekId null throws");
+
+        assertThrows(FeignException.BadRequest.class,
+                () -> d11MatchApi.getD11MatchesByMatchWeekId(-1L),
+                "D11MatchController::getD11MatchesByMatchWeekId matchWeekId negative throws");
+
+        final List<MatchWeek> matchWeeks = this.matchWeekRepository.findAll().stream()
+                .filter(matchWeek -> !matchWeek.getMatches().isEmpty())
+                .toList();
+
+        assertTrue(matchWeeks.size() > 1, "D11MatchController::getD11MatchesByMatchWeekId matchWeeks size > 0");
+
+        for (final MatchWeek matchWeek : matchWeeks) {
+            final D11MatchesResponseBodyDTO d11MatchesByMatchWeekId =
+                    d11MatchApi.getD11MatchesByMatchWeekId(matchWeek.getId());
+            assertNotNull(d11MatchesByMatchWeekId, "D11MatchController::getD11MatchesByMatchWeekId response not null");
+
+            final List<D11MatchBaseDTO> result = d11MatchesByMatchWeekId.getD11Matches();
+
+            assertNotNull(result, "D11MatchController::getD11MatchesByMatchWeekId not null ");
+            assertFalse(result.isEmpty(), "D11MatchController::getD11MatchesByMatchWeekId empty");
+
+            final List<D11Match> d11Matches =
+                    this.d11MatchRepository.findByMatchWeekIdOrderByDatetimeAscIdAsc(matchWeek.getId());
+
+            assertEquals(map(d11Matches, D11MatchBaseDTO.class), result,
+                         "D11MatchController::getD11MatchesByMatchWeekId equals");
+        }
     }
 
 }
