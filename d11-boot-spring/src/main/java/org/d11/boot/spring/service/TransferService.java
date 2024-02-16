@@ -38,4 +38,18 @@ public class TransferService extends RepositoryService<Transfer, TransferReposit
         return getJpaRepository().findByTransferDayIdOrderByD11TeamNameAscFeeDesc(transferDayId);
     }
 
+    /**
+     * Get transfers by player id ordered by transfer day date time, descending.
+     *
+     * @param playerId The player id.
+     * @return Transfers by player id ordered by transfer day date time, descending.
+     */
+    public List<Transfer> getByPlayerId(final Long playerId) {
+        if (playerId == null || playerId <= 0) {
+            throw new BadRequestException("playerId", "must be positive");
+        }
+
+        return getJpaRepository().findByPlayerIdOrderByTransferDayDatetimeDesc(playerId);
+    }
+
 }
