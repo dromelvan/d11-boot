@@ -15,6 +15,11 @@ import java.util.List;
 public class TransferService extends RepositoryService<Transfer, TransferRepository> {
 
     /**
+     * Message for invalid id parameter errors.
+     */
+    private static final String INVALID_ID_MESSAGE = "must be positive";
+
+    /**
      * Creates a new transfer service.
      *
      * @param transferRepository The transfer repository the service will use.
@@ -32,7 +37,7 @@ public class TransferService extends RepositoryService<Transfer, TransferReposit
      */
     public List<Transfer> getByTransferDayId(final Long transferDayId) {
         if (transferDayId == null || transferDayId <= 0) {
-            throw new BadRequestException("transferDayId", "must be positive");
+            throw new BadRequestException("transferDayId", INVALID_ID_MESSAGE);
         }
 
         return getJpaRepository().findByTransferDayIdOrderByD11TeamNameAscFeeDesc(transferDayId);
@@ -46,7 +51,7 @@ public class TransferService extends RepositoryService<Transfer, TransferReposit
      */
     public List<Transfer> getByPlayerId(final Long playerId) {
         if (playerId == null || playerId <= 0) {
-            throw new BadRequestException("playerId", "must be positive");
+            throw new BadRequestException("playerId", INVALID_ID_MESSAGE);
         }
 
         return getJpaRepository().findByPlayerIdOrderByTransferDayDatetimeDesc(playerId);

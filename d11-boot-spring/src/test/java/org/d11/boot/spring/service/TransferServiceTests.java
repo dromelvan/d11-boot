@@ -71,4 +71,41 @@ class TransferServiceTests extends BaseD11BootServiceTests {
                 .findByTransferDayIdOrderByD11TeamNameAscFeeDesc(eq(transferDayId));
     }
 
+    /**
+     * Tests TransferService::getByPlayerId.
+     */
+    @Test
+    void testGetByPlayerId() {
+
+        // Validation --------------------------------------------------------------------------------------------------
+
+        final String playerIdProperty = "playerId";
+
+        final BadRequestException nullTransferDayIdException =
+                assertThrows(BadRequestException.class, () -> this.transferService.getByPlayerId(null),
+                        "TransferService::getByPlayerId null playerId throws");
+        assertEquals(playerIdProperty, nullTransferDayIdException.getParameter(),
+                "TransferService::getByPlayerId property equals null playerId");
+
+        final BadRequestException invalidPlayerIdException =
+                assertThrows(BadRequestException.class, () -> this.transferService.getByPlayerId(-1L),
+                        "TransferService::getByPlayerId invalid playerId throws");
+        assertEquals(playerIdProperty, invalidPlayerIdException.getParameter(),
+                "TransferService::getByPlayerId property equals invalid playerId");
+
+        // Success -----------------------------------------------------------------------------------------------------
+
+        final long playerId = 1L;
+        final List<Transfer> transfers = generateList(Transfer.class);
+
+        when(this.transferRepository.findByPlayerIdOrderByTransferDayDatetimeDesc(eq(playerId))).thenReturn(transfers);
+
+        final List<Transfer> result = this.transferService.getByPlayerId(playerId);
+
+        assertEquals(transfers, result, "TransferService::getByPlayerId result equals");
+
+        verify(this.transferRepository, times(1))
+                .findByPlayerIdOrderByTransferDayDatetimeDesc(eq(playerId));
+    }
+
 }
