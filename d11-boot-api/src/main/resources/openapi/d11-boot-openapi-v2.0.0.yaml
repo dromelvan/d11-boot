@@ -385,6 +385,33 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/players/{playerId}/transfers:
+    get:
+      tags:
+        - transfer
+      summary: Get transfers by player by id.
+      security: []
+      operationId: getTransfersByPlayerId
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          description: Id of the player.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransfersResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /v2/players/search:
     get:
       tags:
