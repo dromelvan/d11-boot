@@ -50,7 +50,7 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Test
     @Transactional
-    void testGetTransferBidsByTransferDayId() {
+    void testGetTransfersByTransferDayId() {
         final TransferApi transferApi = getApi(TransferApi.class);
 
         assertThrows(FeignException.BadRequest.class,
