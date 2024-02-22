@@ -100,7 +100,6 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
                 () -> transferApi.getTransfersByPlayerId(-1L),
                 "TransferControllerV2::getTransfersByPlayerId playerId negative throws");
 
-        final List<Transfer> ke = this.transferRepository.findAll();
         final List<Player> players = this.playerRepository.findAll().stream()
                 .filter(player ->
                         !this.transferRepository.findByPlayerIdOrderByTransferDayDatetimeDesc(player.getId()).isEmpty())
