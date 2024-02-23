@@ -6729,6 +6729,165 @@
 									]
 								}
 							]
+						},
+						{
+							"name": "GET players/{playerId}/transfers",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET players/{playerId}/transfers - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfers by player id status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET transfers by player id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  const transfers = JSON.parse(pm.environment.get(\"playerTransfers\"));",
+															"",
+															"  pm.expect(body.transfers.length).to.gt(0);",
+															"  pm.expect(body.transfers.length).to.eq(transfers.length);",
+															"",
+															"  for (let i = 0; i < body.transfers.length; ++i) {",
+															"    expect.transferToEq(pm, body.transfers[i], transfers[i]);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/players/{{playerId}}/transfers",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players",
+														"{{playerId}}",
+														"transfers"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET players/{playerId}/transfers - Bad Request Invalid Player Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfers by player id invalid player id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfers by player id invalid player id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/players/invalid/transfers\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"playerId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/players/invalid/transfers",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players",
+														"invalid",
+														"transfers"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET players/{playerId}/transfers - Bad Request Negative Player Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfers by player id non positive player id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfers by player id non positive player id id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/players/-1/transfers\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"playerId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be positive\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/players/-1/transfers",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players",
+														"-1",
+														"transfers"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
 						}
 					]
 				},
