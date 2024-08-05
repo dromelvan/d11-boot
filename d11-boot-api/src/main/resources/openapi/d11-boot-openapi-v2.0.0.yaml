@@ -850,6 +850,32 @@ paths:
   # Transfer window-----------------------------------------------------------------------------------------------------
 
   /v2/transfer-windows:
+    get:
+      tags:
+        - transferWindow
+      summary: Get transfer windows by season id.
+      security: []
+      operationId: getTransferWindowsBySeasonId
+      parameters:
+        - name: seasonId
+          in: query
+          required: true
+          description: Id of the season.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferWindowsResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
     post:
       tags:
         - transferWindow
@@ -2439,6 +2465,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TransferDay'
+
+    TransferWindowsResponseBody:
+      type: object
+      required:
+        - transferWindows
+      properties:
+        transferWindows:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferWindow'
 
     # Transfer day -------------------------------------------------------------------------------------------------------
 

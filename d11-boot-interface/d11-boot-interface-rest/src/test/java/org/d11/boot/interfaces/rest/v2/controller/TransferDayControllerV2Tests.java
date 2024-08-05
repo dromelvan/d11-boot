@@ -33,7 +33,7 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
      * Tests TransferDayController::getTransferDayById.
      */
     @Test
-    void testGetMatchById() {
+    void testGetTransferDayById() {
         final TransferDayApi transferDayApi = getApi(TransferDayApi.class);
         final List<TransferDay> transferDays = this.transferDayRepository.findAll();
 

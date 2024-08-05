@@ -7,7 +7,9 @@ import org.d11.boot.api.v2.model.MatchWeekBaseDTO;
 import org.d11.boot.api.v2.model.TransferDayDTO;
 import org.d11.boot.api.v2.model.TransferWindowDTO;
 import org.d11.boot.api.v2.model.TransferWindowResponseBodyDTO;
+import org.d11.boot.api.v2.model.TransferWindowsResponseBodyDTO;
 import org.d11.boot.spring.model.MatchWeek;
+import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferWindow;
 import org.d11.boot.spring.repository.MatchWeekRepository;
@@ -19,14 +21,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Transfer window controller tests.
@@ -122,6 +128,46 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
                          result.getTransferDays(),
                          "TransferWindowController::getCurrentTransferWindow transferDays equals");
         });
+    }
+
+    /**
+     * Tests TransferWindowController::getTransferWindowsBySeasonId.
+     */
+    @Test
+    void testGetTransferWindowsBySeasonId() {
+        final TransferWindowApi transferWindowApi = getApi(TransferWindowApi.class);
+
+        assertThrows(FeignException.BadRequest.class, () -> transferWindowApi.getTransferWindowsBySeasonId((Long) null),
+                "TransferWindowController::getTransferWindowsBySeasonId seasonId null throws");
+
+        final List<TransferWindow> transferWindows = this.transferWindowRepository.findAll();
+        transferWindows.sort(Comparator.comparing(TransferWindow::getDatetime).reversed());
+
+        final Set<Season> seasons = transferWindows.stream()
+                .map(transferWindow -> transferWindow.getMatchWeek().getSeason())
+                .collect(Collectors.toSet());
+
+        assertTrue(seasons.size() > 1, "TransferWindowController::getTransferWindowsBySeasonId seasons size > 0");
+
+        for (final Season season : seasons) {
+            final TransferWindowsResponseBodyDTO transferWindowsResponseBodyDTO =
+                    transferWindowApi.getTransferWindowsBySeasonId(season.getId());
+            assertNotNull(transferWindowsResponseBodyDTO,
+                          "TransferWindowController::getTransferWindowsBySeasonId response not null");
+
+            final List<TransferWindow> expected = transferWindows.stream()
+                    .filter(transferWindow -> transferWindow.getMatchWeek().getSeason().equals(season))
+                    .toList();
+
+            assertTrue(expected.size() > 1, "TransferWindowController::getTransferWindowsBySeasonId expected size > 1");
+
+            final List<TransferWindowDTO> result = transferWindowsResponseBodyDTO.getTransferWindows();
+
+            assertNotNull(result, "TransferWindowController::getTransferWindowsBySeasonId not null ");
+            assertFalse(result.isEmpty(), "TransferWindowController::getTransferWindowsBySeasonId empty");
+            assertEquals(map(expected, TransferWindowDTO.class), result,
+                    "TransferWindowController::getTransferWindowsBySeasonId equals");
+        }
     }
 
     /**

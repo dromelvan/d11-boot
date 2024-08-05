@@ -36,7 +36,7 @@ public class TransferControllerV2 extends RepositoryServiceController<TransferSe
     }
 
     @Override
-    public ResponseEntity<TransfersResponseBodyDTO> getTransfersByPlayerId(Long playerId) {
+    public ResponseEntity<TransfersResponseBodyDTO> getTransfersByPlayerId(final Long playerId) {
         final List<Transfer> transfers = getRepositoryService().getByPlayerId(playerId);
         return ResponseEntity.ok(new TransfersResponseBodyDTO()
                 .transfers(map(transfers, TransferDTO.class)));

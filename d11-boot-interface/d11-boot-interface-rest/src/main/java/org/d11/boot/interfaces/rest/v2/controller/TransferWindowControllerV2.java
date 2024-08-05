@@ -6,6 +6,7 @@ import org.d11.boot.api.v2.model.MatchWeekBaseDTO;
 import org.d11.boot.api.v2.model.TransferDayDTO;
 import org.d11.boot.api.v2.model.TransferWindowDTO;
 import org.d11.boot.api.v2.model.TransferWindowResponseBodyDTO;
+import org.d11.boot.api.v2.model.TransferWindowsResponseBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.TransferWindow;
 import org.d11.boot.spring.security.RoleAdmin;
@@ -13,6 +14,8 @@ import org.d11.boot.spring.service.TransferWindowService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Transfer window API REST controller implementation.
@@ -40,6 +43,14 @@ public class TransferWindowControllerV2 extends RepositoryServiceController<Tran
                 .transferDays(map(transferWindow.getTransferDays(), TransferDayDTO.class));
 
         return ResponseEntity.ok(responseBody);
+    }
+
+    @Override
+    public ResponseEntity<TransferWindowsResponseBodyDTO> getTransferWindowsBySeasonId(final Long seasonId) {
+        final List<TransferWindow> transferWindows = getRepositoryService().getBySeasonId(seasonId);
+
+        return ResponseEntity.ok(new TransferWindowsResponseBodyDTO()
+                .transferWindows(getMapper().map(transferWindows, TransferWindowDTO.class)));
     }
 
     @Override
