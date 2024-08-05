@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -54,6 +55,16 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
         final Optional<TransferWindow> optional = getJpaRepository().findCurrentTransferWindow();
 
         return optional.orElseThrow(() -> new ConflictException(CONFLICT_MESSAGE));
+    }
+
+    /**
+     * Gets a list of transfer windows by season ordered by date.
+     *
+     * @param seasonId The season id.
+     * @return List of all transfer windows foe a season ordered by descending datetime.
+     */
+    public List<TransferWindow> getBySeasonId(final Long seasonId) {
+        return getJpaRepository().findByMatchWeekSeasonIdOrderByDatetimeDesc(seasonId);
     }
 
     /**

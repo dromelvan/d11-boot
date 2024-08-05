@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -68,6 +69,22 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
 
         assertEquals(current, this.transferWindowService.getCurrentTransferWindow(),
                      "TransferWindowService::getCurrentTransferWindow current");
+    }
+
+    /**
+     * Tests TransferWindowService::getBySeasonId.
+     */
+    @Test
+    void testGetBySeasonId() {
+        final List<TransferWindow> transferWindows = generateList(TransferWindow.class);
+        when(this.transferWindowRepository.findByMatchWeekSeasonIdOrderByDatetimeDesc(any(Long.class)))
+                .thenReturn(transferWindows);
+
+        final List<TransferWindow> result = this.transferWindowService.getBySeasonId(1L);
+
+        assertNotNull(result, "TransferWindowService::getBySeasonId not null");
+        assertFalse(result.isEmpty(), "TransferWindowService::getBySeasonId isEmpty");
+        assertEquals(transferWindows, result, "TransferWindowService::getBySeasonId equals");
     }
 
     /**
