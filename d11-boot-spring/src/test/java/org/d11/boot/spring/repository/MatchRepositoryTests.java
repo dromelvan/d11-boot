@@ -4,6 +4,7 @@ import org.d11.boot.spring.model.Match;
 import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.Team;
+import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
@@ -35,6 +36,50 @@ class MatchRepositoryTests extends AbstractRepositoryTests<Match, MatchRepositor
 
             assertNotNull(result, "MatchRepository::findByWhoscoredId not null");
             assertEquals(match, result, "MatchRepository::findByWhoscoredId equals");
+        });
+    }
+
+    /**
+     * Tests MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime.
+     */
+    @Test
+    void testFindByMatchWeekIdOrStatusInOrderByDatetime() {
+        final List<Match> matches = getEntities();
+        matches.sort(Comparator.comparing(Match::getDatetime));
+
+        final Set<MatchWeek> matchWeeks = matches.stream()
+                .map(Match::getMatchWeek)
+                .collect(Collectors.toSet());
+
+        assertTrue(matchWeeks.size() > 1,
+                "MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime matchWeeks size > 1");
+
+        final Set<Status> statuses = matches.stream()
+                .map(Match::getStatus)
+                .collect(Collectors.toSet());
+
+        assertTrue(statuses.size() > 1,
+                "MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime statuses size > 1");
+
+
+        matchWeeks.forEach(matchWeek -> {
+            final List<Match> expected = matches.stream()
+                    .filter(match -> match.getMatchWeek() == matchWeek)
+                    .toList();
+
+            final List<Match> result =
+                    getRepository().findByMatchWeekIdOrStatusInOrderByDatetime(matchWeek.getId(), Set.of());
+
+            assertNotNull(result, "MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime not null");
+            assertEquals(expected, result, "MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime equals");
+
+            final List<Match> withStatusResult =
+                    getRepository().findByMatchWeekIdOrStatusInOrderByDatetime(matchWeek.getId(),
+                                                                               Set.of(Status.values()));
+
+            assertNotNull(result, "MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime with status not null");
+            assertEquals(matches, withStatusResult,
+                         "MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime with status equals");
         });
     }
 
