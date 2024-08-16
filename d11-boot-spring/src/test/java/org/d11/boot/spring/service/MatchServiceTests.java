@@ -1,19 +1,23 @@
 package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.Match;
+import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.repository.MatchRepository;
+import org.d11.boot.util.Status;
 import org.d11.boot.util.exception.BadRequestException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 /**
@@ -26,6 +30,12 @@ class MatchServiceTests extends BaseD11BootServiceTests {
      */
     @Mock
     private MatchRepository matchRepository;
+
+    /**
+     * Mocked match week service.
+     */
+    @Mock
+    private MatchWeekService matchWeekService;
 
     /**
      * Match service.
@@ -82,6 +92,27 @@ class MatchServiceTests extends BaseD11BootServiceTests {
         assertNotNull(result, "MatchService::getByMatchWeekId not null");
         assertFalse(result.isEmpty(), "MatchService::getByMatchWeekId isEmpty");
         assertEquals(matches, result, "MatchService::getByMatchWeekId equals");
+    }
+
+    /**
+     * Tests MatchService::getCurrentMatches.
+     */
+    @Test
+    void testGetCurrentMatches() {
+        final MatchWeek matchWeek = generate(MatchWeek.class);
+        final List<Match> matches = generateList(Match.class);
+        final Set<Status> currentStatuses = Set.of(Status.ACTIVE, Status.FULL_TIME);
+
+        when(this.matchWeekService.getCurrentMatchWeek()).thenReturn(matchWeek);
+        when(this.matchRepository.findByMatchWeekIdOrStatusInOrderByDatetime(eq(matchWeek.getId()),
+                                                                             eq(currentStatuses)))
+                .thenReturn(matches);
+
+        final List<Match> result = this.matchService.getCurrentMatches();
+
+        assertNotNull(result, "MatchService::getCurrentMatches not null");
+        assertFalse(result.isEmpty(), "MatchService::getCurrentMatches isEmpty");
+        assertEquals(matches, result, "MatchService::getCurrentMatches equals");
     }
 
 }

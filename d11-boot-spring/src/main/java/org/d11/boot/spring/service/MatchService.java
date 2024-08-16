@@ -1,12 +1,15 @@
 package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.Match;
+import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.repository.MatchRepository;
+import org.d11.boot.util.Status;
 import org.d11.boot.util.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Match service.
@@ -15,13 +18,26 @@ import java.util.List;
 public class MatchService extends RepositoryService<Match, MatchRepository> {
 
     /**
+     * A set of statuses that means a match is current.
+     */
+    private static final Set<Status> CURRENT_STATUSES = Set.of(Status.ACTIVE, Status.FULL_TIME);
+
+    /**
+     * Match week service for finding the current match week.
+     */
+    private final MatchWeekService matchWeekService;
+
+    /**
      * Creates a new match service.
      *
-     * @param matchRepository The repository the service will use.
+     * @param matchRepository  The repository the service will use.
+     * @param matchWeekService The match week service the service will use.
      */
     @Autowired
-    public MatchService(final MatchRepository matchRepository) {
+    public MatchService(final MatchRepository matchRepository,
+                        final MatchWeekService matchWeekService) {
         super(Match.class, matchRepository);
+        this.matchWeekService = matchWeekService;
     }
 
     /**
@@ -47,6 +63,17 @@ public class MatchService extends RepositoryService<Match, MatchRepository> {
         }
 
         return getJpaRepository().findByMatchWeekIdOrderByDatetimeAscIdAsc(matchWeekId);
+    }
+
+    /**
+     * Gets current matches.
+     *
+     * @return A list of current matches sorted by datetime.
+     */
+    public List<Match> getCurrentMatches() {
+        final MatchWeek currentMatchWeek = this.matchWeekService.getCurrentMatchWeek();
+        return getJpaRepository().findByMatchWeekIdOrStatusInOrderByDatetime(currentMatchWeek.getId(),
+                                                                             CURRENT_STATUSES);
     }
 
 }
