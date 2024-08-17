@@ -1,19 +1,23 @@
 package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.D11Match;
+import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.repository.D11MatchRepository;
+import org.d11.boot.util.Status;
 import org.d11.boot.util.exception.BadRequestException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 /**
@@ -26,6 +30,12 @@ class D11MatchServiceTests extends BaseD11BootServiceTests {
      */
     @Mock
     private D11MatchRepository d11MatchRepository;
+
+    /**
+     * Mocked match week service.
+     */
+    @Mock
+    private MatchWeekService matchWeekService;
 
     /**
      * D11 match service.
@@ -66,6 +76,27 @@ class D11MatchServiceTests extends BaseD11BootServiceTests {
         assertNotNull(result, "D11MatchService::getByMatchWeekId not null");
         assertFalse(result.isEmpty(), "D11MatchService::getByMatchWeekId isEmpty");
         assertEquals(d11Matches, result, "D11MatchService::getByMatchWeekId equals");
+    }
+
+    /**
+     * Tests D11MatchService::getCurrentD11Matches.
+     */
+    @Test
+    void testGetCurrentD11Matches() {
+        final MatchWeek matchWeek = generate(MatchWeek.class);
+        final List<D11Match> d11Matches = generateList(D11Match.class);
+        final Set<Status> currentStatuses = Set.of(Status.ACTIVE, Status.FULL_TIME);
+
+        when(this.matchWeekService.getCurrentMatchWeek()).thenReturn(matchWeek);
+        when(this.d11MatchRepository.findByMatchWeekIdOrStatusInOrderByDatetime(eq(matchWeek.getId()),
+                                                                                eq(currentStatuses)))
+                .thenReturn(d11Matches);
+
+        final List<D11Match> result = this.d11MatchService.getCurrentD11Matches();
+
+        assertNotNull(result, "D11MatchService::getCurrentD11Matches not null");
+        assertFalse(result.isEmpty(), "D11MatchService::getCurrentD11Matches isEmpty");
+        assertEquals(d11Matches, result, "D11MatchService::getCurrentD11Matches equals");
     }
 
 }
