@@ -6008,6 +6008,65 @@
 									]
 								}
 							]
+						},
+						{
+							"name": "GET matches/current",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET matches/current",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET current matches status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET current matches response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  const matches = JSON.parse(pm.environment.get(\"currentMatches\"));",
+															"",
+															"  pm.expect(body).to.have.property(\"matches\");",
+															"  pm.expect(body.matches.length).to.eq(4);",
+															"  pm.expect(body.matches.length).to.eq(matches.length);",
+															"",
+															"  for (let i = 0; i < body.matches.length; ++i) {",
+															"    expect.matchToEq(pm, body.matches[i], matches[i]);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/matches/current",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"matches",
+														"current"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
 						}
 					]
 				},
