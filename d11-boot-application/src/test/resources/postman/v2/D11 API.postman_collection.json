@@ -6456,6 +6456,65 @@
 									]
 								}
 							]
+						},
+						{
+							"name": "GET d11-matches/current",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET d11-matches/current",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET current D11 matches status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET current D11 matches response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  const d11Matches = JSON.parse(pm.environment.get(\"currentD11Matches\"));",
+															"",
+															"  pm.expect(body).to.have.property(\"d11Matches\");",
+															"  pm.expect(body.d11Matches.length).to.eq(6);",
+															"  pm.expect(body.d11Matches.length).to.eq(d11Matches.length);",
+															"",
+															"  for (let i = 0; i < body.d11Matches.length; ++i) {",
+															"    expect.d11MatchToEq(pm, body.d11Matches[i], d11Matches[i]);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-matches/current",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-matches",
+														"current"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
 						}
 					]
 				},
