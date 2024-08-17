@@ -45,4 +45,11 @@ public class D11MatchControllerV2 extends RepositoryServiceController<D11MatchSe
                 .d11Matches(getMapper().map(d11Matches, D11MatchBaseDTO.class)));
     }
 
+    @Override
+    public ResponseEntity<D11MatchesResponseBodyDTO> getCurrentD11Matches() {
+        final List<D11Match> d11Matches = getRepositoryService().getCurrentD11Matches();
+        return ResponseEntity.ok(new D11MatchesResponseBodyDTO()
+                .d11Matches(getMapper().map(d11Matches, D11MatchBaseDTO.class)));
+    }
+
 }

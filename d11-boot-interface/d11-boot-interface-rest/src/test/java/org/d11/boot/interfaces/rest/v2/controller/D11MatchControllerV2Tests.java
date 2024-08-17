@@ -12,10 +12,13 @@ import org.d11.boot.spring.model.D11Match;
 import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.repository.D11MatchRepository;
 import org.d11.boot.spring.repository.MatchWeekRepository;
+import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -105,6 +108,34 @@ class D11MatchControllerV2Tests extends D11BootControllerV2Tests {
             assertEquals(map(d11Matches, D11MatchBaseDTO.class), result,
                          "D11MatchController::getD11MatchesByMatchWeekId equals");
         }
+    }
+
+    /**
+     * Tests MatchController::getCurrentD11Matches.
+     */
+    @Test
+    void testGetCurrentD11Matches() {
+        final D11MatchApi d11MatchApi = getApi(D11MatchApi.class);
+
+        final LocalDate localDate = LocalDate.now();
+        final MatchWeek currentMatchWeek =
+                this.matchWeekRepository.findFirstBySeasonStatusOrderByDateAsc(Status.PENDING)
+                        .or(() -> this.matchWeekRepository.findFirstByDateLessThanEqualOrderByDateDesc(localDate))
+                        .orElseThrow(RuntimeException::new);
+        final Set<Status> currentStatuses = Set.of(Status.ACTIVE, Status.FULL_TIME);
+
+        final List<D11Match> expected =
+                this.d11MatchRepository.findByMatchWeekIdOrStatusInOrderByDatetime(currentMatchWeek.getId(),
+                                                                                   currentStatuses);
+
+        final D11MatchesResponseBodyDTO response = d11MatchApi.getCurrentD11Matches();
+
+        final List<D11MatchBaseDTO> result = response.getD11Matches();
+
+        assertNotNull(result, "D11MatchController::getCurrentD11Matches not null ");
+        assertFalse(result.isEmpty(), "D11MatchController::getCurrentD11Matches empty");
+
+        assertEquals(map(expected, D11MatchBaseDTO.class), result, "D11MatchController::getCurrentD11Matches equals");
     }
 
 }

@@ -770,6 +770,23 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/d11-matches/current:
+    get:
+      tags:
+        - d11Match
+      summary: Get current D11 matches.
+      security: []
+      operationId: getCurrentD11Matches
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/D11MatchesResponseBody"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Player season stat ---------------------------------------------------------------------------------------------------
 
   /v2/player-season-stats:
