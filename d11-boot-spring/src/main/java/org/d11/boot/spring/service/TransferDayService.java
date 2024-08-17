@@ -2,8 +2,11 @@ package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.repository.TransferDayRepository;
+import org.d11.boot.util.exception.ConflictException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * Transfer day service.
@@ -19,6 +22,17 @@ public class TransferDayService extends RepositoryService<TransferDay, TransferD
     @Autowired
     public TransferDayService(final TransferDayRepository transferDayRepository) {
         super(TransferDay.class, transferDayRepository);
+    }
+
+    /**
+     * Gets the current transfer day.
+     *
+     * @return The current transfer day DTO.
+     */
+    public TransferDay getCurrentTransferDay() {
+        final Optional<TransferDay> optional = getJpaRepository().findFirstByOrderByDatetimeDesc();
+
+        return optional.orElseThrow(() -> new ConflictException("Current transfer day does not exist"));
     }
 
 }
