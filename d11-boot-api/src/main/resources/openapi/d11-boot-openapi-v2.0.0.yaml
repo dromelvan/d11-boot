@@ -1050,6 +1050,23 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/transfer-days/current:
+    get:
+      tags:
+        - transferDay
+      summary: Get the current transfer day.
+      security: []
+      operationId: getCurrentTransferDay
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferDayResponseBody"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Transfer listings --------------------------------------------------------------------------------------------------
 
   /v2/transfer-listings:

@@ -40,4 +40,16 @@ public class TransferDayControllerV2 extends RepositoryServiceController<Transfe
                                                                     MatchWeekDTO.class)));
     }
 
+    @Override
+    public ResponseEntity<TransferDayResponseBodyDTO> getCurrentTransferDay() {
+        final TransferDay transferDay = getRepositoryService().getCurrentTransferDay();
+
+        return ResponseEntity.ok(new TransferDayResponseBodyDTO()
+                .transferDay(getMapper().map(transferDay, TransferDayDTO.class))
+                .transferWindow(getMapper().map(transferDay.getTransferWindow(),
+                                                TransferWindowDTO.class))
+                .matchWeek(getMapper().map(transferDay.getTransferWindow().getMatchWeek(),
+                                           MatchWeekDTO.class)));
+    }
+
 }

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -57,6 +58,31 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
 
         assertThrows(FeignException.NotFound.class, () -> transferDayApi.getTransferDayById(0L),
                      "TransferDayController::getTransferDayById not found");
+    }
+
+    /**
+     * Tests TransferDayController::getCurrentTransferDay.
+     */
+    @Test
+    void testGetCurrentTransferDay() {
+        final TransferDayApi transferDayApi = getApi(TransferDayApi.class);
+
+        final Optional<TransferDay> optional = this.transferDayRepository.findFirstByOrderByDatetimeDesc();
+
+        assertFalse(optional.isEmpty(), "TransferDayController::getCurrentTransferDay transferDay present");
+
+        optional.ifPresent(transferDay -> {
+            final TransferDayResponseBodyDTO result = transferDayApi.getCurrentTransferDay();
+            assertNotNull(result, "TransferDayController::getCurrentTransferDay not null");
+            assertEquals(getMapper().map(transferDay, TransferDayDTO.class), result.getTransferDay(),
+                         "TransferDayController::getCurrentTransferDay equals");
+            assertEquals(getMapper().map(transferDay.getTransferWindow(), TransferWindowDTO.class),
+                         result.getTransferWindow(),
+                         "TransferDayController::getCurrentTransferDay transfer window equals");
+            assertEquals(getMapper().map(transferDay.getTransferWindow().getMatchWeek(), MatchWeekDTO.class),
+                         result.getMatchWeek(),
+                         "TransferDayController::getCurrentTransferDay match week equals");
+        });
     }
 
 }
