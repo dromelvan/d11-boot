@@ -4,6 +4,7 @@ import org.d11.boot.spring.model.D11Match;
 import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.model.Season;
+import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
@@ -21,6 +22,50 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * D11Match repository tests.
  */
 class D11MatchRepositoryTests extends AbstractRepositoryTests<D11Match, D11MatchRepository> {
+
+    /**
+     * Tests D11MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime.
+     */
+    @Test
+    void testFindByMatchWeekIdOrStatusInOrderByDatetime() {
+        final List<D11Match> d11Matches = getEntities();
+        d11Matches.sort(Comparator.comparing(D11Match::getDatetime));
+
+        final Set<MatchWeek> matchWeeks = d11Matches.stream()
+                .map(D11Match::getMatchWeek)
+                .collect(Collectors.toSet());
+
+        assertTrue(matchWeeks.size() > 1,
+                   "D11MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime matchWeeks size > 1");
+
+        final Set<Status> statuses = d11Matches.stream()
+              .map(D11Match::getStatus)
+              .collect(Collectors.toSet());
+
+        assertTrue(statuses.size() > 1,
+                   "D11MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime statuses size > 1");
+
+        matchWeeks.forEach(matchWeek -> {
+            final List<D11Match> expected = d11Matches.stream()
+                    .filter(match -> match.getMatchWeek() == matchWeek)
+                    .toList();
+
+            final List<D11Match> result =
+                    getRepository().findByMatchWeekIdOrStatusInOrderByDatetime(matchWeek.getId(), Set.of());
+
+            assertNotNull(result, "D11MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime not null");
+            assertEquals(expected, result, "D11MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime equals");
+
+            final List<D11Match> withStatusResult =
+                    getRepository().findByMatchWeekIdOrStatusInOrderByDatetime(matchWeek.getId(),
+                                                                               Set.of(Status.values()));
+
+            assertNotNull(result,
+                          "D11MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime with status not null");
+            assertEquals(d11Matches, withStatusResult,
+                         "D11MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime with status equals");
+        });
+    }
 
     /**
      * Tests D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime.

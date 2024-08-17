@@ -2,6 +2,7 @@ package org.d11.boot.spring.repository;
 
 
 import org.d11.boot.spring.model.D11Match;
+import org.d11.boot.util.Status;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Repository for D11Match entities.
@@ -25,6 +27,16 @@ public interface D11MatchRepository extends D11EntityRepository<D11Match> {
     @Override
     @EntityGraph(D11Match.D11_MATCH_ASSOCIATIONS)
     Optional<D11Match> findById(Long id);
+
+    /**
+     * Gets D11 matches by match week id or status in a set, ordered by datetime.
+     *
+     * @param matchWeekId The match week id.
+     * @param status      The set of statuses.
+     * @return Matches for the match week or statuses.
+     */
+    List<D11Match> findByMatchWeekIdOrStatusInOrderByDatetime(@Param("matchWeekId") Long matchWeekId,
+                                                              @Param("status") Set<Status> status);
 
     /**
      * Gets D11 matches by D11 team and season ordered by datetime.
