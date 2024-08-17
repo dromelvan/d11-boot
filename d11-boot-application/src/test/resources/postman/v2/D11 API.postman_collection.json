@@ -9760,6 +9760,69 @@
 									]
 								}
 							]
+						},
+						{
+							"name": "GET transfer-days/current",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET transfer-days/current - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET current transfer day status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET current transfer day response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"transferDay\");",
+															"  pm.expect(body).to.have.property(\"transferWindow\");",
+															"  pm.expect(body).to.have.property(\"matchWeek\");",
+															"",
+															"  // CHeck transfer day",
+															"  const current = JSON.parse(pm.environment.get(\"currentTransferDay\"));",
+															"  expect.transferDayToEq(pm, body.transferDay, current.transferDay)",
+															"",
+															"  // Check transfer window",
+															"  expect.transferWindowToEq(pm, body.transferWindow, current.transferWindow)",
+															"",
+															"  // Check match week",
+															"  expect.matchWeekToEq(pm, body.matchWeek, current.matchWeek)",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-days/current",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-days",
+														"current"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
 						}
 					]
 				},
