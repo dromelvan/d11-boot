@@ -13,10 +13,13 @@ import org.d11.boot.spring.model.Match;
 import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.repository.MatchRepository;
 import org.d11.boot.spring.repository.MatchWeekRepository;
+import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -106,6 +109,34 @@ class MatchControllerV2Tests extends D11BootControllerV2Tests {
 
             assertEquals(map(matches, MatchBaseDTO.class), result, "MatchController::getMatchesByMatchWeekId equals");
         }
+    }
+
+    /**
+     * Tests MatchController::getCurrentMatches.
+     */
+    @Test
+    void testGetCurrentMatches() {
+        final MatchApi matchApi = getApi(MatchApi.class);
+
+        final LocalDate localDate = LocalDate.now();
+        final MatchWeek currentMatchWeek =
+                this.matchWeekRepository.findFirstBySeasonStatusOrderByDateAsc(Status.PENDING)
+                        .or(() -> this.matchWeekRepository.findFirstByDateLessThanEqualOrderByDateDesc(localDate))
+                        .orElseThrow(RuntimeException::new);
+        final Set<Status> currentStatuses = Set.of(Status.ACTIVE, Status.FULL_TIME);
+
+        final List<Match> expected =
+                this.matchRepository.findByMatchWeekIdOrStatusInOrderByDatetime(currentMatchWeek.getId(),
+                                                                                currentStatuses);
+
+        final MatchesResponseBodyDTO response = matchApi.getCurrentMatches();
+
+        final List<MatchBaseDTO> result = response.getMatches();
+
+        assertNotNull(result, "MatchController::getCurrentMatches not null ");
+        assertFalse(result.isEmpty(), "MatchController::getCurrentMatches empty");
+
+        assertEquals(map(expected, MatchBaseDTO.class), result, "MatchController::getCurrentMatches equals");
     }
 
 }

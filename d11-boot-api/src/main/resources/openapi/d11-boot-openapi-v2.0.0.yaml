@@ -695,6 +695,23 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/matches/current:
+    get:
+      tags:
+        - match
+      summary: Get current matches.
+      security: []
+      operationId: getCurrentMatches
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchesResponseBody"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # D11 match ----------------------------------------------------------------------------------------------------------
 
   /v2/d11-matches:
