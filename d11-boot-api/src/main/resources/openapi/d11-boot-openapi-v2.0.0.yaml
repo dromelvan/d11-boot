@@ -712,6 +712,33 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/matches/{matchId}/player-match-stats:
+    get:
+      tags:
+        - playerMatchStat
+      summary: Get player match stats by match id.
+      security: []
+      operationId: getPlayerMatchStatsByMatchId
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          description: Id of the match.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerMatchStatsResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # D11 match ----------------------------------------------------------------------------------------------------------
 
   /v2/d11-matches:
@@ -1363,6 +1390,13 @@ components:
         - 'Full Time'
         - 'Finished'
         - 'Postponed'
+
+    Lineup:
+      type: string
+      enum:
+        - 'DID_NOT_PARTICIPATE'
+        - 'SUBSTITUTE'
+        - 'STARTING_LINEUP'
 
     # Security ---------------------------------------------------------------------------------------------------------
 
@@ -2305,6 +2339,96 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlayerSeasonStat'
+
+    # Player match stat -----------------------------------------------------------------------------------------------
+
+    PlayerMatchStat:
+      type: object
+      required:
+        - id
+        - playedPosition
+        - lineup
+        - substitutionOnTime
+        - substitutionOffTime
+        - goals
+        - goalAssists
+        - ownGoals
+        - goalsConceded
+        - yellowCardTime
+        - redCardTime
+        - manOfTheMatch
+        - sharedManOfTheMatch
+        - rating
+        - points
+        - player
+        - match
+        - team
+        - d11Team
+        - position
+      properties:
+        id:
+          type: integer
+          format: int64
+        playedPosition:
+          type: string
+        lineup:
+          $ref: '#/components/schemas/Lineup'
+        substitutionOnTime:
+          type: integer
+          format: int32
+        substitutionOffTime:
+          type: integer
+          format: int32
+        goals:
+          type: integer
+          format: int32
+        goalAssists:
+          type: integer
+          format: int32
+        ownGoals:
+          type: integer
+          format: int32
+        goalsConceded:
+          type: integer
+          format: int32
+        yellowCardTime:
+          type: integer
+          format: int32
+        redCardTime:
+          type: integer
+          format: int32
+        manOfTheMatch:
+          type: integer
+          format: int32
+        sharedManOfTheMatch:
+          type: integer
+          format: int32
+        rating:
+          type: integer
+          format: int32
+        points:
+          type: integer
+          format: int32
+        player:
+          $ref: '#/components/schemas/PlayerBase'
+        match:
+          $ref: '#/components/schemas/MatchBase'
+        team:
+          $ref: '#/components/schemas/TeamBase'
+        d11Team:
+          $ref: '#/components/schemas/D11TeamBase'
+        position:
+          $ref: '#/components/schemas/Position'
+
+    PlayerMatchStatsResponseBody:
+      type: object
+      required:
+        - playerMatchStats
+      properties:
+        playerMatchStats:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlayerMatchStat'
 
     # Most valuable player ---------------------------------------------------------------------------------------------
 
