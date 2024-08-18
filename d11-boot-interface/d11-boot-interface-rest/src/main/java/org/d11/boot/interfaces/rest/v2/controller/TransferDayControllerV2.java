@@ -4,6 +4,7 @@ import org.d11.boot.api.v2.TransferDayApi;
 import org.d11.boot.api.v2.model.MatchWeekDTO;
 import org.d11.boot.api.v2.model.TransferDayDTO;
 import org.d11.boot.api.v2.model.TransferDayResponseBodyDTO;
+import org.d11.boot.api.v2.model.TransferDaysResponseBodyDTO;
 import org.d11.boot.api.v2.model.TransferWindowDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.TransferDay;
@@ -11,6 +12,8 @@ import org.d11.boot.spring.service.TransferDayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Transfer day API REST controller implementation.
@@ -50,6 +53,14 @@ public class TransferDayControllerV2 extends RepositoryServiceController<Transfe
                                                 TransferWindowDTO.class))
                 .matchWeek(getMapper().map(transferDay.getTransferWindow().getMatchWeek(),
                                            MatchWeekDTO.class)));
+    }
+
+    @Override
+    public ResponseEntity<TransferDaysResponseBodyDTO> getTransferDaysByTransferWindowId(final Long transferWindowId) {
+        final List<TransferDay> transferDays = getRepositoryService().getByTransferWindowId(transferWindowId);
+
+        return ResponseEntity.ok(new TransferDaysResponseBodyDTO()
+                .transferDays(getMapper().map(transferDays, TransferDayDTO.class)));
     }
 
 }

@@ -1021,6 +1021,33 @@ paths:
 
   # Transfer day -------------------------------------------------------------------------------------------------------
 
+  /v2/transfer-days:
+    get:
+      tags:
+        - transferDay
+      summary: Get transfer days by transfer window id.
+      security: []
+      operationId: getTransferDaysByTransferWindowId
+      parameters:
+        - name: transferWindowId
+          in: query
+          required: true
+          description: Id of the transfer window.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferDaysResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /v2/transfer-days/{transferDayId}:
     get:
       tags:
@@ -2561,6 +2588,16 @@ components:
           $ref: '#/components/schemas/TransferWindow'
         matchWeek:
           $ref: '#/components/schemas/MatchWeek'
+
+    TransferDaysResponseBody:
+      type: object
+      required:
+        - transferDays
+      properties:
+        transferDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferDay'
 
   # Transfer listing ---------------------------------------------------------------------------------------------------
 
