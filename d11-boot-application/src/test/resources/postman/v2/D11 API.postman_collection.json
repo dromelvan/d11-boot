@@ -9823,6 +9823,228 @@
 									]
 								}
 							]
+						},
+						{
+							"name": "GET transfer-days?transferWindowId={transferWindowId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET transfer-days?transferWindowId={transferWindowId} - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer days status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET transfer days response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"transferDays\");",
+															"",
+															"  const transferDays = JSON.parse(pm.environment.get(\"transferDaysByTransferWindowId\"));",
+															"",
+															"  pm.expect(body.transferDays.length).to.eq(transferDays.length);",
+															"",
+															"  for (let i = 0; i < body.transferDays.length; ++i) {",
+															"    expect.transferDayToEq(pm, body.transferDays[i], transferDays[i]);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-days?transferWindowId={{transferWindowId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-days"
+													],
+													"query": [
+														{
+															"key": "transferWindowId",
+															"value": "{{transferWindowId}}"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET transfer-days?transferWindowId={transferWindowId} - Bad Request Missing Transfer Window Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer days missing transfer window id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfer days missing transfer window id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-days\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"transferWindowId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-days",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-days"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET transfer-days?transferWindowId={transferWindowId} - Bad Request Invalid Transfer Window Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer days invalid transfer window id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfer days invalid transfer window id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-days\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"transferWindowId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-days?transferWindowId=invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-days"
+													],
+													"query": [
+														{
+															"key": "transferWindowId",
+															"value": "invalid"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET transfer-days?transferWindowId={transferWindowId} - Bad Request Negative Transfer Window Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET transfer days invalid transfer window id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET transfer days invalid transfer window id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/transfer-days\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"transferWindowId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be positive\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/transfer-days?transferWindowId=-1",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"transfer-days"
+													],
+													"query": [
+														{
+															"key": "transferWindowId",
+															"value": "-1"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
 						}
 					]
 				},
