@@ -6067,6 +6067,170 @@
 									]
 								}
 							]
+						},
+						{
+							"name": "GET matches/{matchId}/player-match-stats",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET matches/{matchId}/player-match-stats - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET match player match stats status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"",
+															"pm.test(\"GET match player match stats response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  const playerMatchStats = JSON.parse(pm.environment.get(\"matchPlayerMatchStats\"));",
+															"",
+															"  pm.expect(body).to.have.property(\"playerMatchStats\");",
+															"  pm.expect(body.playerMatchStats.length).to.eq(3);",
+															"  pm.expect(body.playerMatchStats.length).to.eq(playerMatchStats.length);",
+															"",
+															"  for (let i = 0; i < body.playerMatchStats.length; ++i) {",
+															"    expect.playerMatchStatToEq(pm, body.playerMatchStats[i], playerMatchStats[i]);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/matches/{{matchId}}/player-match-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"matches",
+														"{{matchId}}",
+														"player-match-stats"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET matches/{matchd}/player-match-stats - Bad Request Invalid Match Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET match player match stats invalid match id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET match player match stats invalid match id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/matches/invalid/player-match-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"matchId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/matches/invalid/player-match-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"matches",
+														"invalid",
+														"player-match-stats"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET matches/{matchd}/player-match-stats - Bad Request Negative Match Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET match player match stats negative match id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET match player match stats negative match id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/matches/-1/player-match-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"matchId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be positive\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/matches/-1/player-match-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"matches",
+														"-1",
+														"player-match-stats"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
 						}
 					]
 				},
@@ -11150,6 +11314,30 @@
 					"        expect.d11TeamToEq(pm, playerSeasonStat1.d11Team, playerSeasonStat2.d11Team);",
 					"        expect.seasonToEq(pm, playerSeasonStat1.season, playerSeasonStat2.season);",
 					"        expect.positionToEq(pm, playerSeasonStat1.position, playerSeasonStat2.position);",
+					"    },",
+					"    playerMatchStatToEq: function(pm, playerMatchStat1, playerMatchStat2) {",
+					"        pm.expect(playerMatchStat1.id).to.eq(playerMatchStat2.id);",
+					"",
+					"        pm.expect(playerMatchStat1.playedPosition).to.eq(playerMatchStat2.playedPosition);",
+					"        pm.expect(playerMatchStat1.lineup).to.eq(playerMatchStat2.lineup);",
+					"        pm.expect(playerMatchStat1.substitutionOnTime).to.eq(playerMatchStat2.substitutionOnTime);",
+					"        pm.expect(playerMatchStat1.substitutionOffTime).to.eq(playerMatchStat2.substitutionOffTime);",
+					"        pm.expect(playerMatchStat1.goals).to.eq(playerMatchStat2.goals);",
+					"        pm.expect(playerMatchStat1.goalAssists).to.eq(playerMatchStat2.goalAssists);",
+					"        pm.expect(playerMatchStat1.ownGoals).to.eq(playerMatchStat2.ownGoals);            ",
+					"        pm.expect(playerMatchStat1.goalsConceded).to.eq(playerMatchStat2.goalsConceded);",
+					"        pm.expect(playerMatchStat1.yellowCardTime).to.eq(playerMatchStat2.yellowCardTime);",
+					"        pm.expect(playerMatchStat1.redCardTime).to.eq(playerMatchStat2.redCardTime);",
+					"        pm.expect(playerMatchStat1.manOfTheMatch).to.eq(playerMatchStat2.manOfTheMatch);",
+					"        pm.expect(playerMatchStat1.sharedManOfTheMatch).to.eq(playerMatchStat2.sharedManOfTheMatch);",
+					"        pm.expect(playerMatchStat1.rating).to.eq(playerMatchStat2.rating);",
+					"        pm.expect(playerMatchStat1.points).to.eq(playerMatchStat2.points);",
+					"",
+					"        expect.playerToEq(pm, playerMatchStat1.player, playerMatchStat2.player);  ",
+					"        expect.teamToEq(pm, playerMatchStat1.team, playerMatchStat2.team);",
+					"        expect.d11TeamToEq(pm, playerMatchStat1.d11Team, playerMatchStat2.d11Team);",
+					"        expect.matchToEq(pm, playerMatchStat1.match, playerMatchStat2.match);",
+					"        expect.positionToEq(pm, playerMatchStat1.position, playerMatchStat2.position);",
 					"    },",
 					"    d11TeamSeasonStatToEq: function(pm, d11TeamSeasonStat1, d11TeamSeasonStat2) {",
 					"        pm.expect(d11TeamSeasonStat1.id).to.eq(d11TeamSeasonStat2.id);",
