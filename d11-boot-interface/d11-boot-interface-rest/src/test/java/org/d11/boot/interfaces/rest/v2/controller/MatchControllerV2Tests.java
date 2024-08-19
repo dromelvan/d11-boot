@@ -131,7 +131,7 @@ class MatchControllerV2Tests extends D11BootControllerV2Tests {
                      "MatchController::getMatchesByTeamIdAndSeasonId teamId negative throws");
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> matchApi.getMatchesByTeamIdAndSeasonId(1L, (Long)null),
+                     () -> matchApi.getMatchesByTeamIdAndSeasonId(1L, (Long) null),
                      "MatchController::getMatchesByTeamIdAndSeasonId seasonId null throws");
 
         assertThrows(FeignException.BadRequest.class,

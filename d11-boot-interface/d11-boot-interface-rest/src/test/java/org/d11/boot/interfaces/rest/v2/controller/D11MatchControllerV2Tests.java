@@ -9,7 +9,9 @@ import org.d11.boot.api.v2.model.D11MatchResponseBodyDTO;
 import org.d11.boot.api.v2.model.D11MatchesResponseBodyDTO;
 import org.d11.boot.spring.model.D11Entity;
 import org.d11.boot.spring.model.D11Match;
+import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.MatchWeek;
+import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.repository.D11MatchRepository;
 import org.d11.boot.spring.repository.MatchWeekRepository;
 import org.d11.boot.util.Status;
@@ -17,6 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -75,7 +79,7 @@ class D11MatchControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Test
     @Transactional
-    void testGetMatchesByMatchWeekId() {
+    void testGetD11MatchesByMatchWeekId() {
         final D11MatchApi d11MatchApi = getApi(D11MatchApi.class);
 
         assertThrows(FeignException.BadRequest.class,
@@ -107,6 +111,63 @@ class D11MatchControllerV2Tests extends D11BootControllerV2Tests {
 
             assertEquals(map(d11Matches, D11MatchBaseDTO.class), result,
                          "D11MatchController::getD11MatchesByMatchWeekId equals");
+        }
+    }
+
+    /**
+     * Tests D11MatchController::getD11MatchesByD11TeamIdAndSeasonId.
+     */
+    @Test
+    void testGetMatchesByTeamIdAndSeasonId() {
+        final D11MatchApi d11MatchApi = getApi(D11MatchApi.class);
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> d11MatchApi.getD11MatchesByD11TeamIdAndSeasonId(null, 1L),
+                     "D11MatchController::getD11MatchesByD11TeamIdAndSeasonId d11TeamId null throws");
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> d11MatchApi.getD11MatchesByD11TeamIdAndSeasonId(-1L, 1L),
+                     "D11MatchController::getD11MatchesByD11TeamIdAndSeasonId d11TeamId negative throws");
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> d11MatchApi.getD11MatchesByD11TeamIdAndSeasonId(1L, (Long) null),
+                     "D11MatchController::getD11MatchesByD11TeamIdAndSeasonId seasonId null throws");
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> d11MatchApi.getD11MatchesByD11TeamIdAndSeasonId(1L, -1L),
+                     "D11MatchController::getD11MatchesByD11TeamIdAndSeasonId seasonId negative throws");
+
+        final List<D11Match> d11Matches = this.d11MatchRepository.findAll();
+        final Set<D11Team> d11Teams = new HashSet<>();
+        final Set<Season> seasons = new HashSet<>();
+        for (final D11Match d11Match : d11Matches) {
+            d11Teams.add(d11Match.getHomeD11Team());
+            d11Teams.add(d11Match.getAwayD11Team());
+            seasons.add(d11Match.getMatchWeek().getSeason());
+        }
+
+        assertTrue(d11Teams.size() > 1, "D11MatchController::getD11MatchesByD11TeamIdAndSeasonId D11 teams size > 0");
+        assertTrue(seasons.size() > 1, "D11MatchController::getD11MatchesByD11TeamIdAndSeasonId seasons size > 0");
+
+        for (final D11Team d11Team: d11Teams) {
+            for (final Season season : seasons) {
+                final D11MatchesResponseBodyDTO response =
+                        d11MatchApi.getD11MatchesByD11TeamIdAndSeasonId(d11Team.getId(), season.getId());
+
+                assertNotNull(response, "D11MatchController::getD11MatchesByD11TeamIdAndSeasonId not null ");
+                assertFalse(response.getD11Matches().isEmpty(),
+                            "D11MatchController::getD11MatchesByD11TeamIdAndSeasonId empty");
+
+                final List<D11Match> expected = d11Matches.stream()
+                        .filter(d11Match -> (d11Match.getHomeD11Team() == d11Team
+                                             || d11Match.getAwayD11Team() == d11Team)
+                                         && d11Match.getMatchWeek().getSeason() == season)
+                        .sorted(Comparator.comparing(D11Match::getDatetime))
+                        .toList();
+
+                assertEquals(map(expected, D11MatchBaseDTO.class), response.getD11Matches(),
+                             "D11MatchController::getD11MatchesByD11TeamIdAndSeasonId equals");
+            }
         }
     }
 

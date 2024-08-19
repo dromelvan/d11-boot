@@ -388,6 +388,40 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/d11-teams/{d11TeamId}/d11-matches:
+    get:
+      tags:
+        - d11Match
+      summary: Get D11 matches by D11 team id and season id.
+      security: []
+      operationId: getD11MatchesByD11TeamIdAndSeasonId
+      parameters:
+        - name: d11TeamId
+          in: path
+          required: true
+          description: Id of the D11 team.
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          required: true
+          name: seasonId
+          schema:
+            type: integer
+            format: int64
+          description: The season id.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/D11MatchesResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Players ------------------------------------------------------------------------------------------------------------
 
   /v2/players/{playerId}:

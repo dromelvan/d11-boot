@@ -23,6 +23,11 @@ public class MatchService extends RepositoryService<Match, MatchRepository> {
     private static final Set<Status> CURRENT_STATUSES = Set.of(Status.ACTIVE, Status.FULL_TIME);
 
     /**
+     * Must be positive error value.
+     */
+    private static final String MUST_BE_POSITIVE = "must be positive";
+
+    /**
      * Match week service for finding the current match week.
      */
     private final MatchWeekService matchWeekService;
@@ -49,10 +54,10 @@ public class MatchService extends RepositoryService<Match, MatchRepository> {
      */
     public List<Match> getByTeamIdAndSeasonId(final Long teamId, final Long seasonId) {
         if (teamId == null || teamId <= 0) {
-            throw new BadRequestException("teamId", "must be positive");
+            throw new BadRequestException("teamId", MUST_BE_POSITIVE);
         }
         if (seasonId == null || seasonId <= 0) {
-            throw new BadRequestException("seasonId", "must be positive");
+            throw new BadRequestException("seasonId", MUST_BE_POSITIVE);
         }
 
         return getJpaRepository().findByTeamIdAndMatchWeekSeasonIdOrderByDatetime(teamId, seasonId);
@@ -66,7 +71,7 @@ public class MatchService extends RepositoryService<Match, MatchRepository> {
      */
     public List<Match> getByMatchWeekId(final Long matchWeekId) {
         if (matchWeekId == null || matchWeekId <= 0) {
-            throw new BadRequestException("matchWeekId", "must be positive");
+            throw new BadRequestException("matchWeekId", MUST_BE_POSITIVE);
         }
 
         return getJpaRepository().findByMatchWeekIdOrderByDatetimeAscIdAsc(matchWeekId);

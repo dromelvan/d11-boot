@@ -23,6 +23,11 @@ public class D11MatchService extends RepositoryService<D11Match, D11MatchReposit
     private static final Set<Status> CURRENT_STATUSES = Set.of(Status.ACTIVE, Status.FULL_TIME);
 
     /**
+     * Must be positive error value.
+     */
+    private static final String MUST_BE_POSITIVE = "must be positive";
+
+    /**
      * Match week service for finding the current match week.
      */
     private final MatchWeekService matchWeekService;
@@ -48,10 +53,10 @@ public class D11MatchService extends RepositoryService<D11Match, D11MatchReposit
      */
     public List<D11Match> getByD11TeamIdAndSeasonId(final Long d11TeamId, final Long seasonId) {
         if (d11TeamId == null || d11TeamId <= 0) {
-            throw new BadRequestException("d11TeamId", "must be positive");
+            throw new BadRequestException("d11TeamId", MUST_BE_POSITIVE);
         }
         if (seasonId == null || seasonId <= 0) {
-            throw new BadRequestException("seasonId", "must be positive");
+            throw new BadRequestException("seasonId", MUST_BE_POSITIVE);
         }
 
         return getJpaRepository().findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime(d11TeamId, seasonId);
@@ -65,7 +70,7 @@ public class D11MatchService extends RepositoryService<D11Match, D11MatchReposit
      */
     public List<D11Match> getByMatchWeekId(final Long matchWeekId) {
         if (matchWeekId == null || matchWeekId <= 0) {
-            throw new BadRequestException("matchWeekId", "must be positive");
+            throw new BadRequestException("matchWeekId", MUST_BE_POSITIVE);
         }
 
         return getJpaRepository().findByMatchWeekIdOrderByDatetimeAscIdAsc(matchWeekId);
