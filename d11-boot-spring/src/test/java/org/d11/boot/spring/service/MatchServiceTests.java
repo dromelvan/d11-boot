@@ -48,6 +48,38 @@ class MatchServiceTests extends BaseD11BootServiceTests {
      */
     @Test
     void testGetByTeamIdAmdSeasonId() {
+        // Validation --------------------------------------------------------------------------------------------------
+
+        final String teamIdProperty = "teamId";
+
+        final BadRequestException nullTeamIdException =
+                assertThrows(BadRequestException.class, () -> this.matchService.getByTeamIdAndSeasonId(null, 1L),
+                             "MatchService::getByTeamIdAmdSeasonId null teamId throws");
+        assertEquals(teamIdProperty, nullTeamIdException.getParameter(),
+                     "MatchService::getByTeamIdAmdSeasonId property equals null teamId");
+
+        final BadRequestException invalidTeamIdException =
+                assertThrows(BadRequestException.class, () -> this.matchService.getByTeamIdAndSeasonId(-1L, 1L),
+                             "MatchService::getByTeamIdAmdSeasonId invalid teamId throws");
+        assertEquals(teamIdProperty, invalidTeamIdException.getParameter(),
+                     "MatchService::getByTeamIdAmdSeasonId property equals invalid teamId");
+
+        final String seasonIdProperty = "seasonId";
+
+        final BadRequestException nullSeasonIdException =
+                assertThrows(BadRequestException.class, () -> this.matchService.getByTeamIdAndSeasonId(1L, null),
+                             "MatchService::getByTeamIdAmdSeasonId null seasonId throws");
+        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter(),
+                     "MatchService::getByTeamIdAmdSeasonId property equals null seasonId");
+
+        final BadRequestException invalidSeasonIdException =
+                assertThrows(BadRequestException.class, () -> this.matchService.getByTeamIdAndSeasonId(1L, -1L),
+                             "MatchService::getByTeamIdAmdSeasonId invalid seasonId throws");
+        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter(),
+                     "MatchService::getByTeamIdAmdSeasonId property equals invalid seasonId");
+
+        // Success -----------------------------------------------------------------------------------------------------
+
         final List<Match> matches = generateList(Match.class);
         when(this.matchRepository.findByTeamIdAndMatchWeekSeasonIdOrderByDatetime(any(Long.class), any(Long.class)))
                 .thenReturn(matches);

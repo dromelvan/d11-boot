@@ -48,6 +48,13 @@ public class MatchService extends RepositoryService<Match, MatchRepository> {
      * @return List of all match weeks ordered by date.
      */
     public List<Match> getByTeamIdAndSeasonId(final Long teamId, final Long seasonId) {
+        if (teamId == null || teamId <= 0) {
+            throw new BadRequestException("teamId", "must be positive");
+        }
+        if (seasonId == null || seasonId <= 0) {
+            throw new BadRequestException("seasonId", "must be positive");
+        }
+
         return getJpaRepository().findByTeamIdAndMatchWeekSeasonIdOrderByDatetime(teamId, seasonId);
     }
 
