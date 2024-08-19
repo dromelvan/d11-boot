@@ -11,6 +11,8 @@ import org.d11.boot.api.v2.model.StadiumDTO;
 import org.d11.boot.spring.model.D11Entity;
 import org.d11.boot.spring.model.Match;
 import org.d11.boot.spring.model.MatchWeek;
+import org.d11.boot.spring.model.Season;
+import org.d11.boot.spring.model.Team;
 import org.d11.boot.spring.repository.MatchRepository;
 import org.d11.boot.spring.repository.MatchWeekRepository;
 import org.d11.boot.util.Status;
@@ -18,6 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -108,6 +112,61 @@ class MatchControllerV2Tests extends D11BootControllerV2Tests {
                     this.matchRepository.findByMatchWeekIdOrderByDatetimeAscIdAsc(matchWeek.getId());
 
             assertEquals(map(matches, MatchBaseDTO.class), result, "MatchController::getMatchesByMatchWeekId equals");
+        }
+    }
+
+    /**
+     * Tests MatchController::getMatchesByTeamIdAndSeasonId.
+     */
+    @Test
+    void testGetMatchesByTeamIdAndSeasonId() {
+        final MatchApi matchApi = getApi(MatchApi.class);
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> matchApi.getMatchesByTeamIdAndSeasonId(null, 1L),
+                     "MatchController::getMatchesByTeamIdAndSeasonId teamId null throws");
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> matchApi.getMatchesByTeamIdAndSeasonId(-1L, 1L),
+                     "MatchController::getMatchesByTeamIdAndSeasonId teamId negative throws");
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> matchApi.getMatchesByTeamIdAndSeasonId(1L, (Long)null),
+                     "MatchController::getMatchesByTeamIdAndSeasonId seasonId null throws");
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> matchApi.getMatchesByTeamIdAndSeasonId(1L, -1L),
+                     "MatchController::getMatchesByTeamIdAndSeasonId seasonId negative throws");
+
+        final List<Match> matches = this.matchRepository.findAll();
+        final Set<Team> teams = new HashSet<>();
+        final Set<Season> seasons = new HashSet<>();
+        for (final Match match : matches) {
+            teams.add(match.getHomeTeam());
+            teams.add(match.getAwayTeam());
+            seasons.add(match.getMatchWeek().getSeason());
+        }
+
+        assertTrue(teams.size() > 1, "MatchController::getMatchesByTeamIdAndSeasonId teams size > 0");
+        assertTrue(seasons.size() > 1, "MatchController::getMatchesByTeamIdAndSeasonId seasons size > 0");
+
+        for (final Team team: teams) {
+            for (final Season season : seasons) {
+                final MatchesResponseBodyDTO response = matchApi.getMatchesByTeamIdAndSeasonId(team.getId(),
+                                                                                               season.getId());
+
+                assertNotNull(response, "MatchController::getMatchesByTeamIdAndSeasonId not null ");
+                assertFalse(response.getMatches().isEmpty(), "MatchController::getMatchesByTeamIdAndSeasonId empty");
+
+                final List<Match> expected = matches.stream()
+                        .filter(match -> (match.getHomeTeam() == team || match.getAwayTeam() == team)
+                                         && match.getMatchWeek().getSeason() == season)
+                        .sorted(Comparator.comparing(Match::getDatetime))
+                        .toList();
+
+                assertEquals(map(expected, MatchBaseDTO.class), response.getMatches(),
+                             "MatchController::getMatchesByTeamIdAndSeasonId equals");
+            }
         }
     }
 

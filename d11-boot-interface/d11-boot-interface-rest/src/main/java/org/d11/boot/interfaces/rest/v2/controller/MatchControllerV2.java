@@ -48,6 +48,14 @@ public class MatchControllerV2 extends RepositoryServiceController<MatchService>
     }
 
     @Override
+    public ResponseEntity<MatchesResponseBodyDTO> getMatchesByTeamIdAndSeasonId(final Long teamId,
+                                                                                final Long seasonId) {
+        final List<Match> matches = getRepositoryService().getByTeamIdAndSeasonId(teamId, seasonId);
+        return ResponseEntity.ok(new MatchesResponseBodyDTO()
+                .matches(getMapper().map(matches, MatchBaseDTO.class)));
+    }
+
+    @Override
     public ResponseEntity<MatchesResponseBodyDTO> getCurrentMatches() {
         final List<Match> matches = getRepositoryService().getCurrentMatches();
         return ResponseEntity.ok(new MatchesResponseBodyDTO()
