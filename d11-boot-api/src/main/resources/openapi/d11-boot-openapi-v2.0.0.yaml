@@ -814,6 +814,33 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/d11-matches/{d11MatchId}/player-match-stats:
+    get:
+      tags:
+        - playerMatchStat
+      summary: Get player match stats by D11 match id.
+      security: []
+      operationId: getPlayerMatchStatsByD11MatchId
+      parameters:
+        - name: d11MatchId
+          in: path
+          required: true
+          description: Id of the D11 match.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerMatchStatsResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Player season stat ---------------------------------------------------------------------------------------------------
 
   /v2/player-season-stats:
