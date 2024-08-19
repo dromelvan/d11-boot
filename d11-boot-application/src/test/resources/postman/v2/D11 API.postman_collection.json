@@ -6679,6 +6679,170 @@
 									]
 								}
 							]
+						},
+						{
+							"name": "GET d11-matches/{d11MatchId}/player-match-stats",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET d11-matches/{d11MatchId}/player-match-stats - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 match player match stats status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"",
+															"pm.test(\"GET D11 match player match stats response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  const playerMatchStats = JSON.parse(pm.environment.get(\"d11MatchPlayerMatchStats\"));",
+															"",
+															"  pm.expect(body).to.have.property(\"playerMatchStats\");",
+															"  pm.expect(body.playerMatchStats.length).to.eq(10);",
+															"  pm.expect(body.playerMatchStats.length).to.eq(playerMatchStats.length);",
+															"",
+															"  for (let i = 0; i < body.playerMatchStats.length; ++i) {",
+															"    expect.playerMatchStatToEq(pm, body.playerMatchStats[i], playerMatchStats[i]);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-matches/{{d11MatchId}}/player-match-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-matches",
+														"{{d11MatchId}}",
+														"player-match-stats"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET d11-matches/{d11Matchd}/player-match-stats - Bad Request Invalid D11 Match Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 match player match stats invalid D11 match id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET D11 match player match stats invalid D11 match id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/d11-matches/invalid/player-match-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"d11MatchId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-matches/invalid/player-match-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-matches",
+														"invalid",
+														"player-match-stats"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET d11-matches/{d11Matchd}/player-match-stats - Bad Request Negative D11 Match Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 match player match stats negative D11 match id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET D11 match player match stats negative D11 match id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/d11-matches/-1/player-match-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"d11MatchId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be positive\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-matches/-1/player-match-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-matches",
+														"-1",
+														"player-match-stats"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
 						}
 					]
 				},
