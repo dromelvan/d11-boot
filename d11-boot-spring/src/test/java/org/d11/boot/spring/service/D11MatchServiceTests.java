@@ -44,6 +44,55 @@ class D11MatchServiceTests extends BaseD11BootServiceTests {
     private D11MatchService d11MatchService;
 
     /**
+     * Tests D11MatchService::getByD11TeamIdAmdSeasonId.
+     */
+    @Test
+    void testGetByD11TeamIdAmdSeasonId() {
+        // Validation --------------------------------------------------------------------------------------------------
+
+        final String d11TeamIdProperty = "d11TeamId";
+
+        final BadRequestException nullD11TeamIdException =
+                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByD11TeamIdAndSeasonId(null, 1L),
+                             "D11MatchService::getByD11TeamIdAmdSeasonId null d11TeamId throws");
+        assertEquals(d11TeamIdProperty, nullD11TeamIdException.getParameter(),
+                     "D11MatchService::getByD11TeamIdAmdSeasonId property equals null d11TeamId");
+
+        final BadRequestException invalidD11TeamIdException =
+                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByD11TeamIdAndSeasonId(-1L, 1L),
+                             "D11MatchService::getByD11TeamIdAmdSeasonId invalid d11TeamId throws");
+        assertEquals(d11TeamIdProperty, invalidD11TeamIdException.getParameter(),
+                     "D11MatchService::getByD11TeamIdAmdSeasonId property equals invalid d11TeamId");
+
+        final String seasonIdProperty = "seasonId";
+
+        final BadRequestException nullSeasonIdException =
+                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByD11TeamIdAndSeasonId(1L, null),
+                             "D11MatchService::getByD11TeamIdAmdSeasonId null seasonId throws");
+        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter(),
+                     "D11MatchService::getByD11TeamIdAmdSeasonId property equals null seasonId");
+
+        final BadRequestException invalidSeasonIdException =
+                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByD11TeamIdAndSeasonId(1L, -1L),
+                             "D11MatchService::getByD11TeamIdAmdSeasonId invalid seasonId throws");
+        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter(),
+                     "D11MatchService::getByD11TeamIdAmdSeasonId property equals invalid seasonId");
+
+        // Success -----------------------------------------------------------------------------------------------------
+
+        final List<D11Match> d11Matches = generateList(D11Match.class);
+        when(this.d11MatchRepository
+                     .findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime(any(Long.class), any(Long.class)))
+                .thenReturn(d11Matches);
+
+        final List<D11Match> result = this.d11MatchService.getByD11TeamIdAndSeasonId(1L, 1L);
+
+        assertNotNull(result, "D11MatchService::getByD11TeamIdAmdSeasonId not null");
+        assertFalse(result.isEmpty(), "D11MatchService::getByD11TeamIdAmdSeasonId isEmpty");
+        assertEquals(d11Matches, result, "D11MatchService::getByD11TeamIdAmdSeasonId equals");
+    }
+
+    /**
      * Tests D11MatchService::getByMatchWeekId.
      */
     @Test

@@ -45,7 +45,7 @@ public class MatchService extends RepositoryService<Match, MatchRepository> {
      *
      * @param teamId   The team id.
      * @param seasonId The season id.
-     * @return List of all match weeks ordered by date.
+     * @return List of all matches by team and season ordered by datetime.
      */
     public List<Match> getByTeamIdAndSeasonId(final Long teamId, final Long seasonId) {
         if (teamId == null || teamId <= 0) {

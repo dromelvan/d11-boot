@@ -40,6 +40,24 @@ public class D11MatchService extends RepositoryService<D11Match, D11MatchReposit
     }
 
     /**
+     * Gets a list of D11 matches by D11 team and season ordered by datetime.
+     *
+     * @param d11TeamId The D11 team id.
+     * @param seasonId  The season id.
+     * @return List of all D11 matches by D11 team and season ordered by datetime.
+     */
+    public List<D11Match> getByD11TeamIdAndSeasonId(final Long d11TeamId, final Long seasonId) {
+        if (d11TeamId == null || d11TeamId <= 0) {
+            throw new BadRequestException("d11TeamId", "must be positive");
+        }
+        if (seasonId == null || seasonId <= 0) {
+            throw new BadRequestException("seasonId", "must be positive");
+        }
+
+        return getJpaRepository().findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime(d11TeamId, seasonId);
+    }
+
+    /**
      * Get D11 matches by match week id ordered by datetime and id.
      *
      * @param matchWeekId The match week id.
