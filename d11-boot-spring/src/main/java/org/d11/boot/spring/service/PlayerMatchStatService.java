@@ -38,4 +38,18 @@ public class PlayerMatchStatService extends RepositoryService<PlayerMatchStat, P
         return getJpaRepository().findByMatchIdOrderByPositionSortOrder(matchId);
     }
 
+    /**
+     * Get player match stats by D11 match id ordered by position sort order.
+     *
+     * @param d11MatchId The D11 match id.
+     * @return Player match stats by D11 match id ordered by position sort order.
+     */
+    public List<PlayerMatchStat> getByD11MatchId(final Long d11MatchId) {
+        if (d11MatchId == null || d11MatchId <= 0) {
+            throw new BadRequestException("d11MatchId", "must be positive");
+        }
+
+        return getJpaRepository().findByD11MatchIdOrderByPositionSortOrder(d11MatchId);
+    }
+
 }
