@@ -4323,6 +4323,296 @@
 									]
 								}
 							]
+						},
+						{
+							"name": "GET d11-teams/{d11TeamId}/d11-matches?seasonId={seasonId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET d11-teams/{d11TeamId}/d11-matches?seasonId={seasonId} - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 team D11 matches status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET D11 team D11 matches response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"d11Matches\");",
+															"",
+															"  const d11Matches = JSON.parse(pm.environment.get(\"d11TeamSeasonD11Matches\"));",
+															"",
+															"  pm.expect(body.d11Matches.length).to.eq(d11Matches.length);",
+															"",
+															"  for (let i = 0; i < body.d11Matches.length; ++i) {",
+															"    expect.d11MatchToEq(pm, body.d11Matches[i], d11Matches[i]);",
+															"  }",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-teams/{{d11TeamId}}/d11-matches?seasonId={{seasonId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-teams",
+														"{{d11TeamId}}",
+														"d11-matches"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "{{seasonId}}"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET d11-teams/{d11TeamId}/d11-matches?seasonId={seasonId} - Bad Request Invalid D11 Team Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 team D11 matches invalid D11 team id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET D11 team D11 matches invalid D11 team id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/d11-teams/invalid/d11-matches\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"d11TeamId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-teams/invalid/d11-matches?seasonId={{seasonId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-teams",
+														"invalid",
+														"d11-matches"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "{{seasonId}}"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET d11-teams/{d11TeamId}/d11-matches?seasonId={seasonId} - Bad Request Negative D11 Team Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 team D11 matches negative D11 team id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET D11 team D11 matches negative D11 team id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/d11-teams/-1/d11-matches\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"d11TeamId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be positive\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-teams/-1/d11-matches?seasonId={{seasonId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-teams",
+														"-1",
+														"d11-matches"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "{{seasonId}}"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET d11-teams/{d11TeamId}/d11-matches?seasonId={seasonId} - Bad Request Invalid Season Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 team D11 matches invalid season id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET team D11 matches invalid season id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/d11-teams/1/d11-matches\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-teams/{{d11TeamId}}/d11-matches?seasonId=invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-teams",
+														"{{d11TeamId}}",
+														"d11-matches"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "invalid"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET d11-teams/{d11TeamId}/d11-matches?seasonId={seasonId} - Bad Request Negative Season Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET D11 team D11 matches negative season id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET D11 team D11 matches negative season id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/d11-teams/1/d11-matches\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be positive\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/d11-teams/{{d11TeamId}}/d11-matches?seasonId=-1",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"d11-teams",
+														"{{d11TeamId}}",
+														"d11-matches"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "-1"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
 						}
 					]
 				},
