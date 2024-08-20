@@ -57,4 +57,21 @@ public class PlayerMatchStatService extends RepositoryService<PlayerMatchStat, P
         return getJpaRepository().findByD11MatchIdOrderByPositionSortOrder(d11MatchId);
     }
 
+    /**
+     * Get player match stats by player id and season id ordered by match datetime.
+     *
+     * @param playerId The player id.
+     * @return Player match stats by player id and season id ordered by match datetime.
+     */
+    public List<PlayerMatchStat> getByPlayerIdAndSeasonId(final Long playerId, final Long seasonId) {
+        if (playerId == null || playerId <= 0) {
+            throw new BadRequestException("playerId", MUST_BE_POSITIVE);
+        }
+        if (seasonId == null || seasonId <= 0) {
+            throw new BadRequestException("seasonId", MUST_BE_POSITIVE);
+        }
+
+        return getJpaRepository().findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime(playerId, seasonId);
+    }
+
 }
