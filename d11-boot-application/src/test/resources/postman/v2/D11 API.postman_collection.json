@@ -7914,6 +7914,168 @@
 									]
 								}
 							]
+						},
+						{
+							"name": "GET players/{playerId}/player-season-stats",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET players/{playerId}/player-season-stats - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET player season stats by player id status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET player season stats by player id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  const playerSeasonStats = JSON.parse(pm.environment.get(\"playerPlayerSeasonStats\"));",
+															"",
+															"  pm.expect(body.playerSeasonStats.length).to.gt(0);",
+															"  pm.expect(body.playerSeasonStats.length).to.eq(playerSeasonStats.length);",
+															"",
+															"  for (let i = 0; i < body.playerSeasonStats.length; ++i) {",
+															"    expect.playerSeasonStatToEq(pm, body.playerSeasonStats[i], playerSeasonStats[i]);",
+															"  }",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/players/{{playerId}}/player-season-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players",
+														"{{playerId}}",
+														"player-season-stats"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET players/{playerId}/player-season-stats - Bad Request Invalid Player Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET player season stats by player id invalid player id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET player season stats by player id invalid player id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/players/invalid/player-season-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"playerId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/players/invalid/player-season-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players",
+														"invalid",
+														"player-season-stats"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET players/{playerId}/player-season-stats - Bad Request Negative Player Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET player season stats by player id non positive player id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET player season stats by player id non positive player id id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/players/-1/player-season-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"playerId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be positive\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/players/-1/player-season-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players",
+														"-1",
+														"player-season-stats"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
 						}
 					]
 				},
