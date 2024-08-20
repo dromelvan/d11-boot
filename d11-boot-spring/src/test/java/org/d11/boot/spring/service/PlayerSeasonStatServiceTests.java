@@ -36,6 +36,44 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
     private PlayerSeasonStatService playerSeasonStatService;
 
     /**
+     * Tests PlayerSeasonStatService::getByPlayerId.
+     */
+    @Test
+    void testGetByPlayerId() {
+
+        // Validation --------------------------------------------------------------------------------------------------
+
+        final String playerIdProperty = "playerId";
+
+        final BadRequestException nullPlayerIdException =
+                assertThrows(BadRequestException.class,
+                             () -> this.playerSeasonStatService.getByPlayerId(null),
+                             "PlayerSeasonStatService::getByPlayerId null playerId throws");
+        assertEquals(playerIdProperty, nullPlayerIdException.getParameter(),
+                     "PlayerSeasonStatService::getByPlayerId property equals null playerId");
+
+        final BadRequestException invalidPlayerIdException =
+                assertThrows(BadRequestException.class, () -> this.playerSeasonStatService.getByPlayerId(-1L),
+                             "PlayerSeasonStatService::getByPlayerId invalid playerId throws");
+        assertEquals(playerIdProperty, invalidPlayerIdException.getParameter(),
+                     "PlayerSeasonStatService::getByPlayerId property equals invalid playerId");
+
+        // Success -----------------------------------------------------------------------------------------------------
+
+        final long playerId = 1L;
+        final List<PlayerSeasonStat> playerSeasonStats = generateList(PlayerSeasonStat.class);
+
+        when(this.playerSeasonStatRepository.findByPlayerIdOrderBySeasonIdDesc(eq(playerId)))
+                .thenReturn(playerSeasonStats);
+
+        final List<PlayerSeasonStat> result = this.playerSeasonStatService.getByPlayerId(playerId);
+
+        assertEquals(playerSeasonStats, result, "PlayerSeasonStatService::getByPlayerId result equals");
+
+        verify(this.playerSeasonStatRepository, times(1)).findByPlayerIdOrderBySeasonIdDesc(eq(playerId));
+    }
+
+    /**
      * Tests PlayerSeasonStatService::getBySeasonId.
      */
     @Test
