@@ -2,7 +2,9 @@ package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.D11Match;
 import org.d11.boot.spring.model.Match;
+import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerMatchStat;
+import org.d11.boot.spring.model.Season;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
@@ -19,6 +21,52 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Player match stat repository tests.
  */
 class PlayerMatchStatRepositoryTests extends AbstractRepositoryTests<PlayerMatchStat, PlayerMatchStatRepository> {
+
+    /**
+     * Tests PlayerMatchStatRepository::findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime.
+     */
+    @Test
+    @SuppressWarnings("checkstyle:LineLength")
+    void testFindByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime() {
+        final List<PlayerMatchStat> entities = getEntities();
+        entities.sort(Comparator.comparing(playerMatchStat -> playerMatchStat.getMatch().getDatetime()));
+
+        final Set<Player> players = entities.stream()
+                .map(PlayerMatchStat::getPlayer).collect(Collectors.toSet());
+        final Set<Season> seasons = entities.stream()
+                .map(playerMatchStat -> playerMatchStat.getMatch().getMatchWeek().getSeason())
+                .collect(Collectors.toSet());
+
+        assertTrue(players.size() > 1,
+                   "PlayerMatchStatRepository::findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime teams size > 1");
+        assertFalse(seasons.isEmpty(),
+                   "PlayerMatchStatRepository::findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime seasons empty");
+
+        for (final Player player : players) {
+            for (final Season season : seasons) {
+                final List<PlayerMatchStat> result =
+                        getRepository().findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime(player.getId(),
+                                                                                                    season.getId());
+
+                final List<PlayerMatchStat> expected = entities.stream()
+                        .filter(playerMatchStat -> playerMatchStat.getPlayer().equals(player)
+                                                   && playerMatchStat.getMatch().getMatchWeek().getSeason()
+                                                                     .equals(season))
+                        .toList();
+
+                assertTrue(expected.size() > 1,
+                           "PlayerMatchStatRepository::findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime expected size > 1");
+
+                assertNotNull(result,
+                              "PlayerMatchStatRepository::findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime not null");
+                assertFalse(result.isEmpty(),
+                            "PlayerMatchStatRepository::findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime empty");
+                assertEquals(expected, result,
+                             "PlayerMatchStatRepository::findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime equals");
+            }
+        }
+
+    }
 
     /**
      * Tests PlayerMatchStatRepository::findByMatchIdOrderByPositionSortOrder.
