@@ -45,4 +45,16 @@ public class PlayerMatchStatControllerV2 extends RepositoryServiceController<Pla
                 .playerMatchStats(getMapper().map(playerMatchStats, PlayerMatchStatDTO.class)));
     }
 
+    @Override
+    public ResponseEntity<PlayerMatchStatsResponseBodyDTO> getPlayerMatchStatsByPlayerIdAndSeasonId(
+            final Long playerId,
+            final Long seasonId
+    ) {
+        final List<PlayerMatchStat> playerMatchStats = getRepositoryService().getByPlayerIdAndSeasonId(playerId,
+                                                                                                       seasonId);
+
+        return ResponseEntity.ok(new PlayerMatchStatsResponseBodyDTO()
+                .playerMatchStats(getMapper().map(playerMatchStats, PlayerMatchStatDTO.class)));
+    }
+
 }

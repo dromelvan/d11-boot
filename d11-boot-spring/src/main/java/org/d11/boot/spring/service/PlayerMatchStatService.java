@@ -61,6 +61,7 @@ public class PlayerMatchStatService extends RepositoryService<PlayerMatchStat, P
      * Get player match stats by player id and season id ordered by match datetime.
      *
      * @param playerId The player id.
+     * @param seasonId The season id.
      * @return Player match stats by player id and season id ordered by match datetime.
      */
     public List<PlayerMatchStat> getByPlayerIdAndSeasonId(final Long playerId, final Long seasonId) {

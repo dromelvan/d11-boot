@@ -6,7 +6,9 @@ import org.d11.boot.api.v2.model.PlayerMatchStatDTO;
 import org.d11.boot.api.v2.model.PlayerMatchStatsResponseBodyDTO;
 import org.d11.boot.spring.model.D11Match;
 import org.d11.boot.spring.model.Match;
+import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerMatchStat;
+import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.repository.PlayerMatchStatRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,6 +125,63 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
             assertFalse(result.isEmpty(), "PlayerMatchStatController::getPlayerMatchStatsByD11MatchId empty");
             assertEquals(map(expected, PlayerMatchStatDTO.class), result,
                          "PlayerMatchStatController::getPlayerMatchStatsByD11MatchId equals");
+        }
+    }
+
+    /**
+     * Tests PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId.
+     */
+    @Test
+    void testGetPlayerMatchStatsByPlayerIdAndSeasonId() {
+        final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerMatchStatApi.getPlayerMatchStatsByPlayerIdAndSeasonId(null, 1L),
+                     "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId playerId null throws");
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerMatchStatApi.getPlayerMatchStatsByPlayerIdAndSeasonId(-1L, 1L),
+                     "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId playerId negative throws");
+
+        final List<PlayerMatchStat> playerMatchStats = this.playerMatchStatRepository.findAll();
+        playerMatchStats.sort(Comparator.comparing(playerMatchStat -> playerMatchStat.getMatch().getDatetime()));
+
+        final Set<Player> players = playerMatchStats.stream()
+                .map(PlayerMatchStat::getPlayer)
+                .collect(Collectors.toSet());
+        final Set<Season> seasons = playerMatchStats.stream()
+                .map(playerMatchStat -> playerMatchStat.getMatch().getMatchWeek().getSeason())
+                .collect(Collectors.toSet());
+
+        assertTrue(players.size() > 1,
+                   "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId players size > 1");
+        assertFalse(seasons.isEmpty(),
+                   "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId seasons empty");
+
+        for (final Player player : players) {
+            for (final Season season : seasons) {
+                final PlayerMatchStatsResponseBodyDTO response =
+                        playerMatchStatApi.getPlayerMatchStatsByPlayerIdAndSeasonId(player.getId(), season.getId());
+                assertNotNull(response,
+                              "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId response not null");
+
+                final List<PlayerMatchStat> expected = playerMatchStats.stream()
+                        .filter(playerMatchStat -> playerMatchStat.getPlayer().equals(player)
+                                                   && playerMatchStat.getMatch().getMatchWeek().getSeason()
+                                                                     .equals(season))
+                        .toList();
+
+                assertTrue(expected.size() > 1,
+                           "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId expected size > 1");
+
+                final List<PlayerMatchStatDTO> result = response.getPlayerMatchStats();
+
+                assertNotNull(result, "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId not null");
+                assertFalse(result.isEmpty(),
+                            "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId empty");
+                assertEquals(map(expected, PlayerMatchStatDTO.class), result,
+                             "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId equals");
+            }
         }
     }
 
