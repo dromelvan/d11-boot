@@ -23,6 +23,11 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
     public static final int PAGE_SIZE = 25;
 
     /**
+     * Season id property name.
+     */
+    private static final String SEASON_ID = "seasonId";
+
+    /**
      * Must be positive error value.
      */
     private static final String MUST_BE_POSITIVE = "must be positive";
@@ -60,7 +65,7 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
      */
     public List<PlayerSeasonStat> getBySeasonId(final Long seasonId, final int page) {
         if (seasonId == null || seasonId <= 0) {
-            throw new BadRequestException("seasonId", MUST_BE_POSITIVE);
+            throw new BadRequestException(SEASON_ID, MUST_BE_POSITIVE);
         }
 
         if (page < 0) {
@@ -69,6 +74,24 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
 
         final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("ranking"));
         return getJpaRepository().findBySeasonId(seasonId, pageable);
+    }
+
+    /**
+     * Get player season stats by team id and season ordered by position and ranking.
+     *
+     * @param teamId  The team id.
+     * @param seasonId The season id.
+     * @return Player season stats by team id and season id ordered by position and ranking.
+     */
+    public List<PlayerSeasonStat> getByTeamIdAndSeasonId(final Long teamId, final Long seasonId) {
+        if (teamId == null || teamId <= 0) {
+            throw new BadRequestException("teamId", MUST_BE_POSITIVE);
+        }
+        if (seasonId == null || seasonId <= 0) {
+            throw new BadRequestException(SEASON_ID, MUST_BE_POSITIVE);
+        }
+
+        return getJpaRepository().findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking(teamId, seasonId);
     }
 
 }
