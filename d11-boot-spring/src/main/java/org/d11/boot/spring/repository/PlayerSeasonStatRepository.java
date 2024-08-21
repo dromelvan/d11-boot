@@ -22,6 +22,16 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
     List<PlayerSeasonStat> findByPlayerIdOrderBySeasonIdDesc(@Param("playerId") Long playerId);
 
     /**
+     * Finds player season stats by team id and season id ordered by position and ranking.
+     *
+     * @param teamId   The team id.
+     * @param seasonId The season id.
+     * @return Player season stats for the team and season ordered by position and ranking id.
+     */
+    List<PlayerSeasonStat> findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking(@Param("teamId") Long teamId,
+                                                                                     @Param("seasonId") Long seasonId);
+
+    /**
      * Finds player season stats by season id.
      *
      * @param seasonId The season id.

@@ -3,6 +3,7 @@ package org.d11.boot.spring.repository;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Season;
+import org.d11.boot.spring.model.Team;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +52,47 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
             assertNotNull(result, "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc not null ");
             assertFalse(result.isEmpty(), "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc empty");
             assertEquals(expected, result, "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc equals");
+        }
+    }
+
+    /**
+     * Tests PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking.
+     */
+    @Test
+    @SuppressWarnings("checkstyle:LineLength")
+    void testFindByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking() {
+        final List<PlayerSeasonStat> entities = getEntities();
+        entities.sort(Comparator.comparing(PlayerSeasonStat::getPosition).thenComparing(PlayerSeasonStat::getRanking));
+
+        final Set<Team> teams = entities.stream().map(PlayerSeasonStat::getTeam).collect(Collectors.toSet());
+        final Set<Season> seasons = entities.stream().map(PlayerSeasonStat::getSeason).collect(Collectors.toSet());
+
+        assertTrue(teams.size() > 1,
+                   "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking teams size > 1");
+        assertTrue(seasons.size() > 1,
+                   "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking seasons size > 1");
+
+
+        for (final Team team : teams) {
+            for (final Season season : seasons) {
+                final List<PlayerSeasonStat> result = getRepository()
+                        .findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking(team.getId(), season.getId());
+
+                final List<PlayerSeasonStat> expected = entities.stream()
+                        .filter(playerSeasonStat -> playerSeasonStat.getTeam().equals(team)
+                                                    && playerSeasonStat.getSeason().equals(season))
+                        .toList();
+
+                assertFalse(expected.isEmpty(),
+                           "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking expected empty");
+
+                assertNotNull(result,
+                              "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking not null ");
+                assertFalse(result.isEmpty(),
+                            "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking empty");
+                assertEquals(expected, result,
+                             "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking equals");
+            }
         }
     }
 
