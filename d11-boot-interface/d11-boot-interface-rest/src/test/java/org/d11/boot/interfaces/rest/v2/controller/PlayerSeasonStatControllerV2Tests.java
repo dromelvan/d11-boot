@@ -7,6 +7,7 @@ import org.d11.boot.api.v2.model.PlayerSeasonStatsResponseBodyDTO;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Season;
+import org.d11.boot.spring.model.Team;
 import org.d11.boot.spring.repository.PlayerSeasonStatRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +131,72 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
             assertFalse(result.isEmpty(), "PlayerSeasonStatController::getPlayerSeasonStatsBySeasonId empty");
             assertEquals(map(expected, PlayerSeasonStatDTO.class), result,
                          "PlayerSeasonStatController::getPlayerSeasonStatsBySeasonId equals");
+        }
+    }
+
+    /**
+     * Tests PlayerSeasonStatController::getPlayerSeasonStatsByTeamIdAndSeasonId.
+     */
+    @Test
+    void testGetPlayerSeasonStatsByTeamIdAndSeasonIdGetD11TeamSeasonStatsBySeasonId() {
+        final PlayerSeasonStatApi playerSeasonStatApi = getApi(PlayerSeasonStatApi.class);
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerSeasonStatApi.getPlayerSeasonStatsByTeamIdAndSeasonId(null, 1L),
+                     "PlayerSeasonStatController::getPlayerSeasonStatsByTeamIdAndSeasonId teamId null throws");
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerSeasonStatApi.getPlayerSeasonStatsByTeamIdAndSeasonId(-1L, 1L),
+                     "PlayerSeasonStatController::getPlayerSeasonStatsByTeamIdAndSeasonId teamId negative throws");
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerSeasonStatApi.getPlayerSeasonStatsByTeamIdAndSeasonId(1L, (Long) null),
+                     "PlayerSeasonStatController::getPlayerSeasonStatsByTeamIdAndSeasonId seasonId null throws");
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerSeasonStatApi.getPlayerSeasonStatsByTeamIdAndSeasonId(1L, -1L),
+                     "PlayerSeasonStatController::getPlayerSeasonStatsByTeamIdAndSeasonId seasonId negative throws");
+
+        final List<PlayerSeasonStat> playerSeasonStats = this.playerSeasonStatRepository.findAll();
+        playerSeasonStats.sort(Comparator.comparing(PlayerSeasonStat::getPosition)
+                                         .thenComparing(PlayerSeasonStat::getRanking));
+
+        final Set<Team> teams = playerSeasonStats.stream()
+                .map(PlayerSeasonStat::getTeam)
+                .collect(Collectors.toSet());
+
+        final Set<Season> seasons = playerSeasonStats.stream()
+                .map(PlayerSeasonStat::getSeason)
+                .collect(Collectors.toSet());
+
+        assertFalse(teams.isEmpty(),
+                    "PlayerSeasonStatController::getPlayerSeasonStatsByTeamIdAndSeasonId teams empty");
+        assertFalse(seasons.isEmpty(),
+                    "PlayerSeasonStatController::getPlayerSeasonStatsByTeamIdAndSeasonId seasons empty");
+
+        for (final Team team : teams) {
+            for (final Season season : seasons) {
+                final PlayerSeasonStatsResponseBodyDTO response =
+                        playerSeasonStatApi.getPlayerSeasonStatsByTeamIdAndSeasonId(team.getId(), season.getId());
+                assertNotNull(response,
+                              "PlayerSeasonStatController::getPlayerSeasonStatsByTeamIdAndSeasonId response not null");
+
+                final List<PlayerSeasonStat> expected = playerSeasonStats.stream()
+                    .filter(playerSeasonStat -> playerSeasonStat.getTeam().equals(team)
+                                                && playerSeasonStat.getSeason().equals(season))
+                    .toList();
+
+                assertFalse(expected.isEmpty(),
+                           "PlayerSeasonStatController::getPlayerSeasonStatsByTeamIdAndSeasonId expected empty");
+
+                final List<PlayerSeasonStatDTO> result = response.getPlayerSeasonStats();
+
+                assertNotNull(result, "PlayerSeasonStatController::getPlayerSeasonStatsByTeamIdAndSeasonId not null ");
+                assertFalse(result.isEmpty(),
+                            "PlayerSeasonStatController::getPlayerSeasonStatsByTeamIdAndSeasonId empty");
+                assertEquals(map(expected, PlayerSeasonStatDTO.class), result,
+                             "PlayerSeasonStatController::getPlayerSeasonStatsByTeamIdAndSeasonId equals");
+            }
         }
     }
 
