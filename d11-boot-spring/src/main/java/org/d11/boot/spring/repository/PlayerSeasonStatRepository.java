@@ -14,6 +14,11 @@ import java.util.List;
 public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSeasonStat> {
 
     /**
+     * Season id property name.
+     */
+    String SEASON_ID = "seasonId";
+
+    /**
      * Finds player season stats by player id ordered by season id, descending.
      *
      * @param playerId The player id.
@@ -29,7 +34,19 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
      * @return Player season stats for the team and season ordered by position and ranking id.
      */
     List<PlayerSeasonStat> findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking(@Param("teamId") Long teamId,
-                                                                                     @Param("seasonId") Long seasonId);
+                                                                                     @Param(SEASON_ID) Long seasonId);
+
+    /**
+     * Finds player season stats by D11 team id and season id ordered by position and ranking.
+     *
+     * @param d11TeamId   The D11 team id.
+     * @param seasonId The season id.
+     * @return Player season stats for the D11 team and season ordered by position and ranking id.
+     */
+    List<PlayerSeasonStat> findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking(
+            @Param("d11TeamId") Long d11TeamId,
+            @Param(SEASON_ID) Long seasonId
+    );
 
     /**
      * Finds player season stats by season id.
@@ -37,7 +54,7 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
      * @param seasonId The season id.
      * @return Player season stats for the season.
      */
-    List<PlayerSeasonStat> findBySeasonId(@Param("seasonId") Long seasonId);
+    List<PlayerSeasonStat> findBySeasonId(@Param(SEASON_ID) Long seasonId);
 
     /**
      * Finds player season stats by season id, paged.
@@ -46,6 +63,6 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
      * @param pageable Pageable that defines page number, page size and sorting of the result.
      * @return Player season stat for the season, paged
      */
-    List<PlayerSeasonStat> findBySeasonId(@Param("seasonId") Long seasonId, Pageable pageable);
+    List<PlayerSeasonStat> findBySeasonId(@Param(SEASON_ID) Long seasonId, Pageable pageable);
 
 }

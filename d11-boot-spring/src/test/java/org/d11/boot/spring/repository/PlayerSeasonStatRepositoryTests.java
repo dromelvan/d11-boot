@@ -1,5 +1,6 @@
 package org.d11.boot.spring.repository;
 
+import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Season;
@@ -72,7 +73,6 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
         assertTrue(seasons.size() > 1,
                    "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking seasons size > 1");
 
-
         for (final Team team : teams) {
             for (final Season season : seasons) {
                 final List<PlayerSeasonStat> result = getRepository()
@@ -92,6 +92,46 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
                             "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking empty");
                 assertEquals(expected, result,
                              "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking equals");
+            }
+        }
+    }
+
+    /**
+     * Tests PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking.
+     */
+    @Test
+    @SuppressWarnings("checkstyle:LineLength")
+    void testFindByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking() {
+        final List<PlayerSeasonStat> entities = getEntities();
+        entities.sort(Comparator.comparing(PlayerSeasonStat::getPosition).thenComparing(PlayerSeasonStat::getRanking));
+
+        final Set<D11Team> d11Teams = entities.stream().map(PlayerSeasonStat::getD11Team).collect(Collectors.toSet());
+        final Set<Season> seasons = entities.stream().map(PlayerSeasonStat::getSeason).collect(Collectors.toSet());
+
+        assertTrue(d11Teams.size() > 1,
+                   "PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking D11 teams size > 1");
+        assertTrue(seasons.size() > 1,
+                   "PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking seasons size > 1");
+
+        for (final D11Team d11Team : d11Teams) {
+            for (final Season season : seasons) {
+                final List<PlayerSeasonStat> result = getRepository()
+                        .findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking(d11Team.getId(), season.getId());
+
+                final List<PlayerSeasonStat> expected = entities.stream()
+                        .filter(playerSeasonStat -> playerSeasonStat.getD11Team().equals(d11Team)
+                                                    && playerSeasonStat.getSeason().equals(season))
+                        .toList();
+
+                assertFalse(expected.isEmpty(),
+                            "PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking expected empty");
+
+                assertNotNull(result,
+                              "PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking not null ");
+                assertFalse(result.isEmpty(),
+                            "PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking empty");
+                assertEquals(expected, result,
+                             "PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking equals");
             }
         }
     }
