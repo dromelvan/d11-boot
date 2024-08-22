@@ -4396,6 +4396,350 @@
 									]
 								}
 							]
+						},
+						{
+							"name": "GET teams/{teamId}/team-season-stats?seasonId={seasonId}",
+							"item": [
+								{
+									"name": "200 OK",
+									"item": [
+										{
+											"name": "GET teams/{teamId}/team-season-stats?seasonId={seasonId} - OK",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET team team season stats status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"pm.test(\"GET team team season stats response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"teamSeasonStat\");",
+															"",
+															"  const teamSeasonStat = JSON.parse(pm.environment.get(\"teamTeamSeasonStat\"));",
+															"",
+															"  expect.teamSeasonStatToEq(pm, body.teamSeasonStat, teamSeasonStat);",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/teams/{{teamId}}/team-season-stats?seasonId={{seasonId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"teams",
+														"{{teamId}}",
+														"team-season-stats"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "{{seasonId}}"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "GET teams/{teamId}/team-season-stats?seasonId={seasonId} - Bad Request Invalid Team Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET team team season stats invalid team id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET team team season stats invalid team id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/teams/invalid/team-season-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"teamId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/teams/invalid/team-season-stats?seasonId={{seasonId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"teams",
+														"invalid",
+														"team-season-stats"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "{{seasonId}}"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET teams/{teamId}/team-season-stats?seasonId={seasonId} - Bad Request Negative Team Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET team team season stats negative team id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET team team season stats negative team id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/teams/-1/team-season-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"teamId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be positive\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/teams/-1/team-season-stats?seasonId={{seasonId}}",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"teams",
+														"-1",
+														"team-season-stats"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "{{seasonId}}"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET teams/{teamId}/team-season-stats?seasonId={seasonId} - Bad Request Invalid Season Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET team team season stats invalid season id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET team team season stats invalid season id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/teams/1/team-season-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is invalid\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/teams/{{teamId}}/team-season-stats?seasonId=invalid",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"teams",
+														"{{teamId}}",
+														"team-season-stats"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "invalid"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "GET teams/{teamId}/team-season-stats?seasonId={seasonId} - Bad Request Negative Season Id",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET team team season stats negative season id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"GET team team season stats negative season id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/teams/1/team-season-stats\");",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"seasonId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"must be positive\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/teams/{{teamId}}/team-season-stats?seasonId=-1",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"teams",
+														"{{teamId}}",
+														"team-season-stats"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "-1"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "404 Not Found",
+									"item": [
+										{
+											"name": "GET teams/{teamId}/team-season-stats?seasonId={seasonId} - Not Found",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"GET team team season stats not found status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"GET team team season stats not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"  pm.expect(body.resource).to.eq('TeamSeasonStat');",
+															"  pm.expect(body.id).to.eq(999999);",
+															"  pm.expect(body.method).to.eq(\"GET\");",
+															"  pm.expect(body.path).to.eq(\"/v2/teams/999999/team-season-stats\");",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/v2/teams/999999/team-season-stats?seasonId=999999",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"teams",
+														"999999",
+														"team-season-stats"
+													],
+													"query": [
+														{
+															"key": "seasonId",
+															"value": "999999"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
 						}
 					]
 				},
