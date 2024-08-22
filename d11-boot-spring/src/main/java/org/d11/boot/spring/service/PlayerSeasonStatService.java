@@ -94,4 +94,22 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
         return getJpaRepository().findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking(teamId, seasonId);
     }
 
+    /**
+     * Get player season stats by D11 team id and season ordered by position and ranking.
+     *
+     * @param d11TeamId  The D11 team id.
+     * @param seasonId   The season id.
+     * @return Player season stats by D11 team id and season id ordered by position and ranking.
+     */
+    public List<PlayerSeasonStat> getByD11TeamIdAndSeasonId(final Long d11TeamId, final Long seasonId) {
+        if (d11TeamId == null || d11TeamId <= 0) {
+            throw new BadRequestException("d11TeamId", MUST_BE_POSITIVE);
+        }
+        if (seasonId == null || seasonId <= 0) {
+            throw new BadRequestException(SEASON_ID, MUST_BE_POSITIVE);
+        }
+
+        return getJpaRepository().findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking(d11TeamId, seasonId);
+    }
+
 }
