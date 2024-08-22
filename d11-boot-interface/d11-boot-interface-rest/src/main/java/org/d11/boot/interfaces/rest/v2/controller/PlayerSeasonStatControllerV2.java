@@ -58,4 +58,16 @@ public class PlayerSeasonStatControllerV2 extends RepositoryServiceController<Pl
                 .playerSeasonStats(getMapper().map(playerSeasonStats, PlayerSeasonStatDTO.class)));
     }
 
+    @Override
+    public ResponseEntity<PlayerSeasonStatsResponseBodyDTO> getPlayerSeasonStatsByD11TeamIdAndSeasonId(
+            final Long d11TeamId,
+            final Long seasonId
+    ) {
+        final List<PlayerSeasonStat> playerSeasonStats =
+                getRepositoryService().getByD11TeamIdAndSeasonId(d11TeamId, seasonId);
+
+        return ResponseEntity.ok(new PlayerSeasonStatsResponseBodyDTO()
+                .playerSeasonStats(getMapper().map(playerSeasonStats, PlayerSeasonStatDTO.class)));
+    }
+
 }

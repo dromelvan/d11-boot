@@ -344,7 +344,7 @@ paths:
     get:
       tags:
         - playerSeasonStat
-      summary: Get a player season stqts by team id and season id.
+      summary: Get a player season stats by team id and season id.
       security: []
       operationId: getPlayerSeasonStatsByTeamIdAndSeasonId
       parameters:
@@ -451,6 +451,40 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/D11MatchesResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v2/d11-teams/{d11TeamId}/player-season-stats:
+    get:
+      tags:
+        - playerSeasonStat
+      summary: Get a player season stats by D11 team id and season id.
+      security: []
+      operationId: getPlayerSeasonStatsByD11TeamIdAndSeasonId
+      parameters:
+        - name: d11TeamId
+          in: path
+          required: true
+          description: Id of the D11 team.
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          required: true
+          name: seasonId
+          schema:
+            type: integer
+            format: int64
+          description: The season id.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerSeasonStatsResponseBody"
         400:
           $ref: '#/components/responses/BadRequest'
         500:
