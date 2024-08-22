@@ -2,6 +2,7 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import org.d11.boot.api.v2.D11TeamSeasonStatApi;
 import org.d11.boot.api.v2.model.D11TeamSeasonStatDTO;
+import org.d11.boot.api.v2.model.D11TeamSeasonStatResponseBodyDTO;
 import org.d11.boot.api.v2.model.D11TeamSeasonStatsResponseBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.D11TeamSeasonStat;
@@ -36,6 +37,17 @@ public class D11TeamSeasonStatControllerV2 extends RepositoryServiceController<D
         return ResponseEntity.ok(new D11TeamSeasonStatsResponseBodyDTO()
                                          .d11TeamSeasonStats(getMapper().map(d11TeamSeasonStats,
                                                                              D11TeamSeasonStatDTO.class)));
+    }
+
+    @Override
+    public ResponseEntity<D11TeamSeasonStatResponseBodyDTO> getD11TeamSeasonStatByD11TeamIdAndSeasonId(
+            final Long d11TeamId,
+            final Long seasonId
+    ) {
+        final D11TeamSeasonStat d11TeamSeasonStat = getRepositoryService().getByD11TeamIdAndSeasonId(d11TeamId,
+                                                                                                     seasonId);
+        return ResponseEntity.ok(new D11TeamSeasonStatResponseBodyDTO()
+                .d11TeamSeasonStat(getMapper().map(d11TeamSeasonStat, D11TeamSeasonStatDTO.class)));
     }
 
 }
