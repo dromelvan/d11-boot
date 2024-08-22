@@ -374,6 +374,42 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/teams/{teamId}/team-season-stats:
+    get:
+      tags:
+        - teamSeasonStat
+      summary: Get team season stat by team id and season id.
+      security: []
+      operationId: getTeamSeasonStatByTeamIdAndSeasonId
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          description: Id of the team.
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          required: true
+          name: seasonId
+          schema:
+            type: integer
+            format: int64
+          description: The season id.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamSeasonStatResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # D11Teams -----------------------------------------------------------------------------------------------------------
 
   /v2/d11-teams:
@@ -2748,6 +2784,14 @@ components:
           $ref: '#/components/schemas/TeamBase'
         season:
           $ref: '#/components/schemas/Season'
+
+    TeamSeasonStatResponseBody:
+      type: object
+      required:
+        - teamSeasonStat
+      properties:
+        teamSeasonStat:
+          $ref: '#/components/schemas/TeamSeasonStat'
 
     TeamSeasonStatsResponseBody:
       type: object
