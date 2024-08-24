@@ -6,17 +6,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.d11.boot.spring.model.validation.ValidatedD11Entity;
+import org.d11.boot.util.exception.ValidationError;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Base class for database entities.
@@ -55,19 +56,23 @@ public class D11Entity extends D11Model {
     /**
      * Validates the entity.
      *
-     * @return Set of constraint violations. If the entity is valid, this set is empty.
-     */
-    public Set<ConstraintViolation<D11Entity>> validate() {
-        return VALIDATOR.validate(this);
-    }
-
-    /**
-     * Validates the entity.
-     *
      * @return True if the entity is valid, false if it is not.
      */
     public boolean isValid() {
-        return validate().isEmpty();
+        return VALIDATOR.validate(this).isEmpty();
+    }
+
+    /**
+     * Gets a list of validation errors.
+     *
+     * @return List of validation errors. If the entity is valid, this list is empty.
+     */
+    public List<ValidationError> getValidationErrors() {
+        return VALIDATOR.validate(this).stream()
+                .map(error -> new ValidationError(error.getPropertyPath().toString(),
+                                                  error.getMessage()))
+                .sorted(Comparator.comparing(ValidationError::property))
+                .toList();
     }
 
     /**
