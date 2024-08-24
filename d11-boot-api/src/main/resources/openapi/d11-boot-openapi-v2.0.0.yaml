@@ -1850,7 +1850,7 @@ components:
           type: string
         iso:
           type: string
-          pattern: \[A-Z\]{2}
+          pattern: ^[A-Z]{2}$
 
     CountriesResponseBody:
       type: object
