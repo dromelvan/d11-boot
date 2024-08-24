@@ -564,6 +564,39 @@ paths:
 
   # Players ------------------------------------------------------------------------------------------------------------
 
+  /v2/players:
+    put:
+      tags:
+        - player
+      summary: Update a player.
+      security:
+        - BearerAuth: []
+      operationId: updatePlayer
+      requestBody:
+        description: The player that will be updated.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerRequestBody'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerResponseBody"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
   /v2/players/{playerId}:
     get:
       tags:
@@ -2085,6 +2118,7 @@ components:
             - dateOfBirth
             - height
             - verified
+            - country
           properties:
             whoscoredId:
               type: integer
@@ -2104,6 +2138,8 @@ components:
               type: boolean
             photoFileName:
               type: string
+            country:
+              $ref: '#/components/schemas/Country'
 
     PlayerSearchResult:
       type: object
@@ -2123,6 +2159,14 @@ components:
           format: int64
         teamName:
           type: string
+
+    PlayerRequestBody:
+      type: object
+      required:
+        - player
+      properties:
+        player:
+          $ref: '#/components/schemas/Player'
 
     PlayerResponseBody:
       type: object
