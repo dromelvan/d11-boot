@@ -42,6 +42,24 @@ public class PlayerService extends RepositoryService<Player, PlayerRepository> {
     }
 
     /**
+     * Updates a player.
+     *
+     * @param player Player with properties that will be updated.
+     * @return The updated player.
+     */
+    public Player updatePlayer(final Player player) {
+        if (!player.isValid()) {
+            throw new BadRequestException("Invalid player", player.getValidationErrors());
+        }
+
+        final Player entity = getById(player.getId());
+
+        map(player, entity);
+
+        return save(entity);
+    }
+
+    /**
      * Gets players by matching name. If name is enclosed in quotes then only exact matches will be returned.
      *
      * @param name The name to search for.

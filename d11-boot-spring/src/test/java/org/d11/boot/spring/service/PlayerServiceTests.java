@@ -6,7 +6,9 @@ import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.util.Parameterizer;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.NotFoundException;
+import org.d11.boot.util.exception.ValidationError;
 import org.junit.jupiter.api.Test;
+import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -62,6 +65,54 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
         assertThrows(NotFoundException.class,
                      () -> this.playerService.getById(-1L),
                      "PlayerService::getById not found");
+    }
+
+    /**
+     * Tests PlayerService::updatePlayer.
+     */
+    @Test
+    void testUpdatePlayer() {
+        final Player player = generate(Player.class);
+        final Player entity = generate(Player.class);
+
+        final BadRequestException e = assertThrows(BadRequestException.class,
+                                                   () -> this.playerService.updatePlayer(new Player()));
+
+        final List<String> properties = Arrays.asList("country", "firstName", "lastName", "parameterizedName");
+        assertEquals(properties, e.getValidationErrors().stream().map(ValidationError::property).toList(),
+                     "PlayerService::updatePlayer validation error properties equals");
+
+        when(this.playerRepository.findById(eq(player.getId()))).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> this.playerService.updatePlayer(player));
+
+        when(this.playerRepository.findById(eq(player.getId()))).thenReturn(Optional.of(entity));
+        when(this.playerRepository.save(any(Player.class))).then(AdditionalAnswers.returnsFirstArg());
+
+        final Player result = this.playerService.updatePlayer(player);
+
+        assertEquals(player.getId(), result.getId(), "PlayerService::updatePlayer id equals");
+        assertEquals(player.getWhoscoredId(), result.getWhoscoredId(),
+                     "PlayerService::updatePlayer whoscoredId equals");
+        assertEquals(player.getPremierLeagueId(), result.getPremierLeagueId(),
+                     "PlayerService::updatePlayer premierLeagueId equals");
+        assertEquals(player.getFirstName(), result.getFirstName(), "PlayerService::updatePlayer firstName equals");
+        assertEquals(player.getLastName(), result.getLastName(), "PlayerService::updatePlayer lastName equals");
+        assertEquals(player.getFullName(), result.getFullName(), "PlayerService::updatePlayer fullName equals");
+        assertEquals(player.getParameterizedName(), result.getParameterizedName(),
+                     "PlayerService::updatePlayer parameterizedName equals");
+        assertEquals(player.getDateOfBirth(), result.getDateOfBirth(),
+                     "PlayerService::updatePlayer dateOfBirth equals");
+        assertEquals(player.getHeight(), result.getHeight(), "PlayerService::updatePlayer height equals");
+        assertEquals(player.getPhotoFileName(), result.getPhotoFileName(),
+                     "PlayerService::updatePlayer photoFileName equals");
+        assertEquals(player.isVerified(), result.isVerified(), "PlayerService::updatePlayer verified equals");
+        assertEquals(player.getCountry(), result.getCountry(), "PlayerService::updatePlayer country equals");
+        assertEquals(entity.getCreatedAt(), result.getCreatedAt(), "PlayerService::updatePlayer createdAt equals");
+        assertEquals(entity.getUpdatedAt(), result.getUpdatedAt(), "PlayerService::updatePlayer updatedAt equals");
+
+        verify(this.playerRepository, times(2)).findById(any(Long.class));
+        verify(this.playerRepository, times(1)).save(eq(entity));
     }
 
     /**
