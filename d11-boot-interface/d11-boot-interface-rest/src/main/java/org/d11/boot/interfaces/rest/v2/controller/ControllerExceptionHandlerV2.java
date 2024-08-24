@@ -71,9 +71,13 @@ public class ControllerExceptionHandlerV2 {
                 .method(request.getMethod())
                 .path(request.getRequestURI());
 
-        badRequestResponseBodyDTO.addValidationErrorsItem(new ValidationErrorDTO()
-                .property(e.getParameter())
-                .error(e.getMessage()));
+        final List<ValidationErrorDTO> validationErrorDTOS = e.getValidationErrors().stream()
+                .map(validationError -> new ValidationErrorDTO()
+                        .property(validationError.property())
+                        .error(validationError.error()))
+                .toList();
+
+        badRequestResponseBodyDTO.setValidationErrors(validationErrorDTOS);
 
         return ResponseEntity.status(httpStatus).body(badRequestResponseBodyDTO);
     }
