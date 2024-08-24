@@ -1,11 +1,14 @@
 package org.d11.boot.spring.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.d11.boot.spring.model.Country;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerSearchResult;
+import org.d11.boot.spring.repository.CountryRepository;
 import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.util.Parameterizer;
 import org.d11.boot.util.exception.BadRequestException;
+import org.d11.boot.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,13 +35,20 @@ public class PlayerService extends RepositoryService<Player, PlayerRepository> {
     public static final String SQL_LIKE = "%";
 
     /**
+     * Country repository.
+     */
+    private final CountryRepository countryRepository;
+
+    /**
      * Creates a player service.
      *
-     * @param playerRepository The repository the service will use.
+     * @param playerRepository  The repository the service will use.
+     * @param countryRepository The country repository the service will use.
      */
     @Autowired
-    public PlayerService(final PlayerRepository playerRepository) {
+    public PlayerService(final PlayerRepository playerRepository, final CountryRepository countryRepository) {
         super(Player.class, playerRepository);
+        this.countryRepository = countryRepository;
     }
 
     /**
@@ -53,8 +63,11 @@ public class PlayerService extends RepositoryService<Player, PlayerRepository> {
         }
 
         final Player entity = getById(player.getId());
+        final Country country = this.countryRepository.findById(player.getCountry().getId())
+                .orElseThrow(() -> new NotFoundException(player.getCountry().getId(), Country.class));
 
         map(player, entity);
+        entity.setCountry(country);
 
         return save(entity);
     }

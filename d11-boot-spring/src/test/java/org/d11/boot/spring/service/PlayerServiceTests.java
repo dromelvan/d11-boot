@@ -2,6 +2,7 @@ package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerSearchResult;
+import org.d11.boot.spring.repository.CountryRepository;
 import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.util.Parameterizer;
 import org.d11.boot.util.exception.BadRequestException;
@@ -39,6 +40,12 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
      */
     @Mock
     private PlayerRepository playerRepository;
+
+    /**
+     * Mocked country repository.
+     */
+    @Mock
+    private CountryRepository countryRepository;
 
     /**
      * Player service.
@@ -87,6 +94,11 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
         assertThrows(NotFoundException.class, () -> this.playerService.updatePlayer(player));
 
         when(this.playerRepository.findById(eq(player.getId()))).thenReturn(Optional.of(entity));
+
+        assertThrows(NotFoundException.class, () -> this.playerService.updatePlayer(player));
+
+        when(this.countryRepository.findById(eq(player.getCountry().getId())))
+                .thenReturn(Optional.of(player.getCountry()));
         when(this.playerRepository.save(any(Player.class))).then(AdditionalAnswers.returnsFirstArg());
 
         final Player result = this.playerService.updatePlayer(player);
@@ -111,7 +123,7 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
         assertEquals(entity.getCreatedAt(), result.getCreatedAt(), "PlayerService::updatePlayer createdAt equals");
         assertEquals(entity.getUpdatedAt(), result.getUpdatedAt(), "PlayerService::updatePlayer updatedAt equals");
 
-        verify(this.playerRepository, times(2)).findById(any(Long.class));
+        verify(this.playerRepository, times(3)).findById(any(Long.class));
         verify(this.playerRepository, times(1)).save(eq(entity));
     }
 
