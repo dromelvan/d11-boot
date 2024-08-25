@@ -50,9 +50,11 @@ public class PlayerControllerV2 extends RepositoryServiceController<PlayerServic
 
     @Override
     @RoleAdmin
-    public ResponseEntity<PlayerResponseBodyDTO> updatePlayer(final PlayerRequestBodyDTO playerRequestBodyDTO) {
+    public ResponseEntity<PlayerResponseBodyDTO> updatePlayer(final Long playerId,
+                                                              final PlayerRequestBodyDTO playerRequestBodyDTO) {
         final Player player = map(playerRequestBodyDTO.getPlayer(), Player.class);
-        final Player result = getRepositoryService().updatePlayer(player);
+        final Player result = getRepositoryService().updatePlayer(playerId, player);
+
         return ResponseEntity.ok(new PlayerResponseBodyDTO()
                 .player(getMapper().map(result, PlayerDTO.class)));
     }

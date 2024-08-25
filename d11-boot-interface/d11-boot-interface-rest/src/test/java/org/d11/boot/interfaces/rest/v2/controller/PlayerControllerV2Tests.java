@@ -121,13 +121,13 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
         // 401 Unauthorized --------------------------------------------------------------------------------------------
 
         assertThrows(FeignException.Unauthorized.class,
-                     () -> getApi(PlayerApi.class).updatePlayer(request),
+                     () -> getApi(PlayerApi.class).updatePlayer(player.getId(), request),
                      "PlayerController::updatePlayer unauthorized throws");
 
         // 403 Forbidden -----------------------------------------------------------------------------------------------
 
         assertThrows(FeignException.Forbidden.class,
-                     () -> getUserApi(PlayerApi.class).updatePlayer(request),
+                     () -> getUserApi(PlayerApi.class).updatePlayer(player.getId(), request),
                      "PlayerController::updatePlayer user throws");
 
         // 400 Bad Request ---------------------------------------------------------------------------------------------
@@ -135,20 +135,20 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
         final PlayerApi playerApi = getAdministratorApi(PlayerApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerApi.updatePlayer(new PlayerRequestBodyDTO()),
+                     () -> playerApi.updatePlayer(player.getId(), new PlayerRequestBodyDTO()),
                      "PlayerController::updatePlayer request body invalid throws");
 
         // 404 Not Found -----------------------------------------------------------------------------------------------
 
         request.getPlayer().id(123_456L);
         assertThrows(FeignException.NotFound.class,
-                     () -> playerApi.updatePlayer(request),
+                     () -> playerApi.updatePlayer(request.getPlayer().getId(), request),
                      "PlayerController::updatePlayer request body player not found throws");
 
         request.getPlayer().id(player.getId());
         request.getPlayer().getCountry().id(123_456L);
         assertThrows(FeignException.NotFound.class,
-                     () -> playerApi.updatePlayer(request),
+                     () -> playerApi.updatePlayer(request.getPlayer().getId(), request),
                      "PlayerController::updatePlayer request body country not found throws");
         request.getPlayer().getCountry().setId(player.getCountry().getId());
 
@@ -165,7 +165,7 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
             .verified(false);
         playerDTO.getCountry().setId(2L);
 
-        final PlayerResponseBodyDTO response = playerApi.updatePlayer(request);
+        final PlayerResponseBodyDTO response = playerApi.updatePlayer(player.getId(), request);
         final PlayerDTO result = response.getPlayer();
 
         assertEquals(playerDTO.getFirstName(), result.getFirstName(),

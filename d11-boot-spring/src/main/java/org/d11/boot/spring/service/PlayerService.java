@@ -54,15 +54,16 @@ public class PlayerService extends RepositoryService<Player, PlayerRepository> {
     /**
      * Updates a player.
      *
-     * @param player Player with properties that will be updated.
+     * @param playerId Player id.
+     * @param player   Player with properties that will be updated.
      * @return The updated player.
      */
-    public Player updatePlayer(final Player player) {
+    public Player updatePlayer(final Long playerId, final Player player) {
         if (!player.isValid()) {
             throw new BadRequestException("Invalid player", player.getValidationErrors());
         }
 
-        final Player entity = getById(player.getId());
+        final Player entity = getById(playerId);
         final Country country = this.countryRepository.findById(player.getCountry().getId())
                 .orElseThrow(() -> new NotFoundException(player.getCountry().getId(), Country.class));
 

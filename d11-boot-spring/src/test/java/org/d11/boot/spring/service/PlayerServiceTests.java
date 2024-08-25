@@ -83,7 +83,7 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
         final Player entity = generate(Player.class);
 
         final BadRequestException e = assertThrows(BadRequestException.class,
-                                                   () -> this.playerService.updatePlayer(new Player()));
+                                                   () -> this.playerService.updatePlayer(player.getId(), new Player()));
 
         final List<String> properties = Arrays.asList("country", "firstName", "lastName", "parameterizedName");
         assertEquals(properties, e.getValidationErrors().stream().map(ValidationError::property).toList(),
@@ -91,17 +91,17 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
 
         when(this.playerRepository.findById(eq(player.getId()))).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> this.playerService.updatePlayer(player));
+        assertThrows(NotFoundException.class, () -> this.playerService.updatePlayer(player.getId(), player));
 
         when(this.playerRepository.findById(eq(player.getId()))).thenReturn(Optional.of(entity));
 
-        assertThrows(NotFoundException.class, () -> this.playerService.updatePlayer(player));
+        assertThrows(NotFoundException.class, () -> this.playerService.updatePlayer(player.getId(), player));
 
         when(this.countryRepository.findById(eq(player.getCountry().getId())))
                 .thenReturn(Optional.of(player.getCountry()));
         when(this.playerRepository.save(any(Player.class))).then(AdditionalAnswers.returnsFirstArg());
 
-        final Player result = this.playerService.updatePlayer(player);
+        final Player result = this.playerService.updatePlayer(player.getId(), player);
 
         assertEquals(player.getId(), result.getId(), "PlayerService::updatePlayer id equals");
         assertEquals(player.getWhoscoredId(), result.getWhoscoredId(),
