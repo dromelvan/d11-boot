@@ -35,6 +35,7 @@ dependencies {
     testCompileOnly "io.swagger.core.v3:swagger-annotations:${swaggerAnnotationsVersion}"
 
     testImplementation project(':d11-boot-api-client:d11-boot-api-client-feign')
+    testImplementation project(path: ':d11-boot-spring', configuration: 'testArtifacts')
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation "com.auth0:java-jwt:${javaJwtVersion}"
     testImplementation 'org.springframework.boot:spring-boot-starter-mail'

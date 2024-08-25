@@ -11,6 +11,12 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    // Provide EasyRandom test classes to other modules
+    testArtifacts {
+        canBeResolved = false
+        canBeConsumed = true
+        extendsFrom testImplementation
+    }
 }
 
 dependencies {
@@ -67,4 +73,14 @@ bootJar {
 
 jar {
     enabled = true
+}
+
+// Provide EasyRandom test classes to other modules
+tasks.register('testJar', Jar) {
+    archiveClassifier = 'tests'
+    from sourceSets.test.output
+}
+
+artifacts {
+    testArtifacts testJar
 }
