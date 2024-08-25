@@ -16,6 +16,7 @@ configurations {
 dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapStructVersion}"
     // Build complains about missing enum constants without this.
     compileOnly "io.swagger.core.v3:swagger-annotations:${swaggerAnnotationsVersion}"
 
@@ -25,6 +26,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "org.modelmapper:modelmapper:${modelMapperVersion}"
+    implementation "org.mapstruct:mapstruct:${mapStructVersion}"
     implementation 'org.apache.commons:commons-lang3'
     implementation "com.github.spotbugs:spotbugs-annotations:${spotBugsVersion}"
 
