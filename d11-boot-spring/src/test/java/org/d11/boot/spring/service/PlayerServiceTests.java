@@ -1,6 +1,7 @@
 package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.Player;
+import org.d11.boot.spring.model.PlayerInput;
 import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.repository.CountryRepository;
 import org.d11.boot.spring.repository.PlayerRepository;
@@ -13,6 +14,7 @@ import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -80,28 +82,40 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
     @Test
     void testUpdatePlayer() {
         final Player player = generate(Player.class);
-        final Player entity = generate(Player.class);
+        final PlayerInput playerInput = new PlayerInput(
+                123,
+                321,
+                "NEW_FIRST_NAME",
+                "NEW_LAST_NAME",
+                "NEW_FULL_NAME",
+                LocalDate.now(),
+                456,
+                player.getCountry().getId(),
+                true
+        );
 
-        final BadRequestException e = assertThrows(BadRequestException.class,
-                                                   () -> this.playerService.updatePlayer(player.getId(), new Player()));
+        final BadRequestException e = assertThrows(
+                BadRequestException.class,
+                () -> this.playerService.updatePlayer(player.getId(),
+                                                      new PlayerInput(-1, -1, "", null, null, null, -1, 1, true)));
 
-        final List<String> properties = Arrays.asList("country", "firstName", "lastName", "parameterizedName");
+        final List<String> properties = Arrays.asList("height", "lastName", "premierLeagueId", "whoscoredId");
         assertEquals(properties, e.getValidationErrors().stream().map(ValidationError::property).toList(),
                      "PlayerService::updatePlayer validation error properties equals");
 
         when(this.playerRepository.findById(eq(player.getId()))).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> this.playerService.updatePlayer(player.getId(), player));
+        assertThrows(NotFoundException.class, () -> this.playerService.updatePlayer(player.getId(), playerInput));
 
-        when(this.playerRepository.findById(eq(player.getId()))).thenReturn(Optional.of(entity));
+        when(this.playerRepository.findById(eq(player.getId()))).thenReturn(Optional.of(player));
 
-        assertThrows(NotFoundException.class, () -> this.playerService.updatePlayer(player.getId(), player));
+        assertThrows(NotFoundException.class, () -> this.playerService.updatePlayer(player.getId(), playerInput));
 
         when(this.countryRepository.findById(eq(player.getCountry().getId())))
                 .thenReturn(Optional.of(player.getCountry()));
         when(this.playerRepository.save(any(Player.class))).then(AdditionalAnswers.returnsFirstArg());
 
-        final Player result = this.playerService.updatePlayer(player.getId(), player);
+        final Player result = this.playerService.updatePlayer(player.getId(), playerInput);
 
         assertEquals(player.getId(), result.getId(), "PlayerService::updatePlayer id equals");
         assertEquals(player.getWhoscoredId(), result.getWhoscoredId(),
@@ -120,11 +134,11 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
                      "PlayerService::updatePlayer photoFileName equals");
         assertEquals(player.isVerified(), result.isVerified(), "PlayerService::updatePlayer verified equals");
         assertEquals(player.getCountry(), result.getCountry(), "PlayerService::updatePlayer country equals");
-        assertEquals(entity.getCreatedAt(), result.getCreatedAt(), "PlayerService::updatePlayer createdAt equals");
-        assertEquals(entity.getUpdatedAt(), result.getUpdatedAt(), "PlayerService::updatePlayer updatedAt equals");
+        assertEquals(player.getCreatedAt(), result.getCreatedAt(), "PlayerService::updatePlayer createdAt equals");
+        assertEquals(player.getUpdatedAt(), result.getUpdatedAt(), "PlayerService::updatePlayer updatedAt equals");
 
         verify(this.playerRepository, times(3)).findById(any(Long.class));
-        verify(this.playerRepository, times(1)).save(eq(entity));
+        verify(this.playerRepository, times(1)).save(eq(player));
     }
 
     /**

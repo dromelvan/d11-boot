@@ -3,12 +3,14 @@ package org.d11.boot.spring.service;
 import org.apache.commons.lang3.StringUtils;
 import org.d11.boot.spring.model.Country;
 import org.d11.boot.spring.model.Player;
+import org.d11.boot.spring.model.PlayerInput;
 import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.repository.CountryRepository;
 import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.util.Parameterizer;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.NotFoundException;
+import org.d11.boot.util.exception.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,23 +56,24 @@ public class PlayerService extends RepositoryService<Player, PlayerRepository> {
     /**
      * Updates a player.
      *
-     * @param playerId Player id.
-     * @param player   Player with properties that will be updated.
+     * @param playerId    Player id.
+     * @param playerInput Player input properties that will be updated.
      * @return The updated player.
      */
-    public Player updatePlayer(final Long playerId, final Player player) {
-        if (!player.isValid()) {
-            throw new BadRequestException("Invalid player", player.getValidationErrors());
+    public Player updatePlayer(final Long playerId, final PlayerInput playerInput) {
+        final List<ValidationError> validationErrors = validate(playerInput);
+        if (!validationErrors.isEmpty()) {
+            throw new BadRequestException("Invalid player", validationErrors);
         }
 
-        final Player entity = getById(playerId);
-        final Country country = this.countryRepository.findById(player.getCountry().getId())
-                .orElseThrow(() -> new NotFoundException(player.getCountry().getId(), Country.class));
+        final Player player = getById(playerId);
+        final Country country = this.countryRepository.findById(playerInput.countryId())
+                .orElseThrow(() -> new NotFoundException(playerInput.countryId(), Country.class));
 
-        map(player, entity);
-        entity.setCountry(country);
+        getServiceMapper().mapToPlayer(playerInput, player);
+        player.setCountry(country);
 
-        return save(entity);
+        return save(player);
     }
 
     /**

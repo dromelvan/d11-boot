@@ -8,9 +8,11 @@ import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultsResponseBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.Player;
+import org.d11.boot.spring.model.PlayerInput;
 import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.security.RoleAdmin;
 import org.d11.boot.spring.service.PlayerService;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +24,11 @@ import java.util.List;
  */
 @RestController
 public class PlayerControllerV2 extends RepositoryServiceController<PlayerService> implements PlayerApi {
+
+    /**
+     * REST controller mapper.
+     */
+    private final RestControllerMapperV2 mapper = Mappers.getMapper(RestControllerMapperV2.class);
 
     /**
      * Create a new controller.
@@ -52,8 +59,8 @@ public class PlayerControllerV2 extends RepositoryServiceController<PlayerServic
     @RoleAdmin
     public ResponseEntity<PlayerResponseBodyDTO> updatePlayer(final Long playerId,
                                                               final PlayerRequestBodyDTO playerRequestBodyDTO) {
-        final Player player = map(playerRequestBodyDTO.getPlayer(), Player.class);
-        final Player result = getRepositoryService().updatePlayer(playerId, player);
+        final PlayerInput playerInput = this.mapper.mapToPlayerInput(playerRequestBodyDTO.getPlayer());
+        final Player result = getRepositoryService().updatePlayer(playerId, playerInput);
 
         return ResponseEntity.ok(new PlayerResponseBodyDTO()
                 .player(getMapper().map(result, PlayerDTO.class)));
