@@ -1,6 +1,6 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
-import org.d11.boot.api.v2.model.PlayerDTO;
+import org.d11.boot.api.v2.model.PlayerInputDTO;
 import org.d11.boot.spring.model.PlayerInput;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,12 +13,12 @@ import org.mapstruct.MappingConstants;
 public interface RestControllerMapperV2 {
 
     /**
-     * Maps a PlayerDTO to a PlayerInput.
+     * Maps a PlayerInputDTO to a PlayerInput.
      *
-     * @param playerDTO The PlayerDTO.
+     * @param playerInputDTO The PlayerInputDTO.
      * @return Mapped PlayerInput.
      */
     @Mapping(source = "country.id", target = "countryId")
-    PlayerInput mapToPlayerInput(PlayerDTO playerDTO);
+    PlayerInput mapToPlayerInput(PlayerInputDTO playerInputDTO);
 
 }

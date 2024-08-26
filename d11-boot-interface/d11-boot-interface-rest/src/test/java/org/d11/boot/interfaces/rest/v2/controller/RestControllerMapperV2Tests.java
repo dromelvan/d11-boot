@@ -1,6 +1,6 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
-import org.d11.boot.api.v2.model.PlayerDTO;
+import org.d11.boot.api.v2.model.PlayerInputDTO;
 import org.d11.boot.spring.EasyRandomTests;
 import org.d11.boot.spring.model.PlayerInput;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
      */
     @Test
     void testMapToPlayerUpdate() {
-        final PlayerDTO source = generate(PlayerDTO.class);
+        final PlayerInputDTO source = generate(PlayerInputDTO.class);
 
         final PlayerInput destination = this.mapper.mapToPlayerInput(source);
 

@@ -2,7 +2,7 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import org.d11.boot.api.v2.PlayerApi;
 import org.d11.boot.api.v2.model.PlayerDTO;
-import org.d11.boot.api.v2.model.PlayerRequestBodyDTO;
+import org.d11.boot.api.v2.model.PlayerInputRequestBodyDTO;
 import org.d11.boot.api.v2.model.PlayerResponseBodyDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultsResponseBodyDTO;
@@ -57,9 +57,11 @@ public class PlayerControllerV2 extends RepositoryServiceController<PlayerServic
 
     @Override
     @RoleAdmin
-    public ResponseEntity<PlayerResponseBodyDTO> updatePlayer(final Long playerId,
-                                                              final PlayerRequestBodyDTO playerRequestBodyDTO) {
-        final PlayerInput playerInput = this.mapper.mapToPlayerInput(playerRequestBodyDTO.getPlayer());
+    public ResponseEntity<PlayerResponseBodyDTO> updatePlayer(
+            final Long playerId,
+            final PlayerInputRequestBodyDTO playerInputRequestBodyDTO
+    ) {
+        final PlayerInput playerInput = this.mapper.mapToPlayerInput(playerInputRequestBodyDTO.getPlayer());
         final Player result = getRepositoryService().updatePlayer(playerId, playerInput);
 
         return ResponseEntity.ok(new PlayerResponseBodyDTO()

@@ -614,7 +614,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PlayerRequestBody'
+              $ref: '#/components/schemas/PlayerInputRequestBody'
       responses:
         '200':
           description: OK
@@ -2148,6 +2148,42 @@ components:
             country:
               $ref: '#/components/schemas/Country'
 
+    PlayerInput:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - whoscoredId
+        - premierLeagueId
+        - fullName
+        - dateOfBirth
+        - height
+        - verified
+        - country
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        whoscoredId:
+          type: integer
+          format: int32
+        premierLeagueId:
+          type: integer
+          format: int32
+        fullName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        height:
+          type: integer
+          format: int32
+        verified:
+          type: boolean
+        country:
+          $ref: '#/components/schemas/Country'
+
     PlayerSearchResult:
       type: object
       required:
@@ -2174,6 +2210,14 @@ components:
       properties:
         player:
           $ref: '#/components/schemas/Player'
+
+    PlayerInputRequestBody:
+      type: object
+      required:
+        - player
+      properties:
+        player:
+          $ref: '#/components/schemas/PlayerInput'
 
     PlayerResponseBody:
       type: object
