@@ -37,6 +37,11 @@ public class PlayerService extends RepositoryService<Player, PlayerRepository> {
     public static final String SQL_LIKE = "%";
 
     /**
+     * Invalid player error message.
+     */
+    public static final String INVALID_PLAYER = "Invalid player";
+
+    /**
      * Country repository.
      */
     private final CountryRepository countryRepository;
@@ -54,6 +59,27 @@ public class PlayerService extends RepositoryService<Player, PlayerRepository> {
     }
 
     /**
+     * Creates a new player.
+     *
+     * @param playerInput Player input properties that will be created.
+     * @return The created player.
+     */
+    public Player createPlayer(final PlayerInput playerInput) {
+        final List<ValidationError> validationErrors = validate(playerInput);
+        if (!validationErrors.isEmpty()) {
+            throw new BadRequestException(INVALID_PLAYER, validationErrors);
+        }
+
+        final Country country = this.countryRepository.findById(playerInput.countryId())
+                .orElseThrow(() -> new NotFoundException(playerInput.countryId(), Country.class));
+
+        final Player player = getServiceMapper().mapToPlayer(playerInput);
+        player.setCountry(country);
+
+        return save(player);
+    }
+
+    /**
      * Updates a player.
      *
      * @param playerId    Player id.
@@ -63,7 +89,7 @@ public class PlayerService extends RepositoryService<Player, PlayerRepository> {
     public Player updatePlayer(final Long playerId, final PlayerInput playerInput) {
         final List<ValidationError> validationErrors = validate(playerInput);
         if (!validationErrors.isEmpty()) {
-            throw new BadRequestException("Invalid player", validationErrors);
+            throw new BadRequestException(INVALID_PLAYER, validationErrors);
         }
 
         final Player player = getById(playerId);

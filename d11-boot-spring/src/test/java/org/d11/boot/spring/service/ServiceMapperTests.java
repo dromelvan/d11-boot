@@ -22,10 +22,10 @@ class ServiceMapperTests extends EasyRandomTests {
     private final ServiceMapper mapper = Mappers.getMapper(ServiceMapper.class);
 
     /**
-     * Tests ServiceMapper::mapToPlayer.
+     * Tests ServiceMapper::mapToPlayer(PlayerInput).
      */
     @Test
-    void testMapToPlayer() {
+    void testMapToPlayerInsert() {
         final PlayerInput source = new PlayerInput(
                 123,
                 321,
@@ -38,26 +38,63 @@ class ServiceMapperTests extends EasyRandomTests {
                 true
         );
 
+        final Player destination = this.mapper.mapToPlayer(source);
+
+        assertEquals(source.whoscoredId(), destination.getWhoscoredId(),
+                     "ServiceMapper::mapToPlayer(PlayerInput) destination whoscoredId equals");
+        assertEquals(source.premierLeagueId(), destination.getPremierLeagueId(),
+                     "ServiceMapper::mapToPlayer(PlayerInput) destination premierLeagueId equals");
+        assertEquals(source.firstName(), destination.getFirstName(),
+                     "ServiceMapper::mapToPlayer(PlayerInput) destination firstName equals");
+        assertEquals(source.lastName(), destination.getLastName(),
+                     "ServiceMapper::mapToPlayer(PlayerInput) destination lastName equals");
+        assertEquals(source.fullName(), destination.getFullName(),
+                     "ServiceMapper::mapToPlayer(PlayerInput) destination fullName equals");
+        assertEquals(source.dateOfBirth(), destination.getDateOfBirth(),
+                     "ServiceMapper::mapToPlayer(PlayerInput) destination dateOfBirth equals");
+        assertEquals(source.height(), destination.getHeight(),
+                     "ServiceMapper::mapToPlayer(PlayerInput) destination height equals");
+        assertEquals(source.verified(), destination.isVerified(),
+                     "ServiceMapper::mapToPlayer(PlayerInput) destination verified equals");
+    }
+
+    /**
+     * Tests ServiceMapper::mapToPlayer(PlayerInput,Player).
+     */
+    @Test
+    void testMapToPlayerUpdate() {
+        final PlayerInput source = new PlayerInput(
+                123,
+                321,
+                "UPDATED_FIRST_NAME",
+                "UPDATED_LAST_NAME",
+                "UPDATED_FULL_NAME",
+                LocalDate.now(),
+                456,
+                654,
+                true
+        );
+
         final Player destination = this.mapper.mapToPlayer(source, generate(Player.class));
 
         assertEquals(source.whoscoredId(), destination.getWhoscoredId(),
-                     "ServiceMapper::mapToPlayer destination whoscoredId equals");
+                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination whoscoredId equals");
         assertEquals(source.premierLeagueId(), destination.getPremierLeagueId(),
-                     "ServiceMapper::mapToPlayer destination premierLeagueId equals");
+                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination premierLeagueId equals");
         assertEquals(source.firstName(), destination.getFirstName(),
-                     "ServiceMapper::mapToPlayer destination firstName equals");
+                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination firstName equals");
         assertEquals(source.lastName(), destination.getLastName(),
-                     "ServiceMapper::mapToPlayer destination lastName equals");
+                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination lastName equals");
         assertEquals(source.fullName(), destination.getFullName(),
-                     "ServiceMapper::mapToPlayer destination fullName equals");
+                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination fullName equals");
         assertEquals(source.dateOfBirth(), destination.getDateOfBirth(),
-                     "ServiceMapper::mapToPlayer destination dateOfBirth equals");
+                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination dateOfBirth equals");
         assertEquals(source.height(), destination.getHeight(),
-                     "ServiceMapper::mapToPlayer destination height equals");
+                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination height equals");
         assertNotEquals(source.countryId(), destination.getCountry().getId(),
-                        "ServiceMapper::mapToPlayerInput destination countryId not equals");
+                        "ServiceMapper::mapToPlayerInput(PlayerInput,Player) destination countryId not equals");
         assertEquals(source.verified(), destination.isVerified(),
-                     "ServiceMapper::mapToPlayer destination verified equals");
+                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination verified equals");
     }
 
 }

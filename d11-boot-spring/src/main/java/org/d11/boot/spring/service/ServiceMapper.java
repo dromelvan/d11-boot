@@ -13,6 +13,14 @@ import org.mapstruct.MappingTarget;
 public interface ServiceMapper {
 
     /**
+     * Maps a player input to an new player.
+     *
+     * @param playerInput The player input.
+     * @return Mapped player.
+     */
+    Player mapToPlayer(PlayerInput playerInput);
+
+    /**
      * Maps a player input to an existing player.
      *
      * @param playerInput The player input.
