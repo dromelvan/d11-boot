@@ -109,6 +109,93 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
     }
 
     /**
+     * Tests PlayerController::createPlayer.
+     */
+    @Test
+    @SuppressWarnings("checkstyle:ExecutableStatementCount")
+    void testCreatePlayer() {
+        final Player player = this.playerRepository.findById(1L).orElseThrow(RuntimeException::new);
+        final PlayerInputDTO playerInputDTO = map(player, PlayerInputDTO.class)
+                .firstName("NEW_FIRST_NAME")
+                .lastName("NEW_LAST_NAME");
+        final PlayerInputRequestBodyDTO request = new PlayerInputRequestBodyDTO()
+                .player(playerInputDTO);
+
+        // 401 Unauthorized --------------------------------------------------------------------------------------------
+
+        assertThrows(FeignException.Unauthorized.class,
+                     () -> getApi(PlayerApi.class).createPlayer(request),
+                     "PlayerController::createPlayer unauthorized throws");
+
+        // 403 Forbidden -----------------------------------------------------------------------------------------------
+
+        assertThrows(FeignException.Forbidden.class,
+                     () -> getUserApi(PlayerApi.class).createPlayer(request),
+                     "PlayerController::createPlayer user throws");
+
+        // 400 Bad Request ---------------------------------------------------------------------------------------------
+
+        final PlayerApi playerApi = getAdministratorApi(PlayerApi.class);
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerApi.createPlayer(new PlayerInputRequestBodyDTO().player(new PlayerInputDTO())),
+                     "PlayerController::createPlayer request body invalid throws");
+
+        // 404 Not Found -----------------------------------------------------------------------------------------------
+
+        request.getPlayer().getCountry().id(123_456L);
+        assertThrows(FeignException.NotFound.class,
+                     () -> playerApi.createPlayer(request),
+                     "PlayerController::createPlayer request body country not found throws");
+        request.getPlayer().getCountry().setId(player.getCountry().getId());
+
+        // 200 OK ------------------------------------------------------------------------------------------------------
+
+        final PlayerResponseBodyDTO response = playerApi.createPlayer(request);
+        final PlayerDTO result = response.getPlayer();
+
+        assertEquals(playerInputDTO.getFirstName(), result.getFirstName(),
+                     "PlayerController::createPlayer result firstName equals");
+        assertEquals(playerInputDTO.getLastName(), result.getLastName(),
+                     "PlayerController::createPlayer result lastName equals");
+        assertEquals(playerInputDTO.getFullName(), result.getFullName(),
+                     "PlayerController::createPlayer result fullName equals");
+        assertEquals(playerInputDTO.getDateOfBirth(), result.getDateOfBirth(),
+                     "PlayerController::createPlayer result dateOfBirth equals");
+        assertEquals(playerInputDTO.getWhoscoredId(), result.getWhoscoredId(),
+                     "PlayerController::createPlayer result whoscoredId equals");
+        assertEquals(playerInputDTO.getPremierLeagueId(), result.getPremierLeagueId(),
+                     "PlayerController::createPlayer result premierLeagueId equals");
+        assertEquals(playerInputDTO.getHeight(), result.getHeight(),
+                     "PlayerController::createPlayer result height equals");
+        assertEquals(playerInputDTO.isVerified(), result.isVerified(),
+                     "PlayerController::createPlayer result verified equals");
+        assertEquals(playerInputDTO.getCountry().getId(), result.getCountry().getId(),
+                     "PlayerController::createPlayer result country id equals");
+
+        final Player entity = this.playerRepository.findById(result.getId()).orElseThrow(RuntimeException::new);
+
+        assertEquals(playerInputDTO.getFirstName(), entity.getFirstName(),
+                     "PlayerController::createPlayer entity firstName equals");
+        assertEquals(playerInputDTO.getLastName(), entity.getLastName(),
+                     "PlayerController::createPlayer entity lastName equals");
+        assertEquals(playerInputDTO.getFullName(), entity.getFullName(),
+                     "PlayerController::createPlayer entity fullName equals");
+        assertEquals(playerInputDTO.getDateOfBirth(), entity.getDateOfBirth(),
+                     "PlayerController::createPlayer entity dateOfBirth equals");
+        assertEquals(playerInputDTO.getWhoscoredId(), entity.getWhoscoredId(),
+                     "PlayerController::createPlayer entity whoscoredId equals");
+        assertEquals(playerInputDTO.getPremierLeagueId(), entity.getPremierLeagueId(),
+                     "PlayerController::createPlayer entity premierLeagueId equals");
+        assertEquals(playerInputDTO.getHeight(), entity.getHeight(),
+                     "PlayerController::createPlayer entity height equals");
+        assertEquals(playerInputDTO.isVerified(), entity.isVerified(),
+                     "PlayerController::createPlayer entity verified equals");
+        assertEquals(playerInputDTO.getCountry().getId(), entity.getCountry().getId(),
+                     "PlayerController::createPlayer entity country id equals");
+    }
+
+    /**
      * Tests PlayerController::updatePlayer.
      */
     @Test

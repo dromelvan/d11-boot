@@ -564,6 +564,39 @@ paths:
 
   # Players ------------------------------------------------------------------------------------------------------------
 
+  /v2/players:
+    post:
+      tags:
+        - player
+      summary: Creates a player.
+      security:
+        - BearerAuth: [admin]
+      operationId: createPlayer
+      requestBody:
+        description: New player properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlayerInputRequestBody"
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+          $ref: '#/components/responses/Conflict'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /v2/players/{playerId}:
     get:
       tags:
@@ -598,7 +631,7 @@ paths:
         - player
       summary: Update a player.
       security:
-        - BearerAuth: []
+        - BearerAuth: [admin]
       operationId: updatePlayer
       parameters:
         - name: playerId

@@ -57,6 +57,19 @@ public class PlayerControllerV2 extends RepositoryServiceController<PlayerServic
 
     @Override
     @RoleAdmin
+    public ResponseEntity<PlayerResponseBodyDTO> createPlayer(
+            final PlayerInputRequestBodyDTO playerInputRequestBodyDTO
+    ) {
+        final PlayerInput playerInput = this.mapper.mapToPlayerInput(playerInputRequestBodyDTO.getPlayer());
+        final Player result = getRepositoryService().createPlayer(playerInput);
+
+        return ResponseEntity.ok(new PlayerResponseBodyDTO()
+                .player(getMapper().map(result, PlayerDTO.class)));
+    }
+
+
+    @Override
+    @RoleAdmin
     public ResponseEntity<PlayerResponseBodyDTO> updatePlayer(
             final Long playerId,
             final PlayerInputRequestBodyDTO playerInputRequestBodyDTO
