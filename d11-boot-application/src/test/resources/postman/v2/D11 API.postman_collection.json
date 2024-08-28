@@ -10397,6 +10397,577 @@
 									]
 								}
 							]
+						},
+						{
+							"name": "POST players",
+							"item": [
+								{
+									"name": "201 Created",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST players - Created",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player status code is 201\", () => {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"",
+															"pm.test(\"POST player response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"player\");",
+															"",
+															"  const player = JSON.parse(pm.environment.get(\"newPlayer\"));",
+															"",
+															"  pm.expect(body.player.id).to.be.greaterThan(0);",
+															"  ",
+															"  player.id = body.player.id",
+															"",
+															"  expect.playerToEq(pm, body.player, player);",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"player\": {{newPlayer}}\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/players",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST players - Bad Request Invalid Request Body",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"PUT player invalid player id status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"PUT player invalid player id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
+															"  pm.expect(body.path).to.eq(\"/v2/players\");",
+															"",
+															"  pm.expect(body.validationErrors.length).to.eq(8);",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"player.country\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"  pm.expect(body.validationErrors[1].property).to.eq(\"player.dateOfBirth\");",
+															"  pm.expect(body.validationErrors[1].error).to.eq(\"is missing\");",
+															"  pm.expect(body.validationErrors[2].property).to.eq(\"player.firstName\");",
+															"  pm.expect(body.validationErrors[2].error).to.eq(\"is missing\");",
+															"  pm.expect(body.validationErrors[3].property).to.eq(\"player.fullName\");",
+															"  pm.expect(body.validationErrors[3].error).to.eq(\"is missing\");",
+															"  pm.expect(body.validationErrors[4].property).to.eq(\"player.height\");",
+															"  pm.expect(body.validationErrors[4].error).to.eq(\"is missing\");",
+															"  pm.expect(body.validationErrors[5].property).to.eq(\"player.lastName\");",
+															"  pm.expect(body.validationErrors[5].error).to.eq(\"is missing\");",
+															"  pm.expect(body.validationErrors[6].property).to.eq(\"player.premierLeagueId\");",
+															"  pm.expect(body.validationErrors[6].error).to.eq(\"is missing\");",
+															"  pm.expect(body.validationErrors[7].property).to.eq(\"player.whoscoredId\");",
+															"  pm.expect(body.validationErrors[7].error).to.eq(\"is missing\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"player\": {\n        \n    }\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/players",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "401 Unauthorized",
+									"item": [
+										{
+											"name": "POST players - Unauthorized No Auth",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player no auth status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"player\": {{newPlayer}}\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/players",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST players - Unauthorized Invalid Auth",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player no auth status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{expiredJwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"player\": {{newPlayer}}\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/players",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "403 Forbidden",
+									"item": [
+										{
+											"name": "Setup - Login User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login user status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{userUsername}}\",\n    \"password\": \"{{userPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST players - Forbidden",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player forbidden status code is 403\", () => {",
+															"  pm.response.to.have.status(403);",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"player\": {{newPlayer}}\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/players",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "404 Not Found",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST players - Country Id Not Found",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player country id not found status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"POST player country id not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"  pm.expect(body.resource).to.eq(\"Country\");",
+															"  pm.expect(body.id).to.eq(123456);",
+															"  pm.expect(body.method).to.eq(\"POST\");",
+															"  pm.expect(body.path).to.eq(\"/v2/players\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"player\": {\n        \"firstName\": \"NEW_FIRST_NAME\",\n        \"lastName\": \"NEW_LAST_NAME\",\n        \"whoscoredId\": \"98765\",\n        \"premierLeagueId\": \"56789\",\n        \"fullName\": \"NEW_FULL_NAME\",\n        \"dateOfBirth\": \"2024-01-01\",\n        \"height\": \"321\",\n        \"verified\": \"true\",\n        \"country\": {\n            \"id\": 123456,\n            \"name\": \"CountryA\",\n            \"iso\": \"AA\"\n        }\n    }\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/players",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
 						}
 					]
 				},
