@@ -5,15 +5,34 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
  * Position repository tests.
  */
 class PositionRepositoryTests extends AbstractRepositoryTests<Position, PositionRepository> {
+
+    /**
+     * Tests PositionRepository::findByCode.
+     */
+    @Test
+    void testFindByCode() {
+        final List<Position> positions = getEntities();
+        for (final Position position : positions) {
+            final Optional<Position> optional = getRepository().findByCode(position.getCode());
+
+            assertTrue(optional.isPresent(), "PositionRepository::findByCode present");
+
+            optional.ifPresent(result -> {
+                assertEquals(position, result, "PositionRepository::findByCode equals");
+            });
+        }
+    }
 
     /**
      * Tests PositionRepository::findByOrderBySortOrder.
