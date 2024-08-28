@@ -1,5 +1,6 @@
 package org.d11.boot.spring.service;
 
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.d11.boot.spring.model.Country;
 import org.d11.boot.spring.model.Player;
@@ -64,6 +65,7 @@ public class PlayerService extends RepositoryService<Player, PlayerRepository> {
      * @param playerInput Player input properties that will be created.
      * @return The created player.
      */
+    @Transactional
     public Player createPlayer(final PlayerInput playerInput) {
         final List<ValidationError> validationErrors = validate(playerInput);
         if (!validationErrors.isEmpty()) {

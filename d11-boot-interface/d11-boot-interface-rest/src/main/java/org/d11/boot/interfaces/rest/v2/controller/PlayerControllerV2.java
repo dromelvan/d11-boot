@@ -14,6 +14,7 @@ import org.d11.boot.spring.security.RoleAdmin;
 import org.d11.boot.spring.service.PlayerService;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -63,8 +64,10 @@ public class PlayerControllerV2 extends RepositoryServiceController<PlayerServic
         final PlayerInput playerInput = this.mapper.mapToPlayerInput(playerInputRequestBodyDTO.getPlayer());
         final Player result = getRepositoryService().createPlayer(playerInput);
 
-        return ResponseEntity.ok(new PlayerResponseBodyDTO()
-                .player(getMapper().map(result, PlayerDTO.class)));
+        final PlayerResponseBodyDTO responseBody = new PlayerResponseBodyDTO()
+                .player(getMapper().map(result, PlayerDTO.class));
+
+        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
 

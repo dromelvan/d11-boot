@@ -149,7 +149,7 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
                      "PlayerController::createPlayer request body country not found throws");
         request.getPlayer().getCountry().setId(player.getCountry().getId());
 
-        // 200 OK ------------------------------------------------------------------------------------------------------
+        // 201 CREATED -------------------------------------------------------------------------------------------------
 
         final PlayerResponseBodyDTO response = playerApi.createPlayer(request);
         final PlayerDTO result = response.getPlayer();
