@@ -1,7 +1,6 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
 import org.d11.boot.api.v2.PlayerApi;
-import org.d11.boot.api.v2.model.PlayerDTO;
 import org.d11.boot.api.v2.model.PlayerInputRequestBodyDTO;
 import org.d11.boot.api.v2.model.PlayerResponseBodyDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
@@ -46,7 +45,7 @@ public class PlayerControllerV2 extends RepositoryServiceController<PlayerServic
         final Player player = getRepositoryService().getById(playerId);
 
         return ResponseEntity.ok(new PlayerResponseBodyDTO()
-                .player(getMapper().map(player, PlayerDTO.class)));
+                .player(this.mapper.mapToPlayerDTO(player)));
     }
 
     @Override
@@ -65,7 +64,7 @@ public class PlayerControllerV2 extends RepositoryServiceController<PlayerServic
         final Player result = getRepositoryService().createPlayer(playerInput);
 
         final PlayerResponseBodyDTO responseBody = new PlayerResponseBodyDTO()
-                .player(getMapper().map(result, PlayerDTO.class));
+                .player(this.mapper.mapToPlayerDTO(result));
 
         return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
@@ -81,7 +80,7 @@ public class PlayerControllerV2 extends RepositoryServiceController<PlayerServic
         final Player result = getRepositoryService().updatePlayer(playerId, playerInput);
 
         return ResponseEntity.ok(new PlayerResponseBodyDTO()
-                .player(getMapper().map(result, PlayerDTO.class)));
+                .player(this.mapper.mapToPlayerDTO(result)));
     }
 
 }

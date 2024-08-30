@@ -1,6 +1,8 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
+import org.d11.boot.api.v2.model.PlayerDTO;
 import org.d11.boot.api.v2.model.PlayerInputDTO;
+import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerInput;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,5 +22,13 @@ public interface RestControllerMapperV2 {
      */
     @Mapping(source = "country.id", target = "countryId")
     PlayerInput mapToPlayerInput(PlayerInputDTO playerInputDTO);
+
+    /**
+     * Maps a Player to a PlayerDTO.
+     *
+     * @param player The Player.
+     * @return Mapped PlayerDTO.
+     */
+    PlayerDTO mapToPlayerDTO(Player player);
 
 }

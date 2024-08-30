@@ -1,7 +1,9 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
+import org.d11.boot.api.v2.model.PlayerDTO;
 import org.d11.boot.api.v2.model.PlayerInputDTO;
 import org.d11.boot.spring.EasyRandomTests;
+import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerInput;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -22,7 +24,7 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
      * Tests RestControllerMapper::mapToPlayerInput.
      */
     @Test
-    void testMapToPlayerUpdate() {
+    void testMapToPlayerInput() {
         final PlayerInputDTO source = generate(PlayerInputDTO.class);
 
         final PlayerInput destination = this.mapper.mapToPlayerInput(source);
@@ -47,4 +49,32 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
                      "RestControllerMapper::mapToPlayerInput destination verified equals");
     }
 
+    /**
+     * Tests RestControllerMapper::mapToPlayerDTO.
+     */
+    @Test
+    void testMapToPlayerDTO() {
+        final Player source = generate(Player.class);
+
+        final PlayerDTO destination = this.mapper.mapToPlayerDTO(source);
+
+        assertEquals(source.getWhoscoredId(), destination.getWhoscoredId(),
+                     "RestControllerMapper::mapToPlayerDTO destination whoscoredId equals");
+        assertEquals(source.getPremierLeagueId(), destination.getPremierLeagueId(),
+                     "RestControllerMapper::mapToPlayerDTO destination premierLeagueId equals");
+        assertEquals(source.getFirstName(), destination.getFirstName(),
+                     "RestControllerMapper::mapToPlayerDTO destination firstName equals");
+        assertEquals(source.getLastName(), destination.getLastName(),
+                     "RestControllerMapper::mapToPlayerDTO destination lastName equals");
+        assertEquals(source.getFullName(), destination.getFullName(),
+                     "RestControllerMapper::mapToPlayerDTO destination fullName equals");
+        assertEquals(source.getDateOfBirth(), destination.getDateOfBirth(),
+                     "RestControllerMapper::mapToPlayerDTO destination dateOfBirth equals");
+        assertEquals(source.getHeight(), destination.getHeight(),
+                     "RestControllerMapper::mapToPlayerDTO destination height equals");
+        assertEquals(source.getCountry().getId(), destination.getCountry().getId(),
+                     "RestControllerMapper::mapToPlayerDTO destination country id equals");
+        assertEquals(source.isVerified(), destination.isVerified(),
+                     "RestControllerMapper::mapToPlayerDTO destination verified equals");
+    }
 }
