@@ -2,9 +2,12 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import org.d11.boot.api.v2.model.PlayerDTO;
 import org.d11.boot.api.v2.model.PlayerInputDTO;
+import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.spring.EasyRandomTests;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerInput;
+import org.d11.boot.spring.model.PlayerSearchResult;
+import org.d11.boot.spring.model.Team;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
@@ -77,4 +80,48 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
         assertEquals(source.isVerified(), destination.isVerified(),
                      "RestControllerMapper::mapToPlayerDTO destination verified equals");
     }
+
+    /**
+     * Tests RestControllerMapper::mapToPlayerSearchResultDTO.
+     */
+    @Test
+    void testMapToPlayerSearchResultDTO() {
+        final Player player = generate(Player.class);
+        final Team team = generate(Team.class);
+
+        @SuppressWarnings({ "PMD.CommentRequired", "checkstyle:AnonInnerLength" })
+        final PlayerSearchResult source = new PlayerSearchResult() {
+            @Override
+            public Long getId() {
+                return player.getId();
+            }
+
+            @Override
+            public String getName() {
+                return player.getName();
+            }
+
+            @Override
+            public Long getTeamId() {
+                return team.getId();
+            }
+
+            @Override
+            public String getTeamName() {
+                return team.getName();
+            }
+        };
+
+        final PlayerSearchResultDTO destination = this.mapper.mapToPlayerSearchResultDTO(source);
+
+        assertEquals(source.getId(), destination.getId(),
+                "RestControllerMapper::mapToPlayerSearchResultDTO destination id equals");
+        assertEquals(source.getName(), destination.getName(),
+                "RestControllerMapper::mapToPlayerSearchResultDTO destination name equals");
+        assertEquals(source.getTeamId(), destination.getTeamId(),
+                "RestControllerMapper::mapToPlayerSearchResultDTO destination team id equals");
+        assertEquals(source.getTeamName(), destination.getTeamName(),
+                "RestControllerMapper::mapToPlayerSearchResultDTO destination team name equals");
+    }
+
 }

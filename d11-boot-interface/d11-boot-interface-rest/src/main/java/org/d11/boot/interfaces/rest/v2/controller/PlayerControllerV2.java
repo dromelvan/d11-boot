@@ -51,8 +51,12 @@ public class PlayerControllerV2 extends RepositoryServiceController<PlayerServic
     @Override
     public ResponseEntity<PlayerSearchResultsResponseBodyDTO> searchPlayersByName(final String name) {
         final List<PlayerSearchResult> playerSearchResults = getRepositoryService().searchByName(name);
+        final List<PlayerSearchResultDTO> players = playerSearchResults.stream()
+                .map(this.mapper::mapToPlayerSearchResultDTO)
+                .toList();
+
         return ResponseEntity.ok(new PlayerSearchResultsResponseBodyDTO()
-                .players(getMapper().map(playerSearchResults, PlayerSearchResultDTO.class)));
+                .players(players));
     }
 
     @Override
