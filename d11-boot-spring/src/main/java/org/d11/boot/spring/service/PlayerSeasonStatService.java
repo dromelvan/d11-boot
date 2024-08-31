@@ -1,8 +1,19 @@
 package org.d11.boot.spring.service;
 
+import org.d11.boot.spring.model.CreatePlayerSeasonStatInput;
+import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerSeasonStat;
+import org.d11.boot.spring.model.Position;
+import org.d11.boot.spring.model.Season;
+import org.d11.boot.spring.model.Team;
+import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.spring.repository.PlayerSeasonStatRepository;
+import org.d11.boot.spring.repository.PositionRepository;
+import org.d11.boot.spring.repository.TeamRepository;
 import org.d11.boot.util.exception.BadRequestException;
+import org.d11.boot.util.exception.ConflictException;
+import org.d11.boot.util.exception.NotFoundException;
+import org.d11.boot.util.exception.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -111,5 +122,46 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
 
         return getJpaRepository().findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking(d11TeamId, seasonId);
     }
+
+    /**
+     * Creates a new player season stat.
+     *
+     * @param createPlayerSeasonStatInput Player input properties that will be created.
+     * @return The created player.
+     */
+    public PlayerSeasonStat createPlayerSeasonStat(final CreatePlayerSeasonStatInput createPlayerSeasonStatInput) {
+        final List<ValidationError> validationErrors = validate(createPlayerSeasonStatInput);
+        if (!validationErrors.isEmpty()) {
+            throw new BadRequestException("Invalid player season stat", validationErrors);
+        }
+
+        final Player player = getRepository(PlayerRepository.class).findById(createPlayerSeasonStatInput.playerId())
+                .orElseThrow(() -> new NotFoundException(createPlayerSeasonStatInput.playerId(), Player.class));
+        final Season season = getCurrentSeason();
+
+        getJpaRepository().findByPlayerIdAndSeasonId(player.getId(), season.getId()).ifPresent(present -> {
+            throw new ConflictException(String.format("Player season stats for player %d and season %d already exist",
+                                                      player.getId(), season.getId()));
+        });
+
+        final Team team = getRepository(TeamRepository.class).findById(createPlayerSeasonStatInput.teamId())
+                .orElseThrow(() -> new NotFoundException(createPlayerSeasonStatInput.teamId(), Team.class));
+        final Position position = getRepository(PositionRepository.class)
+                .findById(createPlayerSeasonStatInput.positionId())
+                .orElseThrow(() -> new NotFoundException(createPlayerSeasonStatInput.positionId(), Position.class));
+
+        final PlayerSeasonStat playerSeasonStat = new PlayerSeasonStat()
+                .setPlayer(player)
+                .setSeason(season)
+                .setTeam(team)
+                .setD11Team(getDefaultD11Team())
+                .setPosition(position);
+
+        // Reset is not really necessary but we'll do it anyway just in case
+        playerSeasonStat.reset();
+
+        return save(playerSeasonStat);
+    }
+
 
 }
