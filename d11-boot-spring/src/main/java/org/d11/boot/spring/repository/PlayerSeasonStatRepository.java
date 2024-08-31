@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository for PlayerSeasonStat entities.
@@ -25,6 +26,16 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
      * @return Player season stats for the player ordered by season id, descending.
      */
     List<PlayerSeasonStat> findByPlayerIdOrderBySeasonIdDesc(@Param("playerId") Long playerId);
+
+    /**
+     * Finds player season stat by player id and season id.
+     *
+     * @param playerId The player id.
+     * @param seasonId The season id.
+     * @return Player season stats for the player and season.
+     */
+    Optional<PlayerSeasonStat> findByPlayerIdAndSeasonId(@Param("playerId") Long playerId,
+                                                         @Param("seasonId") Long seasonId);
 
     /**
      * Finds player season stats by team id and season id ordered by position and ranking.

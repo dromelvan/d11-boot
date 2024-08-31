@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,26 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
             assertNotNull(result, "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc not null ");
             assertFalse(result.isEmpty(), "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc empty");
             assertEquals(expected, result, "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc equals");
+        }
+    }
+
+    /**
+     * Tests PlayerSeasonStatRepository::findByPlayerIdAndSeasonId.
+     */
+    @Test
+    void testFindByPlayerIdAndSeasonId() {
+        final List<PlayerSeasonStat> entities = getEntities();
+
+        assertFalse(entities.isEmpty(), "PlayerSeasonStatRepository::findByPlayerIdAndSeasonId entities empty");
+
+        for (final PlayerSeasonStat entity : entities) {
+            final Optional<PlayerSeasonStat> optional =
+                    getRepository().findByPlayerIdAndSeasonId(entity.getPlayer().getId(), entity.getSeason().getId());
+
+            assertTrue(optional.isPresent(), "PlayerSeasonStatRepository::findByPlayerIdAndSeasonId present");
+            optional.ifPresent(result -> {
+                assertEquals(entity, result, "PlayerSeasonStatRepository::findByPlayerIdAndSeasonId result equals");
+            });
         }
     }
 
