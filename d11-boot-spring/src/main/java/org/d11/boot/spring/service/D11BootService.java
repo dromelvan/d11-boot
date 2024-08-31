@@ -2,10 +2,17 @@ package org.d11.boot.spring.service;
 
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import org.d11.boot.spring.model.D11Team;
+import org.d11.boot.spring.model.Season;
+import org.d11.boot.spring.model.Team;
 import org.d11.boot.spring.model.User;
 import org.d11.boot.spring.repository.D11EntityRepository;
+import org.d11.boot.spring.repository.D11TeamRepository;
+import org.d11.boot.spring.repository.SeasonRepository;
+import org.d11.boot.spring.repository.TeamRepository;
 import org.d11.boot.spring.repository.UserRepository;
 import org.d11.boot.spring.security.JwtBuilder;
+import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ValidationError;
 import org.d11.boot.util.mapper.MapperProvider;
 import org.mapstruct.factory.Mappers;
@@ -74,6 +81,36 @@ public class D11BootService extends MapperProvider implements ApplicationContext
             return userRepository.findByEmail(jwt.getClaimAsString(JwtBuilder.USERNAME_CLAIM));
         }
         return Optional.empty();
+    }
+
+    /**
+     * Gets the current season.
+     *
+     * @return The current season.
+     */
+    protected Season getCurrentSeason() {
+        return getRepository(SeasonRepository.class).findFirstByOrderByDateDesc()
+                .orElseThrow(() -> new ConflictException("Current season does not exist"));
+    }
+
+    /**
+     * Gets the default D11 team.
+     *
+     * @return The default D11 team.
+     */
+    protected D11Team getDefaultD11Team() {
+        return getRepository(D11TeamRepository.class).findById(D11Team.DEFAULT_D11_TEAM_ID)
+                .orElseThrow(() -> new ConflictException("Default D11 team does not exist"));
+    }
+
+    /**
+     * Gets the default team.
+     *
+     * @return The default team.
+     */
+    protected Team getDefaultTeam() {
+        return getRepository(TeamRepository.class).findById(Team.DEFAULT_TEAM_ID)
+                .orElseThrow(() -> new ConflictException("Default team does not exist"));
     }
 
     /**

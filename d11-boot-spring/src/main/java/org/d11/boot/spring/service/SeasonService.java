@@ -39,6 +39,7 @@ public class SeasonService extends RepositoryService<Season, SeasonRepository> {
      *
      * @return The current season.
      */
+    @Override
     public Season getCurrentSeason() {
         return getJpaRepository().findFirstByOrderByDateDesc()
                 .orElseThrow(() -> new ConflictException("Current season does not exist"));

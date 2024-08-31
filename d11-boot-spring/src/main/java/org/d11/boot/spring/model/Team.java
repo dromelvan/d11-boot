@@ -39,7 +39,7 @@ public class Team extends D11Entity {
     /**
      * ID for the dummy D11 team.
      */
-    public static final long DUMMY_TEAM_ID = 1;
+    public static final long DEFAULT_TEAM_ID = 1;
 
     /**
      * Team id on whoscored.
