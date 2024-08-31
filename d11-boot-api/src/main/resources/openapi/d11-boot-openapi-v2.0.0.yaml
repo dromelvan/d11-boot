@@ -1217,6 +1217,39 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+    post:
+      tags:
+        - playerSeasonStat
+      summary: Creates a player season stat.
+      security:
+        - BearerAuth: [admin]
+      operationId: createPlayerSeasonStat
+      requestBody:
+        description: New player season stat properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePlayerSeasonStatInputRequestBody"
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerSeasonStatResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+          $ref: '#/components/responses/Conflict'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+
   # Team season stat ---------------------------------------------------------------------------------------------------
 
   /v2/team-season-stats:
@@ -2749,6 +2782,36 @@ components:
           $ref: '#/components/schemas/D11TeamBase'
         position:
           $ref: '#/components/schemas/Position'
+
+    CreatePlayerSeasonStatInput:
+      type: object
+      required:
+        - player
+        - team
+        - position
+      properties:
+        player:
+          $ref: '#/components/schemas/Player'
+        team:
+          $ref: '#/components/schemas/Team'
+        position:
+          $ref: '#/components/schemas/Position'
+
+    CreatePlayerSeasonStatInputRequestBody:
+      type: object
+      required:
+        - playerSeasonStat
+      properties:
+        playerSeasonStat:
+          $ref: '#/components/schemas/CreatePlayerSeasonStatInput'
+
+    PlayerSeasonStatResponseBody:
+      type: object
+      required:
+        - playerSeasonStat
+      properties:
+        playerSeasonStat:
+          $ref: '#/components/schemas/PlayerSeasonStat'
 
     PlayerSeasonStatsResponseBody:
       type: object

@@ -2,14 +2,25 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import feign.FeignException;
 import org.d11.boot.api.v2.client.PlayerSeasonStatApi;
+import org.d11.boot.api.v2.model.CreatePlayerSeasonStatInputDTO;
+import org.d11.boot.api.v2.model.CreatePlayerSeasonStatInputRequestBodyDTO;
+import org.d11.boot.api.v2.model.PlayerDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
+import org.d11.boot.api.v2.model.PlayerSeasonStatResponseBodyDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatsResponseBodyDTO;
+import org.d11.boot.api.v2.model.PositionDTO;
+import org.d11.boot.api.v2.model.TeamDTO;
 import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerSeasonStat;
+import org.d11.boot.spring.model.Position;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.Team;
+import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.spring.repository.PlayerSeasonStatRepository;
+import org.d11.boot.spring.repository.PositionRepository;
+import org.d11.boot.spring.repository.SeasonRepository;
+import org.d11.boot.spring.repository.TeamRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,6 +45,30 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Autowired
     private PlayerSeasonStatRepository playerSeasonStatRepository;
+
+    /**
+     * Player repository.
+     */
+    @Autowired
+    private PlayerRepository playerRepository;
+
+    /**
+     * Season repository.
+     */
+    @Autowired
+    private SeasonRepository seasonRepository;
+
+    /**
+     * Team repository.
+     */
+    @Autowired
+    private TeamRepository teamRepository;
+
+    /**
+     * Poseidon repository.
+     */
+    @Autowired
+    private PositionRepository positionRepository;
 
     /**
      * Tests PlayerSeasonStatController::getPlayerSeasonStatsByPlayerId.
@@ -267,6 +302,91 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
                              "PlayerSeasonStatController::getPlayerSeasonStatsByD11TeamIdAndSeasonId equals");
             }
         }
+    }
+
+    /**
+     * Tests PlayerSeasonStatController::createPlayerSeasonStat.
+     */
+    @Test
+    @SuppressWarnings("checkstyle:ExecutableStatementCount")
+    void testCreatePlayerSeasonStat() {
+        final Player player = this.playerRepository.findById(6L).orElseThrow(RuntimeException::new);
+        final Season season = this.seasonRepository.findFirstByOrderByDateDesc().orElseThrow(RuntimeException::new);
+        final Team team = this.teamRepository.findById(1L).orElseThrow(RuntimeException::new);
+        final Position position = this.positionRepository.findById(1L).orElseThrow(RuntimeException::new);
+
+        final CreatePlayerSeasonStatInputDTO input = new CreatePlayerSeasonStatInputDTO()
+                .player(map(player, PlayerDTO.class))
+                .team(map(team, TeamDTO.class))
+                .position(map(position, PositionDTO.class));
+
+        final CreatePlayerSeasonStatInputRequestBodyDTO request = new CreatePlayerSeasonStatInputRequestBodyDTO()
+                .playerSeasonStat(input);
+
+        // 401 Unauthorized --------------------------------------------------------------------------------------------
+
+        assertThrows(FeignException.Unauthorized.class,
+                     () -> getApi(PlayerSeasonStatApi.class).createPlayerSeasonStat(request),
+                     "PlayerSeasonStatController::createPlayerSeasonStat unauthorized throws");
+
+        // 403 Forbidden -----------------------------------------------------------------------------------------------
+
+        assertThrows(FeignException.Forbidden.class,
+                     () -> getUserApi(PlayerSeasonStatApi.class).createPlayerSeasonStat(request),
+                     "PlayerSeasonStatController::createPlayerSeasonStat user throws");
+
+        // 400 Bad Request ---------------------------------------------------------------------------------------------
+
+        final PlayerSeasonStatApi playerSeasonStatApi = getAdministratorApi(PlayerSeasonStatApi.class);
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerSeasonStatApi.createPlayerSeasonStat(new CreatePlayerSeasonStatInputRequestBodyDTO()
+                                                            .playerSeasonStat(new CreatePlayerSeasonStatInputDTO())),
+                     "PlayerSeasonStatController::createPlayerSeasonStat request body invalid throws");
+
+        // 404 Not Found -----------------------------------------------------------------------------------------------
+
+        request.getPlayerSeasonStat().getPlayer().id(123_456L);
+        assertThrows(FeignException.NotFound.class,
+                     () -> playerSeasonStatApi.createPlayerSeasonStat(request),
+                     "PlayerSeasonStatController::createPlayerSeasonStat request body player not found throws");
+        request.getPlayerSeasonStat().getPlayer().setId(player.getId());
+
+        request.getPlayerSeasonStat().getTeam().id(123_456L);
+        assertThrows(FeignException.NotFound.class,
+                     () -> playerSeasonStatApi.createPlayerSeasonStat(request),
+                     "PlayerSeasonStatController::createPlayerSeasonStat request body team not found throws");
+        request.getPlayerSeasonStat().getTeam().setId(team.getId());
+
+        request.getPlayerSeasonStat().getPosition().id(123_456L);
+        assertThrows(FeignException.NotFound.class,
+                     () -> playerSeasonStatApi.createPlayerSeasonStat(request),
+                     "PlayerSeasonStatController::createPlayerSeasonStat request body position not found throws");
+        request.getPlayerSeasonStat().getPosition().setId(position.getId());
+
+        // 409 Conflict ------------------------------------------------------------------------------------------------
+
+        request.getPlayerSeasonStat().getPlayer().id(1L);
+        assertThrows(FeignException.Conflict.class,
+                     () -> playerSeasonStatApi.createPlayerSeasonStat(request),
+                     "PlayerSeasonStatController::createPlayerSeasonStat request body already exists throws");
+        request.getPlayerSeasonStat().getPlayer().setId(player.getId());
+
+        // 201 Created -------------------------------------------------------------------------------------------------
+
+        final PlayerSeasonStatResponseBodyDTO response = playerSeasonStatApi.createPlayerSeasonStat(request);
+        final PlayerSeasonStatDTO result = response.getPlayerSeasonStat();
+
+        assertEquals(player.getId(), result.getPlayer().getId(),
+                     "PlayerSeasonStatController::createPlayerSeasonStat result player id equals");
+        assertEquals(season.getId(), result.getSeason().getId(),
+                     "PlayerSeasonStatController::createPlayerSeasonStat result season id equals");
+        assertEquals(team.getId(), result.getTeam().getId(),
+                     "PlayerSeasonStatController::createPlayerSeasonStat result team id equals");
+        assertEquals(D11Team.DEFAULT_D11_TEAM_ID, result.getD11Team().getId(),
+                     "PlayerSeasonStatController::createPlayerSeasonStat result D11 team id equals");
+        assertEquals(position.getId(), result.getPosition().getId(),
+                     "PlayerSeasonStatController::createPlayerSeasonStat result position id equals");
     }
 
 }
