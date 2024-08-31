@@ -1,11 +1,15 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
+import org.d11.boot.api.v2.model.CreatePlayerSeasonStatInputDTO;
 import org.d11.boot.api.v2.model.PlayerDTO;
 import org.d11.boot.api.v2.model.PlayerInputDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
+import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
+import org.d11.boot.spring.model.CreatePlayerSeasonStatInput;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerInput;
 import org.d11.boot.spring.model.PlayerSearchResult;
+import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -40,5 +44,25 @@ public interface RestControllerMapperV2 {
      * @return Mapped PlayerSearchResultDTO.
      */
     PlayerSearchResultDTO mapToPlayerSearchResultDTO(PlayerSearchResult playerSearchResult);
+
+    /**
+     * Maps a CreatePlayerSeasonStatInputDTO to a CreatePlayerSeasonStatInput.
+     *
+     * @param createPlayerSeasonStatInputDTO The CreatePlayerSeasonStatInputDTO.
+     * @return Mapped CreatePlayerSeasonStatInput.
+     */
+    @Mapping(source = "player.id", target = "playerId")
+    @Mapping(source = "team.id", target = "teamId")
+    @Mapping(source = "position.id", target = "positionId")
+    CreatePlayerSeasonStatInput mapToCreatePlayerSeasonStatInput(
+            CreatePlayerSeasonStatInputDTO createPlayerSeasonStatInputDTO);
+
+    /**
+     * Maps a PlayerSeasonStat to a PlayerSeasonStatDTO.
+     *
+     * @param playerSeasonStat The PlayerSeasonStatDTO.
+     * @return Mapped PlayerSeasonStat.
+     */
+    PlayerSeasonStatDTO mapToPlayerSeasonStatDTO(PlayerSeasonStat playerSeasonStat);
 
 }
