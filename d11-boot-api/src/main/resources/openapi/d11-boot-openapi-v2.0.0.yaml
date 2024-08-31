@@ -592,8 +592,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         403:
           $ref: '#/components/responses/Forbidden'
-        409:
-          $ref: '#/components/responses/Conflict'
         500:
           $ref: '#/components/responses/InternalServerError'
 
@@ -1999,7 +1997,6 @@ components:
         - established
         - colour
         - dummy
-        - photoFileName
         - url
       properties:
         id:
@@ -2016,7 +2013,7 @@ components:
           type: string
         code:
           type: string
-          pattern: \[A-Z\]{3}
+          pattern: ^[A-Z]{3}$
         established:
           type: integer
           format: int32
@@ -2070,7 +2067,7 @@ components:
           type: string
         code:
           type: string
-          pattern: \[A-Z\]{3}
+          pattern: ^[A-Z]{3}$
         dummy:
           type: boolean
         photoFileName:
@@ -2154,7 +2151,6 @@ components:
           required:
             - whoscoredId
             - premierLeagueId
-            - fullName
             - dateOfBirth
             - height
             - verified
@@ -2288,7 +2284,7 @@ components:
           type: string
         code:
           type: string
-          pattern: \[A-Z\]{3}
+          pattern: ^[A-Z]{1,2}$
         maxCount:
           type: integer
           format: int32
