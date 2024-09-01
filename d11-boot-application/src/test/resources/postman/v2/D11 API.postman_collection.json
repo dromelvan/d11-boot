@@ -9936,11 +9936,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT player invalid player id status code is 400\", () => {",
+															"pm.test(\"PUT player invalid request body status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT player invalid player id response body\", () => {",
+															"pm.test(\"PUT player invalid request body response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  let timestamp = new Date(body.timestamp);",
@@ -10475,6 +10475,8 @@
 															"  player.id = body.player.id",
 															"",
 															"  expect.playerToEq(pm, body.player, player);",
+															"",
+															"  pm.environment.set(\"newPlayerId\", body.player.id);",
 															"});",
 															""
 														],
@@ -10578,11 +10580,11 @@
 													"listen": "test",
 													"script": {
 														"exec": [
-															"pm.test(\"PUT player invalid player id status code is 400\", () => {",
+															"pm.test(\"POST player invalid request body status code is 400\", () => {",
 															"  pm.response.to.have.status(400);",
 															"});",
 															"",
-															"pm.test(\"PUT player invalid player id response body\", () => {",
+															"pm.test(\"POST player invalid request body response body\", () => {",
 															"  const body = pm.response.json();",
 															"",
 															"  let timestamp = new Date(body.timestamp);",
@@ -11253,6 +11255,951 @@
 															"key": "seasonId",
 															"value": "{{seasonId}}"
 														}
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "POST player-season-stats",
+							"item": [
+								{
+									"name": "201 Created",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Setup - POST players - Created",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player status code is 201\", () => {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"",
+															"pm.test(\"POST player response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"player\");",
+															"",
+															"  const player = JSON.parse(pm.environment.get(\"newPlayer\"));",
+															"",
+															"  pm.expect(body.player.id).to.be.greaterThan(0);",
+															"  ",
+															"  player.id = body.player.id",
+															"",
+															"  expect.playerToEq(pm, body.player, player);",
+															"",
+															"  pm.environment.set(\"newPlayerId\", body.player.id);",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"player\": {{newPlayer}}\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/players",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST player-season-stat - Created",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player season stat created status code is 201\", () => {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"",
+															"pm.test(\"POST player season stat created response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"playerSeasonStat\");",
+															"",
+															"  const playerSeasonStat = JSON.parse(pm.environment.get(\"newPlayerSeasonStat\"));",
+															"  const playerId = pm.environment.get(\"newPlayerId\");",
+															"",
+															"  pm.expect(body.playerSeasonStat.id).to.be.greaterThan(0);",
+															"",
+															"  playerSeasonStat.id = body.playerSeasonStat.id",
+															"  playerSeasonStat.player.id = playerId",
+															"",
+															"  expect.playerSeasonStatToEq(pm, body.playerSeasonStat, playerSeasonStat);",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"playerSeasonStat\": {\n        \"playerId\": {{newPlayerId}},\n        \"teamId\": {{teamId}},\n        \"positionId\": {{positionId}}\n    }\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "400 Bad Request",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST player-season-stats - Bad Request Invalid Request Body",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player season stat invalid request body status code is 400\", () => {",
+															"  pm.response.to.have.status(400);",
+															"});",
+															"",
+															"pm.test(\"POST player season stat invalid request body id response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Bad Request\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
+															"  pm.expect(body.path).to.eq(\"/v2/player-season-stats\");",
+															"",
+															"  pm.expect(body.validationErrors.length).to.eq(3);",
+															"",
+															"  pm.expect(body.validationErrors[0].property).to.eq(\"playerSeasonStat.playerId\");",
+															"  pm.expect(body.validationErrors[0].error).to.eq(\"is missing\");",
+															"  pm.expect(body.validationErrors[1].property).to.eq(\"playerSeasonStat.positionId\");",
+															"  pm.expect(body.validationErrors[1].error).to.eq(\"is missing\");",
+															"  pm.expect(body.validationErrors[2].property).to.eq(\"playerSeasonStat.teamId\");",
+															"  pm.expect(body.validationErrors[2].error).to.eq(\"is missing\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"playerSeasonStat\": {\n        \n    }\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "401 Unauthorized",
+									"item": [
+										{
+											"name": "POST player-season-stats - Unauthorized No Auth",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player season stat no auth status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"playerSeasonStat\": {\n        \"playerId\": {{newPlayerId}},\n        \"teamId\": {{teamId}},\n        \"positionId\": {{positionId}}\n    }\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST player-season-stats - Unauthorized Invalid Auth",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player season stat no auth status code is 401\", () => {",
+															"  pm.response.to.have.status(401);",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{expiredJwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"playerSeasonStat\": {\n        \"playerId\": {{newPlayerId}},\n        \"teamId\": {{teamId}},\n        \"positionId\": {{positionId}}\n    }\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "403 Forbidden",
+									"item": [
+										{
+											"name": "Setup - Login User",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login user status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{userUsername}}\",\n    \"password\": \"{{userPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST player-season-stats - Forbidden",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player season stat forbidden status code is 403\", () => {",
+															"  pm.response.to.have.status(403);",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"playerSeasonStat\": {\n        \"playerId\": {{newPlayerId}},\n        \"teamId\": {{teamId}},\n        \"positionId\": {{positionId}}\n    }\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "404 Not Found",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Setup - POST players - Created",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player status code is 201\", () => {",
+															"  pm.response.to.have.status(201);",
+															"});",
+															"",
+															"pm.test(\"POST player response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  pm.expect(body).to.have.property(\"player\");",
+															"",
+															"  const player = JSON.parse(pm.environment.get(\"newPlayer\"));",
+															"",
+															"  pm.expect(body.player.id).to.be.greaterThan(0);",
+															"  ",
+															"  player.id = body.player.id",
+															"",
+															"  expect.playerToEq(pm, body.player, player);",
+															"",
+															"  pm.environment.set(\"newPlayerId\", body.player.id);",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"player\": {{newPlayer}}\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/players",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"players"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST player-season-stat - Player Id Not Found",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player season stat player id not found status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"POST player season stat player id not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"  pm.expect(body.resource).to.eq(\"Player\");",
+															"  pm.expect(body.id).to.eq(123456);",
+															"  pm.expect(body.method).to.eq(\"POST\");",
+															"  pm.expect(body.path).to.eq(\"/v2/player-season-stats\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"playerSeasonStat\": {\n        \"playerId\": 123456,\n        \"teamId\": {{teamId}},\n        \"positionId\": {{positionId}}\n    }\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST player-season-stat - Team Id Not Found",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player season stat team id not found status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"POST player season stat team id not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"  pm.expect(body.resource).to.eq(\"Team\");",
+															"  pm.expect(body.id).to.eq(123456);",
+															"  pm.expect(body.method).to.eq(\"POST\");",
+															"  pm.expect(body.path).to.eq(\"/v2/player-season-stats\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"playerSeasonStat\": {\n        \"playerId\": {{newPlayerId}},\n        \"teamId\": 123456,\n        \"positionId\": {{positionId}}\n    }\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST player-season-stat - Position Id Not Found",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player season stat position id not found status code is 404\", () => {",
+															"  pm.response.to.have.status(404);",
+															"});",
+															"",
+															"pm.test(\"POST player season stat position id not found response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Not Found\");",
+															"  pm.expect(body.resource).to.eq(\"Position\");",
+															"  pm.expect(body.id).to.eq(123456);",
+															"  pm.expect(body.method).to.eq(\"POST\");",
+															"  pm.expect(body.path).to.eq(\"/v2/player-season-stats\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"playerSeasonStat\": {\n        \"playerId\": {{newPlayerId}},\n        \"teamId\": {{teamId}},\n        \"positionId\": 123456\n    }\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								},
+								{
+									"name": "409 Conflict",
+									"item": [
+										{
+											"name": "Setup - Login Admin",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"Setup login admin status code is 200\", () => {",
+															"  pm.response.to.have.status(200);",
+															"});",
+															"",
+															"const body = pm.response.json();",
+															"pm.environment.set(\"jwt\", body.jwt);",
+															""
+														],
+														"type": "text/javascript"
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "noauth"
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"username\": \"{{adminUsername}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"persistent\": true\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/security/authenticate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"security",
+														"authenticate"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "POST player-season-stat - Conflict",
+											"event": [
+												{
+													"listen": "test",
+													"script": {
+														"exec": [
+															"pm.test(\"POST player season stat conflict status code is 409\", () => {",
+															"  pm.response.to.have.status(409);",
+															"});",
+															"",
+															"pm.test(\"POST player season stat conflict response body\", () => {",
+															"  const body = pm.response.json();",
+															"",
+															"  let timestamp = new Date(body.timestamp);",
+															"  pm.expect(isNaN(timestamp.getTime())).to.eq(false);",
+															"  pm.expect(body.error).to.eq(\"Conflict\");",
+															"  pm.expect(body.method).to.eq(\"POST\");",
+															"  pm.expect(body.path).to.eq(\"/v2/player-season-stats\");",
+															"",
+															"});",
+															""
+														],
+														"type": "text/javascript",
+														"packages": {}
+													}
+												}
+											],
+											"request": {
+												"auth": {
+													"type": "bearer",
+													"bearer": [
+														{
+															"key": "token",
+															"value": "{{jwt}}",
+															"type": "string"
+														}
+													]
+												},
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"playerSeasonStat\": {\n        \"playerId\": {{playerId}},\n        \"teamId\": {{teamId}},\n        \"positionId\": {{positionId}}\n    }\n}\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/v2/player-season-stats",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"v2",
+														"player-season-stats"
 													]
 												}
 											},
