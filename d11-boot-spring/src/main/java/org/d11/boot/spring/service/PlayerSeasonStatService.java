@@ -1,5 +1,6 @@
 package org.d11.boot.spring.service;
 
+import jakarta.transaction.Transactional;
 import org.d11.boot.spring.model.CreatePlayerSeasonStatInput;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerSeasonStat;
@@ -129,6 +130,7 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
      * @param createPlayerSeasonStatInput Player input properties that will be created.
      * @return The created player.
      */
+    @Transactional
     public PlayerSeasonStat createPlayerSeasonStat(final CreatePlayerSeasonStatInput createPlayerSeasonStatInput) {
         final List<ValidationError> validationErrors = validate(createPlayerSeasonStatInput);
         if (!validationErrors.isEmpty()) {
