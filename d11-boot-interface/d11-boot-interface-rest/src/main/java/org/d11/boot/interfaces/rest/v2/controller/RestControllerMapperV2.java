@@ -51,9 +51,6 @@ public interface RestControllerMapperV2 {
      * @param createPlayerSeasonStatInputDTO The CreatePlayerSeasonStatInputDTO.
      * @return Mapped CreatePlayerSeasonStatInput.
      */
-    @Mapping(source = "player.id", target = "playerId")
-    @Mapping(source = "team.id", target = "teamId")
-    @Mapping(source = "position.id", target = "positionId")
     CreatePlayerSeasonStatInput mapToCreatePlayerSeasonStatInput(
             CreatePlayerSeasonStatInputDTO createPlayerSeasonStatInputDTO);
 

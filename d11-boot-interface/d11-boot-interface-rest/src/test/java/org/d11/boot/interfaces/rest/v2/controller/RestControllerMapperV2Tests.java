@@ -139,11 +139,11 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
 
         final CreatePlayerSeasonStatInput destination = this.mapper.mapToCreatePlayerSeasonStatInput(source);
 
-        assertEquals(source.getPlayer().getId(), destination.playerId(),
+        assertEquals(source.getPlayerId(), destination.playerId(),
                      "RestControllerMapper::mapToCreatePlayerSeasonStatInput destination player id equals");
-        assertEquals(source.getTeam().getId(), destination.teamId(),
+        assertEquals(source.getTeamId(), destination.teamId(),
                      "RestControllerMapper::mapToCreatePlayerSeasonStatInput destination team id equals");
-        assertEquals(source.getPosition().getId(), destination.positionId(),
+        assertEquals(source.getPositionId(), destination.positionId(),
                      "RestControllerMapper::mapToCreatePlayerSeasonStatInput destination position id equals");
     }
 

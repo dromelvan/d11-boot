@@ -2786,16 +2786,16 @@ components:
     CreatePlayerSeasonStatInput:
       type: object
       required:
-        - player
-        - team
-        - position
+        - playerId
+        - teamId
+        - positionId
       properties:
-        player:
-          $ref: '#/components/schemas/Player'
-        team:
-          $ref: '#/components/schemas/Team'
-        position:
-          $ref: '#/components/schemas/Position'
+        playerId:
+          $ref: '#/components/schemas/Id'
+        teamId:
+          $ref: '#/components/schemas/Id'
+        positionId:
+          $ref: '#/components/schemas/Id'
 
     CreatePlayerSeasonStatInputRequestBody:
       type: object
