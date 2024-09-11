@@ -24,9 +24,8 @@ assert {
   res.body.user: isDefined
   res.body.jwt: isDefined
   res.body.expiresAt: isDefined
-  res.body.persistent: isDefined
-  res.body.persistent: isBoolean
-  res.body.persistent: isFalsy false
+  res.body.persistent: eq false
+  res.headers['set-cookie']: neq undefined
 }
 
 tests {

@@ -12,9 +12,8 @@ post {
 
 assert {
   res.status: eq 200
-  res.body.loggedOut: isDefined
-  res.body.loggedOut: isBoolean
-  res.body.loggedOut: isTruthy
+  res.body.loggedOut: eq true
+  res.headers['set-cookie']: neq undefined
 }
 
 tests {
