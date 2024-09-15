@@ -1,5 +1,7 @@
 vars {
-  baseUrl: http://localhost:8080/
+  host: localhost
+  port: 8080
+  baseUrl: http://{{host}}:{{port}}
   jwtRegex: ^([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_\-\+\/=]*)
   uuidRegex: ^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$
   adminUsername: administrator@email.com
