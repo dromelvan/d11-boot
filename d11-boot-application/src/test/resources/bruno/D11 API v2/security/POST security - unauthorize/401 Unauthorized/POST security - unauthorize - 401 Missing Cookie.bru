@@ -1,5 +1,5 @@
 meta {
-  name: POST security - unauthorize - Missing Cookie
+  name: POST security - unauthorize - 401 Missing Cookie
   type: http
   seq: 1
 }
@@ -18,8 +18,8 @@ assert {
 tests {
   test("POST security unauthorize missing cookie", () => {
     const setCookie = res.getHeader("set-cookie");
-    
+
     expect(setCookie).to.eq(undefined);
   });
-  
+
 }

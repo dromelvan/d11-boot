@@ -1,22 +1,13 @@
 meta {
-  name: POST security - authenticate - User Non Persistent
+  name: POST security - authorize - 200 User
   type: http
-  seq: 3
+  seq: 4
 }
 
 post {
-  url: {{baseUrl}}/v2/security/authenticate
-  body: json
+  url: {{baseUrl}}/v2/security/authorize
+  body: none
   auth: none
-}
-
-body:json {
-  {
-      "username": "{{userUsername}}",
-      "password": "{{userPassword}}",
-      "persistent": false
-  }
-  
 }
 
 assert {
@@ -24,7 +15,7 @@ assert {
   res.body.user: isDefined
   res.body.jwt: isDefined
   res.body.expiresAt: isDefined
-  res.body.persistent: eq false
+  res.body.persistent: eq true
   res.headers['set-cookie']: neq undefined
 }
 
@@ -32,7 +23,7 @@ tests {
   const { expectToEq } = require('./d11.js');
   const moment = require('moment');
   
-  test("POST security authenticate user non persistent response body", () => {
+  test("POST security authorize user response body", () => {
     const body = res.getBody();    
     const user = JSON.parse(bru.getEnvVar("user"));
     
@@ -47,7 +38,7 @@ tests {
     // we can't know at what exact instant it is created on the server.So, we'll 
     // just check that it is within one minute of 24 hours from now.
     let now = moment();
-    now.add(24 * 60 * 60 - 30, "seconds");
+    now.add(30 * 24 * 60 * 60 - 30, "seconds");
     expect(now.isBefore(expiresAt)).to.eq(true);
     
     now.add(60, "seconds");
@@ -56,7 +47,7 @@ tests {
     bru.setEnvVar("jwt", body.jwt);
   });
   
-  test("POST security authenticate user non persistent non persistent cookie", () => {
+  test("POST security authorize user cookie", () => {
     const setCookie = res.getHeader("set-cookie")[0].split("; ");
     const properties = {};
     
@@ -71,7 +62,7 @@ tests {
   
     const regexp = new RegExp(bru.getEnvVar("uuidRegex"))
     expect(properties.refreshToken).to.match(regexp);
-    expect(parseInt(properties["Max-Age"])).to.eq(24 * 60 * 60);
+    expect(parseInt(properties["Max-Age"])).to.eq(30 * 24 * 60 * 60);
     expect(properties.HttpOnly).to.eq(true);
     expect(properties.SameSite).to.eq("Strict");  
   });
