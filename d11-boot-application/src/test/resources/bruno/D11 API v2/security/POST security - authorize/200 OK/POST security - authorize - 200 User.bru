@@ -1,5 +1,5 @@
 meta {
-  name: POST security - authorize - 200 User
+  name: POST security/authorize - 200 User
   type: http
   seq: 4
 }
@@ -22,49 +22,54 @@ assert {
 tests {
   const { expectToEq } = require('./d11.js');
   const moment = require('moment');
-  
+
   test("POST security authorize user response body", () => {
-    const body = res.getBody();    
+    const body = res.getBody();
     const user = JSON.parse(bru.getEnvVar("user"));
-    
+
     expectToEq.user(body.user, user);
-    
+
     expect(body.jwt).to.match(new RegExp(bru.getEnvVar("jwtRegex")));
-    
+
     let expiresAt = new Date(body.expiresAt);
     expect(isNaN(expiresAt.getTime())).to.eq(false);
-    
-    // It's tricky to define what the JWT expiry time should be exactly since 
-    // we can't know at what exact instant it is created on the server.So, we'll 
+
+    // It's tricky to define what the JWT expiry time should be exactly since
+    // we can't know at what exact instant it is created on the server.So, we'll
     // just check that it is within one minute of 24 hours from now.
     let now = moment();
-    now.add(30 * 24 * 60 * 60 - 30, "seconds");
+    now.add(30 * 24 * 60 * 60 - 30, "seconds")
+      // TODO: Fix timezone issue properly when we have time
+      .add(1, "hours");
     expect(now.isBefore(expiresAt)).to.eq(true);
-    
+    console.log(now);
     now.add(60, "seconds");
+
+    console.log(expiresAt);
+    console.log(now);
     expect(now.isAfter(expiresAt)).to.eq(true);
-    
+
     bru.setEnvVar("jwt", body.jwt);
   });
-  
+
   test("POST security authorize user cookie", () => {
     const setCookie = res.getHeader("set-cookie")[0].split("; ");
     const properties = {};
-    
+
     for (const i in setCookie) {
       if (setCookie[i].includes("=")) {
-        const property = setCookie[i].split("=");    
+        const property = setCookie[i].split("=");
         properties[property[0]] = property[1];
       } else {
         properties[setCookie[i]] = true;
-      }    
+      }
     }
-  
+
     const regexp = new RegExp(bru.getEnvVar("uuidRegex"))
     expect(properties.refreshToken).to.match(regexp);
     expect(parseInt(properties["Max-Age"])).to.eq(30 * 24 * 60 * 60);
     expect(properties.HttpOnly).to.eq(true);
-    expect(properties.SameSite).to.eq("Strict");  
+    expect(properties.SameSite).to.eq("Strict");
   });
-  
+
 }

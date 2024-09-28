@@ -1,5 +1,5 @@
 meta {
-  name: Rollback - PUT seasons - {seasonId}
+  name: Rollback - PUT seasons/{seasonId}
   type: http
   seq: 3
 }
@@ -30,7 +30,7 @@ assert {
 
 script:pre-request {
   const season = JSON.parse(bru.getEnvVar("season"));
-  
+
   const rollbackSeason = {
     name: season.name,
     d11TeamBudget: season.d11TeamBudget,
@@ -39,19 +39,19 @@ script:pre-request {
     date: season.date,
     legacy: season.legacy
   };
-  
+
   bru.setVar("rollbackSeason", JSON.stringify(rollbackSeason));
-  
+
 }
 
 tests {
   const { expectToEq } = require('./d11.js');
-  
+
   test("PUT season response body", () => {
-    const body = res.getBody();    
+    const body = res.getBody();
     const season = JSON.parse(bru.getEnvVar("season"));
-      
+
     expectToEq.season(body.season, season);
   });
-       
+
 }

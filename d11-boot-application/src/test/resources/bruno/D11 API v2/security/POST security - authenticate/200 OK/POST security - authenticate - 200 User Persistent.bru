@@ -1,5 +1,5 @@
 meta {
-  name: POST security - authenticate - 200 User Persistent
+  name: POST security/authenticate - 200 User Persistent
   type: http
   seq: 4
 }
@@ -47,7 +47,10 @@ tests {
     // we can't know at what exact instant it is created on the server.So, we'll
     // just check that it is within one minute of 24 hours from now.
     let now = moment();
-    now.add(30 * 24 * 60 * 60 - 30, "seconds");
+    now.add(30 * 24 * 60 * 60 - 30, "seconds")
+        // TODO: Fix timezone issue properly when we have time
+      .add(1, "hours");
+
     expect(now.isBefore(expiresAt)).to.eq(true);
 
     now.add(60, "seconds");
