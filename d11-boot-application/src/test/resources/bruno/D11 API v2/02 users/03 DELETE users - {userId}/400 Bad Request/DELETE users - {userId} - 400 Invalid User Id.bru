@@ -1,0 +1,25 @@
+meta {
+  name: DELETE users/{userId} - 400 Invalid User Id
+  type: http
+  seq: 1
+}
+
+delete {
+  url: {{baseUrl}}/v2/users/invalid
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq DELETE
+  res.body.path: eq /v2/users/invalid
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq userId
+  res.body.validationErrors[0].error: eq is invalid
+}
