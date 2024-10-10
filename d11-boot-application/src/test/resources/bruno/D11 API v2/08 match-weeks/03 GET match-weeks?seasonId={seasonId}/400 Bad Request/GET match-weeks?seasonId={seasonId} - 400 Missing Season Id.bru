@@ -1,0 +1,21 @@
+meta {
+  name: GET match-weeks?seasonId={seasonId} - 400 Missing Season Id
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/match-weeks
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq GET
+  res.body.path: eq /v2/match-weeks
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq seasonId
+  res.body.validationErrors[0].error: eq is missing
+}

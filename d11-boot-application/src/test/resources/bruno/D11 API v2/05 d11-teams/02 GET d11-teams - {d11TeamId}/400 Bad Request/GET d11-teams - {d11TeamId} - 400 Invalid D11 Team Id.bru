@@ -1,0 +1,21 @@
+meta {
+  name: GET d11-teams/{d11TeamId} - 400 Invalid D11 Team Id
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/d11-teams/invalid
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq GET
+  res.body.path: eq /v2/d11-teams/invalid
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq d11TeamId
+  res.body.validationErrors[0].error: eq is invalid
+}

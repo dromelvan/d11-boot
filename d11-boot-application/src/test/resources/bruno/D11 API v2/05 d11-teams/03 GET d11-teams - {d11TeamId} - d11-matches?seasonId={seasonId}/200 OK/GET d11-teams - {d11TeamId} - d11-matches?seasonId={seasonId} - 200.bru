@@ -1,0 +1,36 @@
+meta {
+  name: GET d11-teams/{d11TeamId}/d11-matches?seasonId={seasonId} - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/d11-teams/{{d11TeamId}}/d11-matches?seasonId={{seasonId}}
+  body: none
+  auth: none
+}
+
+params:query {
+  seasonId: {{seasonId}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.d11Matches: isDefined
+  res.body.d11Matches.length: eq 4
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("GET D11 team matches by season response body", () => {
+    const body = res.getBody();
+    const d11Matches = JSON.parse(bru.getEnvVar("d11TeamD11Matches"));
+
+    for (let i = 0; i < d11Matches.length; ++i) {
+      expectToEq.d11Match(body.d11Matches[i], d11Matches[i]);
+    }
+
+  });
+
+}

@@ -1,0 +1,25 @@
+meta {
+  name: GET matches?matchWeekId={matchWeekId} - 400 Negative Match Week Id
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/matches?matchWeekId=-1
+  body: none
+  auth: none
+}
+
+params:query {
+  matchWeekId: -1
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq GET
+  res.body.path: eq /v2/matches
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq matchWeekId
+  res.body.validationErrors[0].error: eq must be positive
+}

@@ -1,0 +1,32 @@
+meta {
+  name: GET countries - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/countries
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.countries: isDefined r
+  res.body.countries.length: eq 2
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET countries response body", () => {
+    const body = res.getBody();    
+    const countries = JSON.parse(bru.getEnvVar("countries"));
+      
+    for (let i = 0; i < countries.length; ++i) {
+      expectToEq.country(body.countries[i], countries[i]);
+    }
+  
+  });
+       
+}
