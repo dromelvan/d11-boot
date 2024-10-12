@@ -1,0 +1,36 @@
+meta {
+  name: GET d11-matches?matchWeekId={matchWeekId} - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/d11-matches?matchWeekId={{matchWeekId}}
+  body: none
+  auth: none
+}
+
+params:query {
+  matchWeekId: {{matchWeekId}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.d11Matches: isDefined
+  res.body.d11Matches.length: eq 2
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("GET match week D11 matches response body", () => {
+    const body = res.getBody();
+    const d11Matches = JSON.parse(bru.getEnvVar("matchWeekD11Matches"));
+
+    for (let i = 0; i < d11Matches.length; ++i) {
+      expectToEq.d11Match(body.d11Matches[i], d11Matches[i]);
+    }
+
+  });
+
+}

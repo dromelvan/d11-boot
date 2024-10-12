@@ -1,0 +1,25 @@
+meta {
+  name: GET d11-matches/{d11MatchId}/player-match-stats - 400 Invalid D11 Match Id
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/d11-matches/invalid/player-match-stats
+  body: none
+  auth: none
+}
+
+params:query {
+  d11MatchId: invalid
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq GET
+  res.body.path: eq /v2/d11-matches/invalid/player-match-stats
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq d11MatchId
+  res.body.validationErrors[0].error: eq is invalid
+}
