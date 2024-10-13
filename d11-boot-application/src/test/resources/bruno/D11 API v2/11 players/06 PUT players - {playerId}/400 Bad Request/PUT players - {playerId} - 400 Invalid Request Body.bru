@@ -1,0 +1,48 @@
+meta {
+  name: PUT players/{playerId} - 400 Invalid Request Body
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/v2/players/{{playerId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "player": {
+      
+      }
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq PUT
+  res.body.path: eq /v2/players/{{playerId}}
+  res.body.validationErrors: isDefined
+  res.body.validationErrors.length: eq 8
+  res.body.validationErrors[0].property: eq player.country
+  res.body.validationErrors[0].error: eq is missing
+  res.body.validationErrors[1].property: eq player.dateOfBirth
+  res.body.validationErrors[1].error: eq is missing
+  res.body.validationErrors[2].property: eq player.firstName
+  res.body.validationErrors[2].error: eq is missing
+  res.body.validationErrors[3].property: eq player.fullName
+  res.body.validationErrors[3].error: eq is missing
+  res.body.validationErrors[4].property: eq player.height
+  res.body.validationErrors[4].error: eq is missing
+  res.body.validationErrors[5].property: eq player.lastName
+  res.body.validationErrors[5].error: eq is missing
+  res.body.validationErrors[6].property: eq player.premierLeagueId
+  res.body.validationErrors[6].error: eq is missing
+  res.body.validationErrors[7].property: eq player.whoscoredId
+  res.body.validationErrors[7].error: eq is missing
+}

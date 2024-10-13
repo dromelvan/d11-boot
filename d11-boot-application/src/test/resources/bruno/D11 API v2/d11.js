@@ -67,6 +67,14 @@ function player(player1, player2) {
     expect(player1.verified).to.eq(player2.verified);
 }
 
+function playerSearchResult(player1, player2) {
+    expect(player1.id).to.eq(player2.id);
+    expect(player1.name).to.eq(player2.name);
+    expect(player1.teamId).to.eq(player2.teamId);
+    expect(player1.teamName).to.eq(player2.teamName);
+
+}
+
 function season(season1, season2) {
   expect(season1.id).to.eq(season2.id);
   expect(season1.name).to.eq(season2.name);
@@ -234,6 +242,22 @@ function d11TeamSeasonStat(d11TeamSeasonStat1, d11TeamSeasonStat2) {
     season(d11TeamSeasonStat1.season, d11TeamSeasonStat2.season);
 }
 
+function transferDay(transferDay1, transferDay2) {
+    expect(transferDay1.id).to.eq(transferDay2.id);
+    expect(transferDay1.transferDayNumber).to.eq(transferDay2.transferDayNumber);
+    expect(transferDay1.status).to.eq(transferDay2.status);
+    //pm.expect(transferDay1.datetime).to.eq(transferDay2.datetime);
+}
+
+function transfer(transfer1, transfer2) {
+    expect(transfer1.id).to.eq(transfer2.id);
+    expect(transfer1.fee).to.eq(transfer2.fee);
+
+    transferDay(transfer1.transferDay, transfer2.transferDay);
+    player(transfer1.player, transfer2.player);
+    d11Team(transfer1.d11Team, transfer2.d11Team);
+}
+
 const expectToEq = {
     user,
     country,
@@ -242,6 +266,7 @@ const expectToEq = {
     d11Team,
     position,
     player,
+    playerSearchResult,
     season,
     matchWeek,
     match,
@@ -249,7 +274,9 @@ const expectToEq = {
     playerMatchStat,
     playerSeasonStat,
     teamSeasonStat,
-    d11TeamSeasonStat
+    d11TeamSeasonStat,
+    transferDay,
+    transfer
 }
 
 module.exports = {

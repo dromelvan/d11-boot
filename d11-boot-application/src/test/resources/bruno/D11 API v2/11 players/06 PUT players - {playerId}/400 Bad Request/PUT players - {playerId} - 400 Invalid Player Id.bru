@@ -1,0 +1,32 @@
+meta {
+  name: PUT players/{playerId} - 400 Invalid Player Id
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/v2/players/invalid
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "player": {{updatedPlayer}}
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq PUT
+  res.body.path: eq /v2/players/invalid
+  res.body.validationErrors: isDefined
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq playerId
+  res.body.validationErrors[0].error: eq is invalid
+}

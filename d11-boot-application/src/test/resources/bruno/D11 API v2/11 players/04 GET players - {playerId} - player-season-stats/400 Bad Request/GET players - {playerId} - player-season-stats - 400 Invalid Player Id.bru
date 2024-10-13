@@ -1,0 +1,22 @@
+meta {
+  name: GET players/{playerId}/player-season-stats - 400 Negative Player Id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/v2/players/-1/player-season-stats
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq GET
+  res.body.path: eq /v2/players/-1/player-season-stats
+  res.body.validationErrors: isDefined
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq playerId
+  res.body.validationErrors[0].error: eq must be positive
+}

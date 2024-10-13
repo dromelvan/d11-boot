@@ -1,0 +1,39 @@
+meta {
+  name: PUT players/{playerId} - 200 Reset
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/v2/players/{{playerId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "player": {{player}}
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.player: isDefined
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("PUT player response body", () => {
+    const body = res.getBody();
+    const player = JSON.parse(bru.getEnvVar("player"));
+
+    expectToEq.player(body.player, player);
+    expectToEq.country(body.player.country, player.country);
+  });
+
+}

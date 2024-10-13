@@ -1,0 +1,31 @@
+meta {
+  name: GET players/search?name={name} - 200 Exact
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/v2/players/search?name="{{playerSearchName}}"
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.players: isDefined
+  res.body.players.length: eq 1
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("GET search player like response body", () => {
+    const body = res.getBody();
+    const players = JSON.parse(bru.getEnvVar("playerSearchResultExact"));
+
+    for (let i = 0; i < players.length; ++i) {
+      expectToEq.playerSearchResult(body.players[i], players[i]);
+    }
+  });
+
+}
