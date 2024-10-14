@@ -1,0 +1,26 @@
+meta {
+  name: GET player-season-stats?seasonId={seasonId}&page={page} - 400 Negative Season Id
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/player-season-stats?seasonId=-1&page=0
+  body: none
+  auth: none
+}
+
+params:query {
+  seasonId: -1
+  page: 0
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq GET
+  res.body.path: eq /v2/player-season-stats
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq seasonId
+  res.body.validationErrors[0].error: eq must be positive
+}
