@@ -1,5 +1,5 @@
 meta {
-  name: POST players/{playerId} - 200
+  name: POST players - 201
   type: http
   seq: 1
 }
@@ -29,7 +29,7 @@ assert {
 tests {
   const { expectToEq } = require('./d11.js');
 
-  test("PUT player response body", () => {
+  test("POST player response body", () => {
     const body = res.getBody();
     const player = JSON.parse(bru.getEnvVar("newPlayer"));
 

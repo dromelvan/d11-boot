@@ -1,0 +1,48 @@
+meta {
+  name: POST player-season-stats - 201
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/player-season-stats
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "playerSeasonStat": {
+          "playerId": {{newPlayerId}},
+          "teamId": {{teamId}},
+          "positionId": {{positionId}}
+      }
+  }
+
+}
+
+assert {
+  res.status: eq 201
+  res.body.playerSeasonStat: isDefined
+  res.body.playerSeasonStat.id: gt 0
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("POST player season stat response body", () => {
+    const body = res.getBody();
+    const playerSeasonStat = JSON.parse(bru.getEnvVar("newPlayerSeasonStat"));
+
+    playerSeasonStat.id = body.playerSeasonStat.id
+    playerSeasonStat.player.id = body.playerSeasonStat.player.id
+
+    expectToEq.playerSeasonStat(body.playerSeasonStat, playerSeasonStat);
+  });
+
+
+}

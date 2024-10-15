@@ -1,0 +1,38 @@
+meta {
+  name: POST player-season-stats - 400 Invalid Request Body
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/player-season-stats
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "playerSeasonStat": {
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq POST
+  res.body.path: eq /v2/player-season-stats
+  res.body.validationErrors: isDefined
+  res.body.validationErrors.length: eq 3
+  res.body.validationErrors[0].property: eq playerSeasonStat.playerId
+  res.body.validationErrors[0].error: eq is missing
+  res.body.validationErrors[1].property: eq playerSeasonStat.positionId
+  res.body.validationErrors[1].error: eq is missing
+  res.body.validationErrors[2].property: eq playerSeasonStat.teamId
+  res.body.validationErrors[2].error: eq is missing
+}

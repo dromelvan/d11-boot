@@ -1,0 +1,29 @@
+meta {
+  name: POST player-season-stats - 403
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/player-season-stats
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "playerSeasonStat": {
+          "playerId": {{newPlayerId}},
+          "teamId": {{teamId}},
+          "positionId": {{positionId}}
+      }
+  }
+}
+
+assert {
+  res.status: eq 403
+}
