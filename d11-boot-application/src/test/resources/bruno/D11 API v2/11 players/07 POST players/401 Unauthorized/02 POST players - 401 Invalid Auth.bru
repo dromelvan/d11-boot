@@ -1,0 +1,25 @@
+meta {
+  name: POST players - 401 Invalid Auth
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/players
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{expiredJwt}}
+}
+
+body:json {
+  {
+    "player": {{newPlayer}}
+  }
+}
+
+assert {
+  res.status: eq 401
+}

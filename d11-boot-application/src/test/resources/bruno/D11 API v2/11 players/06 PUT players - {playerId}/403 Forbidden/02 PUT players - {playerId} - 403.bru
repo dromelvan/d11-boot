@@ -1,0 +1,25 @@
+meta {
+  name: PUT players/{playerId} - 403
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/v2/players/{{playerId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "player": {{updatedPlayer}}
+  }
+}
+
+assert {
+  res.status: eq 403
+}

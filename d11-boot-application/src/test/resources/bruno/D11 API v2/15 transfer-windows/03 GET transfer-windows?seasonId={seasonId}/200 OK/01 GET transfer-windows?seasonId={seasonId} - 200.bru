@@ -1,0 +1,36 @@
+meta {
+  name: GET transfer-windows?seasonId={seasonId} - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/transfer-windows?seasonId={{seasonId}}
+  body: none
+  auth: none
+}
+
+params:query {
+  seasonId: {{seasonId}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.transferWindows: isDefined
+  res.body.transferWindows.length: eq 2
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET season transfer windows response body", () => {
+    const body = res.getBody();
+    const transferWindows = JSON.parse(bru.getEnvVar("seasonTransferWindows"));
+  
+    for (let i = 0; i < transferWindows.length; ++i) {
+      expectToEq.transferWindow(body.transferWindows[i], transferWindows[i]);
+    }
+  
+  });
+  
+}

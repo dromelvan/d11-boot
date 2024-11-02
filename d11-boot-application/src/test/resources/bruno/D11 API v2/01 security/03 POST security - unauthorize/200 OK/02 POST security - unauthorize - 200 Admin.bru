@@ -1,0 +1,42 @@
+meta {
+  name: POST security/unauthorize - 200 Admin
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/v2/security/unauthorize
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.loggedOut: eq true
+  res.headers['set-cookie']: neq undefined
+}
+
+tests {
+  test("POST security unauthorize admin cookie", () => {
+    const setCookie = res.getHeader("set-cookie")[0].split("; ");
+    const properties = {};
+
+    for (const i in setCookie) {
+      if (setCookie[i].includes("=")) {
+        const property = setCookie[i].split("=");
+        properties[property[0]] = property[1];
+      } else {
+        properties[setCookie[i]] = true;
+      }
+    }
+
+    const regexp = new RegExp(bru.getEnvVar("uuidRegex"))
+    expect(properties.refreshToken).to.match(regexp);
+    expect(parseInt(properties["Max-Age"])).to.eq(0);
+    expect(properties.HttpOnly).to.eq(true);
+    expect(properties.SameSite).to.eq("Strict");
+
+    bru.setEnvVar("jwt", '');
+  });
+
+}

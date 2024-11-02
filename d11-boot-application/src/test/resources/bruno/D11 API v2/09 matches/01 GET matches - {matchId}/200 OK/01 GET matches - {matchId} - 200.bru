@@ -1,0 +1,31 @@
+meta {
+  name: GET matches/{matchId} - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/matches/{{matchId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.match: isDefined
+  res.body.stadium: isDefined
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET match response body", () => {
+    const body = res.getBody();
+    const match = JSON.parse(bru.getEnvVar("match"));
+    const stadium = JSON.parse(bru.getEnvVar("stadium"));
+  
+    expectToEq.match(body.match, match);
+    expectToEq.stadium(body.stadium, stadium);
+  });
+  
+}

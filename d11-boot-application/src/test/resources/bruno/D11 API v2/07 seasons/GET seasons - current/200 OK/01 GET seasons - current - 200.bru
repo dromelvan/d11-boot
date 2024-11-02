@@ -1,0 +1,28 @@
+meta {
+  name: GET seasons/current - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/seasons/current
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.season: isDefined
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("GET season response body", () => {
+    const body = res.getBody();
+    const currentSeason = JSON.parse(bru.getEnvVar("currentSeason"));
+
+    expectToEq.season(body.season, currentSeason);
+  });
+
+}

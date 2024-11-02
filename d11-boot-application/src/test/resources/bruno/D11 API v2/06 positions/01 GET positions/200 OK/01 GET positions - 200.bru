@@ -1,0 +1,32 @@
+meta {
+  name: GET positions - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/positions
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.positions: isDefined
+  res.body.positions.length: eq 4
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET positions response body", () => {
+    const body = res.getBody();    
+    const positions = JSON.parse(bru.getEnvVar("positions"));
+      
+    for (let i = 0; i < positions.length; ++i) {
+      expectToEq.position(body.positions[i], positions[i]);
+    }
+  
+  });
+       
+}

@@ -1,0 +1,16 @@
+meta {
+  name: POST security/authorize - 401 Missing Cookie
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/security/authorize
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+  res.headers['set-cookie']: eq undefined
+}

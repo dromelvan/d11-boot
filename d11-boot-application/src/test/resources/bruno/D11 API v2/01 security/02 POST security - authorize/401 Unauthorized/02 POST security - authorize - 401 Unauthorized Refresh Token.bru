@@ -1,0 +1,21 @@
+meta {
+  name: POST security/authorize - 401 Unauthorized Refresh Token
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/v2/security/authorize
+  body: none
+  auth: none
+}
+
+headers {
+  Cookie: refreshToken=00000000-0000-0000-0000-000000000000
+}
+
+assert {
+  res.status: eq 401
+  res.headers['set-cookie']: neq undefined
+  res.headers['set-cookie']: matches Max-Age=0
+}

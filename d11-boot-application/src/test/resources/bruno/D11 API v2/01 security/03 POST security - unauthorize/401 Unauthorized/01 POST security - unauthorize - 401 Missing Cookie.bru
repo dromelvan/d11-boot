@@ -1,0 +1,25 @@
+meta {
+  name: POST security/unauthorize - 401 Missing Cookie
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/security/unauthorize
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+  res.headers['set-cookie']: eq undefined
+}
+
+tests {
+  test("POST security unauthorize missing cookie", () => {
+    const setCookie = res.getHeader("set-cookie");
+
+    expect(setCookie).to.eq(undefined);
+  });
+
+}

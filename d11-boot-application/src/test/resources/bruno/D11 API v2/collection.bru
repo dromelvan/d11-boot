@@ -1,0 +1,23 @@
+script:pre-request {
+  const moment = require('moment');
+  
+  for (let i = 1; i <= 10; i++) {
+    bru.setVar("datePlus" + i, moment()
+      .add(i, 'days')
+      .format("YYYY-MM-DD"));
+  
+    bru.setVar("dateMinus" + i, moment()
+      .subtract(i, 'days') 
+      .format("YYYY-MM-DD"));
+  
+    // See above
+    bru.setVar("datetimePlus" + i, moment()
+     .add(i, 'days')
+     .format("YYYY-MM-DDT00:01:00"));
+  
+    bru.setVar("datetimeMinus" + i, moment()
+     .subtract(i, 'days')
+     .format("YYYY-MM-DDT00:00:00"));
+  }
+  
+}

@@ -1,0 +1,33 @@
+meta {
+  name: Setup POST players/{playerId} - 201
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/players
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "player": {{newPlayer}}
+  }
+}
+
+assert {
+  res.status: eq 201
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  const body = res.getBody();
+  bru.setEnvVar("newPlayerId", body.player.id);
+  
+}

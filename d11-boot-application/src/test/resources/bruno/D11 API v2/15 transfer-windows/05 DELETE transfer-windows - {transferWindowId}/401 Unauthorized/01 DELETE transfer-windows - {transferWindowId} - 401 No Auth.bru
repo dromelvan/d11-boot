@@ -1,0 +1,15 @@
+meta {
+  name: DELETE transfer-windows/{transferWindowId} - 401 No Auth
+  type: http
+  seq: 1
+}
+
+delete {
+  url: {{baseUrl}}/v2/transfer-windows/{{newTransferWindowId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+}

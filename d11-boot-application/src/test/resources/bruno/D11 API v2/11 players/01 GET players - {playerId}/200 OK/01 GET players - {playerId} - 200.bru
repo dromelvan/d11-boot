@@ -1,0 +1,29 @@
+meta {
+  name: GET players/{playerId} - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/players/{{playerId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.player: isDefined
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("GET player response body", () => {
+    const body = res.getBody();
+    const player = JSON.parse(bru.getEnvVar("player"));
+
+    expectToEq.player(body.player, player);
+    expectToEq.country(body.player.country, player.country);
+  });
+
+}

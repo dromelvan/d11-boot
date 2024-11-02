@@ -1,0 +1,32 @@
+meta {
+  name: GET teams - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/teams
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.teams: isDefined r
+  res.body.teams.length: eq 3
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET teams response body", () => {
+    const body = res.getBody();    
+    const teams = JSON.parse(bru.getEnvVar("teams"));
+      
+    for (let i = 0; i < teams.length; ++i) {
+      expectToEq.team(body.teams[i], teams[i]);
+    }
+  
+  });
+       
+}

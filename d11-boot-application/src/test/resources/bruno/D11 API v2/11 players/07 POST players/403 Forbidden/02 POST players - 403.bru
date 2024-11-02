@@ -1,0 +1,25 @@
+meta {
+  name: POST players - 403
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/players
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "player": {{newPlayer}}
+  }
+}
+
+assert {
+  res.status: eq 403
+}

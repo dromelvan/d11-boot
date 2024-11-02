@@ -1,0 +1,30 @@
+meta {
+  name: POST security/authenticate - 400 Missing Properties
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/security/authenticate
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+
+  }
+
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq POST
+  res.body.path: eq /v2/security/authenticate
+  res.body.validationErrors.length: eq 2
+  res.body.validationErrors[0].property: eq password
+  res.body.validationErrors[0].error: eq is missing
+  res.body.validationErrors[1].property: eq username
+  res.body.validationErrors[1].error: eq is missing
+}

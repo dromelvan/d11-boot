@@ -1,0 +1,30 @@
+meta {
+  name: PUT players/{playerId} - 404 Player Not Found
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/v2/players/0
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "player": {{updatedPlayer}}
+  }
+}
+
+assert {
+  res.status: eq 404
+  res.body.error: eq Not Found
+  res.body.resource: eq Player
+  res.body.id: eq 0
+  res.body.method: eq PUT
+  res.body.path: eq /v2/players/0
+}

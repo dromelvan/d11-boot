@@ -1,0 +1,28 @@
+meta {
+  name: GET match-weeks/current - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/match-weeks/current
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.matchWeek: isDefined
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET match week response body", () => {
+    const body = res.getBody();
+    const matchWeek = JSON.parse(bru.getEnvVar("currentMatchWeek"));
+  
+    expectToEq.matchWeek(body.matchWeek, matchWeek);
+  });
+  
+}

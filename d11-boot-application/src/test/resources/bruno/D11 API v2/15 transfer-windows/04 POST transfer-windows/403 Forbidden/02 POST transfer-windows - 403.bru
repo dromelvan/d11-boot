@@ -1,0 +1,26 @@
+meta {
+  name: POST transfer-windows - 403
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-windows
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "datetime": "{{datetimePlus1}}",
+      "transferDayDelay": 1
+  }
+}
+
+assert {
+  res.status: eq 403
+}

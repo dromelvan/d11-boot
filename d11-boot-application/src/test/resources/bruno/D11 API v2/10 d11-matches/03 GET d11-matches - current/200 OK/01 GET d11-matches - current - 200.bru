@@ -1,0 +1,32 @@
+meta {
+  name: GET d11-matches/current - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/d11-matches/current
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.d11Matches: isDefined
+  res.body.d11Matches.length: eq 6
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET current matches response body", () => {
+    const body = res.getBody();
+    const d11Matches = JSON.parse(bru.getEnvVar("currentD11Matches"));
+  
+    for (let i = 0; i < d11Matches.length; ++i) {
+      expectToEq.d11Match(body.d11Matches[i], d11Matches[i]);
+    }
+  
+  });
+  
+}

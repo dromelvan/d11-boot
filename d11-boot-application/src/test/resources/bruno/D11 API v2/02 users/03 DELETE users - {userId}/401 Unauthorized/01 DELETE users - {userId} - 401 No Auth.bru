@@ -1,0 +1,15 @@
+meta {
+  name: DELETE users/{userId} - 401 No Auth
+  type: http
+  seq: 1
+}
+
+delete {
+  url: {{baseUrl}}/v2/users/{{newUserId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+}

@@ -1,0 +1,26 @@
+meta {
+  name: POST security/authorize - 400 Invalid Refresh Token
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/v2/security/authorize
+  body: none
+  auth: none
+}
+
+headers {
+  Cookie: refreshToken=invalid
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq POST
+  res.body.path: eq /v2/security/authorize
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq refreshToken
+  res.body.validationErrors[0].error: eq Invalid UUID string: invalid
+  res.headers['set-cookie']: eq undefined
+}

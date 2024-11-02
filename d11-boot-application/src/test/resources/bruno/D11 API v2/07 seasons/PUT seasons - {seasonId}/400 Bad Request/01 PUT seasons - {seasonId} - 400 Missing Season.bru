@@ -1,0 +1,31 @@
+meta {
+  name: PUT seasons/{seasonId} - 400 Missing Season
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/v2/seasons/{{seasonId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq PUT
+  res.body.path: eq /v2/seasons/1
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq season
+  res.body.validationErrors[0].error: eq is missing
+}

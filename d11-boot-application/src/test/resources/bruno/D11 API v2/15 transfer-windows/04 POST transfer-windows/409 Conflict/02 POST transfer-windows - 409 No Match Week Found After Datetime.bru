@@ -1,0 +1,31 @@
+meta {
+  name: POST transfer-windows - 409 No Match Week After Datetime
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-windows
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "datetime": "2055-01-01T00:00:00",
+      "transferDayDelay": 1
+  }
+
+}
+
+assert {
+  res.status: eq 409
+  res.body.error: eq Conflict
+  res.body.message: eq No match week found after 2055-01-01
+  res.body.method: eq POST
+  res.body.path: eq /v2/transfer-windows
+}

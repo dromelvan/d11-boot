@@ -1,0 +1,32 @@
+meta {
+  name: GET matches/{matchId}/player-match-stats - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/matches/{{matchId}}/player-match-stats
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.playerMatchStats: isDefined
+  res.body.playerMatchStats.length: eq 3
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET match player match stats response body", () => {
+    const body = res.getBody();
+    const playerMatchStats = JSON.parse(bru.getEnvVar("matchPlayerMatchStats"));
+  
+    for (let i = 0; i < playerMatchStats.length; ++i) {
+      expectToEq.playerMatchStat(body.playerMatchStats[i], playerMatchStats[i]);
+    }
+  
+  });
+  
+}

@@ -1,0 +1,32 @@
+meta {
+  name: GET d11-matches/{d11MatchId}/player-match-stats - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/d11-matches/{{d11MatchId}}/player-match-stats
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.playerMatchStats: isDefined
+  res.body.playerMatchStats.length: eq 10
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET D11 match player match stats response body", () => {
+    const body = res.getBody();
+    const playerMatchStats = JSON.parse(bru.getEnvVar("d11MatchPlayerMatchStats"));
+  
+    for (let i = 0; i < playerMatchStats.length; ++i) {
+      expectToEq.playerMatchStat(body.playerMatchStats[i], playerMatchStats[i]);
+    }
+  
+  });
+  
+}

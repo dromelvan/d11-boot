@@ -1,0 +1,25 @@
+meta {
+  name: GET transfer-days?transferWindowId={transferWindowId} - 400 Negative Transfer Window Id
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/transfer-days?transferWindowId=-1
+  body: none
+  auth: none
+}
+
+params:query {
+  transferWindowId: -1
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq GET
+  res.body.path: eq /v2/transfer-days
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq transferWindowId
+  res.body.validationErrors[0].error: eq must be positive
+}

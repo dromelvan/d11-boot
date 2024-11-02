@@ -1,0 +1,21 @@
+meta {
+  name: POST players - 401 No Auth
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/players
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "player": {{newPlayer}}
+  }
+}
+
+assert {
+  res.status: eq 401
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Setup - Unauthorize User
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/security/unauthorize
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  
+  
+}

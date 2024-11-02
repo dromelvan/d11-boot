@@ -1,0 +1,34 @@
+meta {
+  name: GET transfer-days/current - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/transfer-days/current
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.transferDay: isDefined
+  res.body.transferWindow: isDefined
+  res.body.matchWeek: isDefined
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET current transfer day response body", () => {
+    const body = res.getBody();
+    const transferDay = JSON.parse(bru.getEnvVar("currentTransferDay"));
+    const transferWindow = JSON.parse(bru.getEnvVar("currentTransferDayTransferWindow"));
+    const matchWeek = JSON.parse(bru.getEnvVar("currentTransferDayMatchWeek"));
+  
+    expectToEq.transferDay(body.transferDay, transferDay);
+    expectToEq.transferWindow(body.transferWindow, transferWindow);
+    expectToEq.matchWeek(body.matchWeek, matchWeek);
+  });
+  
+}

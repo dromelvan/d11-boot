@@ -1,0 +1,32 @@
+meta {
+  name: PUT seasons/{seasonId} - 401 Invalid Auth
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/v2/seasons/{{seasonId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{expiredJwt}}
+}
+
+body:json {
+  {
+      "season": {
+          "name": "1970-1971",
+          "d11TeamBudget": 5,
+          "d11TeamMaxTransfers": 1,
+          "status": "Pending",
+          "date": "1970-01-01",
+          "legacy": true
+      }
+  }
+}
+
+assert {
+  res.status: eq 401
+}

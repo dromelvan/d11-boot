@@ -1,0 +1,22 @@
+meta {
+  name: GET actuator - health
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/actuator/health
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.status: eq UP
+}
+
+tests {
+  // THere is no way of gwtting a valid reset password token for a user through the API so we 
+  // can't write a real test for 200 OK here.
+  
+}

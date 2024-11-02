@@ -1,0 +1,36 @@
+meta {
+  name: GET teams/{teamId}/matches?seasonId={seasonId} - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/teams/{{teamId}}/matches?seasonId={{seasonId}}
+  body: none
+  auth: none
+}
+
+params:query {
+  seasonId: {{seasonId}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.matches: isDefined
+  res.body.matches.length: eq 4
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET team matches by season response body", () => {
+    const body = res.getBody();    
+    const matches = JSON.parse(bru.getEnvVar("teamMatches"));
+      
+    for (let i = 0; i < matches.length; ++i) {
+      expectToEq.match(body.matches[i], matches[i]);
+    }
+  
+  });
+       
+}

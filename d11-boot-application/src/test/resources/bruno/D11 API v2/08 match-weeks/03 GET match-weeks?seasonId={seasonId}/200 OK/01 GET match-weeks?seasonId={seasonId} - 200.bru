@@ -1,0 +1,36 @@
+meta {
+  name: GET match-weeks?seasonId={seasonId} - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/match-weeks?seasonId={{seasonId}}
+  body: none
+  auth: none
+}
+
+params:query {
+  seasonId: {{seasonId}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.matchWeeks: isDefined
+  res.body.matchWeeks.length: eq 2
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("GET season match weeks response body", () => {
+    const body = res.getBody();
+    const matchWeeks = JSON.parse(bru.getEnvVar("matchWeeks"));
+
+    for (let i = 0; i < matchWeeks.length; ++i) {
+      expectToEq.matchWeek(body.matchWeeks[i], matchWeeks[i]);
+    }
+
+  });
+
+}

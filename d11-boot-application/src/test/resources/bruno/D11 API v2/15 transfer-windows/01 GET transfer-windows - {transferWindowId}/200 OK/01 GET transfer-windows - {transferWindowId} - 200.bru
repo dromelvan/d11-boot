@@ -1,0 +1,37 @@
+meta {
+  name: GET transfer-windows/{transferWindowId} - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/transfer-windows/{{transferWindowId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.transferWindow: isDefined
+  res.body.matchWeek: isDefined
+  res.body.transferDays.length: eq 2
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET transfer window response body", () => {
+    const body = res.getBody();
+    const transferWindow = JSON.parse(bru.getEnvVar("transferWindow"));
+    const matchWeek = JSON.parse(bru.getEnvVar("transferWindowMatchWeek"));
+    const transferDays = JSON.parse(bru.getEnvVar("transferWindowTransferDays"));
+  
+    expectToEq.transferWindow(body.transferWindow, transferWindow);
+    expectToEq.matchWeekWithoutMVP(body.matchWeek, matchWeek);
+  
+    for (let i = 0; i < transferDays.length; ++i) {
+      expectToEq.transferDay(body.transferDays[i], transferDays[i]);
+    }
+  });
+  
+}

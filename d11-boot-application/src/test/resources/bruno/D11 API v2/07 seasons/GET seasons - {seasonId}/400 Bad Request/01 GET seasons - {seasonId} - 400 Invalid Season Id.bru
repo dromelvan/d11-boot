@@ -1,0 +1,22 @@
+meta {
+  name: GET seasons/{seasonId} - 400 Invalid Season Id
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/seasons/invalid
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq GET
+  res.body.path: eq /v2/seasons/invalid
+  res.body.validationErrors: isDefined
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq seasonId
+  res.body.validationErrors[0].error: eq is invalid
+}

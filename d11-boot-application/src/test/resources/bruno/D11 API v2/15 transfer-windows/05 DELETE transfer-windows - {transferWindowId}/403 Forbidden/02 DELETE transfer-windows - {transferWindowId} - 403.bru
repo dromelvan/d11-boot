@@ -1,0 +1,19 @@
+meta {
+  name: DELETE transfer-windows/{transferWindowId} - 403
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{baseUrl}}/v2/transfer-windows/{{newTransferWindowId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+assert {
+  res.status: eq 403
+}

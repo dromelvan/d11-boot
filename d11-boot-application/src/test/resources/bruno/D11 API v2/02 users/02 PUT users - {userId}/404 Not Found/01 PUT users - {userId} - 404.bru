@@ -1,0 +1,33 @@
+meta {
+  name: PUT users/{userId} - 404
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/v2/users/-1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "currentPassword": "{{userPassword}}",
+      "password": "{{newUserPassword}}",
+      "confirmPassword": "{{newUserPassword}}"
+  }
+
+}
+
+assert {
+  res.status: eq 404
+  res.body.error: eq Not Found
+  res.body.resource: eq User
+  res.body.id: eq -1
+  res.body.method: eq PUT
+  res.body.path: eq /v2/users/-1
+}

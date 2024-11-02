@@ -1,0 +1,34 @@
+meta {
+  name: POST player-season-stats - 404 Team Not Found
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/player-season-stats
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "playerSeasonStat": {
+          "playerId": {{newPlayerId}},
+          "teamId": 123456,
+          "positionId": {{positionId}}
+      }
+  }
+}
+
+assert {
+  res.status: eq 404
+  res.body.error: eq Not Found
+  res.body.resource: eq Team
+  res.body.id: eq 123456
+  res.body.method: eq POST
+  res.body.path: eq /v2/player-season-stats
+}

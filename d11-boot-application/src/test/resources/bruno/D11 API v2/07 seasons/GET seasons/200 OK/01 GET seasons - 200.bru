@@ -1,0 +1,32 @@
+meta {
+  name: GET seasons - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/seasons
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.seasons: isDefined r
+  res.body.seasons.length: eq 2
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET seasons response body", () => {
+    const body = res.getBody();    
+    const seasons = JSON.parse(bru.getEnvVar("seasons"));
+      
+    for (let i = 0; i < seasons.length; ++i) {
+      expectToEq.season(body.seasons[i], seasons[i]);
+    }
+  
+  });
+       
+}

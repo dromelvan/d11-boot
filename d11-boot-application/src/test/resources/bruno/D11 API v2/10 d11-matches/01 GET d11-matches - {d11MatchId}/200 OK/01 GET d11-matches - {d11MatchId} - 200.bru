@@ -1,0 +1,28 @@
+meta {
+  name: GET d11-matches/{d11MatchId} - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/d11-matches/{{d11MatchId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.d11Match: isDefined
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET D11 match response body", () => {
+    const body = res.getBody();
+    const d11Match = JSON.parse(bru.getEnvVar("d11Match"));
+  
+    expectToEq.d11Match(body.d11Match, d11Match);
+  });
+  
+}

@@ -1,0 +1,29 @@
+meta {
+  name: GET d11-teams/{d11TeamId} - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/d11-teams/{{d11TeamId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.d11Team: isDefined
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("GET D11 team response body", () => {
+    const body = res.getBody();
+    const d11Team = JSON.parse(bru.getEnvVar("d11Team"));
+
+    expectToEq.d11Team(body.d11Team, d11Team);
+
+  });
+
+}

@@ -1,0 +1,39 @@
+meta {
+  name: PUT seasons/{seasonId} - 400 Missing Properties
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/v2/seasons/{{seasonId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "season": {}
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq PUT
+  res.body.path: eq /v2/seasons/1
+  res.body.validationErrors.length: eq 5
+  res.body.validationErrors[0].property: eq season.d11TeamBudget
+  res.body.validationErrors[0].error: eq is missing
+  res.body.validationErrors[1].property: eq season.d11TeamMaxTransfers
+  res.body.validationErrors[1].error: eq is missing
+  res.body.validationErrors[2].property: eq season.date
+  res.body.validationErrors[2].error: eq is missing
+  res.body.validationErrors[3].property: eq season.name
+  res.body.validationErrors[3].error: eq is missing
+  res.body.validationErrors[4].property: eq season.status
+  res.body.validationErrors[4].error: eq is missing
+}

@@ -1,0 +1,21 @@
+meta {
+  name: POST security/unauthorize - 200 Unauthorized Refresh Token
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/v2/security/unauthorize
+  body: none
+  auth: none
+}
+
+headers {
+  Cookie: refreshToken=00000000-0000-0000-0000-000000000000
+}
+
+assert {
+  res.status: eq 200
+  res.body.loggedOut: eq true
+  res.headers['set-cookie']: neq undefined
+}

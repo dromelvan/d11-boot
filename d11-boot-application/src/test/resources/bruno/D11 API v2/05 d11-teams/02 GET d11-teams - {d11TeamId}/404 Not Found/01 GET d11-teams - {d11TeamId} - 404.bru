@@ -1,0 +1,20 @@
+meta {
+  name: GET d11-teams/{d11TeamId} - 404
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/d11-teams/-1
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+  res.body.error: eq Not Found
+  res.body.resource: eq D11Team
+  res.body.id: eq -1
+  res.body.method: eq GET
+  res.body.path: eq /v2/d11-teams/-1
+}

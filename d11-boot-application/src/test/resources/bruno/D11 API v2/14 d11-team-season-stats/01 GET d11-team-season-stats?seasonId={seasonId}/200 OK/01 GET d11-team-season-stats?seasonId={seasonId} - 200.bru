@@ -1,0 +1,36 @@
+meta {
+  name: GET d11-team-season-stats?seasonId={seasonId} - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/d11-team-season-stats?seasonId={{seasonId}}
+  body: none
+  auth: none
+}
+
+params:query {
+  seasonId: {{seasonId}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.d11TeamSeasonStats: isDefined
+  res.body.d11TeamSeasonStats.length: eq 2
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("GET season D11 team season stats response body", () => {
+    const body = res.getBody();
+    const d11TeamSeasonStats = JSON.parse(bru.getEnvVar("seasonD11TeamSeasonStats"));
+
+    for (let i = 0; i < d11TeamSeasonStats.length; ++i) {
+      expectToEq.d11TeamSeasonStat(body.d11TeamSeasonStats[i], d11TeamSeasonStats[i]);
+    }
+
+  });
+
+}

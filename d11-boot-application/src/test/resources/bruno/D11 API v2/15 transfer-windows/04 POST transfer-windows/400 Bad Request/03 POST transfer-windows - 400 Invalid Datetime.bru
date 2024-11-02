@@ -1,0 +1,33 @@
+meta {
+  name: POST transfer-windows - 400 Invalid Datetime
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-windows
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "datetime": "1970-01-01T00:00:00",
+      "transferDayDelay": 1
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq POST
+  res.body.path: eq /v2/transfer-windows
+  res.body.validationErrors: isDefined
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq datetime
+  res.body.validationErrors[0].error: eq must be after current datetime
+}

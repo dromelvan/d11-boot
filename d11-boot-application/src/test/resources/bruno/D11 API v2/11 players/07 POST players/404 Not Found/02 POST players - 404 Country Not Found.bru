@@ -1,0 +1,44 @@
+meta {
+  name: POST players/{playerId} - 404 Player Not Found
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/players
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "player": {
+          "firstName": "firstName",
+          "lastName": "lastname",
+          "whoscoredId": "123",
+          "premierLeagueId": "456",
+          "fullName": "fullName",
+          "dateOfBirth": "2024-01-01",
+          "height": "321",
+          "verified": "true",
+          "country": {
+              "id": 123456,
+              "name": "CountryA",
+              "iso": "AA"
+          }
+      }
+  }
+}
+
+assert {
+  res.status: eq 404
+  res.body.error: eq Not Found
+  res.body.resource: eq Country
+  res.body.id: eq 123456
+  res.body.method: eq POST
+  res.body.path: eq /v2/players
+}

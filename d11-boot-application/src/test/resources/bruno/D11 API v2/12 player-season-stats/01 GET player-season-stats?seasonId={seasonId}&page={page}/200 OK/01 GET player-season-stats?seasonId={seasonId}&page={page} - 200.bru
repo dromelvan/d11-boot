@@ -1,0 +1,36 @@
+meta {
+  name: GET player-season-stats?seasonId={seasonId}&page={page} - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/player-season-stats?seasonId={{seasonId}}&page=0
+  body: none
+  auth: none
+}
+
+params:query {
+  seasonId: {{seasonId}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.playerSeasonStats: isDefined
+  res.body.playerSeasonStats.length: eq 2
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET season player season stats response body", () => {
+    const body = res.getBody();
+    const playerSeasonStats = JSON.parse(bru.getEnvVar("seasonPlayerSeasonStats"));
+  
+    for (let i = 0; i < playerSeasonStats.length; ++i) {
+      expectToEq.playerSeasonStat(body.playerSeasonStats[i], playerSeasonStats[i]);
+    }
+  
+  });
+  
+}

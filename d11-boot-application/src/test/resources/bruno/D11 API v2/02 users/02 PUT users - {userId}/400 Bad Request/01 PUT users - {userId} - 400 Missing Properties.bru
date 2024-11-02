@@ -1,0 +1,36 @@
+meta {
+  name: PUT users/{userId} - 400 Missing Properties
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/v2/users/{{userId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+
+  }
+
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq PUT
+  res.body.path: eq /v2/users/1
+  res.body.validationErrors.length: eq 3
+  res.body.validationErrors[0].property: eq confirmPassword
+  res.body.validationErrors[0].error: eq is missing
+  res.body.validationErrors[1].property: eq currentPassword
+  res.body.validationErrors[1].error: eq is missing
+  res.body.validationErrors[2].property: eq password
+  res.body.validationErrors[2].error: eq is missing
+}

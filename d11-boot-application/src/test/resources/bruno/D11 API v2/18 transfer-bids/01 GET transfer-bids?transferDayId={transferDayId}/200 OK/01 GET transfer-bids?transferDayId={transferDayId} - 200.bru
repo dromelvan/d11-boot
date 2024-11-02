@@ -1,0 +1,36 @@
+meta {
+  name: GET transfer-bids?transferDayId={transferDayId} - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/transfer-bids?transferDayId={{transferDayId}}
+  body: none
+  auth: none
+}
+
+params:query {
+  transferDayId: {{transferDayId}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.transferBids: isDefined
+  res.body.transferBids.length: eq 2
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET transfer day transfer bids response body", () => {
+    const body = res.getBody();
+    const transferBids = JSON.parse(bru.getEnvVar("transferDayTransferBids"));
+  
+    for (let i = 0; i < transferBids.length; ++i) {
+      expectToEq.transferBid(body.transferBids[i], transferBids[i]);
+    }
+  
+  });
+  
+}

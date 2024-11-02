@@ -1,0 +1,45 @@
+meta {
+  name: POST transfer-windows - 201
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-windows
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "datetime": "{{datetimePlus1}}",
+      "transferDayDelay": 1
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.transferWindow: isDefined
+  res.body.transferWindow.id: gt 0
+  res.body.transferWindow.transferWindowNumber: eq 2
+  res.body.transferWindow.draft: eq false
+  res.body.transferWindow.status: eq Pending
+  res.body.transferWindow.datetime: eq {{datetimePlus1}}
+  res.body.matchWeek: isDefined
+  res.body.matchWeek.id: eq 5
+  res.body.matchWeek.matchWeekNumber: eq 3
+  res.body.transferDays.length: eq 1
+  res.body.transferDays[0].transferDayNumber: eq 1
+  res.body.transferDays[0].status: eq Pending
+  res.body.transferDays[0].datetime: eq {{datetimePlus2}}
+}
+
+script:post-response {
+  const body = res.getBody();
+  bru.setEnvVar("newTransferWindowId", body.transferWindow.id);
+  
+}

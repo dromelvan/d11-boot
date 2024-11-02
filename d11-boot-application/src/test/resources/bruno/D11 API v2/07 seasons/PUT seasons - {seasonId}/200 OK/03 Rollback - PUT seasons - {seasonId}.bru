@@ -1,0 +1,57 @@
+meta {
+  name: Rollback - PUT seasons/{seasonId}
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/v2/seasons/{{seasonId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "season": {{rollbackSeason}}
+  }
+}
+
+vars:pre-request {
+  rollbackSeason: {}
+}
+
+assert {
+  res.status: eq 200
+}
+
+script:pre-request {
+  const season = JSON.parse(bru.getEnvVar("season"));
+
+  const rollbackSeason = {
+    name: season.name,
+    d11TeamBudget: season.d11TeamBudget,
+    d11TeamMaxTransfers: season.d11TeamMaxTransfers,
+    status: season.status,
+    date: season.date,
+    legacy: season.legacy
+  };
+
+  bru.setVar("rollbackSeason", JSON.stringify(rollbackSeason));
+
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("PUT season response body", () => {
+    const body = res.getBody();
+    const season = JSON.parse(bru.getEnvVar("season"));
+
+    expectToEq.season(body.season, season);
+  });
+
+}

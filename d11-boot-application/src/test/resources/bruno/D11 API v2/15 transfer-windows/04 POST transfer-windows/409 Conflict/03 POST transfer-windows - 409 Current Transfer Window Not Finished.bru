@@ -1,0 +1,31 @@
+meta {
+  name: POST transfer-windows - 409 Current Transfer Window Not Finished
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-windows
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "datetime": "{{datetimePlus1}}",
+      "transferDayDelay": 1
+  }
+
+}
+
+assert {
+  res.status: eq 409
+  res.body.error: eq Conflict
+  res.body.message: eq Current transfer window status is Pending
+  res.body.method: eq POST
+  res.body.path: eq /v2/transfer-windows
+}
