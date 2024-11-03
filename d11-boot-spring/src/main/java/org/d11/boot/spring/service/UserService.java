@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.d11.boot.spring.model.User;
 import org.d11.boot.spring.model.UserRegistration;
 import org.d11.boot.spring.repository.UserRepository;
+import org.d11.boot.spring.security.ConfirmRegistrationLinkMailMessage;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ForbiddenException;
@@ -11,6 +12,7 @@ import org.d11.boot.util.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * User service.
@@ -56,15 +59,24 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
     private final PasswordEncoder passwordEncoder;
 
     /**
+     * Confirm registration email sender.
+     */
+    private final JavaMailSender javaMailSender;
+
+    /**
      * Creates a new user service.
      *
      * @param userRepository  The repository the service will use.
      * @param passwordEncoder Password encoder.
+     * @param javaMailSender  Mail sender for confirm registration emails.
      */
     @Autowired
-    public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder) {
+    public UserService(final UserRepository userRepository,
+                       final PasswordEncoder passwordEncoder,
+                       final JavaMailSender javaMailSender) {
         super(User.class, userRepository);
         this.passwordEncoder = passwordEncoder;
+        this.javaMailSender = javaMailSender;
     }
 
     /**
@@ -82,6 +94,10 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
             throw new BadRequestException("email", IS_MISSING_MESSAGE);
         }
 
+        if (StringUtils.isBlank(userRegistration.getConfirmRegistrationLink())) {
+            throw new BadRequestException("confirmRegistrationLink", IS_MISSING_MESSAGE);
+        }
+
         validatePassword(userRegistration.getPassword(), userRegistration.getConfirmPassword());
 
         if (getJpaRepository().findByName(userRegistration.getName()).isPresent()) {
@@ -96,8 +112,15 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
         user.setName(userRegistration.getName());
         user.setEmail(userRegistration.getEmail());
         user.setEncryptedPassword(this.passwordEncoder.encode(userRegistration.getPassword()));
+        user.setConfirmRegistrationToken(UUID.randomUUID());
 
-        return getJpaRepository().save(user);
+        final User savedUser = getJpaRepository().save(user);
+
+        final ConfirmRegistrationLinkMailMessage confirmRegistrationLinkMailMessage
+                = new ConfirmRegistrationLinkMailMessage(user, userRegistration.getConfirmRegistrationLink());
+        this.javaMailSender.send(confirmRegistrationLinkMailMessage);
+
+        return savedUser;
     }
 
     /**

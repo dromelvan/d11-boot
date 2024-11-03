@@ -30,4 +30,9 @@ public class UserRegistration {
      */
     private String confirmPassword;
 
+    /**
+     * Confirm registration link.
+     */
+    private String confirmRegistrationLink;
+
 }

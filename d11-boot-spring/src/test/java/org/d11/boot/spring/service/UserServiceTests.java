@@ -3,6 +3,7 @@ package org.d11.boot.spring.service;
 import org.d11.boot.spring.model.User;
 import org.d11.boot.spring.model.UserRegistration;
 import org.d11.boot.spring.repository.UserRepository;
+import org.d11.boot.spring.security.ConfirmRegistrationLinkMailMessage;
 import org.d11.boot.spring.security.JwtBuilder;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
@@ -14,6 +15,7 @@ import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationContext;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -72,6 +74,16 @@ class UserServiceTests extends BaseD11BootServiceTests {
     private static final String INVALID_USER_NAME = "INVALID_USER_NAME";
 
     /**
+     * Register confirmation link property.
+     */
+    private static final String CONFIRM_REGISTRATION_LINK_PROPERTY = "confirmRegistrationLink";
+
+    /**
+     * Register confirmation link.
+     */
+    private static final String CONFIRM_REGISTRATION_LINK = "http://example.com/?email=%s&confirmRegistrationToken=%s";
+
+    /**
      * Mocked user repository.
      */
     @Mock
@@ -102,6 +114,12 @@ class UserServiceTests extends BaseD11BootServiceTests {
     private ApplicationContext applicationContext;
 
     /**
+     * Mocked Java mail sender.
+     */
+    @Mock
+    private JavaMailSender javaMailSender;
+
+    /**
      * User service.
      */
     @InjectMocks
@@ -111,12 +129,13 @@ class UserServiceTests extends BaseD11BootServiceTests {
      * Tests UserService::createUser.
      */
     @Test
-    @SuppressWarnings("checkstyle:ExecutableStatementCount")
+    @SuppressWarnings({ "PMD.ExcessiveMethodLength", "checkstyle:ExecutableStatementCount" })
     void testCreateUser() {
         final UserRegistration userRegistration = new UserRegistration();
         userRegistration.setEmail(EMAIL_PROPERTY);
         userRegistration.setPassword(PASSWORD_PROPERTY);
         userRegistration.setConfirmPassword(PASSWORD_PROPERTY);
+        userRegistration.setConfirmRegistrationLink(CONFIRM_REGISTRATION_LINK);
 
         // Name --------------------------------------------------------------------------------------------------------
 
@@ -151,6 +170,17 @@ class UserServiceTests extends BaseD11BootServiceTests {
                      "UserService::createUser email unavailable throws");
 
         userRegistration.setEmail(EMAIL_PROPERTY);
+
+        // Confirm registration link -----------------------------------------------------------------------------------
+
+        userRegistration.setConfirmRegistrationLink(null);
+        exception = assertThrows(BadRequestException.class,
+                                 () -> this.userService.createUser(userRegistration),
+                                 "UserService::createUser confirmRegistrationLink missing throws");
+        assertEquals(CONFIRM_REGISTRATION_LINK_PROPERTY, exception.getParameter(),
+                     "UserService::createUser confirmRegistrationLink missing parameter equals");
+
+        userRegistration.setConfirmRegistrationLink(CONFIRM_REGISTRATION_LINK);
 
         // Password-----------------------------------------------------------------------------------------------------
 
@@ -197,8 +227,10 @@ class UserServiceTests extends BaseD11BootServiceTests {
         assertEquals(userRegistration.getEmail(), user.getEmail(), "UserService::createUser email equals");
         assertEquals(encodedPassword, user.getEncryptedPassword(), "UserService::createUser encryptedPassword equals");
         assertFalse(user.isAdministrator(), "UserService::createUser administrator");
+        assertNotNull(user.getConfirmRegistrationToken(), "UserService::createUser confirmRegistrationToken");
 
         verify(this.userRepository, times(1)).save(eq(user));
+        verify(this.javaMailSender, times(1)).send(any(ConfirmRegistrationLinkMailMessage.class));
     }
 
     /**
