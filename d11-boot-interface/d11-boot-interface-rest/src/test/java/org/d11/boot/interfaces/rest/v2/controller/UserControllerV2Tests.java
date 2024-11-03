@@ -44,17 +44,20 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
      * Tests UserController::createUser.
      */
     @Test
+    @SuppressWarnings({ "PMD.ExcessiveMethodLength", "checkstyle:ExecutableStatementCount" })
     void testCreateUser() {
         final UserApi userApi = getApi(UserApi.class);
 
         final String name = "name";
         final String email = "email@email.com";
         final String confirmPassword = "confirmPassword";
+        final String confirmRegistrationLink = "link?%s&%s";
 
         final CreateUserRequestBodyDTO createUserRequestBodyDTO = new CreateUserRequestBodyDTO()
                 .email(email)
                 .password(PASSWORD)
-                .confirmPassword(PASSWORD);
+                .confirmPassword(PASSWORD)
+                .confirmRegistrationLink(confirmRegistrationLink);
 
         assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO),
                      "UserController::createUser name missing throws");
@@ -79,21 +82,30 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
         assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO),
                      "UserController::createUser password/confirmPassword don't match throws");
 
-        createUserRequestBodyDTO.confirmPassword(PASSWORD);
+        createUserRequestBodyDTO.confirmPassword(PASSWORD).confirmRegistrationLink(null);
+        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO),
+                     "UserController::createUser confirmRegistrationLink missing throws");
 
+        createUserRequestBodyDTO.confirmRegistrationLink(confirmRegistrationLink);
+
+        final long count = this.userRepository.count();
         final User existingUser = this.userRepository.findAll().get(0);
 
         createUserRequestBodyDTO.name(existingUser.getName());
-        assertThrows(FeignException.Conflict.class, () -> userApi.createUser(createUserRequestBodyDTO),
-                     "UserController::createUser name unavailable throws");
+        assertDoesNotThrow(() -> userApi.createUser(createUserRequestBodyDTO),
+                           "UserController::createUser name unavailable does not throws");
+        assertEquals(count, this.userRepository.count(), "UserController::createUser name unavailable count equals");
 
         createUserRequestBodyDTO.name(name).email(existingUser.getEmail());
-        assertThrows(FeignException.Conflict.class, () -> userApi.createUser(createUserRequestBodyDTO),
-                     "UserController::createUser email unavailable throws");
+        assertDoesNotThrow(() -> userApi.createUser(createUserRequestBodyDTO),
+                           "UserController::createUser email unavailable does not throws");
+        assertEquals(count, this.userRepository.count(), "UserController::createUser email unavailable count equals");
 
         createUserRequestBodyDTO.email(email);
 
         final UserResponseBodyDTO userResponseBodyDTO = userApi.createUser(createUserRequestBodyDTO);
+
+        assertEquals(count + 1, this.userRepository.count(), "UserController::createUser count equals");
 
         final User user = this.userRepository.findByName(userResponseBodyDTO.getUser().getName()).orElse(null);
 
@@ -103,6 +115,8 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
         assertTrue(this.passwordEncoder.matches(PASSWORD, user.getEncryptedPassword()),
                    "UserController::createUser user password matches");
         assertFalse(user.isAdministrator(), "UserController::createUser user isAdministrator");
+        assertNotNull(user.getConfirmRegistrationToken(),
+                      "UserController::createUser user confirmRegistrationToken not null");
     }
 
     /**

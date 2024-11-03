@@ -11,6 +11,7 @@ import org.d11.boot.spring.model.UserRegistration;
 import org.d11.boot.spring.security.RoleAdmin;
 import org.d11.boot.spring.security.RoleUser;
 import org.d11.boot.spring.service.UserService;
+import org.d11.boot.util.exception.ConflictException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +36,19 @@ public class UserControllerV2 extends RepositoryServiceController<UserService> i
     @Override
     public ResponseEntity<UserResponseBodyDTO> createUser(final CreateUserRequestBodyDTO createUserRequestBodyDTO) {
         final UserRegistration userRegistration = map(createUserRequestBodyDTO, UserRegistration.class);
-        final User user = getRepositoryService().createUser(userRegistration);
-        final UserResponseBodyDTO userResponseBodyDTO = new UserResponseBodyDTO()
-                .user(map(user, UserDTO.class));
+
+        UserResponseBodyDTO userResponseBodyDTO;
+        try {
+            final User user = getRepositoryService().createUser(userRegistration);
+            userResponseBodyDTO = new UserResponseBodyDTO()
+                    .user(map(user, UserDTO.class));
+        } catch (final ConflictException e) {
+            // Return CREATED even if there's a conflict to prevent user fishing
+            userResponseBodyDTO = new UserResponseBodyDTO()
+                    .user(new UserDTO()
+                                  .name(createUserRequestBodyDTO.getName())
+                                  .administrator(false));
+        }
         return new ResponseEntity<>(userResponseBodyDTO, HttpStatus.CREATED);
     }
 
