@@ -12,7 +12,7 @@ post {
 
 body:json {
   {
-
+  
   }
 }
 
@@ -21,14 +21,15 @@ assert {
   res.body.error: eq Bad Request
   res.body.method: eq POST
   res.body.path: eq /v2/users
-  res.body.validationErrors.length: eq 4
+  res.body.validationErrors.length: eq 5
   res.body.validationErrors[0].property: eq confirmPassword
   res.body.validationErrors[0].error: eq is missing
-  res.body.validationErrors[1].property: eq email
+  res.body.validationErrors[1].property: eq confirmRegistrationLink
   res.body.validationErrors[1].error: eq is missing
-  res.body.validationErrors[2].property: eq name
+  res.body.validationErrors[2].property: eq email
   res.body.validationErrors[2].error: eq is missing
-  res.body.validationErrors[3].property: eq password
+  res.body.validationErrors[3].property: eq name
   res.body.validationErrors[3].error: eq is missing
-
+  res.body.validationErrors[4].property: eq password
+  res.body.validationErrors[4].error: eq is missing
 }
