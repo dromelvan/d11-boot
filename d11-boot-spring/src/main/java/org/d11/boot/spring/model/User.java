@@ -45,6 +45,12 @@ public class User extends D11Entity {
     private boolean administrator;
 
     /**
+     * Token that must be provided and match in order to confirm registration.
+     */
+    @Convert(converter = UuidConverter.class)
+    private UUID confirmRegistrationToken;
+
+    /**
      * Token that must be provided and match in order to reset the user password.
      */
     @Convert(converter = UuidConverter.class)

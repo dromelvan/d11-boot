@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS application_user (
     email VARCHAR(255) NOT NULL,
     encrypted_password VARCHAR(255) NOT NULL,
     administrator BOOLEAN NOT NULL DEFAULT false,
+    confirm_registration_token VARCHAR(36),
     reset_password_token VARCHAR(36),
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp,
     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp

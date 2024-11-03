@@ -36,6 +36,21 @@ class UserRepositoryTests extends AbstractRepositoryTests<User, UserRepository> 
     }
 
     /**
+     * Tests UserRepository::findByEmailAndConfirmRegistrationToken.
+     */
+    @Test
+    void testFindByEmailAndConfirmRegistrationToken() {
+        getEntities().forEach(user -> {
+            final User result = getRepository().findByEmailAndConfirmRegistrationToken(
+                    user.getEmail(),
+                    user.getConfirmRegistrationToken()
+                ).orElse(null);
+            assertNotNull(result, "UserRepository::findByEmailAndConfirmRegistrationToken not null");
+            assertEquals(user, result, "UserRepository::findByEmailAndConfirmRegistrationToken equals");
+        });
+    }
+
+    /**
      * Tests UserRepository::findByEmailAndResetPasswordToken.
      */
     @Test
@@ -44,8 +59,8 @@ class UserRepositoryTests extends AbstractRepositoryTests<User, UserRepository> 
             final User result = getRepository().findByEmailAndResetPasswordToken(user.getEmail(),
                                                                                  user.getResetPasswordToken())
                 .orElse(null);
-            assertNotNull(result, "UserRepository::findByResetPasswordToken not null");
-            assertEquals(user, result, "UserRepository::findByResetPasswordToken equals");
+            assertNotNull(result, "UserRepository::findByEmailAndResetPasswordToken not null");
+            assertEquals(user, result, "UserRepository::findByEmailAndResetPasswordToken equals");
         });
     }
 

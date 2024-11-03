@@ -1,8 +1,8 @@
 -- User
-INSERT INTO application_user (name, email, encrypted_password, administrator)
-    VALUES('User', 'user@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', false);
-INSERT INTO application_user (name, email, encrypted_password, administrator)
-    VALUES('Administrator', 'administrator@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', true);
+INSERT INTO application_user (name, email, encrypted_password, administrator, confirm_registration_token, reset_password_token)
+    VALUES('User', 'user@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', false, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111');
+INSERT INTO application_user (name, email, encrypted_password, administrator, confirm_registration_token, reset_password_token)
+    VALUES('Administrator', 'administrator@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', true, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '22222222-2222-2222-2222-222222222222');
 
 -- Refresh Token
 INSERT INTO refresh_token (application_user_id, uuid, expires_at)
