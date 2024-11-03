@@ -1888,12 +1888,9 @@ components:
     User:
       type: object
       required:
-        - id
         - name
         - administrator
       properties:
-        id:
-          $ref: '#/components/schemas/Id'
         name:
           type: string
         administrator:

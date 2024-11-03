@@ -190,7 +190,7 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
                 .confirmPassword(newPassword);
 
         final UserResponseBodyDTO userResponseBodyDTO = userApi.updateUser(user.getId(), updateUserRequestBodyDTO);
-        final User result = this.userRepository.findById(userResponseBodyDTO.getUser().getId()).orElse(null);
+        final User result = this.userRepository.findByName(userResponseBodyDTO.getUser().getName()).orElse(null);
 
         assertNotNull(result, "UserController::updateUser result not null");
         assertEquals(user.getId(), result.getId(), "UserController::updateUser result id equals");
