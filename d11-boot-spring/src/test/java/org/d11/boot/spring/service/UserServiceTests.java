@@ -1,6 +1,7 @@
 package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.User;
+import org.d11.boot.spring.model.UserConfirmation;
 import org.d11.boot.spring.model.UserRegistration;
 import org.d11.boot.spring.repository.UserRepository;
 import org.d11.boot.spring.security.ConfirmRegistrationLinkMailMessage;
@@ -25,10 +26,13 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -82,6 +86,11 @@ class UserServiceTests extends BaseD11BootServiceTests {
      * Register confirmation link.
      */
     private static final String CONFIRM_REGISTRATION_LINK = "http://example.com/?email=%s&confirmRegistrationToken=%s";
+
+    /**
+     * Conform registration token property.
+     */
+    private static final String CONFIRM_REGISTRATION_TOKEN_PROPERTY = "confirmRegistrationToken";
 
     /**
      * Mocked user repository.
@@ -231,6 +240,65 @@ class UserServiceTests extends BaseD11BootServiceTests {
 
         verify(this.userRepository, times(1)).save(eq(user));
         verify(this.javaMailSender, times(1)).send(any(ConfirmRegistrationLinkMailMessage.class));
+    }
+
+    /**
+     * Tests UserService::confirmUser.
+     */
+    @Test
+    @SuppressWarnings({ "PMD.ExcessiveMethodLength", "checkstyle:ExecutableStatementCount" })
+    void testConfirmUser() {
+        final UUID confirmRegistrationToken = UUID.randomUUID();
+
+        final UserConfirmation userConfirmation = new UserConfirmation();
+        userConfirmation.setConfirmRegistrationToken(confirmRegistrationToken);
+
+        // Email -------------------------------------------------------------------------------------------------------
+
+        BadRequestException exception = assertThrows(BadRequestException.class,
+                                 () -> this.userService.confirmUser(userConfirmation),
+                                 "UserService::confirmUser email missing throws");
+        assertEquals(EMAIL_PROPERTY, exception.getParameter(),
+                     "UserService::confirmUser email missing parameter equals");
+
+        userConfirmation.setEmail(EMAIL_PROPERTY);
+
+        // Confirm registration token ----------------------------------------------------------------------------------
+
+        userConfirmation.setConfirmRegistrationToken(null);
+
+        exception = assertThrows(BadRequestException.class,
+                                 () -> this.userService.confirmUser(userConfirmation),
+                                 "UserService::confirmUser confirmRegistrationToken missing throws");
+        assertEquals(CONFIRM_REGISTRATION_TOKEN_PROPERTY, exception.getParameter(),
+                     "UserService::confirmUser confirmRegistrationToken missing parameter equals");
+
+        userConfirmation.setConfirmRegistrationToken(confirmRegistrationToken);
+
+        // Invalid user/token ------------------------------------------------------------------------------------------
+
+        when(this.userRepository
+                .findByEmailAndConfirmRegistrationToken(eq(EMAIL_PROPERTY), eq(confirmRegistrationToken)))
+                .thenReturn(Optional.empty());
+
+        assertThrows(UnauthorizedException.class,
+                     () -> this.userService.confirmUser(userConfirmation),
+                     "UserService::confirmUser invalid user/token throws");
+
+        // OK ----------------------------------------------------------------------------------------------------------
+
+        final User user = new User();
+        user.setConfirmRegistrationToken(confirmRegistrationToken);
+
+        when(this.userRepository
+                .findByEmailAndConfirmRegistrationToken(eq(EMAIL_PROPERTY), eq(confirmRegistrationToken)))
+                .thenReturn(Optional.of(user));
+
+        assertDoesNotThrow(() -> this.userService.confirmUser(userConfirmation));
+
+        assertNull(user.getConfirmRegistrationToken(), "UserService::confirmUser confirmRegistrationToken null");
+
+        verify(this.userRepository, times(1)).save(eq(user));
     }
 
     /**

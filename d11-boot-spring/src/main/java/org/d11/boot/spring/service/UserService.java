@@ -2,6 +2,7 @@ package org.d11.boot.spring.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.d11.boot.spring.model.User;
+import org.d11.boot.spring.model.UserConfirmation;
 import org.d11.boot.spring.model.UserRegistration;
 import org.d11.boot.spring.repository.UserRepository;
 import org.d11.boot.spring.security.ConfirmRegistrationLinkMailMessage;
@@ -32,6 +33,11 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
      * Name of the user cache defined in application.yaml.
      */
     private static final String USER_DETAILS_CACHE = "userDetailsCache";
+
+    /**
+     * Email property name.
+     */
+    private static final String EMAIL_PROPERTY = "email";
 
     /**
      * Password property name.
@@ -91,7 +97,7 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
         }
 
         if (StringUtils.isBlank(userRegistration.getEmail())) {
-            throw new BadRequestException("email", IS_MISSING_MESSAGE);
+            throw new BadRequestException(EMAIL_PROPERTY, IS_MISSING_MESSAGE);
         }
 
         if (StringUtils.isBlank(userRegistration.getConfirmRegistrationLink())) {
@@ -124,6 +130,29 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
     }
 
     /**
+     * Confirms registration of a new user.
+     *
+     * @param userConfirmation User confirmation properties.
+     */
+    public void confirmUser(final UserConfirmation userConfirmation) {
+        if (StringUtils.isBlank(userConfirmation.getEmail())) {
+            throw new BadRequestException(EMAIL_PROPERTY, IS_MISSING_MESSAGE);
+        }
+
+        if (userConfirmation.getConfirmRegistrationToken() == null) {
+            throw new BadRequestException("confirmRegistrationToken", IS_MISSING_MESSAGE);
+        }
+
+        final User user = getJpaRepository()
+                .findByEmailAndConfirmRegistrationToken(userConfirmation.getEmail(),
+                                                        userConfirmation.getConfirmRegistrationToken())
+                .orElseThrow(UnauthorizedException::new);
+
+        user.setConfirmRegistrationToken(null);
+        getJpaRepository().save(user);
+    }
+
+    /**
      * Updates a user password.
      *
      * @param userId          ID of the user.
@@ -147,7 +176,7 @@ public class UserService extends RepositoryService<User, UserRepository> impleme
         final User currentUser = getCurrentUser().orElseThrow(UnauthorizedException::new);
 
         if (!Objects.equals(currentUser.getId(), user.getId())
-                || !this.passwordEncoder.matches(currentPassword, currentUser.getEncryptedPassword())) {
+            || !this.passwordEncoder.matches(currentPassword, currentUser.getEncryptedPassword())) {
             throw new ForbiddenException();
         }
 
