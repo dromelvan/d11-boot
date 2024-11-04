@@ -28,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -117,7 +118,14 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Test
     void testAuthenticateNonPersistent() {
-        this.userRepository.findAll().forEach(user -> {
+        final List<User> users = this.userRepository.findAll().stream()
+                .filter(user -> user.getConfirmRegistrationToken() == null)
+                .toList();
+
+        assertFalse(users.isEmpty(),
+                    "SecurityController::authenticate non persistent users empty");
+
+        users.forEach(user -> {
             final AuthenticationResponseBodyDTO result = authenticate(user, false);
             assertNotNull(result, "SecurityController::authenticate non persistent not null");
 
@@ -171,7 +179,14 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Test
     void testAuthenticatePersistent() {
-        this.userRepository.findAll().forEach(user -> {
+        final List<User> users = this.userRepository.findAll().stream()
+                .filter(user -> user.getConfirmRegistrationToken() == null)
+                .toList();
+
+        assertFalse(users.isEmpty(),
+                    "SecurityController::authenticate persistent users empty");
+
+        users.forEach(user -> {
             final AuthenticationResponseBodyDTO result = authenticate(user, true);
             assertNotNull(result, "SecurityController::authenticate persistent not null");
 
@@ -218,6 +233,23 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
     }
 
     /**
+     * Tests SecurityController::authenticate for an unconfirmed user.
+     */
+    @Test
+    void testAuthenticateUnconfirmed() {
+        final List<User> users = this.userRepository.findAll().stream()
+                .filter(user -> user.getConfirmRegistrationToken() != null)
+                .toList();
+
+        assertFalse(users.isEmpty(),
+                    "SecurityController::authenticate unconfirmed users empty");
+
+        users.forEach(user -> assertThrows(FeignException.Unauthorized.class,
+                                           () -> authenticate(user, true),
+                                           "SecurityController::authenticate unconfirmed bad request"));
+    }
+
+    /**
      * Tests SecurityController::authenticate for a bad request.
      */
     @Test
@@ -261,7 +293,15 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
     @Test
     void testAuthorizeNonPersistent() {
         final SecurityApi securityApi = getUserApi(SecurityApi.class);
-        this.userRepository.findAll().forEach(user -> {
+
+        final List<User> users = this.userRepository.findAll().stream()
+                .filter(user -> user.getConfirmRegistrationToken() == null)
+                .toList();
+
+        assertFalse(users.isEmpty(),
+                    "SecurityController::authorize non persistent users empty");
+
+        users.forEach(user -> {
             authenticate(user, false);
 
             final UUID authenticationUuid = this.refreshTokenCookieDecoder.getCookieValue();
@@ -310,14 +350,20 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
     }
 
     /**
-     * Tests SecurityController::authorize for a non persistent authentication.
+     * Tests SecurityController::authorize for a persistent authentication.
      */
     @Test
     void testAuthorizePersistent() {
         final SecurityApi securityApi = getUserApi(SecurityApi.class);
-        this.userRepository.findAll().forEach(user -> {
-            authenticate(user, true);
+        final List<User> users = this.userRepository.findAll().stream()
+                .filter(user -> user.getConfirmRegistrationToken() == null)
+                .toList();
 
+        assertFalse(users.isEmpty(),
+                    "SecurityController::authorize persistent users empty");
+
+        users.forEach(user -> {
+            authenticate(user, true);
             final UUID authenticationUuid = this.refreshTokenCookieDecoder.getCookieValue();
 
             final RefreshToken authenticationRefreshToken
@@ -373,7 +419,14 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
     @Test
     void testReAuthorize() {
         final SecurityApi securityApi = getUserApi(SecurityApi.class);
-        this.userRepository.findAll().forEach(user -> {
+        final List<User> users = this.userRepository.findAll().stream()
+            .filter(user -> user.getConfirmRegistrationToken() == null)
+            .toList();
+
+        assertFalse(users.isEmpty(),
+                    "SecurityController::authorize reauthorize users empty");
+
+        users.forEach(user -> {
             authenticate(user, true);
 
             final UUID authenticationUuid = this.refreshTokenCookieDecoder.getCookieValue();
@@ -456,7 +509,14 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
     @Test
     void testUnauthorize() {
         final SecurityApi securityApi = getUserApi(SecurityApi.class);
-        this.userRepository.findAll().forEach(user -> {
+        final List<User> users = this.userRepository.findAll().stream()
+                .filter(user -> user.getConfirmRegistrationToken() == null)
+                .toList();
+
+        assertFalse(users.isEmpty(),
+                    "SecurityController::unauthorize users empty");
+
+        users.forEach(user -> {
             authenticate(user, true);
 
             final UUID authenticationUuid = this.refreshTokenCookieDecoder.getCookieValue();
@@ -494,7 +554,14 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
     @Test
     void testReUnauthorize() {
         final SecurityApi securityApi = getUserApi(SecurityApi.class);
-        this.userRepository.findAll().forEach(user -> {
+        final List<User> users = this.userRepository.findAll().stream()
+                .filter(user -> user.getConfirmRegistrationToken() == null)
+                .toList();
+
+        assertFalse(users.isEmpty(),
+                    "SecurityController::unauthorize reunauthorize users empty");
+
+        users.forEach(user -> {
             authenticate(user, true);
 
             final UUID authenticationUuid = this.refreshTokenCookieDecoder.getCookieValue();

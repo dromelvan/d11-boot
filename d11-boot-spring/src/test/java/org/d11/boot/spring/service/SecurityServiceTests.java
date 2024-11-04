@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -100,6 +101,7 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
 
         users.forEach(user -> {
             user.setEncryptedPassword(PASSWORD);
+            user.setConfirmRegistrationToken(null);
 
             assertThrows(BadCredentialsException.class,
                          () -> this.securityService.authenticate(user.getEmail(), user.getEncryptedPassword(), false),
@@ -144,6 +146,7 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
 
         users.forEach(user -> {
             user.setEncryptedPassword(PASSWORD);
+            user.setConfirmRegistrationToken(null);
 
             assertThrows(BadCredentialsException.class,
                          () -> this.securityService.authenticate(user.getEmail(), user.getEncryptedPassword(), true),
@@ -171,6 +174,27 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
                        "SecurityService::authenticate persistent refresh token expires at");
         });
 
+    }
+
+    /**
+     * Tests SecurityServiceTests::authenticate for an unconfirmed user.
+     */
+    @Test
+    void testAuthenticateUnconfirmed() {
+        final List<User> users = generateList(User.class);
+
+        when(this.userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        users.forEach(user -> {
+            user.setEncryptedPassword(PASSWORD);
+            user.setConfirmRegistrationToken(UUID.randomUUID());
+
+            when(this.userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+            assertThrows(BadCredentialsException.class,
+                         () -> this.securityService.authenticate(user.getEmail(), user.getEncryptedPassword(), true),
+                         "SecurityService::authenticate unconfirmed bad credentials");
+        });
     }
 
     /**

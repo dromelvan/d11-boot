@@ -95,7 +95,8 @@ public class SecurityService extends D11BootService {
         final User user = this.userRepository.findByEmail(username)
             .orElseThrow(() -> new BadCredentialsException(AUTHENTICATION_FAILED_MESSAGE));
 
-        if (this.passwordEncoder.matches(password, user.getEncryptedPassword())) {
+        if (user.getConfirmRegistrationToken() == null
+            && this.passwordEncoder.matches(password, user.getEncryptedPassword())) {
             final LocalDateTime expiresAt = persistent
                 ? LocalDateTime.now().plusDays(Authentication.PERSISTENT_DAYS_VALID)
                 : LocalDateTime.now().plusDays(1L);
