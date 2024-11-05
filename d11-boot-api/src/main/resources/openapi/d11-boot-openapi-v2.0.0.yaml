@@ -239,6 +239,28 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/users/confirm:
+    post:
+      tags:
+        - user
+      summary: Confirms a user registration.
+      security: []
+      operationId: confirmUser
+      requestBody:
+        description: Confirm user registration.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfirmUserRequestBody"
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Countries ----------------------------------------------------------------------------------------------------------
 
   /v2/countries:
@@ -1916,6 +1938,19 @@ components:
           type: string
         confirmRegistrationLink:
           type: string
+
+    ConfirmUserRequestBody:
+      type: object
+      required:
+        - email
+        - confirmRegistrationToken
+      properties:
+        email:
+          type: string
+          format: email
+        confirmRegistrationToken:
+          type: string
+          format: uuid
 
     UpdateUserRequestBody:
       type: object

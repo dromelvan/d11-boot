@@ -2,6 +2,7 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import feign.FeignException;
 import org.d11.boot.api.v2.client.UserApi;
+import org.d11.boot.api.v2.model.ConfirmUserRequestBodyDTO;
 import org.d11.boot.api.v2.model.CreateUserRequestBodyDTO;
 import org.d11.boot.api.v2.model.UpdateUserRequestBodyDTO;
 import org.d11.boot.api.v2.model.UserResponseBodyDTO;
@@ -11,10 +12,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -117,6 +121,55 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
         assertFalse(user.isAdministrator(), "UserController::createUser user isAdministrator");
         assertNotNull(user.getConfirmRegistrationToken(),
                       "UserController::createUser user confirmRegistrationToken not null");
+    }
+
+    /**
+     * Tests UserController::confirmUser.
+     */
+    @Test
+    void testConfirmUser() {
+        final UserApi userApi = getApi(UserApi.class);
+        final User user = this.userRepository.findByName("Unconfirmed").orElse(null);
+
+        assertNotNull(user, "UserController::confirmUser user not null");
+        assertNotNull(user.getConfirmRegistrationToken(),
+                      "UserController::confirmUser user confirmRegistrationToken not null");
+
+        final ConfirmUserRequestBodyDTO confirmUserRequestBodyDTO = new ConfirmUserRequestBodyDTO()
+                .confirmRegistrationToken(UUID.randomUUID());
+
+        // Bad Request -------------------------------------------------------------------------------------------------
+
+        assertThrows(FeignException.BadRequest.class, () -> userApi.confirmUser(confirmUserRequestBodyDTO),
+                "UserController::confirmUser email missing throws");
+
+        confirmUserRequestBodyDTO.setEmail(user.getEmail());
+        confirmUserRequestBodyDTO.setConfirmRegistrationToken(null);
+
+        assertThrows(FeignException.BadRequest.class, () -> userApi.confirmUser(confirmUserRequestBodyDTO),
+                     "UserController::confirmUser confirmRegistrationToken missing throws");
+
+        confirmUserRequestBodyDTO.setConfirmRegistrationToken(UUID.randomUUID());
+
+        // Unauthorized ------------------------------------------------------------------------------------------------
+
+        assertThrows(FeignException.Unauthorized.class, () -> userApi.confirmUser(confirmUserRequestBodyDTO),
+                     "UserController::confirmUser invalid confirmRegistrationToken throws");
+
+        confirmUserRequestBodyDTO.setConfirmRegistrationToken(user.getConfirmRegistrationToken());
+
+        // OK ----------------------------------------------------------------------------------------------------------
+
+        assertDoesNotThrow(() -> userApi.confirmUser(confirmUserRequestBodyDTO));
+
+        final User confirmedUser = this.userRepository.findById(user.getId()).orElse(null);
+
+        assertNotNull(confirmedUser, "UserController::confirmUser confirmedUser not null");
+        assertNull(confirmedUser.getConfirmRegistrationToken(),
+                   "UserController::confirmUser user confirmRegistrationToken null");
+
+        assertThrows(FeignException.Unauthorized.class, () -> userApi.confirmUser(confirmUserRequestBodyDTO),
+                "UserController::confirmUser already confirmed throws");
     }
 
     /**

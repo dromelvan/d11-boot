@@ -1,12 +1,14 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
 import org.d11.boot.api.v2.UserApi;
+import org.d11.boot.api.v2.model.ConfirmUserRequestBodyDTO;
 import org.d11.boot.api.v2.model.CreateUserRequestBodyDTO;
 import org.d11.boot.api.v2.model.UpdateUserRequestBodyDTO;
 import org.d11.boot.api.v2.model.UserDTO;
 import org.d11.boot.api.v2.model.UserResponseBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.User;
+import org.d11.boot.spring.model.UserConfirmation;
 import org.d11.boot.spring.model.UserRegistration;
 import org.d11.boot.spring.security.RoleAdmin;
 import org.d11.boot.spring.security.RoleUser;
@@ -50,6 +52,13 @@ public class UserControllerV2 extends RepositoryServiceController<UserService> i
                                   .administrator(false));
         }
         return new ResponseEntity<>(userResponseBodyDTO, HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<Void> confirmUser(final ConfirmUserRequestBodyDTO confirmUserRequestBodyDTO) {
+        final UserConfirmation userConfirmation = map(confirmUserRequestBodyDTO, UserConfirmation.class);
+        getRepositoryService().confirmUser(userConfirmation);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override

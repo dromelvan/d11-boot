@@ -1,0 +1,23 @@
+meta {
+  name: POST users/confirm - 200
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/users/confirm
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "email": "{{unconfirmedUsername}}",
+      "confirmRegistrationToken": "{{unconfirmedConfirmRegistrationToken}}"
+  }
+  
+}
+
+assert {
+  res.status: in [200,401]
+}

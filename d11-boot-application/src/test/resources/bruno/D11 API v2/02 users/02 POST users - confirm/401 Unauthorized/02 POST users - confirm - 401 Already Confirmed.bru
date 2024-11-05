@@ -1,0 +1,23 @@
+meta {
+  name: POST users/confirm - 401 Already Confirmed
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/users/confirm
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "email": "{{unconfirmedUsername}}",
+      "confirmRegistrationToken": "{{unconfirmedConfirmRegistrationToken}}"
+  }
+  
+}
+
+assert {
+  res.status: eq 401
+}
