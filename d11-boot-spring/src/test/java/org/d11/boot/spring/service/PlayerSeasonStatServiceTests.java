@@ -7,6 +7,7 @@ import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Position;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.Team;
+import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
 import org.d11.boot.spring.repository.D11TeamRepository;
 import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.spring.repository.PlayerSeasonStatRepository;
@@ -39,6 +40,7 @@ import static org.mockito.Mockito.when;
 /**
  * Player season stat service tests.
  */
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
 
     /**
@@ -371,5 +373,112 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
         assertEquals(position, result.getPosition(),
                      "PlayerSeasonStatService::createPlayerSeasonStat result position equals");
 
+        verify(this.playerSeasonStatRepository, times(1)).save(eq(result));
     }
+
+    /**
+     * Tests PlayerSeasonStatService::updatePlayerSeasonStat.
+     */
+    @Test
+    @SuppressWarnings("checkstyle:ExecutableStatementCount")
+    void testUpdatePlayerSeasonStat() {
+        when(this.applicationContext.getBean(eq(PlayerRepository.class))).thenReturn(this.playerRepository);
+        when(this.applicationContext.getBean(eq(SeasonRepository.class))).thenReturn(this.seasonRepository);
+        when(this.applicationContext.getBean(eq(TeamRepository.class))).thenReturn(this.teamRepository);
+        when(this.applicationContext.getBean(eq(D11TeamRepository.class))).thenReturn(this.d11TeamRepository);
+        when(this.applicationContext.getBean(eq(PositionRepository.class))).thenReturn(this.positionRepository);
+
+        final BadRequestException badRequestException = assertThrows(
+                BadRequestException.class,
+                () -> this.playerSeasonStatService.updatePlayerSeasonStat(
+                        new UpdatePlayerSeasonStatInput(-1, -1, -1, -1)
+                ),
+                "PlayerSeasonStatService::updatePlayerSeasonStat invalid input throws");
+
+        final List<String> properties = Arrays.asList("d11TeamId", "playerId", "positionId", "teamId");
+        assertEquals(properties, badRequestException.getValidationErrors().stream()
+                        .map(ValidationError::property).toList(),
+                     "PlayerSeasonStatService::updatePlayerSeasonStat validation error properties equals");
+
+        final Player player = generate(Player.class);
+        final Season season = generate(Season.class);
+        final Team team = generate(Team.class);
+        final D11Team d11Team = generate(D11Team.class);
+        final Position position = generate(Position.class);
+        final PlayerSeasonStat playerSeasonStat = generate(PlayerSeasonStat.class);
+
+        final long invalidId = 999L;
+
+        when(this.playerRepository.findById(eq(player.getId()))).thenReturn(Optional.of(player));
+        when(this.playerRepository.findById(eq(invalidId))).thenThrow(new NotFoundException(invalidId, Player.class));
+        when(this.seasonRepository.findFirstByOrderByDateDesc()).thenReturn(Optional.of(season));
+        when(this.teamRepository.findById(eq(team.getId()))).thenReturn(Optional.of(team));
+        when(this.teamRepository.findById(eq(invalidId))).thenThrow(new NotFoundException(invalidId, Team.class));
+        when(this.d11TeamRepository.findById(eq(d11Team.getId()))).thenReturn(Optional.of(d11Team));
+        when(this.d11TeamRepository.findById(eq(invalidId))).thenThrow(new NotFoundException(invalidId, D11Team.class));
+        when(this.positionRepository.findById(eq(position.getId()))).thenReturn(Optional.of(position));
+        when(this.positionRepository.findById(eq(invalidId))).thenThrow(new NotFoundException(invalidId,
+                                                                                              Position.class));
+
+        NotFoundException e = assertThrows(NotFoundException.class,
+                () -> this.playerSeasonStatService.updatePlayerSeasonStat(
+                        new UpdatePlayerSeasonStatInput(invalidId, team.getId(), d11Team.getId(), position.getId())),
+                "PlayerSeasonStatService::updatePlayerSeasonStat player not found throws");
+        assertEquals(invalidId, e.getId(), "PlayerSeasonStatService::updatePlayerSeasonStat player not found id");
+        assertEquals(Player.class.getSimpleName(), e.getResource(),
+                     "PlayerSeasonStatService::updatePlayerSeasonStat player not found class");
+
+        e = assertThrows(NotFoundException.class,
+                () -> this.playerSeasonStatService.updatePlayerSeasonStat(
+                        new UpdatePlayerSeasonStatInput(player.getId(), invalidId, d11Team.getId(), position.getId())),
+                "PlayerSeasonStatService::updatePlayerSeasonStat team not found throws");
+        assertEquals(invalidId, e.getId(), "PlayerSeasonStatService::updatePlayerSeasonStat team not found id");
+        assertEquals(Team.class.getSimpleName(), e.getResource(),
+                "PlayerSeasonStatService::updatePlayerSeasonStat team not found class");
+
+        e = assertThrows(NotFoundException.class,
+                () -> this.playerSeasonStatService.updatePlayerSeasonStat(
+                        new UpdatePlayerSeasonStatInput(player.getId(), team.getId(), invalidId, position.getId())),
+                "PlayerSeasonStatService::updatePlayerSeasonStat D11 team not found throws");
+        assertEquals(invalidId, e.getId(), "PlayerSeasonStatService::updatePlayerSeasonStat D11 team not found id");
+        assertEquals(D11Team.class.getSimpleName(), e.getResource(),
+                "PlayerSeasonStatService::updatePlayerSeasonStat D11 team not found class");
+
+        e = assertThrows(NotFoundException.class,
+                () -> this.playerSeasonStatService.updatePlayerSeasonStat(
+                        new UpdatePlayerSeasonStatInput(player.getId(), team.getId(), d11Team.getId(), invalidId)),
+                "PlayerSeasonStatService::updatePlayerSeasonStat position not found throws");
+        assertEquals(invalidId, e.getId(), "PlayerSeasonStatService::updatePlayerSeasonStat position not found id");
+        assertEquals(Position.class.getSimpleName(), e.getResource(),
+                "PlayerSeasonStatService::updatePlayerSeasonStat position not found class");
+
+        when(this.playerSeasonStatRepository.findByPlayerIdAndSeasonId(eq(player.getId()), eq(season.getId())))
+                .thenReturn(Optional.empty());
+        assertThrows(ConflictException.class,
+                     () -> this.playerSeasonStatService.updatePlayerSeasonStat(
+                             new UpdatePlayerSeasonStatInput(player.getId(),
+                                                             team.getId(),
+                                                             d11Team.getId(),
+                                                             position.getId())),
+                    "PlayerSeasonStatService::updatePlayerSeasonStat playerSeasonStat not found throws");
+
+        when(this.playerSeasonStatRepository.findByPlayerIdAndSeasonId(eq(player.getId()), eq(season.getId())))
+                .thenReturn(Optional.of(playerSeasonStat));
+        when(this.playerSeasonStatRepository.save(any(PlayerSeasonStat.class)))
+                .then(AdditionalAnswers.returnsFirstArg());
+
+        final PlayerSeasonStat result = this.playerSeasonStatService.updatePlayerSeasonStat(
+                new UpdatePlayerSeasonStatInput(player.getId(), team.getId(), d11Team.getId(), position.getId())
+        );
+
+        assertEquals(team, result.getTeam(),
+                "PlayerSeasonStatService::updatePlayerSeasonStat result team equals");
+        assertEquals(d11Team, result.getD11Team(),
+                "PlayerSeasonStatService::updatePlayerSeasonStat result D11 team equals");
+        assertEquals(position, result.getPosition(),
+                "PlayerSeasonStatService::updatePlayerSeasonStat result position equals");
+
+        verify(this.playerSeasonStatRepository, times(1)).save(eq(playerSeasonStat));
+    }
+
 }

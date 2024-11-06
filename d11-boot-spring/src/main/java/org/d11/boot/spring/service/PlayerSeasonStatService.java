@@ -2,11 +2,14 @@ package org.d11.boot.spring.service;
 
 import jakarta.transaction.Transactional;
 import org.d11.boot.spring.model.CreatePlayerSeasonStatInput;
+import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Position;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.Team;
+import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
+import org.d11.boot.spring.repository.D11TeamRepository;
 import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.spring.repository.PlayerSeasonStatRepository;
 import org.d11.boot.spring.repository.PositionRepository;
@@ -43,6 +46,11 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
      * Must be positive error value.
      */
     private static final String MUST_BE_POSITIVE = "must be positive";
+
+    /**
+     * Invalid player season stat error value.
+     */
+    private static final String INVALID = "Invalid player season stat";
 
     /**
      * Creates a new player season stat service.
@@ -134,7 +142,7 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
     public PlayerSeasonStat createPlayerSeasonStat(final CreatePlayerSeasonStatInput createPlayerSeasonStatInput) {
         final List<ValidationError> validationErrors = validate(createPlayerSeasonStatInput);
         if (!validationErrors.isEmpty()) {
-            throw new BadRequestException("Invalid player season stat", validationErrors);
+            throw new BadRequestException(INVALID, validationErrors);
         }
 
         final Player player = getRepository(PlayerRepository.class).findById(createPlayerSeasonStatInput.playerId())
@@ -165,5 +173,45 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
         return save(playerSeasonStat);
     }
 
+    /**
+     * Creates a new player season stat.
+     *
+     * @param updatePlayerSeasonStatInput Player input properties that will be updated.
+     * @return The created player.
+     */
+    @Transactional
+    public PlayerSeasonStat updatePlayerSeasonStat(final UpdatePlayerSeasonStatInput updatePlayerSeasonStatInput) {
+        final List<ValidationError> validationErrors = validate(updatePlayerSeasonStatInput);
+        if (!validationErrors.isEmpty()) {
+            throw new BadRequestException(INVALID, validationErrors);
+        }
+
+        final Team team = getRepository(TeamRepository.class)
+                .findById(updatePlayerSeasonStatInput.teamId())
+                .orElseThrow(() -> new NotFoundException(updatePlayerSeasonStatInput.teamId(), Team.class));
+        final D11Team d11Team = getRepository(D11TeamRepository.class)
+                .findById(updatePlayerSeasonStatInput.d11TeamId())
+                .orElseThrow(() -> new NotFoundException(updatePlayerSeasonStatInput.d11TeamId(), D11Team.class));
+        final Position position = getRepository(PositionRepository.class)
+                .findById(updatePlayerSeasonStatInput.positionId())
+                .orElseThrow(() -> new NotFoundException(updatePlayerSeasonStatInput.positionId(), Position.class));
+
+        final Player player = getRepository(PlayerRepository.class)
+                .findById(updatePlayerSeasonStatInput.playerId())
+                .orElseThrow(() -> new NotFoundException(updatePlayerSeasonStatInput.playerId(), Player.class));
+
+        final Season season = getCurrentSeason();
+        final PlayerSeasonStat playerSeasonStat = getJpaRepository().findByPlayerIdAndSeasonId(player.getId(),
+                                                                                               season.getId())
+                .orElseThrow(() -> new ConflictException(
+                                        String.format("Player season stats for player %d and season %d does not exist",
+                                        player.getId(), season.getId())));
+
+        playerSeasonStat.setTeam(team);
+        playerSeasonStat.setD11Team(d11Team);
+        playerSeasonStat.setPosition(position);
+
+        return save(playerSeasonStat);
+    }
 
 }
