@@ -176,11 +176,13 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
     /**
      * Creates a new player season stat.
      *
-     * @param updatePlayerSeasonStatInput Player input properties that will be updated.
+     * @param playerSeasonStatId          Player season stat id.
+     * @param updatePlayerSeasonStatInput Player season stat input properties that will be updated.
      * @return The created player.
      */
     @Transactional
-    public PlayerSeasonStat updatePlayerSeasonStat(final UpdatePlayerSeasonStatInput updatePlayerSeasonStatInput) {
+    public PlayerSeasonStat updatePlayerSeasonStat(final Long playerSeasonStatId,
+                                                   final UpdatePlayerSeasonStatInput updatePlayerSeasonStatInput) {
         final List<ValidationError> validationErrors = validate(updatePlayerSeasonStatInput);
         if (!validationErrors.isEmpty()) {
             throw new BadRequestException(INVALID, validationErrors);
@@ -196,16 +198,8 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
                 .findById(updatePlayerSeasonStatInput.positionId())
                 .orElseThrow(() -> new NotFoundException(updatePlayerSeasonStatInput.positionId(), Position.class));
 
-        final Player player = getRepository(PlayerRepository.class)
-                .findById(updatePlayerSeasonStatInput.playerId())
-                .orElseThrow(() -> new NotFoundException(updatePlayerSeasonStatInput.playerId(), Player.class));
-
-        final Season season = getCurrentSeason();
-        final PlayerSeasonStat playerSeasonStat = getJpaRepository().findByPlayerIdAndSeasonId(player.getId(),
-                                                                                               season.getId())
-                .orElseThrow(() -> new ConflictException(
-                                        String.format("Player season stats for player %d and season %d does not exist",
-                                        player.getId(), season.getId())));
+        final PlayerSeasonStat playerSeasonStat = getJpaRepository().findById(playerSeasonStatId)
+                .orElseThrow(() -> new NotFoundException(playerSeasonStatId, PlayerSeasonStat.class));
 
         playerSeasonStat.setTeam(team);
         playerSeasonStat.setD11Team(d11Team);
