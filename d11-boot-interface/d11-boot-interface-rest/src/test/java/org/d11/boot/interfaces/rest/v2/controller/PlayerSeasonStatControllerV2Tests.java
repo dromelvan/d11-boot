@@ -7,12 +7,15 @@ import org.d11.boot.api.v2.model.CreatePlayerSeasonStatInputRequestBodyDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatResponseBodyDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatsResponseBodyDTO;
+import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputDTO;
+import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputRequestBodyDTO;
 import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Position;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.Team;
+import org.d11.boot.spring.repository.D11TeamRepository;
 import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.spring.repository.PlayerSeasonStatRepository;
 import org.d11.boot.spring.repository.PositionRepository;
@@ -35,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Player season stat controller tests.
  */
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
 
     /**
@@ -60,6 +64,12 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Autowired
     private TeamRepository teamRepository;
+
+    /**
+     * D11 team repository.
+     */
+    @Autowired
+    private D11TeamRepository d11TeamRepository;
 
     /**
      * Poseidon repository.
@@ -384,6 +394,88 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
                      "PlayerSeasonStatController::createPlayerSeasonStat result D11 team id equals");
         assertEquals(position.getId(), result.getPosition().getId(),
                      "PlayerSeasonStatController::createPlayerSeasonStat result position id equals");
+    }
+
+    /**
+     * Tests PlayerSeasonStatController::updatePlayerSeasonStat.
+     */
+    @Test
+    void testUpdatePlayerSeasonStat() {
+        final PlayerSeasonStat playerSeasonStat = this.playerSeasonStatRepository.findById(1L)
+                .orElseThrow(RuntimeException::new);
+        final Team team = this.teamRepository.findById(1L).orElseThrow(RuntimeException::new);
+        final D11Team d11Team = this.d11TeamRepository.findById(1L).orElseThrow(RuntimeException::new);
+        final Position position = this.positionRepository.findById(1L).orElseThrow(RuntimeException::new);
+
+        final UpdatePlayerSeasonStatInputDTO input = new UpdatePlayerSeasonStatInputDTO()
+                .teamId(team.getId())
+                .d11TeamId(d11Team.getId())
+                .positionId(position.getId());
+
+        final UpdatePlayerSeasonStatInputRequestBodyDTO request = new UpdatePlayerSeasonStatInputRequestBodyDTO()
+                .playerSeasonStat(input);
+
+        // 401 Unauthorized --------------------------------------------------------------------------------------------
+
+        assertThrows(FeignException.Unauthorized.class,
+                () -> getApi(PlayerSeasonStatApi.class).updatePlayerSeasonStat(playerSeasonStat.getId(), request),
+                "PlayerSeasonStatController::updatePlayerSeasonStat unauthorized throws");
+
+        // 403 Forbidden -----------------------------------------------------------------------------------------------
+
+        assertThrows(FeignException.Forbidden.class,
+                () -> getUserApi(PlayerSeasonStatApi.class).updatePlayerSeasonStat(playerSeasonStat.getId(), request),
+                "PlayerSeasonStatController::updatePlayerSeasonStat user throws");
+
+        // 400 Bad Request ---------------------------------------------------------------------------------------------
+
+        final PlayerSeasonStatApi playerSeasonStatApi = getAdministratorApi(PlayerSeasonStatApi.class);
+
+        assertThrows(FeignException.BadRequest.class,
+                () -> playerSeasonStatApi.updatePlayerSeasonStat(
+                        playerSeasonStat.getId(),
+                        new UpdatePlayerSeasonStatInputRequestBodyDTO()
+                                .playerSeasonStat(new UpdatePlayerSeasonStatInputDTO())),
+                "PlayerSeasonStatController::updatePlayerSeasonStat request body invalid throws");
+
+        // 404 Not Found -----------------------------------------------------------------------------------------------
+
+        assertThrows(FeignException.NotFound.class,
+                () -> playerSeasonStatApi.updatePlayerSeasonStat(123_456L, request),
+                "PlayerSeasonStatController::updatePlayerSeasonStat request body playerSeasonStat not found throws");
+
+        request.getPlayerSeasonStat().teamId(123_456L);
+        assertThrows(FeignException.NotFound.class,
+                () -> playerSeasonStatApi.updatePlayerSeasonStat(playerSeasonStat.getId(), request),
+                "PlayerSeasonStatController::updatePlayerSeasonStat request body team not found throws");
+        request.getPlayerSeasonStat().teamId(team.getId());
+
+        request.getPlayerSeasonStat().d11TeamId(123_456L);
+        assertThrows(FeignException.NotFound.class,
+                () -> playerSeasonStatApi.updatePlayerSeasonStat(playerSeasonStat.getId(), request),
+                "PlayerSeasonStatController::updatePlayerSeasonStat request body d11Team not found throws");
+        request.getPlayerSeasonStat().d11TeamId(d11Team.getId());
+
+        request.getPlayerSeasonStat().positionId(123_456L);
+        assertThrows(FeignException.NotFound.class,
+                () -> playerSeasonStatApi.updatePlayerSeasonStat(playerSeasonStat.getId(), request),
+                "PlayerSeasonStatController::updatePlayerSeasonStat request body position not found throws");
+        request.getPlayerSeasonStat().positionId(position.getId());
+
+        // 200 Created -------------------------------------------------------------------------------------------------
+
+        final PlayerSeasonStatResponseBodyDTO response =
+                playerSeasonStatApi.updatePlayerSeasonStat(playerSeasonStat.getId(), request);
+        final PlayerSeasonStatDTO result = response.getPlayerSeasonStat();
+
+        assertEquals(playerSeasonStat.getId(), result.getId(),
+                "PlayerSeasonStatController::updatePlayerSeasonStat result playerSeasonStat id equals");
+        assertEquals(team.getId(), result.getTeam().getId(),
+                "PlayerSeasonStatController::updatePlayerSeasonStat result team id equals");
+        assertEquals(d11Team.getId(), result.getD11Team().getId(),
+                "PlayerSeasonStatController::updatePlayerSeasonStat result D11 team id equals");
+        assertEquals(position.getId(), result.getPosition().getId(),
+                "PlayerSeasonStatController::updatePlayerSeasonStat result position id equals");
     }
 
 }

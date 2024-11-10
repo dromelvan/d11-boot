@@ -5,9 +5,11 @@ import org.d11.boot.api.v2.model.CreatePlayerSeasonStatInputRequestBodyDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatResponseBodyDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatsResponseBodyDTO;
+import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputRequestBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.CreatePlayerSeasonStatInput;
 import org.d11.boot.spring.model.PlayerSeasonStat;
+import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
 import org.d11.boot.spring.security.RoleAdmin;
 import org.d11.boot.spring.service.PlayerSeasonStatService;
 import org.mapstruct.factory.Mappers;
@@ -96,5 +98,21 @@ public class PlayerSeasonStatControllerV2 extends RepositoryServiceController<Pl
         return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
+    @Override
+    @RoleAdmin
+    public ResponseEntity<PlayerSeasonStatResponseBodyDTO> updatePlayerSeasonStat(
+            final Long playerSeasonStatId,
+            final UpdatePlayerSeasonStatInputRequestBodyDTO updatePlayerSeasonStatInputRequestBodyDTO
+    ) {
+        final UpdatePlayerSeasonStatInput updatePlayerSeasonStatInput = this.mapper.mapToUpdatePlayerSeasonStatInput(
+            updatePlayerSeasonStatInputRequestBodyDTO.getPlayerSeasonStat()
+        );
+        final PlayerSeasonStat result = getRepositoryService().updatePlayerSeasonStat(playerSeasonStatId,
+                                                                                      updatePlayerSeasonStatInput);
+        final PlayerSeasonStatResponseBodyDTO responseBody = new PlayerSeasonStatResponseBodyDTO()
+                .playerSeasonStat(this.mapper.mapToPlayerSeasonStatDTO(result));
+
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
 
 }

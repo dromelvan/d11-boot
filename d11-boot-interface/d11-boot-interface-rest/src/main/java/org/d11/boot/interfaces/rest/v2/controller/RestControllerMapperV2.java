@@ -5,11 +5,13 @@ import org.d11.boot.api.v2.model.PlayerDTO;
 import org.d11.boot.api.v2.model.PlayerInputDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
+import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputDTO;
 import org.d11.boot.spring.model.CreatePlayerSeasonStatInput;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerInput;
 import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.model.PlayerSeasonStat;
+import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -53,6 +55,15 @@ public interface RestControllerMapperV2 {
      */
     CreatePlayerSeasonStatInput mapToCreatePlayerSeasonStatInput(
             CreatePlayerSeasonStatInputDTO createPlayerSeasonStatInputDTO);
+
+    /**
+     * Maps an UpdatePlayerSeasonStatInputDTO to an UpdatePlayerSeasonStatInput.
+     *
+     * @param updatePlayerSeasonStatInputDTO The UpdatePlayerSeasonStatInputDTO.
+     * @return Mapped UpdatePlayerSeasonStatInput.
+     */
+    UpdatePlayerSeasonStatInput mapToUpdatePlayerSeasonStatInput(
+            UpdatePlayerSeasonStatInputDTO updatePlayerSeasonStatInputDTO);
 
     /**
      * Maps a PlayerSeasonStat to a PlayerSeasonStatDTO.

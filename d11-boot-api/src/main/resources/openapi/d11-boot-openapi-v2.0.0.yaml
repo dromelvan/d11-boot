@@ -1271,6 +1271,44 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/player-season-stats/{playerSeasonStatId}:
+    put:
+      tags:
+        - playerSeasonStat
+      summary: Updates a player season stat.
+      security:
+        - BearerAuth: [admin]
+      operationId: updatePlayerSeasonStat
+      parameters:
+        - name: playerSeasonStatId
+          in: path
+          required: true
+          description: Id of the player season stat.
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updated player season stat properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePlayerSeasonStatInputRequestBody"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerSeasonStatResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
 
   # Team season stat ---------------------------------------------------------------------------------------------------
 
@@ -2839,6 +2877,28 @@ components:
       properties:
         playerSeasonStat:
           $ref: '#/components/schemas/CreatePlayerSeasonStatInput'
+
+    UpdatePlayerSeasonStatInput:
+      type: object
+      required:
+        - teamId
+        - d11TeamId
+        - positionId
+      properties:
+        teamId:
+          $ref: '#/components/schemas/Id'
+        d11TeamId:
+          $ref: '#/components/schemas/Id'
+        positionId:
+          $ref: '#/components/schemas/Id'
+
+    UpdatePlayerSeasonStatInputRequestBody:
+      type: object
+      required:
+        - playerSeasonStat
+      properties:
+        playerSeasonStat:
+          $ref: '#/components/schemas/UpdatePlayerSeasonStatInput'
 
     PlayerSeasonStatResponseBody:
       type: object

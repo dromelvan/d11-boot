@@ -5,6 +5,7 @@ import org.d11.boot.api.v2.model.PlayerDTO;
 import org.d11.boot.api.v2.model.PlayerInputDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
+import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputDTO;
 import org.d11.boot.spring.EasyRandomTests;
 import org.d11.boot.spring.model.CreatePlayerSeasonStatInput;
 import org.d11.boot.spring.model.Player;
@@ -12,6 +13,7 @@ import org.d11.boot.spring.model.PlayerInput;
 import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Team;
+import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
@@ -145,6 +147,23 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
                      "RestControllerMapper::mapToCreatePlayerSeasonStatInput destination team id equals");
         assertEquals(source.getPositionId(), destination.positionId(),
                      "RestControllerMapper::mapToCreatePlayerSeasonStatInput destination position id equals");
+    }
+
+    /**
+     * Tests RestControllerMapper::mapToUpdatePlayerSeasonStatInput.
+     */
+    @Test
+    void testMapToUpdatePlayerSeasonStatInput() {
+        final UpdatePlayerSeasonStatInputDTO source = generate(UpdatePlayerSeasonStatInputDTO.class);
+
+        final UpdatePlayerSeasonStatInput destination = this.mapper.mapToUpdatePlayerSeasonStatInput(source);
+
+        assertEquals(source.getTeamId(), destination.teamId(),
+                "RestControllerMapper::mapToUpdatePlayerSeasonStatInput destination team id equals");
+        assertEquals(source.getD11TeamId(), destination.d11TeamId(),
+                "RestControllerMapper::mapToUpdatePlayerSeasonStatInput destination D11 team id equals");
+        assertEquals(source.getPositionId(), destination.positionId(),
+                "RestControllerMapper::mapToUpdatePlayerSeasonStatInput destination position id equals");
     }
 
     /**
