@@ -1,0 +1,29 @@
+meta {
+  name: PUT player-season-stats/{playerSeasonStatId} - 401 Invalid Auth
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/v2/player-season-stats/{{newPlayerSeasonStatId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{expiredJwt}}
+}
+
+body:json {
+  {
+      "playerSeasonStat": {
+          "teamId": {{updatePlayerSeasonStatTeamId}},
+          "d11TeamId": {{updatePlayerSeasonStatD11TeamId}},
+          "positionId": {{updatePlayerSeasonStatD11TeamId}}
+      }
+  }
+}
+
+assert {
+  res.status: eq 401
+}

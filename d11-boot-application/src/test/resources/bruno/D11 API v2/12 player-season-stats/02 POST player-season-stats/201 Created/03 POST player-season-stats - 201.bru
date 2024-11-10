@@ -22,7 +22,7 @@ body:json {
           "positionId": {{positionId}}
       }
   }
-
+  
 }
 
 assert {
@@ -33,16 +33,18 @@ assert {
 
 tests {
   const { expectToEq } = require('./d11.js');
-
+  
   test("POST player season stat response body", () => {
     const body = res.getBody();
     const playerSeasonStat = JSON.parse(bru.getEnvVar("newPlayerSeasonStat"));
-
+  
     playerSeasonStat.id = body.playerSeasonStat.id
     playerSeasonStat.player.id = body.playerSeasonStat.player.id
-
+  
     expectToEq.playerSeasonStat(body.playerSeasonStat, playerSeasonStat);
+    
+    bru.setEnvVar("newPlayerSeasonStatId", body.playerSeasonStat.id);
   });
-
-
+  
+  
 }

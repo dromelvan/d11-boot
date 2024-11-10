@@ -1,0 +1,47 @@
+meta {
+  name: PUT player-season-stats/{playerSeasonId} - 200
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/v2/player-season-stats/{{newPlayerSeasonStatId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "playerSeasonStat": {
+          "teamId": {{updatePlayerSeasonStatTeamId}},
+          "d11TeamId": {{updatePlayerSeasonStatD11TeamId}},
+          "positionId": {{updatePlayerSeasonStatD11TeamId}}
+      }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.playerSeasonStat: isDefined
+  res.body.playerSeasonStat.id: eq {{newPlayerSeasonStatId}}
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("PUT player season stat response body", () => {
+    const body = res.getBody();
+    const playerSeasonStat = JSON.parse(bru.getEnvVar("updatedPlayerSeasonStat"));
+
+    playerSeasonStat.id = body.playerSeasonStat.id
+    playerSeasonStat.player.id = body.playerSeasonStat.player.id
+
+    expectToEq.playerSeasonStat(body.playerSeasonStat, playerSeasonStat);
+  });
+
+
+}
