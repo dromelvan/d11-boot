@@ -1,5 +1,7 @@
 package org.d11.boot.spring.repository;
 
+import org.d11.boot.spring.model.D11Team;
+import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferListing;
 import org.junit.jupiter.api.Test;
@@ -7,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,4 +92,47 @@ class TransferListingRepositoryTests extends AbstractRepositoryTests<TransferLis
                      "TransferListingRepository::findByTransferDayIdOrderByRanking page 2 equals");
     }
 
+    /**
+     * Tests TransferListingRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId.
+     */
+    @Test
+    void testFindByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId() {
+        final List<TransferListing> entities = getEntities();
+
+        assertFalse(entities.isEmpty(),
+                "TransferListingRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId empty");
+
+        final List<Season> seasons = entities.stream()
+                .map(transferListing -> transferListing.getTransferDay().getTransferWindow().getMatchWeek().getSeason())
+                .distinct()
+                .toList();
+        assertFalse(seasons.isEmpty(),
+            "TransferListingRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId seasons empty");
+
+        final List<D11Team> d11Teams = entities.stream()
+                .map(TransferListing::getD11Team)
+                .distinct()
+                .toList();
+        assertFalse(d11Teams.isEmpty(),
+            "TransferListingRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId d11Teams empty");
+
+        for (final Season season : seasons) {
+            for (final D11Team d11Team : d11Teams) {
+                final List<TransferListing> result = getRepository()
+                        .findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId(season.getId(), d11Team.getId());
+                result.sort(Comparator.comparing(TransferListing::getId));
+
+                final List<TransferListing> transferListings = entities.stream()
+                        .filter(transferListing ->
+                                transferListing.getTransferDay().getTransferWindow().getMatchWeek().getSeason()
+                                        .equals(season)
+                                && transferListing.getD11Team().equals(d11Team))
+                        .sorted(Comparator.comparing(TransferListing::getId))
+                        .toList();
+
+                assertEquals(transferListings, result,
+                    "TransferListingRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId equals");
+            }
+        }
+    }
 }
