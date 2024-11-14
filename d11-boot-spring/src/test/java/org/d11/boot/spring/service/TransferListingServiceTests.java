@@ -16,6 +16,7 @@ import org.d11.boot.spring.security.JwtBuilder;
 import org.d11.boot.util.Status;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
+import org.d11.boot.util.exception.ErrorCode;
 import org.d11.boot.util.exception.ForbiddenException;
 import org.d11.boot.util.exception.UnauthorizedException;
 import org.junit.jupiter.api.Test;
@@ -131,7 +132,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
                 assertThrows(ConflictException.class,
                              () -> this.transferListingService.createTransferListing(1L),
                              "TransferListingService::createTransferListing playerSeasonStat not found throws");
-        assertEquals(TransferListingService.INACTIVE_PLAYER_MESSAGE, e.getMessage(),
+        assertEquals(ErrorCode.CONFLICT_NO_PLAYER_SEASON_STAT, e.getErrorCode(),
                      "TransferListingService::createTransferListing playerSeasonStat not found message equals");
     }
 
@@ -215,7 +216,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
                 assertThrows(ConflictException.class,
                              () -> this.transferListingService.createTransferListing(player.getId()),
                              "TransferListingService::createTransferListing D11 team max transfers throws");
-        assertEquals(TransferListingService.MAX_TRANSFERS_MESSAGE, e.getMessage(),
+        assertEquals(ErrorCode.CONFLICT_NO_REMAINING_D11_TEAM_TRANSFERS, e.getErrorCode(),
                      "TransferListingService::createTransferListing D11 team max transfers message equals");
     }
 
@@ -247,7 +248,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
                 assertThrows(ConflictException.class,
                              () -> this.transferListingService.createTransferListing(player.getId()),
                              "TransferListingService::createTransferListing transfer day invalid status throws");
-        assertEquals(TransferListingService.INVALID_TRANSFER_DAY_STATUS, e.getMessage(),
+        assertEquals(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS, e.getErrorCode(),
                      "TransferListingService::createTransferListing transfer day invalid status message equals");
     }
 
@@ -281,7 +282,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
                 assertThrows(ConflictException.class,
                              () -> this.transferListingService.createTransferListing(player.getId()),
                              "TransferListingService::createTransferListing player already transfer listed throws");
-        assertEquals(TransferListingService.PLAYER_ALREADY_TRANSFER_LISTED_MESSAGE, e.getMessage(),
+        assertEquals(ErrorCode.CONFLICT_NON_UNIQUE_TRANSFER_LISTING, e.getErrorCode(),
                      "TransferListingService::createTransferListing player already transfer listed message equals");
     }
 

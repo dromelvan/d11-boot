@@ -20,4 +20,13 @@ public class ConflictException extends D11BootException {
         super(message);
     }
 
+    /**
+     * Creates a new Conflict exception.
+     *
+     * @param errorCode The exception error code.
+     */
+    public ConflictException(final ErrorCode errorCode) {
+        super(errorCode);
+    }
+
 }

@@ -11,6 +11,7 @@ import org.d11.boot.spring.repository.TransferListingRepository;
 import org.d11.boot.util.Status;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
+import org.d11.boot.util.exception.ErrorCode;
 import org.d11.boot.util.exception.ForbiddenException;
 import org.d11.boot.util.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,26 +35,6 @@ public class TransferListingService extends RepositoryService<TransferListing, T
      * Transfer listing list page size.
      */
     public static final int PAGE_SIZE = 25;
-
-    /**
-     * Inactive player message.
-     */
-    public static final String INACTIVE_PLAYER_MESSAGE = "Player is not active in current season";
-
-    /**
-     * Max transfers message.
-     */
-    public static final String MAX_TRANSFERS_MESSAGE = "D11 team max transfers reached";
-
-    /**
-     * Invalid transfer day status message.
-     */
-    public static final String INVALID_TRANSFER_DAY_STATUS = "Invalid current transfer day status";
-
-    /**
-     * Player already transfer listed message.
-     */
-    public static final String PLAYER_ALREADY_TRANSFER_LISTED_MESSAGE = "Player is already transfer listed";
 
     /**
      * Repository for looking up current transfer day.
@@ -88,7 +69,7 @@ public class TransferListingService extends RepositoryService<TransferListing, T
 
         final PlayerSeasonStat playerSeasonStat = getRepository(PlayerSeasonStatRepository.class)
                 .findByPlayerIdAndSeasonId(playerId, season.getId())
-                .orElseThrow(() -> new ConflictException(INACTIVE_PLAYER_MESSAGE));
+                .orElseThrow(() -> new ConflictException(ErrorCode.CONFLICT_NO_PLAYER_SEASON_STAT));
         final D11Team d11Team = playerSeasonStat.getD11Team();
 
         getCurrentUser().ifPresentOrElse(
@@ -105,17 +86,17 @@ public class TransferListingService extends RepositoryService<TransferListing, T
         final Collection<TransferListing> transferListings = getJpaRepository()
                 .findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId(season.getId(), d11Team.getId());
         if (transferListings.size() >= season.getD11TeamMaxTransfers()) {
-            throw new ConflictException(MAX_TRANSFERS_MESSAGE);
+            throw new ConflictException(ErrorCode.CONFLICT_NO_REMAINING_D11_TEAM_TRANSFERS);
         }
 
         final TransferDay transferDay = getRepository(TransferDayRepository.class).findFirstByOrderByDatetimeDesc()
-                .orElseThrow(() -> new ConflictException("Current transfer day does not exist"));
+                .orElseThrow(() -> new ConflictException(ErrorCode.CONFLICT_NO_CURRENT_TRANSFER_DAY));
         if (!Status.PENDING.equals(transferDay.getStatus())) {
-            throw new ConflictException(INVALID_TRANSFER_DAY_STATUS);
+            throw new ConflictException(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS);
         }
 
         getJpaRepository().findByTransferDayIdAndPlayerId(transferDay.getId(), playerId).ifPresent(transferListing -> {
-            throw new ConflictException(PLAYER_ALREADY_TRANSFER_LISTED_MESSAGE);
+            throw new ConflictException(ErrorCode.CONFLICT_NON_UNIQUE_TRANSFER_LISTING);
         });
 
         final TransferListing transferListing = new TransferListing();
