@@ -1,5 +1,6 @@
 package org.d11.boot.spring.service;
 
+import jakarta.transaction.Transactional;
 import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Season;
@@ -60,6 +61,7 @@ public class TransferListingService extends RepositoryService<TransferListing, T
      * @param playerId The player id.
      * @return The created transfer listing.
      */
+    @Transactional
     public TransferListing createTransferListing(final Long playerId) {
         if (playerId == null) {
             throw new BadRequestException("playerId", "is missing");

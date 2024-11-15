@@ -1617,6 +1617,38 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+    post:
+      tags:
+        - transferListing
+      summary: Creates a transfer listing.
+      security:
+        - BearerAuth: [user]
+      operationId: createTransferListing
+      requestBody:
+        description: New transfer listing properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTransferListingRequestBody"
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferListingResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+          $ref: '#/components/responses/Conflict'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Transfer bids ------------------------------------------------------------------------------------------------------
 
   /v2/transfer-bids:
@@ -3429,6 +3461,14 @@ components:
         position:
           $ref: '#/components/schemas/Position'
 
+    TransferListingResponseBody:
+      type: object
+      required:
+        - transferListing
+      properties:
+        transferListing:
+          $ref: '#/components/schemas/TransferListing'
+
     TransferListingsResponseBody:
       type: object
       required:
@@ -3438,6 +3478,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TransferListing'
+
+    CreateTransferListingRequestBody:
+      type: object
+      required:
+        - playerId
+      properties:
+        playerId:
+          $ref: '#/components/schemas/Id'
 
   # Transfer bid -------------------------------------------------------------------------------------------------------
 
