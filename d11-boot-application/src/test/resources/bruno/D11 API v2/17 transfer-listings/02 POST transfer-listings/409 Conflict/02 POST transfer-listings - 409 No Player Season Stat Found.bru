@@ -1,0 +1,30 @@
+meta {
+  name: POST transfer-listings - 409 No Player Season Stat Found
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-listings
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "playerId": "{{playerSeasonStatNotFoundPlayerId}}"
+  }
+
+}
+
+assert {
+  res.status: eq 409
+  res.body.error: eq Conflict
+  res.body.message: eq Player is not active in the current season
+  res.body.method: eq POST
+  res.body.path: eq /v2/transfer-listings
+}

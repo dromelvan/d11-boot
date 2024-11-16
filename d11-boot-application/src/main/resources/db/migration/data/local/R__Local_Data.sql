@@ -60,12 +60,14 @@ INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, las
     VALUES(1, 555555, 5, 'Bar', 'Foo', null, 'bar-foo', '2020-01-01', 111, '5.png', true);
 INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
     VALUES(1, 666666, 6, 'Foo', '', null, 'foo', '2020-01-01', 111, '6.png', true);
+INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
+    VALUES(1, 777777, 7, 'FirstD', 'LastD', 'FullD', 'firstd-lastd', '2020-01-01', 444, '4.png', true);
 
 -- Season
 INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date, legacy)
-    VALUES('2022-2023', 600, 13, 3, '2022-01-01', false);
+    VALUES('2022-2023', 600, 3 , 3, '2022-01-01', false);
 INSERT INTO season (name, d11_team_budget, d11_team_max_transfers, status, date, legacy)
-    VALUES('2023-2024', 600, 13, 1, '2023-01-01', false);
+    VALUES('2023-2024', 600, 3, 1, '2023-01-01', false);
 
 -- Premier League
 INSERT INTO premier_league (season_id, name)
@@ -310,6 +312,11 @@ INSERT INTO player_season_stat (player_id, season_id, team_id, d11_team_id, posi
                                 goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match,
                                 rating, games_started, games_substitute, games_did_not_participate, minutes_played)
     VALUES (4, 2, 2, 1, 4, 5, 1, 50, 4, 40, 25, '1,2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90);
+INSERT INTO player_season_stat (player_id, season_id, team_id, d11_team_id, position_id, shirt_number, win_count, fee, ranking, points, form_points, form_match_points, points_per_appearance,
+                                goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off, man_of_the_match, shared_man_of_the_match,
+                                rating, games_started, games_substitute, games_did_not_participate, minutes_played)
+    VALUES (7, 2, 2, 2, 4, 5, 1, 50, 4, 40, 25, '1,2,3,4,5', 10, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90);
+
 
 -- Team match week stat
 INSERT INTO team_match_week_stat (team_id, match_week_id, matches_played, matches_won, matches_drawn, matches_lost, goals_for, goals_against, goal_difference, points, form_points,
@@ -456,6 +463,19 @@ INSERT INTO transfer_listing (transfer_day_id, player_id, team_id, d11_team_id, 
                               goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off,
                               man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, new_player)
 VALUES (4, 2, 2, 1, 2, 2, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, true);
+INSERT INTO transfer_listing (transfer_day_id, player_id, team_id, d11_team_id, position_id, ranking, points, form_points, form_match_points, points_per_appearance,
+                              goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off,
+                              man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, new_player)
+VALUES (5, 1, 2, 1, 2, 2, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, true);
+INSERT INTO transfer_listing (transfer_day_id, player_id, team_id, d11_team_id, position_id, ranking, points, form_points, form_match_points, points_per_appearance,
+                              goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off,
+                              man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, new_player)
+VALUES (5, 3, 2, 1, 2, 2, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, true);
+INSERT INTO transfer_listing (transfer_day_id, player_id, team_id, d11_team_id, position_id, ranking, points, form_points, form_match_points, points_per_appearance,
+                              goals, goal_assists, own_goals, goals_conceded, clean_sheets, yellow_cards, red_cards, substitutions_on, substitutions_off,
+                              man_of_the_match, shared_man_of_the_match, rating, games_started, games_substitute, games_did_not_participate, minutes_played, new_player)
+VALUES (8, 2, 2, 1, 2, 2, 20, 10, '2,2,2,2,2', 2, 2, 3, 1, 2, 1, 1, 2, 1, 2, 1, 2, 832, 1, 1, 0, 90, true);
+
 
 -- Transfer bid
 INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_ranking, d11_team_ranking, fee, active_fee, successful)

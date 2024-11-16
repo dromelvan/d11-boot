@@ -1,0 +1,25 @@
+meta {
+  name: POST transfer-listings - 403
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-listings
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "playerId": "{{playerId}}"
+  }
+}
+
+assert {
+  res.status: eq 403
+}

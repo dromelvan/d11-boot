@@ -1,0 +1,30 @@
+meta {
+  name: POST transfer-listings - 409 Player Already Transfer Listed
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-listings
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "playerId": "{{alreadyTransferListedPlayerId}}"
+  }
+
+}
+
+assert {
+  res.status: eq 409
+  res.body.error: eq Conflict
+  res.body.method: eq POST
+  res.body.path: eq /v2/transfer-listings
+  res.body.message: eq Player is already transfer listed
+}

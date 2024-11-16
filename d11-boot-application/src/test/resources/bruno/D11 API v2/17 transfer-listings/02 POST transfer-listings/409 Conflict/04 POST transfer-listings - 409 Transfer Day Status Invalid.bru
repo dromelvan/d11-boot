@@ -1,0 +1,30 @@
+meta {
+  name: TODO POST transfer-listings - 409 Transfer Day Status Invalid
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-listings
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "playerId": "{{playerId}}" // Change to transferListablePlayerId when test can be fixed
+  }
+  
+}
+
+assert {
+  res.status: eq 409
+  res.body.error: eq Conflict
+  res.body.method: eq POST
+  res.body.path: eq /v2/transfer-listings
+  ~// res.body.message: eq Current transfer day status is invalid - TODO Fix this test when we can temporarily set transfer day status
+}
