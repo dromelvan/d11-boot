@@ -18,6 +18,7 @@ import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ErrorCode;
 import org.d11.boot.util.exception.ForbiddenException;
+import org.d11.boot.util.exception.NotFoundException;
 import org.d11.boot.util.exception.UnauthorizedException;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
@@ -32,6 +33,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -44,7 +46,7 @@ import static org.mockito.Mockito.when;
 /**
  * Transfer listing service tests.
  */
-@SuppressWarnings("checkstyle:ClassFanOutComplexity")
+@SuppressWarnings({ "checkstyle:ClassFanOutComplexity", "PMD.TooManyMethods"})
 class TransferListingServiceTests extends BaseD11BootServiceTests {
 
     /**
@@ -101,6 +103,8 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
     @InjectMocks
     private TransferListingService transferListingService;
 
+    // createTransferListing -------------------------------------------------------------------------------------------
+
     /**
      * Tests TransferListingService::createTransferListing for null playerId.
      */
@@ -112,7 +116,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
                              "TransferListingService::createTransferListing playerId null throws");
 
         assertEquals("playerId", e.getParameter(),
-                     "TransferListingService::createTransferListing playerId null property equals playerId");
+                     "TransferListingService::createTransferListing playerId null property equals");
     }
 
     /**
@@ -307,6 +311,173 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
 
         testCreateTransferListing(user);
     }
+
+    // deleteTransferListing -------------------------------------------------------------------------------------------
+
+    /**
+     * Tests TransferListingService::deleteTransferListing for null transferListingId.
+     */
+    @Test
+    void testDeleteTransferListingTransferListingIdNull() {
+        final BadRequestException e =
+                assertThrows(BadRequestException.class,
+                             () -> this.transferListingService.deleteTransferListing(null),
+                             "TransferListingService::deleteTransferListing transferListingId null throws");
+
+        assertEquals("transferListingId", e.getParameter(),
+                     "TransferListingService::deleteTransferListing transferListingId null property equals");
+    }
+
+    /**
+     * Tests TransferListingService::deleteTransferListing for transferListing not found.
+     */
+    @Test
+    void testDeleteTransferListingTransferListingNotFound() {
+        when(this.transferListingRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class,
+                     () -> this.transferListingService.deleteTransferListing(1L),
+                     "TransferListingService::deleteTransferListing transferListing not found throws");
+    }
+
+    /**
+     * Tests TransferListingService::deleteTransferListing for unauthorized.
+     */
+    @Test
+    void testDeleteTransferListingUnauthorized() {
+        when(this.applicationContext.getBean(eq(UserRepository.class))).thenReturn(this.userRepository);
+
+        final TransferListing transferListing = generate(TransferListing.class);
+
+        when(this.transferListingRepository.findById(eq(transferListing.getId())))
+                .thenReturn(Optional.of(transferListing));
+
+        assertThrows(UnauthorizedException.class,
+                     () -> this.transferListingService.deleteTransferListing(transferListing.getId()),
+                     "TransferListingService::deleteTransferListing unauthorized throws");
+    }
+
+    /**
+     * Tests TransferListingService::deleteTransferListing for forbidden.
+     */
+    @Test
+    void testDeleteTransferListingForbidden() {
+        when(this.applicationContext.getBean(eq(UserRepository.class))).thenReturn(this.userRepository);
+
+        final TransferListing transferListing = generate(TransferListing.class);
+
+        when(this.transferListingRepository.findById(eq(transferListing.getId())))
+                .thenReturn(Optional.of(transferListing));
+
+        final User user = generate(User.class);
+        user.setAdministrator(false);
+        mockCurrentUser(user);
+
+        assertThrows(ForbiddenException.class,
+                     () -> this.transferListingService.deleteTransferListing(transferListing.getId()),
+                     "TransferListingService::deleteTransferListing forbidden throws");
+    }
+
+    /**
+     * Tests TransferListingService::deleteTransferListing for transfer day invalid status as user.
+     */
+    @Test
+    void testDeleteTransferListingTransferDayInvalidStatusUser() {
+        when(this.applicationContext.getBean(eq(UserRepository.class))).thenReturn(this.userRepository);
+
+        final TransferListing transferListing = generate(TransferListing.class);
+        transferListing.getTransferDay().setStatus(Status.FINISHED);
+
+        when(this.transferListingRepository.findById(eq(transferListing.getId())))
+                .thenReturn(Optional.of(transferListing));
+
+        final User user = transferListing.getD11Team().getOwner();
+        user.setAdministrator(false);
+        mockCurrentUser(user);
+
+        final ConflictException e =
+                assertThrows(ConflictException.class,
+                             () -> this.transferListingService.deleteTransferListing(transferListing.getId()),
+                             "TransferListingService::deleteTransferListing transferDay invalid status user throws");
+        assertEquals(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS, e.getErrorCode(),
+                     "TransferListingService::createTransferListing transferDay invalid status user equals");
+    }
+
+    /**
+     * Tests TransferListingService::deleteTransferListing for transfer day invalid status as admin.
+     */
+    @Test
+    void testDeleteTransferListingTransferDayInvalidStatusAdmin() {
+        when(this.applicationContext.getBean(eq(UserRepository.class))).thenReturn(this.userRepository);
+
+        final TransferListing transferListing = generate(TransferListing.class);
+        transferListing.getTransferDay().setStatus(Status.FINISHED);
+
+        when(this.transferListingRepository.findById(eq(transferListing.getId())))
+                .thenReturn(Optional.of(transferListing));
+
+        final User user = generate(User.class);
+        user.setAdministrator(true);
+        mockCurrentUser(user);
+
+        assertDoesNotThrow(
+                () -> this.transferListingService.deleteTransferListing(transferListing.getId()),
+                "TransferListingService::deleteTransferListing transferDay invalid status admin does not throw"
+        );
+
+        verify(this.transferListingRepository, times(1)).delete(eq(transferListing));
+    }
+
+    /**
+     * Tests TransferListingService::deleteTransferListing as user.
+     */
+    @Test
+    void testDeleteTransferListingUser() {
+        when(this.applicationContext.getBean(eq(UserRepository.class))).thenReturn(this.userRepository);
+
+        final TransferListing transferListing = generate(TransferListing.class);
+        transferListing.getTransferDay().setStatus(Status.PENDING);
+
+        when(this.transferListingRepository.findById(eq(transferListing.getId())))
+                .thenReturn(Optional.of(transferListing));
+
+        final User user = transferListing.getD11Team().getOwner();
+        user.setAdministrator(false);
+        mockCurrentUser(user);
+
+        assertDoesNotThrow(
+                () -> this.transferListingService.deleteTransferListing(transferListing.getId()),
+                "TransferListingService::deleteTransferListing user does not throw"
+        );
+
+        verify(this.transferListingRepository, times(1)).delete(eq(transferListing));
+    }
+
+    /**
+     * Tests TransferListingService::deleteTransferListing as admin.
+     */
+    @Test
+    void testDeleteTransferListingAdmin() {
+        when(this.applicationContext.getBean(eq(UserRepository.class))).thenReturn(this.userRepository);
+
+        final TransferListing transferListing = generate(TransferListing.class);
+        transferListing.getTransferDay().setStatus(Status.PENDING);
+
+        when(this.transferListingRepository.findById(eq(transferListing.getId())))
+                .thenReturn(Optional.of(transferListing));
+
+        final User user = generate(User.class);
+        user.setAdministrator(true);
+        mockCurrentUser(user);
+
+        assertDoesNotThrow(
+                () -> this.transferListingService.deleteTransferListing(transferListing.getId()),
+                "TransferListingService::deleteTransferListing admin does not throw"
+        );
+
+        verify(this.transferListingRepository, times(1)).delete(eq(transferListing));
+    }
+
+    // getByTransferDayId ----------------------------------------------------------------------------------------------
 
     /**
      * Tests TransferListingService::getByTransferDayId.

@@ -6,6 +6,7 @@ import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferListing;
+import org.d11.boot.spring.model.User;
 import org.d11.boot.spring.repository.PlayerSeasonStatRepository;
 import org.d11.boot.spring.repository.TransferDayRepository;
 import org.d11.boot.spring.repository.TransferListingRepository;
@@ -14,6 +15,7 @@ import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ErrorCode;
 import org.d11.boot.util.exception.ForbiddenException;
+import org.d11.boot.util.exception.NotFoundException;
 import org.d11.boot.util.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -64,7 +66,7 @@ public class TransferListingService extends RepositoryService<TransferListing, T
     @Transactional
     public TransferListing createTransferListing(final Long playerId) {
         if (playerId == null) {
-            throw new BadRequestException("playerId", "is missing");
+            throw new BadRequestException("playerId", ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING);
         }
 
         final Season season = getCurrentSeason();
@@ -74,16 +76,10 @@ public class TransferListingService extends RepositoryService<TransferListing, T
                 .orElseThrow(() -> new ConflictException(ErrorCode.CONFLICT_NO_PLAYER_SEASON_STAT));
         final D11Team d11Team = playerSeasonStat.getD11Team();
 
-        getCurrentUser().ifPresentOrElse(
-                user -> {
-                    if (!d11Team.isAdministratedBy(user)) {
-                        throw new ForbiddenException();
-                    }
-                },
-                () -> {
-                    throw new UnauthorizedException();
-                }
-        );
+        final User user = getCurrentUser().orElseThrow(UnauthorizedException::new);
+        if (!d11Team.isAdministratedBy(user)) {
+            throw new ForbiddenException();
+        }
 
         final Collection<TransferListing> transferListings = getJpaRepository()
                 .findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId(season.getId(), d11Team.getId());
@@ -106,6 +102,31 @@ public class TransferListingService extends RepositoryService<TransferListing, T
         transferListing.setTransferDay(transferDay);
 
         return getJpaRepository().save(transferListing);
+    }
+
+    /**
+     * Deletes a transfer listing.
+     *
+     * @param transferListingId Transfer listing id.
+     */
+    public void deleteTransferListing(final Long transferListingId) {
+        if (transferListingId == null) {
+            throw new BadRequestException("transferListingId", ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING);
+        }
+
+        final TransferListing transferListing = getJpaRepository().findById(transferListingId)
+                .orElseThrow(() -> new NotFoundException(transferListingId, TransferListing.class));
+
+        final User user = getCurrentUser().orElseThrow(UnauthorizedException::new);
+        if (!transferListing.getD11Team().isAdministratedBy(user)) {
+            throw new ForbiddenException();
+        }
+
+        if (!Status.PENDING.equals(transferListing.getTransferDay().getStatus()) && !user.isAdministrator()) {
+            throw new ConflictException(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS);
+        }
+
+        getJpaRepository().delete(transferListing);
     }
 
     /**

@@ -31,6 +31,17 @@ public class BadRequestException extends D11BootException {
     /**
      * Creates a new Bad Request exception.
      *
+     * @param parameter Name of the parameter that is missing or otherwise invalid.
+     * @param errorCode Exception error code.
+     */
+    public BadRequestException(final String parameter, final ErrorCode errorCode) {
+        super(errorCode);
+        this.validationErrors.add(new ValidationError(parameter, errorCode.getMessage()));
+    }
+
+    /**
+     * Creates a new Bad Request exception.
+     *
      * @param message          Exception message.
      * @param validationErrors List of validation messages.
      */

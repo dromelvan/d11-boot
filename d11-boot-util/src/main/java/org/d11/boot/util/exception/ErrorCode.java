@@ -15,9 +15,14 @@ public enum ErrorCode {
     DEFAULT("An error occurred"),
 
     /**
+     * Property is missing error.
+     */
+    BAD_REQUEST_PROPERTY_IS_MISSING("is missing"),
+
+    /**
      * Invalid transfer day status error.
      */
-    CONFLICT_INVALID_TRANSFER_DAY_STATUS("Current transfer day status is invalid"),
+    CONFLICT_INVALID_TRANSFER_DAY_STATUS("Transfer day status is invalid"),
 
     /**
      * No player season stat error.
