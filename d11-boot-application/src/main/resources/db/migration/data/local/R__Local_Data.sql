@@ -6,7 +6,9 @@ INSERT INTO application_user (name, email, encrypted_password, administrator)
 INSERT INTO application_user (name, email, encrypted_password, administrator)
     VALUES('Administrator', 'administrator@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', true);
 INSERT INTO application_user (name, email, encrypted_password, administrator, confirm_registration_token)
-    VALUES('Unconfirmed', 'unconfirmed@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', false, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa');
+    VALUES('Unconfirmed', 'unconfirmed@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', false, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb');
+INSERT INTO application_user (name, email, encrypted_password, administrator, confirm_registration_token)
+    VALUES('Confirmable', 'confirmable@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', false, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa');
 
 -- Country
 INSERT INTO country (name, iso)
