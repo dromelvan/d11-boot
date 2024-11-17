@@ -1,0 +1,25 @@
+meta {
+  name: DELETE transfer-listings/{transferListingId} - 400 Invalid Transfer Listing Id
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{baseUrl}}/v2/transfer-listings/invalid
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq DELETE
+  res.body.path: eq /v2/transfer-listings/invalid
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq transferListingId
+  res.body.validationErrors[0].error: eq is invalid
+}

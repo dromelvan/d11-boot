@@ -1,0 +1,19 @@
+meta {
+  name: Rollback - Delete Transfer Listing
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/v2/transfer-listings/{{newTransferListingId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+assert {
+  res.status: eq 204
+}

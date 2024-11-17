@@ -1,0 +1,21 @@
+meta {
+  name: GET actuator - health
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/actuator/health
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.status: eq UP
+}
+
+tests {
+    // When we can change transfer day status, replace this with a) create transfer listing, b) change transfer day
+    // status to FINISHED c) successful delete transfer list as admin d) change transfer day status back to PENDING
+}

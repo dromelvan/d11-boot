@@ -1,0 +1,30 @@
+meta {
+  name: Setup - Login User
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/v2/security/authenticate
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "username": "{{userUsername}}",
+      "password": "{{userPassword}}",
+      "persistent": true
+  }
+  
+}
+
+assert {
+  res.status: eq 200
+}
+
+script:post-response {
+  const body = res.getBody();    
+  bru.setEnvVar("jwt", body.jwt);
+  
+}
