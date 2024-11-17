@@ -109,6 +109,7 @@ public class TransferListingService extends RepositoryService<TransferListing, T
      *
      * @param transferListingId Transfer listing id.
      */
+    @Transactional
     public void deleteTransferListing(final Long transferListingId) {
         if (transferListingId == null) {
             throw new BadRequestException("transferListingId", ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING);

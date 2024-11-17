@@ -399,7 +399,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
                              () -> this.transferListingService.deleteTransferListing(transferListing.getId()),
                              "TransferListingService::deleteTransferListing transferDay invalid status user throws");
         assertEquals(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS, e.getErrorCode(),
-                     "TransferListingService::createTransferListing transferDay invalid status user equals");
+                     "TransferListingService::deleteTransferListing transferDay invalid status user equals");
     }
 
     /**

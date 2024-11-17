@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Transfer listing controller tests.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
 
     /**
@@ -106,7 +108,7 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Test
     void testCreateTransferListingPlayerSeasonStatNotFound() {
-        final TransferListingApi transferListingApi = getApi(TransferListingApi.class);
+        final TransferListingApi transferListingApi = getUserApi(TransferListingApi.class);
 
         final FeignException.Conflict e = assertThrows(FeignException.Conflict.class,
                      () -> transferListingApi.createTransferListing(
@@ -218,6 +220,101 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
         assertResultEquals(playerSeasonStat, responseBody.getTransferListing());
 
         this.transferListingRepository.deleteById(responseBody.getTransferListing().getId());
+    }
+
+    // deleteTransferListing -------------------------------------------------------------------------------------------
+
+    /**
+     * Tests TransferListingControllerV2::deleteTransferListing for unauthorized.
+     */
+    @Test
+    void testDeleteTransferListingUnauthorized() {
+        final TransferListingApi transferListingApi = getApi(TransferListingApi.class);
+
+        assertThrows(FeignException.Unauthorized.class,
+                     () -> transferListingApi.deleteTransferListing(1L),
+                     "TransferListingControllerV2::deleteTransferListing unauthorized throws");
+    }
+
+    /**
+     * Tests TransferListingControllerV2::deleteTransferListing for forbidden.
+     */
+    @Test
+    void testDeleteTransferListingForbidden() {
+        final TransferListingApi transferListingApi = getUserApi(TransferListingApi.class);
+
+        assertThrows(FeignException.Forbidden.class,
+                     () -> transferListingApi.deleteTransferListing(12L),
+                     "TransferListingControllerV2::deleteTransferListing forbidden throws");
+    }
+
+    /**
+     * Tests TransferListingControllerV2::deleteTransferListing for transferListing not found.
+     */
+    @Test
+    void testDeleteTransferListingTransferListingNotFound() {
+        final TransferListingApi transferListingApi = getUserApi(TransferListingApi.class);
+
+        assertThrows(FeignException.NotFound.class,
+                     () -> transferListingApi.deleteTransferListing(1_000L),
+                     "TransferListingControllerV2::deleteTransferListing transferListing not found throws");
+    }
+
+    /**
+     * Tests TransferListingControllerV2::deleteTransferListing for transfer day invalid status as user.
+     */
+    @Test
+    void testDeleteTransferListingTransferDayInvalidStatusUser() {
+        final TransferListingApi transferListingApi = getUserApi(TransferListingApi.class);
+
+        final FeignException.Conflict e = assertThrows(FeignException.Conflict.class,
+                     () -> transferListingApi.deleteTransferListing(13L),
+                     "TransferListingControllerV2::deleteTransferListing transferDay invalid status user throws");
+
+        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS.getMessage()),
+               "TransferListingControllerV2::deleteTransferListing transferDay invalid status user message contains");
+    }
+
+    /**
+     * Tests TransferListingControllerV2::deleteTransferListing for transfer day invalid status as admin.
+     */
+    @Test
+    void testDeleteTransferListingTransferDayInvalidStatusAdmin() {
+        final TransferListingApi transferListingApi = getAdministratorApi(TransferListingApi.class);
+
+        assertDoesNotThrow(() -> transferListingApi.deleteTransferListing(13L),
+                 "TransferListingControllerV2::deleteTransferListing transferDay invalid status admin does not throw");
+
+        assertFalse(this.transferListingRepository.findById(13L).isPresent(),
+                    "TransferListingControllerV2::deleteTransferListing transferDay invalid status admin isPresent");
+    }
+
+    /**
+     * Tests TransferListingService::deleteTransferListing as user.
+     */
+    @Test
+    void testDeleteTransferListingUser() {
+        final TransferListingApi transferListingApi = getUserApi(TransferListingApi.class);
+
+        assertDoesNotThrow(() -> transferListingApi.deleteTransferListing(14L),
+                           "TransferListingControllerV2::deleteTransferListing user does not throw");
+
+        assertFalse(this.transferListingRepository.findById(14L).isPresent(),
+                    "TransferListingControllerV2::deleteTransferListing user isPresent");
+    }
+
+    /**
+     * Tests TransferListingService::deleteTransferListing as admin.
+     */
+    @Test
+    void testDeleteTransferListingAdmin() {
+        final TransferListingApi transferListingApi = getAdministratorApi(TransferListingApi.class);
+
+        assertDoesNotThrow(() -> transferListingApi.deleteTransferListing(15L),
+                           "TransferListingControllerV2::deleteTransferListing admin does not throw");
+
+        assertFalse(this.transferListingRepository.findById(15L).isPresent(),
+                    "TransferListingControllerV2::deleteTransferListing admin isPresent");
     }
 
     // getTransferListingsByTransferDayId ------------------------------------------------------------------------------
