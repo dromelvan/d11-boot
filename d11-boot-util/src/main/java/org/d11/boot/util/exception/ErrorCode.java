@@ -17,6 +17,11 @@ public enum ErrorCode {
     /**
      * Property is missing error.
      */
+    BAD_REQUEST_INVALID_PARAMETER("is invalid"),
+
+    /**
+     * Property is missing error.
+     */
     BAD_REQUEST_PROPERTY_IS_MISSING("is missing"),
 
     /**
