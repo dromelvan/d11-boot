@@ -19,6 +19,7 @@ dependencies {
 
     implementation project(':d11-boot-spring')
     implementation project(':d11-boot-util')
+    implementation project(':d11-boot-processing:d11-boot-processing-api')
 
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
@@ -34,6 +35,7 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation "org.apache.camel:camel-test-spring-junit5:${camelVersion}"
+    testImplementation project(path: ':d11-boot-spring', configuration: 'testArtifacts')
 }
 
 test {

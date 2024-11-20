@@ -11,7 +11,7 @@ plugins {
 dependencies {
     implementation project(':d11-boot-interface:d11-boot-interface-rest')
     implementation project(':d11-boot-interface:d11-boot-interface-jms')
-    implementation project(':d11-boot-camel')
+    implementation project(':d11-boot-processing:d11-boot-processing-camel')
     implementation project(':d11-boot-download')
 
     implementation 'org.springframework.boot:spring-boot-starter'
