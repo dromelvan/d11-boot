@@ -1,0 +1,44 @@
+meta {
+  name: PUT transfer-days/{transferDayId} - 200
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/v2/transfer-days/{{transferDayId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferDay": {{updatedTransferDay}}
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.transferDay: isDefined
+  res.body.transferWindow: isDefined
+  res.body.matchWeek: isDefined
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("PUT transfer day response body", () => {
+    const body = res.getBody();
+    const transferDay = JSON.parse(bru.getEnvVar("updatedTransferDay"));
+    const transferWindow = JSON.parse(bru.getEnvVar("transferDayTransferWindow"));
+    const matchWeek = JSON.parse(bru.getEnvVar("transferDayMatchWeek"));
+
+    expectToEq.transferDay(body.transferDay, transferDay);
+    expectToEq.transferWindow(body.transferWindow, transferWindow);
+    expectToEq.matchWeek(body.matchWeek, matchWeek);
+  });
+
+}

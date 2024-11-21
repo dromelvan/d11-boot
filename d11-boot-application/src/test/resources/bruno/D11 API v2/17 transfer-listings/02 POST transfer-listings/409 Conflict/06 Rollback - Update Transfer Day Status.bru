@@ -1,0 +1,29 @@
+meta {
+  name: Rollback - Update Transfer Day Status
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{baseUrl}}/v2/transfer-days/{{currentTransferDayId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferDay": {
+          "transferDayNumber": 2,
+          "status": "Pending",
+          "datetime": "{{currentTransferDayDatetime}}"
+      }
+  }
+}
+
+assert {
+  res.status: eq 200
+}

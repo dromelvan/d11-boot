@@ -1,0 +1,25 @@
+meta {
+  name: PUT transfer-days/{transferDayId} - 403
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/v2/transfer-days/{{transferDayId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferDay": {{updatedTransferDay}}
+  }
+}
+
+assert {
+  res.status: eq 403
+}
