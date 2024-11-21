@@ -1564,6 +1564,46 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+    put:
+      tags:
+        - transferDay
+      summary: Updates the status of a transfer day.
+      security:
+        - BearerAuth: [admin]
+      operationId: updateTransferDay
+      parameters:
+        - name: transferDayId
+          in: path
+          required: true
+          description: Id of the transfer day that will be updated.
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update transfer day status.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTransferDayRequestBody"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferDayResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /v2/transfer-days/current:
     get:
       tags:
@@ -3357,6 +3397,22 @@ components:
           type: string
           format: date-time
 
+    TransferDayInput:
+      type: object
+      required:
+        - transferDayNumber
+        - status
+        - datetime
+      properties:
+        transferDayNumber:
+          type: integer
+          format: int32
+        status:
+          $ref: '#/components/schemas/Status'
+        datetime:
+          type: string
+          format: date-time
+
     TransferDayResponseBody:
       type: object
       required:
@@ -3380,6 +3436,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TransferDay'
+
+    UpdateTransferDayRequestBody:
+      type: object
+      required:
+        - transferDay
+      properties:
+        transferDay:
+          $ref: '#/components/schemas/TransferDayInput'
 
   # Transfer listing ---------------------------------------------------------------------------------------------------
 

@@ -1,6 +1,7 @@
 package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.TransferDay;
+import org.d11.boot.spring.model.TransferDayInput;
 import org.d11.boot.spring.model.TransferWindow;
 import org.d11.boot.spring.repository.TransferDayRepository;
 import org.d11.boot.util.Status;
@@ -12,6 +13,7 @@ import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,8 +115,10 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
      */
     @Test
     void testUpdateTransferDayBadRequest() {
+        final TransferDayInput transferDayInput = new TransferDayInput(1, Status.FULL_TIME, LocalDateTime.now());
+
         assertThrows(BadRequestException.class,
-                     () -> this.transferDayService.updateTransferDay(1L, Status.FULL_TIME),
+                     () -> this.transferDayService.updateTransferDay(1L, transferDayInput),
                      "TransferDayService::updateTransferDay status FULL_TIME throws");
     }
 
@@ -123,41 +127,13 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
      */
     @Test
     void testUpdateTransferDayNotFound() {
+        final TransferDayInput transferDayInput = new TransferDayInput(1, Status.FINISHED, LocalDateTime.now());
+
         when(this.transferDayRepository.findById(eq(1L))).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class,
-                     () -> this.transferDayService.updateTransferDay(1L, Status.ACTIVE),
+                     () -> this.transferDayService.updateTransferDay(1L, transferDayInput),
                      "TransferDayService::updateTransferDay not found throws");
-    }
-
-    /**
-     * Tests TransferDayService::updateTransferDay for conflict.
-     */
-    @Test
-    void testUpdateTransferDayConflict() {
-        final TransferDay transferDay = generate(TransferDay.class);
-        when(this.transferDayRepository.findById(eq(transferDay.getId()))).thenReturn(Optional.of(transferDay));
-
-        transferDay.setStatus(Status.PENDING);
-        assertThrows(ConflictException.class,
-                     () -> this.transferDayService.updateTransferDay(transferDay.getId(), Status.PENDING),
-                     "TransferDayService::updateTransferDay PENDING to PENDING throws");
-        assertThrows(ConflictException.class,
-                     () -> this.transferDayService.updateTransferDay(transferDay.getId(), Status.FINISHED),
-                     "TransferDayService::updateTransferDay PENDING to FINISHED throws");
-
-        transferDay.setStatus(Status.ACTIVE);
-        assertThrows(ConflictException.class,
-                     () -> this.transferDayService.updateTransferDay(transferDay.getId(), Status.ACTIVE),
-                     "TransferDayService::updateTransferDay ACTIVE to ACTIVE throws");
-
-        transferDay.setStatus(Status.FINISHED);
-        assertThrows(ConflictException.class,
-                     () -> this.transferDayService.updateTransferDay(transferDay.getId(), Status.FINISHED),
-                     "TransferDayService::updateTransferDay FINISHED to FINISHED throws");
-        assertThrows(ConflictException.class,
-                     () -> this.transferDayService.updateTransferDay(transferDay.getId(), Status.PENDING),
-                     "TransferDayService::updateTransferDay FINISHED to PENDING throws");
     }
 
     /**
@@ -165,29 +141,26 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
      */
     @Test
     void testUpdateTransferDay() {
-        TransferDay transferDay = generate(TransferDay.class);
+        final TransferDay transferDay = generate(TransferDay.class)
+                .setTransferDayNumber(2)
+                .setStatus(Status.PENDING)
+                .setDatetime(LocalDateTime.now().minusDays(1L));
+
         when(this.transferDayRepository.findById(eq(transferDay.getId()))).thenReturn(Optional.of(transferDay));
         when(this.transferDayRepository.save(any(TransferDay.class))).then(AdditionalAnswers.returnsFirstArg());
 
-        transferDay.setStatus(Status.PENDING);
+        final TransferDayInput transferDayInput = new TransferDayInput(1, Status.FINISHED, LocalDateTime.now());
 
-        transferDay = this.transferDayService.updateTransferDay(transferDay.getId(), Status.ACTIVE);
-        assertEquals(Status.ACTIVE, transferDay.getStatus(),
-                     "TransferDayService::updateTransferDay PENDING to ACTIVE result status equals");
+        final TransferDay result = this.transferDayService.updateTransferDay(transferDay.getId(), transferDayInput);
 
-        transferDay = this.transferDayService.updateTransferDay(transferDay.getId(), Status.FINISHED);
-        assertEquals(Status.FINISHED, transferDay.getStatus(),
-                     "TransferDayService::updateTransferDay ACTIVE to FINISHED result status equals");
+        assertEquals(transferDayInput.transferDayNumber(), result.getTransferDayNumber(),
+                     "TransferDayService::updateTransferDay result transferDayNumber equals");
+        assertEquals(transferDayInput.status(), result.getStatus(),
+                     "TransferDayService::updateTransferDay result status equals");
+        assertEquals(transferDayInput.datetime(), result.getDatetime(),
+                     "TransferDayService::updateTransferDay result datetime equals");
 
-        transferDay = this.transferDayService.updateTransferDay(transferDay.getId(), Status.ACTIVE);
-        assertEquals(Status.ACTIVE, transferDay.getStatus(),
-                     "TransferDayService::updateTransferDay FINISHED to ACTIVE result status equals");
-
-        transferDay = this.transferDayService.updateTransferDay(transferDay.getId(), Status.PENDING);
-        assertEquals(Status.PENDING, transferDay.getStatus(),
-                     "TransferDayService::updateTransferDay ACTIVE to PENDING result status equals");
-
-        verify(this.transferDayRepository, times(4)).save(eq(transferDay));
+        verify(this.transferDayRepository, times(1)).save(eq(transferDay));
     }
 
 }

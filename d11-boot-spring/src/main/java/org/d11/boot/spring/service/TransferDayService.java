@@ -1,6 +1,7 @@
 package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.TransferDay;
+import org.d11.boot.spring.model.TransferDayInput;
 import org.d11.boot.spring.repository.TransferDayRepository;
 import org.d11.boot.util.Status;
 import org.d11.boot.util.exception.BadRequestException;
@@ -55,33 +56,22 @@ public class TransferDayService extends RepositoryService<TransferDay, TransferD
     }
 
     /**
-     * Updates the status of a transfer day.
+     * Updates a transfer day.
      *
-     * @param transferDayId The transfer day id.
-     * @param status The new transfer day status.
-     * @return The updated transfer listing.
+     * @param transferDayId Transfer day id.
+     * @param transferDayInput Transfer day input properties that will be updated..
+     * @return The updated transfer day.
      */
-    public TransferDay updateTransferDay(final Long transferDayId, final Status status) {
-        if (Status.FULL_TIME.equals(status)) {
-            throw new BadRequestException("status", ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
+    public TransferDay updateTransferDay(final Long transferDayId, final TransferDayInput transferDayInput) {
+        if (Status.FULL_TIME.equals(transferDayInput.status())) {
+            throw new BadRequestException("transferDay.status", ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
         }
 
         final TransferDay transferDay = getJpaRepository().findById(transferDayId)
                 .orElseThrow(() -> new NotFoundException(transferDayId, TransferDay.class));
 
-        if (Status.PENDING.equals(status) && !Status.ACTIVE.equals(transferDay.getStatus())) {
-            throw new ConflictException(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS);
-        }
-        if (Status.ACTIVE.equals(status)
-            && !Status.PENDING.equals(transferDay.getStatus())
-            && !Status.FINISHED.equals(transferDay.getStatus())) {
-            throw new ConflictException(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS);
-        }
-        if (Status.FINISHED.equals(status) && !Status.ACTIVE.equals(transferDay.getStatus())) {
-            throw new ConflictException(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS);
-        }
+        getServiceMapper().mapToTransferDay(transferDayInput, transferDay);
 
-        transferDay.setStatus(status);
         return getJpaRepository().save(transferDay);
     }
 

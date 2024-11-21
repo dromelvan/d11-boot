@@ -3,10 +3,14 @@ package org.d11.boot.spring.service;
 import org.d11.boot.spring.EasyRandomTests;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerInput;
+import org.d11.boot.spring.model.TransferDay;
+import org.d11.boot.spring.model.TransferDayInput;
+import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -95,6 +99,23 @@ class ServiceMapperTests extends EasyRandomTests {
                         "ServiceMapper::mapToPlayerInput(PlayerInput,Player) destination countryId not equals");
         assertEquals(source.verified(), destination.isVerified(),
                      "ServiceMapper::mapToPlayer(PlayerInput,Player) destination verified equals");
+    }
+
+    /**
+     * Tests ServiceMapper::mapToTransferDay(TransferDayInput,TransferDay).
+     */
+    @Test
+    void testMapToTransferDayUpdate() {
+        final TransferDayInput source = new TransferDayInput(1, Status.FINISHED, LocalDateTime.now());
+
+        final TransferDay destination = this.mapper.mapToTransferDay(source, new TransferDay());
+
+        assertEquals(source.transferDayNumber(), destination.getTransferDayNumber(),
+                "ServiceMapper::mapToTransferDay(TransferDayInput,TransferDay) destination transfer day number equals");
+        assertEquals(source.status(), destination.getStatus(),
+                     "ServiceMapper::mapToTransferDay(TransferDayInput,TransferDay) destination status equals");
+        assertEquals(source.datetime(), destination.getDatetime(),
+                     "ServiceMapper::mapToTransferDay(TransferDayInput,TransferDay) destination datetime equals");
     }
 
 }

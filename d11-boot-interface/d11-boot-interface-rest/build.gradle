@@ -23,12 +23,15 @@ dependencies {
     implementation project(':d11-boot-api')
     implementation project(':d11-boot-spring')
     implementation project(':d11-boot-util')
+    implementation project(':d11-boot-processing:d11-boot-processing-api')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "org.modelmapper:modelmapper:${modelMapperVersion}"
     implementation "org.mapstruct:mapstruct:${mapStructVersion}"
     implementation 'org.apache.commons:commons-lang3'
     implementation "com.github.spotbugs:spotbugs-annotations:${spotBugsVersion}"
+
+    runtimeOnly project(':d11-boot-processing:d11-boot-processing-camel')
 
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
@@ -37,6 +40,7 @@ dependencies {
     testCompileOnly "io.swagger.core.v3:swagger-annotations:${swaggerAnnotationsVersion}"
 
     testImplementation project(':d11-boot-api-client:d11-boot-api-client-feign')
+    testImplementation project(':d11-boot-processing:d11-boot-processing-camel')
     testImplementation project(path: ':d11-boot-spring', configuration: 'testArtifacts')
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation "com.auth0:java-jwt:${javaJwtVersion}"

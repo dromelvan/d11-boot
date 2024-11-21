@@ -5,6 +5,7 @@ import org.d11.boot.api.v2.model.PlayerDTO;
 import org.d11.boot.api.v2.model.PlayerInputDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
+import org.d11.boot.api.v2.model.TransferDayInputDTO;
 import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputDTO;
 import org.d11.boot.spring.EasyRandomTests;
 import org.d11.boot.spring.model.CreatePlayerSeasonStatInput;
@@ -13,6 +14,7 @@ import org.d11.boot.spring.model.PlayerInput;
 import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Team;
+import org.d11.boot.spring.model.TransferDayInput;
 import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -303,6 +305,22 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
                      "RestControllerMapper::mapToCreatePlayerSeasonStatInput destination position defender equals");
         assertEquals(source.getPosition().getSortOrder(), destination.getPosition().getSortOrder(),
                      "RestControllerMapper::mapToCreatePlayerSeasonStatInput destination position sortOrder equals");
+    }
+
+    /**
+     * Tests RestControllerMapper::mapToTransferDayInput.
+     */
+    @Test
+    void testMapToTransferDayInput() {
+        final TransferDayInputDTO source = generate(TransferDayInputDTO.class);
+        final TransferDayInput destination = this.mapper.mapToTransferDayInput(source);
+
+        assertEquals(source.getTransferDayNumber(), destination.transferDayNumber(),
+                     "RestControllerMapper::mapToTransferDayInput destination transferDayNumber equals");
+        assertEquals(source.getStatus().name(), destination.status().name(),
+                     "RestControllerMapper::mapToTransferDayInput destination status equals");
+        assertEquals(source.getDatetime(), destination.datetime(),
+                     "RestControllerMapper::mapToTransferDayInput destination datetime equals");
     }
 
 }
