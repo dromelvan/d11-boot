@@ -1,7 +1,7 @@
 meta {
-  name: Setup - Login User
+  name: Rollback - Login Admin
   type: http
-  seq: 1
+  seq: 7
 }
 
 post {
@@ -12,11 +12,11 @@ post {
 
 body:json {
   {
-      "username": "{{userUsername}}",
-      "password": "{{userPassword}}",
+      "username": "{{adminUsername}}",
+      "password": "{{adminPassword}}",
       "persistent": true
   }
-  
+
 }
 
 assert {
@@ -24,7 +24,6 @@ assert {
 }
 
 script:post-response {
-  const body = res.getBody();    
+  const body = res.getBody();
   bru.setEnvVar("jwt", body.jwt);
-  
 }

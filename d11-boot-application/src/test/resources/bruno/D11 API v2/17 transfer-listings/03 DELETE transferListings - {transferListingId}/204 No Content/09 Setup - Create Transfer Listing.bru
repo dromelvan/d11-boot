@@ -1,0 +1,47 @@
+meta {
+  name: Setup - Create Transfer Listing
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-listings
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "playerId": "{{transferListablePlayerId}}"
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.transferListing: isDefined
+  res.body.transferListing.id: gt 0
+}
+
+script:post-response {
+  const body = res.getBody();
+  bru.setEnvVar("newTransferListingId", body.transferListing.id);
+
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("POST transfer-listing response body", () => {
+    const body = res.getBody();
+    const transferListing = JSON.parse(bru.getEnvVar("newTransferListing"));
+
+    transferListing.id = body.transferListing.id
+
+    expectToEq.transferListing(body.transferListing, transferListing);
+  });
+
+}

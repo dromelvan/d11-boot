@@ -1,0 +1,32 @@
+meta {
+  name: Rollback - Reset Transfer Day
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/v2/transfer-days/{{currentTransferDayId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferDay": {
+          "transferDayNumber": {{currentTransferDayTransferDayNumber}},
+          "status": "{{currentTransferDayStatus}}",
+          "datetime": "{{currentTransferDayDatetime}}"
+      }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.transferDay: isDefined
+  res.body.transferWindow: isDefined
+  res.body.matchWeek: isDefined
+}
