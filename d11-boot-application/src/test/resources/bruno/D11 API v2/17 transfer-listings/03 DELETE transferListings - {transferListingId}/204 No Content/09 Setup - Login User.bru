@@ -1,7 +1,7 @@
 meta {
   name: Setup - Login User
   type: http
-  seq: 8
+  seq: 9
 }
 
 post {
@@ -16,7 +16,7 @@ body:json {
       "password": "{{userPassword}}",
       "persistent": true
   }
-
+  
 }
 
 assert {
@@ -26,5 +26,5 @@ assert {
 script:post-response {
   const body = res.getBody();
   bru.setEnvVar("jwt", body.jwt);
-
+  
 }

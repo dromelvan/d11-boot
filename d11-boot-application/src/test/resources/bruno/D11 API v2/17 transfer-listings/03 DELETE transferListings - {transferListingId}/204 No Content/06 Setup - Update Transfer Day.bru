@@ -1,7 +1,7 @@
 meta {
-  name: Rollback - Reset Transfer Day
+  name: Setup - Update Transfer Day
   type: http
-  seq: 7
+  seq: 6
 }
 
 put {
@@ -18,7 +18,7 @@ body:json {
   {
       "transferDay": {
           "transferDayNumber": {{currentTransferDayTransferDayNumber}},
-          "status": "{{currentTransferDayStatus}}",
+          "status": "Finished",
           "datetime": "{{currentTransferDayDatetime}}"
       }
   }

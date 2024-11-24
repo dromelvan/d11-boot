@@ -29,19 +29,19 @@ assert {
 script:post-response {
   const body = res.getBody();
   bru.setEnvVar("newTransferListingId", body.transferListing.id);
-
+  
 }
 
 tests {
   const { expectToEq } = require('./d11.js');
-
+  
   test("POST transfer-listing response body", () => {
     const body = res.getBody();
     const transferListing = JSON.parse(bru.getEnvVar("newTransferListing"));
-
+  
     transferListing.id = body.transferListing.id
-
+  
     expectToEq.transferListing(body.transferListing, transferListing);
   });
-
+  
 }
