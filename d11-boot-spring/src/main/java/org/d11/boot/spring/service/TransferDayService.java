@@ -59,7 +59,7 @@ public class TransferDayService extends RepositoryService<TransferDay, TransferD
      * Updates a transfer day.
      *
      * @param transferDayId Transfer day id.
-     * @param transferDayInput Transfer day input properties that will be updated..
+     * @param transferDayInput Transfer day input properties that will be updated.
      * @return The updated transfer day.
      */
     public TransferDay updateTransferDay(final Long transferDayId, final TransferDayInput transferDayInput) {

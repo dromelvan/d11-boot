@@ -30,9 +30,14 @@ public enum ErrorCode {
     CONFLICT_INVALID_TRANSFER_DAY_STATUS("Transfer day status is invalid"),
 
     /**
-     * No player season stat error.
+     * No current transfer dau error.
      */
     CONFLICT_NO_CURRENT_TRANSFER_DAY("Current transfer day does not exist"),
+
+    /**
+     * No current transfer window error.
+     */
+    CONFLICT_NO_CURRENT_TRANSFER_WINDOW("Current transfer window does not exist"),
 
     /**
      * No player season stat error.

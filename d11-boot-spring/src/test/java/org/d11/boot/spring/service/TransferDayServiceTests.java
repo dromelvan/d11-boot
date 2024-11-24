@@ -110,6 +110,8 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
                 .findByTransferWindowIdOrderByDatetimeDesc(eq(transferWindow.getId()));
     }
 
+    // updateTransferDay -----------------------------------------------------------------------------------------------
+
     /**
      * Tests TransferDayService::updateTransferDay for bad request.
      */

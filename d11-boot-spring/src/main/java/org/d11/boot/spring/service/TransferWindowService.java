@@ -3,11 +3,14 @@ package org.d11.boot.spring.service;
 import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferWindow;
+import org.d11.boot.spring.model.TransferWindowInput;
 import org.d11.boot.spring.repository.MatchWeekRepository;
 import org.d11.boot.spring.repository.TransferWindowRepository;
 import org.d11.boot.util.Status;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
+import org.d11.boot.util.exception.ErrorCode;
+import org.d11.boot.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +25,6 @@ import java.util.Optional;
  */
 @Service
 public class TransferWindowService extends RepositoryService<TransferWindow, TransferWindowRepository> {
-
-    /**
-     * Message for conflict exceptions.
-     */
-    private static final String CONFLICT_MESSAGE = "Current transfer window does not exist";
 
     /**
      * Repository used to find the correct match week for a new transfer window.
@@ -54,7 +52,7 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
     public TransferWindow getCurrentTransferWindow() {
         final Optional<TransferWindow> optional = getJpaRepository().findCurrentTransferWindow();
 
-        return optional.orElseThrow(() -> new ConflictException(CONFLICT_MESSAGE));
+        return optional.orElseThrow(() -> new ConflictException(ErrorCode.CONFLICT_NO_CURRENT_TRANSFER_WINDOW));
     }
 
     /**
@@ -87,7 +85,7 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
         // Have to use the no entity graph version of the query here. The match week repository query throws stack
         // overflow exception otherwise for reasons that aren't currently clear
         final TransferWindow currentTransferWindow = getJpaRepository().findFirstByOrderByDatetimeDesc()
-                .orElseThrow(() -> new ConflictException(CONFLICT_MESSAGE));
+                .orElseThrow(() -> new ConflictException(ErrorCode.CONFLICT_NO_CURRENT_TRANSFER_WINDOW));
 
         final MatchWeek matchWeek =
                 this.matchWeekRepository.findFirstByDateGreaterThanOrderByDateAsc(datetime.toLocalDate())
@@ -110,6 +108,30 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
         transferWindow.getTransferDays().add(transferDay);
 
         return save(transferWindow);
+    }
+
+    /**
+     * Updates a transfer window.
+     *
+     * @param transferWindowId Transfer window id.
+     * @param transferWindowInput Transfer window properties that will be updated.
+     * @return The updated transfer day.
+     */
+    public TransferWindow updateTransferWindow(final Long transferWindowId,
+                                               final TransferWindowInput transferWindowInput) {
+        if (Status.FULL_TIME.equals(transferWindowInput.status())) {
+            throw new BadRequestException("transferWindow.status", ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
+        }
+
+        final TransferWindow transferWindow = getJpaRepository().findById(transferWindowId)
+                .orElseThrow(() -> new NotFoundException(transferWindowId, TransferWindow.class));
+        final MatchWeek matchWeek = getRepository(MatchWeekRepository.class).findById(transferWindowInput.matchWeekId())
+                .orElseThrow(() -> new NotFoundException(transferWindowInput.matchWeekId(), MatchWeek.class));
+
+        getServiceMapper().mapToTransferWindow(transferWindowInput, transferWindow);
+        transferWindow.setMatchWeek(matchWeek);
+
+        return getJpaRepository().save(transferWindow);
     }
 
     /**

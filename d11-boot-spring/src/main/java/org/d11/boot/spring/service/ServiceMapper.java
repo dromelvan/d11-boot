@@ -4,6 +4,8 @@ import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerInput;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferDayInput;
+import org.d11.boot.spring.model.TransferWindow;
+import org.d11.boot.spring.model.TransferWindowInput;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
@@ -39,5 +41,15 @@ public interface ServiceMapper {
      * @return Updated transfer day.
      */
     TransferDay mapToTransferDay(TransferDayInput transferDayInput, @MappingTarget TransferDay transferDay);
+
+    /**
+     * Maps a transfer window input to an existing transfer window.
+     *
+     * @param transferWindowInput The transfer window input.
+     * @param transferWindow The transfer window.
+     * @return Updated transfer window.
+     */
+    TransferWindow mapToTransferWindow(TransferWindowInput transferWindowInput,
+                                       @MappingTarget TransferWindow transferWindow);
 
 }

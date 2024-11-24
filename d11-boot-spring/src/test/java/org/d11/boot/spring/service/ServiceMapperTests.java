@@ -5,6 +5,8 @@ import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerInput;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferDayInput;
+import org.d11.boot.spring.model.TransferWindow;
+import org.d11.boot.spring.model.TransferWindowInput;
 import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -102,20 +104,39 @@ class ServiceMapperTests extends EasyRandomTests {
     }
 
     /**
-     * Tests ServiceMapper::mapToTransferDay(TransferDayInput,TransferDay).
+     * Tests ServiceMapper::mapToTransferDay.
      */
     @Test
-    void testMapToTransferDayUpdate() {
+    void testMapToTransferDayInput() {
         final TransferDayInput source = new TransferDayInput(1, Status.FINISHED, LocalDateTime.now());
 
         final TransferDay destination = this.mapper.mapToTransferDay(source, new TransferDay());
 
         assertEquals(source.transferDayNumber(), destination.getTransferDayNumber(),
-                "ServiceMapper::mapToTransferDay(TransferDayInput,TransferDay) destination transfer day number equals");
+                "ServiceMapper::mapToTransferDay destination transfer day number equals");
         assertEquals(source.status(), destination.getStatus(),
-                     "ServiceMapper::mapToTransferDay(TransferDayInput,TransferDay) destination status equals");
+                     "ServiceMapper::mapToTransferDay destination status equals");
         assertEquals(source.datetime(), destination.getDatetime(),
-                     "ServiceMapper::mapToTransferDay(TransferDayInput,TransferDay) destination datetime equals");
+                     "ServiceMapper::mapToTransferDay destination datetime equals");
+    }
+
+    /**
+     * Tests ServiceMapper::mapToTransferWindow.
+     */
+    @Test
+    void testMapToTransferWindowInput() {
+        final TransferWindowInput source = new TransferWindowInput(1, true, Status.FINISHED, LocalDateTime.now(), 1);
+
+        final TransferWindow destination = this.mapper.mapToTransferWindow(source, new TransferWindow());
+
+        assertEquals(source.transferWindowNumber(), destination.getTransferWindowNumber(),
+                     "ServiceMapper::mapToTransferWindow destination transfer window number equals");
+        assertEquals(source.draft(), destination.isDraft(),
+                     "ServiceMapper::mapToTransferWindow destination draft equals");
+        assertEquals(source.status(), destination.getStatus(),
+                     "ServiceMapper::mapToTransferWindow destination status equals");
+        assertEquals(source.datetime(), destination.getDatetime(),
+                     "ServiceMapper::mapToTransferWindow destination datetime equals");
     }
 
 }
