@@ -6,6 +6,7 @@ import org.d11.boot.api.v2.model.PlayerInputDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.v2.model.TransferDayInputDTO;
+import org.d11.boot.api.v2.model.TransferWindowInputDTO;
 import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputDTO;
 import org.d11.boot.spring.EasyRandomTests;
 import org.d11.boot.spring.model.CreatePlayerSeasonStatInput;
@@ -15,6 +16,7 @@ import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Team;
 import org.d11.boot.spring.model.TransferDayInput;
+import org.d11.boot.spring.model.TransferWindowInput;
 import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -305,6 +307,26 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
                      "RestControllerMapper::mapToCreatePlayerSeasonStatInput destination position defender equals");
         assertEquals(source.getPosition().getSortOrder(), destination.getPosition().getSortOrder(),
                      "RestControllerMapper::mapToCreatePlayerSeasonStatInput destination position sortOrder equals");
+    }
+
+    /**
+     * Tests RestControllerMapper::mapToTransferWindowInput.
+     */
+    @Test
+    void testMapToTransferWindowInput() {
+        final TransferWindowInputDTO source = generate(TransferWindowInputDTO.class);
+        final TransferWindowInput destination = this.mapper.mapToTransferWindowInput(source);
+
+        assertEquals(source.getTransferWindowNumber(), destination.transferWindowNumber(),
+                     "RestControllerMapper::mapToTransferWindowInput destination transferWindowNumber equals");
+        assertEquals(source.isDraft(), destination.draft(),
+                     "RestControllerMapper::mapToTransferWindowInput destination draft equals");
+        assertEquals(source.getStatus().name(), destination.status().name(),
+                     "RestControllerMapper::mapToTransferWindowInput destination status equals");
+        assertEquals(source.getDatetime(), destination.datetime(),
+                     "RestControllerMapper::mapToTransferWindowInput destination datetime equals");
+        assertEquals(source.getMatchWeekId(), destination.matchWeekId(),
+                     "RestControllerMapper::mapToTransferWindowInput destination matchWeekId equals");
     }
 
     /**

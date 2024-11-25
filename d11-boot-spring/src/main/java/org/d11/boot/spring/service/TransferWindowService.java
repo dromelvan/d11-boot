@@ -117,6 +117,7 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
      * @param transferWindowInput Transfer window properties that will be updated.
      * @return The updated transfer day.
      */
+    @Transactional
     public TransferWindow updateTransferWindow(final Long transferWindowId,
                                                final TransferWindowInput transferWindowInput) {
         if (Status.FULL_TIME.equals(transferWindowInput.status())) {

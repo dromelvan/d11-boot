@@ -1458,6 +1458,46 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+    put:
+      tags:
+        - transferWindow
+      summary: Updates the status of a transfer window.
+      security:
+        - BearerAuth: [admin]
+      operationId: updateTransferWindow
+      parameters:
+        - name: transferWindowId
+          in: path
+          required: true
+          description: Id of the transfer window that will be updated.
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update transfer window.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTransferWindowRequestBody"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferWindowResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
     delete:
       tags:
         - transferWindow
@@ -3320,6 +3360,7 @@ components:
       type: object
       required:
         - id
+        - transferWindowNumber
         - datetime
         - draft
         - status
@@ -3338,6 +3379,28 @@ components:
           type: string
           format: date-time
 
+    TransferWindowInput:
+      type: object
+      required:
+        - transferWindowNumber
+        - draft
+        - status
+        - datetime
+        - matchWeekId
+      properties:
+        transferWindowNumber:
+          type: integer
+          format: int32
+        draft:
+          type: boolean
+        status:
+          $ref: '#/components/schemas/Status'
+        datetime:
+          type: string
+          format: date-time
+        matchWeekId:
+          $ref: '#/components/schemas/Id'
+
     CreateTransferWindowRequestBody:
       type: object
       required:
@@ -3350,6 +3413,14 @@ components:
         transferDayDelay:
           type: integer
           format: int32
+
+    UpdateTransferWindowRequestBody:
+      type: object
+      required:
+        - transferWindow
+      properties:
+        transferWindow:
+          $ref: '#/components/schemas/TransferWindowInput'
 
     TransferWindowResponseBody:
       type: object

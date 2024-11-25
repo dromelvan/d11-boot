@@ -7,10 +7,13 @@ import org.d11.boot.api.v2.model.TransferDayDTO;
 import org.d11.boot.api.v2.model.TransferWindowDTO;
 import org.d11.boot.api.v2.model.TransferWindowResponseBodyDTO;
 import org.d11.boot.api.v2.model.TransferWindowsResponseBodyDTO;
+import org.d11.boot.api.v2.model.UpdateTransferWindowRequestBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.TransferWindow;
+import org.d11.boot.spring.model.TransferWindowInput;
 import org.d11.boot.spring.security.RoleAdmin;
 import org.d11.boot.spring.service.TransferWindowService;
+import org.mapstruct.factory.Mappers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +26,11 @@ import java.util.List;
 @RestController
 public class TransferWindowControllerV2 extends RepositoryServiceController<TransferWindowService>
         implements TransferWindowApi {
+
+    /**
+     * REST controller mapper.
+     */
+    private final RestControllerMapperV2 mapper = Mappers.getMapper(RestControllerMapperV2.class);
 
     /**
      * Create a new controller.
@@ -78,6 +86,25 @@ public class TransferWindowControllerV2 extends RepositoryServiceController<Tran
                 .transferDays(map(transferWindow.getTransferDays(), TransferDayDTO.class));
 
         return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
+    }
+
+    @Override
+    @RoleAdmin
+    public ResponseEntity<TransferWindowResponseBodyDTO> updateTransferWindow(
+            final Long transferWindowId,
+            final UpdateTransferWindowRequestBodyDTO updateTransferWindowRequestBodyDTO) {
+        final TransferWindowInput transferWindowInput =
+                this.mapper.mapToTransferWindowInput(updateTransferWindowRequestBodyDTO.getTransferWindow());
+
+        final TransferWindow transferWindow =
+                getRepositoryService().updateTransferWindow(transferWindowId, transferWindowInput);
+
+        final TransferWindowResponseBodyDTO responseBody = new TransferWindowResponseBodyDTO()
+                .transferWindow(map(transferWindow, TransferWindowDTO.class))
+                .matchWeek(map(transferWindow.getMatchWeek(), MatchWeekBaseDTO.class))
+                .transferDays(map(transferWindow.getTransferDays(), TransferDayDTO.class));
+
+        return ResponseEntity.ok(responseBody);
     }
 
     @Override

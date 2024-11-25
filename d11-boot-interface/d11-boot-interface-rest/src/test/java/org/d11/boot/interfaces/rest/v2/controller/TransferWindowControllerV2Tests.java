@@ -4,10 +4,13 @@ import feign.FeignException;
 import org.d11.boot.api.v2.client.TransferWindowApi;
 import org.d11.boot.api.v2.model.CreateTransferWindowRequestBodyDTO;
 import org.d11.boot.api.v2.model.MatchWeekBaseDTO;
+import org.d11.boot.api.v2.model.StatusDTO;
 import org.d11.boot.api.v2.model.TransferDayDTO;
 import org.d11.boot.api.v2.model.TransferWindowDTO;
+import org.d11.boot.api.v2.model.TransferWindowInputDTO;
 import org.d11.boot.api.v2.model.TransferWindowResponseBodyDTO;
 import org.d11.boot.api.v2.model.TransferWindowsResponseBodyDTO;
+import org.d11.boot.api.v2.model.UpdateTransferWindowRequestBodyDTO;
 import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.TransferDay;
@@ -16,6 +19,7 @@ import org.d11.boot.spring.repository.MatchWeekRepository;
 import org.d11.boot.spring.repository.TransferDayRepository;
 import org.d11.boot.spring.repository.TransferWindowRepository;
 import org.d11.boot.util.Status;
+import org.d11.boot.util.exception.ErrorCode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -284,6 +288,254 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
         currentTransferWindow.setStatus(Status.PENDING);
         this.transferWindowRepository.save(currentTransferWindow);
     }
+
+    // updateTransferWindow --------------------------------------------------------------------------------------------
+
+    /**
+     * Tests TransferWindowController::updateTransferWindow for null transfer window number.
+     */
+    @Test
+    void testUpdateTransferWindowTransferWindowNumberNull() {
+        final TransferWindowApi transferWindowApi = getApi(TransferWindowApi.class);
+
+        final UpdateTransferWindowRequestBodyDTO requestBodyDTO = new UpdateTransferWindowRequestBodyDTO()
+                .transferWindow(new TransferWindowInputDTO()
+                                        .draft(false)
+                                        .status(StatusDTO.FINISHED)
+                                        .datetime(LocalDateTime.now())
+                                        .matchWeekId(1L));
+
+        final FeignException.BadRequest e =
+                assertThrows(FeignException.BadRequest.class,
+                             () -> transferWindowApi.updateTransferWindow(1L, requestBodyDTO),
+                             "TransferWindowControllerV2::updateTransferWindow transferWindowNumber null throws");
+
+        assertTrue(e.getMessage().contains("transferWindow.transferWindowNumber"),
+                   "TransferWindowControllerV2::updateTransferWindow transferWindowNumber null property equals");
+        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING.getMessage()),
+                   "TransferWindowControllerV2::updateTransferWindow transferWindowNumber null message contains");
+    }
+
+    /**
+     * Tests TransferWindowController::updateTransferWindow for null status.
+     */
+    @Test
+    void testUpdateTransferWindowStatusNull() {
+        final TransferWindowApi transferWindowApi = getApi(TransferWindowApi.class);
+
+        final UpdateTransferWindowRequestBodyDTO requestBodyDTO = new UpdateTransferWindowRequestBodyDTO()
+                .transferWindow(new TransferWindowInputDTO()
+                                        .transferWindowNumber(1)
+                                        .draft(false)
+                                        .datetime(LocalDateTime.now())
+                                        .matchWeekId(1L));
+
+        final FeignException.BadRequest e =
+                assertThrows(FeignException.BadRequest.class,
+                             () -> transferWindowApi.updateTransferWindow(1L, requestBodyDTO),
+                             "TransferWindowControllerV2::updateTransferWindow status null throws");
+
+        assertTrue(e.getMessage().contains("transferWindow.status"),
+                   "TransferWindowControllerV2::updateTransferWindow status null property equals");
+        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING.getMessage()),
+                   "TransferWindowControllerV2::updateTransferWindow status null message contains");
+    }
+
+    /**
+     * Tests TransferWindowController::updateTransferWindow for invalid status.
+     */
+    @Test
+    void testUpdateTransferWindowStatusInvalid() {
+        final TransferWindowApi transferWindowApi = getAdministratorApi(TransferWindowApi.class);
+
+        final UpdateTransferWindowRequestBodyDTO requestBodyDTO = new UpdateTransferWindowRequestBodyDTO()
+                .transferWindow(new TransferWindowInputDTO()
+                                        .transferWindowNumber(1)
+                                        .draft(false)
+                                        .status(StatusDTO.FULL_TIME)
+                                        .datetime(LocalDateTime.now())
+                                        .matchWeekId(1L));
+
+        final FeignException.BadRequest e =
+                assertThrows(FeignException.BadRequest.class,
+                             () -> transferWindowApi.updateTransferWindow(1L, requestBodyDTO),
+                             "TransferWindowControllerV2::updateTransferWindow status invalid throws");
+
+        assertTrue(e.getMessage().contains("transferWindow.status"),
+                   "TransferWindowControllerV2::updateTransferWindow status invalid property equals");
+        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_INVALID_PARAMETER.getMessage()),
+                   "TransferWindowControllerV2::updateTransferWindow status invalid message contains");
+    }
+
+    /**
+     * Tests TransferWindowController::updateTransferWindow for null datetime.
+     */
+    @Test
+    void testUpdateTransferWindowDatetimeNull() {
+        final TransferWindowApi transferWindowApi = getApi(TransferWindowApi.class);
+
+        final UpdateTransferWindowRequestBodyDTO requestBodyDTO = new UpdateTransferWindowRequestBodyDTO()
+                .transferWindow(new TransferWindowInputDTO()
+                                        .transferWindowNumber(1)
+                                        .draft(false)
+                                        .status(StatusDTO.FINISHED)
+                                        .matchWeekId(1L));
+
+        final FeignException.BadRequest e =
+                assertThrows(FeignException.BadRequest.class,
+                             () -> transferWindowApi.updateTransferWindow(1L, requestBodyDTO),
+                             "TransferWindowControllerV2::updateTransferWindow datetime null throws");
+
+        assertTrue(e.getMessage().contains("transferWindow.datetime"),
+                   "TransferWindowControllerV2::updateTransferWindow datetime null property equals");
+        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING.getMessage()),
+                   "TransferWindowControllerV2::updateTransferWindow datetime null message contains");
+    }
+
+    /**
+     * Tests TransferWindowController::updateTransferWindow for null matchWeekId.
+     */
+    @Test
+    void testUpdateTransferWindowMatchWeekIdNull() {
+        final TransferWindowApi transferWindowApi = getApi(TransferWindowApi.class);
+
+        final UpdateTransferWindowRequestBodyDTO requestBodyDTO = new UpdateTransferWindowRequestBodyDTO()
+                .transferWindow(new TransferWindowInputDTO()
+                                        .transferWindowNumber(1)
+                                        .draft(false)
+                                        .status(StatusDTO.FINISHED)
+                                        .datetime(LocalDateTime.now()));
+
+        final FeignException.BadRequest e =
+                assertThrows(FeignException.BadRequest.class,
+                             () -> transferWindowApi.updateTransferWindow(1L, requestBodyDTO),
+                             "TransferWindowControllerV2::updateTransferWindow matchWeekId null throws");
+
+        assertTrue(e.getMessage().contains("transferWindow.matchWeekId"),
+                   "TransferWindowControllerV2::updateTransferWindow matchWeekId null property equals");
+        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING.getMessage()),
+                   "TransferWindowControllerV2::updateTransferWindow matchWeekId null message contains");
+    }
+
+    /**
+     * Tests TransferWindowControllerV2::updateTransferWindow for unauthorized.
+     */
+    @Test
+    void testUpdateTransferDayUnauthorized() {
+        final TransferWindowApi transferWindowApi = getApi(TransferWindowApi.class);
+
+        final UpdateTransferWindowRequestBodyDTO requestBodyDTO = new UpdateTransferWindowRequestBodyDTO()
+                .transferWindow(new TransferWindowInputDTO()
+                                        .transferWindowNumber(1)
+                                        .draft(false)
+                                        .status(StatusDTO.FINISHED)
+                                        .datetime(LocalDateTime.now())
+                                        .matchWeekId(1L));
+
+        assertThrows(FeignException.Unauthorized.class,
+                     () -> transferWindowApi.updateTransferWindow(1L, requestBodyDTO),
+                     "TransferWindowControllerV2::updateTransferWindow unauthorized throws");
+    }
+
+    /**
+     * Tests TransferWindowControllerV2::updateTransferWindow for forbidden.
+     */
+    @Test
+    void testUpdateTransferDayForbidden() {
+        final TransferWindowApi transferWindowApi = getUserApi(TransferWindowApi.class);
+
+        final UpdateTransferWindowRequestBodyDTO requestBodyDTO = new UpdateTransferWindowRequestBodyDTO()
+                .transferWindow(new TransferWindowInputDTO()
+                                        .transferWindowNumber(1)
+                                        .draft(false)
+                                        .status(StatusDTO.FINISHED)
+                                        .datetime(LocalDateTime.now())
+                                        .matchWeekId(1L));
+
+        assertThrows(FeignException.Forbidden.class,
+                     () -> transferWindowApi.updateTransferWindow(1L, requestBodyDTO),
+                     "TransferWindowControllerV2::updateTransferWindow forbidden throws");
+    }
+
+    /**
+     * Tests TransferWindowControllerV2::updateTransferWindow for transfer window not found.
+     */
+    @Test
+    void testUpdateTransferWindowTransferWindowNotFound() {
+        final TransferWindowApi transferWindowApi = getAdministratorApi(TransferWindowApi.class);
+
+        final UpdateTransferWindowRequestBodyDTO requestBodyDTO = new UpdateTransferWindowRequestBodyDTO()
+                .transferWindow(new TransferWindowInputDTO()
+                                        .transferWindowNumber(1)
+                                        .draft(false)
+                                        .status(StatusDTO.FINISHED)
+                                        .datetime(LocalDateTime.now())
+                                        .matchWeekId(1L));
+
+        assertThrows(FeignException.NotFound.class,
+                     () -> transferWindowApi.updateTransferWindow(-1L, requestBodyDTO),
+                     "TransferWindowControllerV2::updateTransferWindow transfer window not found throws");
+    }
+
+    /**
+     * Tests TransferWindowControllerV2::updateTransferWindow for match week not found.
+     */
+    @Test
+    void testUpdateTransferWindowMatchWeekNotFound() {
+        final TransferWindowApi transferWindowApi = getAdministratorApi(TransferWindowApi.class);
+
+        final UpdateTransferWindowRequestBodyDTO requestBodyDTO = new UpdateTransferWindowRequestBodyDTO()
+                .transferWindow(new TransferWindowInputDTO()
+                                        .transferWindowNumber(1)
+                                        .draft(false)
+                                        .status(StatusDTO.FINISHED)
+                                        .datetime(LocalDateTime.now())
+                                        .matchWeekId(-1L));
+
+        assertThrows(FeignException.NotFound.class,
+                     () -> transferWindowApi.updateTransferWindow(1L, requestBodyDTO),
+                     "TransferWindowControllerV2::updateTransferWindow transfer window not found throws");
+    }
+
+    /**
+     * Tests TransferWindowControllerV2::updateTransferWindow.
+     */
+    @Test
+    void testUpdateTransferWindow() {
+        final TransferWindowApi transferWindowApi = getAdministratorApi(TransferWindowApi.class);
+
+        final TransferWindow transferWindow = this.transferWindowRepository.findById(1L)
+                .orElseThrow(RuntimeException::new);
+
+        final TransferWindowInputDTO transferWindowInputDTO = new TransferWindowInputDTO()
+                .transferWindowNumber(1)
+                .draft(false)
+                .status(StatusDTO.FINISHED)
+                .datetime(LocalDateTime.now())
+                .matchWeekId(1L);
+
+        final UpdateTransferWindowRequestBodyDTO requestBodyDTO = new UpdateTransferWindowRequestBodyDTO()
+                .transferWindow(transferWindowInputDTO);
+
+        final TransferWindowResponseBodyDTO response = transferWindowApi.updateTransferWindow(1L, requestBodyDTO);
+
+        assertEquals(transferWindowInputDTO.getTransferWindowNumber(),
+                     response.getTransferWindow().getTransferWindowNumber(),
+                     "TransferWindowControllerV2::updateTransferWindow result transferDayNumber equals");
+        assertEquals(transferWindowInputDTO.isDraft(), response.getTransferWindow().isDraft(),
+                     "TransferWindowControllerV2::updateTransferWindow result draft equals");
+        assertEquals(transferWindowInputDTO.getStatus().name(), response.getTransferWindow().getStatus().name(),
+                     "TransferWindowControllerV2::updateTransferWindow result status equals");
+        assertEquals(transferWindowInputDTO.getDatetime(), response.getTransferWindow().getDatetime(),
+                     "TransferWindowControllerV2::updateTransferWindow result datetime equals");
+        assertEquals(transferWindowInputDTO.getMatchWeekId(), response.getMatchWeek().getId(),
+                     "TransferWindowControllerV2::updateTransferWindow result matchWeekId equals");
+
+        // Rollback changes just in case
+        this.transferWindowRepository.save(transferWindow);
+    }
+
+    // deleteTransferWindow --------------------------------------------------------------------------------------------
 
     /**
      * Tests TransferWindowController::deleteTransferWindow.

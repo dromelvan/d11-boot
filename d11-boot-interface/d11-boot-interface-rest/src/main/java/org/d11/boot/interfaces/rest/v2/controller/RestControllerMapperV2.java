@@ -6,6 +6,7 @@ import org.d11.boot.api.v2.model.PlayerInputDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.v2.model.TransferDayInputDTO;
+import org.d11.boot.api.v2.model.TransferWindowInputDTO;
 import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputDTO;
 import org.d11.boot.spring.model.CreatePlayerSeasonStatInput;
 import org.d11.boot.spring.model.Player;
@@ -13,6 +14,7 @@ import org.d11.boot.spring.model.PlayerInput;
 import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.TransferDayInput;
+import org.d11.boot.spring.model.TransferWindowInput;
 import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -74,6 +76,14 @@ public interface RestControllerMapperV2 {
      * @return Mapped PlayerSeasonStat.
      */
     PlayerSeasonStatDTO mapToPlayerSeasonStatDTO(PlayerSeasonStat playerSeasonStat);
+
+    /**
+     * Maps a TransferWindowInputDTO to a TransferWindowInput.
+     *
+     * @param transferWindowInputDTO The TransferWindowInputDTO.
+     * @return Mapped TransferWindowInput.
+     */
+    TransferWindowInput mapToTransferWindowInput(TransferWindowInputDTO transferWindowInputDTO);
 
     /**
      * Maps a TransferDayInputDTO to a TransferDayInput.
