@@ -1,0 +1,31 @@
+meta {
+  name: PUT transfer-windows/{transferWindowId} - 404 Transfer Window
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/v2/transfer-windows/-1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferWindow": {{updatedTransferWindow}}
+  }
+
+}
+
+assert {
+  res.status: eq 404
+  res.body.error: eq Not Found
+  res.body.resource: eq TransferWindow
+  res.body.id: eq -1
+  res.body.method: eq PUT
+  res.body.path: eq /v2/transfer-windows/-1
+}

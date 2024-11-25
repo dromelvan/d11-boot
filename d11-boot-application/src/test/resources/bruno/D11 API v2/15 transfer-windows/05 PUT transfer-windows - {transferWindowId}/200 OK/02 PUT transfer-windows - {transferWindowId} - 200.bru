@@ -1,0 +1,38 @@
+meta {
+  name: PUT transfer-windows/{transferWindowId} - 200
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/v2/transfer-windows/{{newTransferWindowId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferWindow": {{updatedTransferWindow}}
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.transferWindow: isDefined
+  res.body.transferWindow.id: gt 0
+  res.body.transferWindow.transferWindowNumber: eq 99
+  res.body.transferWindow.draft: eq true
+  res.body.transferWindow.status: eq Pending
+  res.body.transferWindow.datetime: eq 2024-12-31T00:00:00
+  res.body.matchWeek: isDefined
+  res.body.matchWeek.id: eq 1
+  res.body.matchWeek.matchWeekNumber: eq 1
+  res.body.transferDays.length: eq 1
+  res.body.transferDays[0].transferDayNumber: eq 1
+  res.body.transferDays[0].status: eq Pending
+  res.body.transferDays[0].datetime: eq {{datetimePlus2}}
+}

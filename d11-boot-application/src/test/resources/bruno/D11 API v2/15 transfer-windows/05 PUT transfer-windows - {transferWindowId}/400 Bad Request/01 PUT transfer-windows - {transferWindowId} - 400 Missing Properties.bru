@@ -1,0 +1,40 @@
+meta {
+  name: PUT transfer-windows/{transferWindowId} - 400 Missing Properties
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/v2/transfer-windows/{{transferWindowId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferWindow": {
+
+      }
+  }
+
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq PUT
+  res.body.path: eq /v2/transfer-windows/{{transferWindowId}}
+  res.body.validationErrors.length: eq 4
+  res.body.validationErrors[0].property: eq transferWindow.datetime
+  res.body.validationErrors[0].error: eq is missing
+  res.body.validationErrors[1].property: eq transferWindow.matchWeekId
+  res.body.validationErrors[1].error: eq is missing
+  res.body.validationErrors[2].property: eq transferWindow.status
+  res.body.validationErrors[2].error: eq is missing
+  res.body.validationErrors[3].property: eq transferWindow.transferWindowNumber
+  res.body.validationErrors[3].error: eq is missing
+}
