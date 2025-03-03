@@ -1,6 +1,6 @@
-DROP VIEW IF EXISTS transfer_context;
+DROP VIEW IF EXISTS player_transfer_context;
 
-CREATE OR REPLACE VIEW transfer_context
+CREATE OR REPLACE VIEW player_transfer_context
 AS
 WITH current_season AS (
     SELECT id
@@ -30,7 +30,7 @@ SELECT
     COALESCE(t.transfer_count, 0) AS transfer_count,
     COALESCE(pss_position_count.position_count, 0) AS position_count
 FROM d11_team_season_stat dts
-    JOIN d11_team dt ON dts.d11_team_id = dt.id
+    JOIN d11_team dt ON dts.d11_team_id = dt.id AND dt.dummy = false
     JOIN current_season cs on true
     JOIN position p ON true
     LEFT JOIN (
@@ -72,5 +72,5 @@ FROM d11_team_season_stat dts
     LEFT JOIN player_season_stat pss ON pss.position_id = p.id AND pss.season_id = ( SELECT current_season.id FROM current_season )
     LEFT JOIN current_transfer_day ctd ON true
     LEFT JOIN transfer_listing tl ON tl.player_id = pss.player_id AND tl.transfer_day_id = ctd.transfer_day_id
-    LEFT JOIN transfer_bid tb ON tb.player_id = pss.player_id AND tb.transfer_day_id = ctd.transfer_day_id
+    LEFT JOIN transfer_bid tb ON tb.player_id = pss.player_id AND tb.d11_team_id = dt.id AND tb.transfer_day_id = ctd.transfer_day_id
 WHERE dts.season_id = ( SELECT current_season.id FROM current_season);
