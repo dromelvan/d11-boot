@@ -160,8 +160,9 @@ public class PlayerTransferContext {
      */
     public boolean isTransferListable() {
         return Status.PENDING.equals(this.transferDay.getStatus())
-                && this.playerD11Team.equals(this.d11Team)
-                && this.transferListing == null;
+               && this.transferCount < this.season.getD11TeamMaxTransfers()
+               && this.playerD11Team.equals(this.d11Team)
+               && this.transferListing == null;
     }
 
     /**

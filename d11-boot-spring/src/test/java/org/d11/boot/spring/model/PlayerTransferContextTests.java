@@ -176,6 +176,8 @@ public class PlayerTransferContextTests extends EasyRandomTests {
         final PlayerTransferContext context = generatePlayerTransferContext();
 
         context.getTransferDay().setStatus(Status.PENDING);
+
+        ReflectionTestUtils.setField(context, "transferCount", 0);
         ReflectionTestUtils.setField(context, "playerD11Team", context.getD11Team());
         ReflectionTestUtils.setField(context, "transferListing", null);
 
@@ -189,6 +191,7 @@ public class PlayerTransferContextTests extends EasyRandomTests {
     void testIsTransferListableInvalidTransferDayStatus() {
         final PlayerTransferContext context = generatePlayerTransferContext();
 
+        ReflectionTestUtils.setField(context, "transferCount", 0);
         ReflectionTestUtils.setField(context, "playerD11Team", context.getD11Team());
         ReflectionTestUtils.setField(context, "transferListing", null);
 
@@ -210,6 +213,23 @@ public class PlayerTransferContextTests extends EasyRandomTests {
     }
 
     /**
+     * Tests PlayerTransferContext::isTransferListable with max transfer count.
+     */
+    @Test
+    void testIsTransferListableMaxTransferCount() {
+        final PlayerTransferContext context = generatePlayerTransferContext();
+
+        context.getTransferDay().setStatus(Status.PENDING);
+
+        ReflectionTestUtils.setField(context, "transferCount", context.getSeason().getD11TeamMaxTransfers());
+        ReflectionTestUtils.setField(context, "playerD11Team", context.getD11Team());
+        ReflectionTestUtils.setField(context, "transferListing", null);
+
+        assertFalse(context.isTransferListable(),
+                    "PlayerTransferContext::isTransferListable max transfer count");
+    }
+
+    /**
      * Tests PlayerTransferContext::isTransferListable with invalid D11 team.
      */
     @Test
@@ -217,6 +237,8 @@ public class PlayerTransferContextTests extends EasyRandomTests {
         final PlayerTransferContext context = generatePlayerTransferContext();
 
         context.getTransferDay().setStatus(Status.PENDING);
+
+        ReflectionTestUtils.setField(context, "transferCount", 0);
         ReflectionTestUtils.setField(context, "transferListing", null);
 
         ReflectionTestUtils.setField(context, "playerD11Team", generate(D11Team.class));
@@ -232,6 +254,8 @@ public class PlayerTransferContextTests extends EasyRandomTests {
         final PlayerTransferContext context = generatePlayerTransferContext();
 
         context.getTransferDay().setStatus(Status.PENDING);
+
+        ReflectionTestUtils.setField(context, "transferCount", 0);
         ReflectionTestUtils.setField(context, "playerD11Team", context.getD11Team());
         ReflectionTestUtils.setField(context, "transferListing", generate(TransferListing.class));
 
