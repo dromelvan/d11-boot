@@ -189,6 +189,7 @@ public class PlayerTransferContext {
                && this.playerCount < 11
                && this.positionCount < this.position.getMaxCount()
                && this.transferListing != null
+               && !this.d11Team.equals(this.transferListing.getD11Team())
                ? this.season.getD11TeamBudget() - reservedAmount - this.feeSum
                : 0;
     }

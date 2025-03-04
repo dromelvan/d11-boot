@@ -25,6 +25,7 @@ public class PlayerTransferContextTests extends EasyRandomTests {
         season.setD11TeamBudget(600);
 
         context.getTransferDay().setStatus(Status.ACTIVE);
+        context.getTransferListing().setD11Team(generate(D11Team.class));
 
         ReflectionTestUtils.setField(context, "positionCount", context.getPosition().getMaxCount() - 1);
         ReflectionTestUtils.setField(context, "feeSum", 300);
@@ -73,6 +74,7 @@ public class PlayerTransferContextTests extends EasyRandomTests {
         season.setD11TeamBudget(600);
 
         context.getTransferDay().setStatus(Status.ACTIVE);
+        context.getTransferListing().setD11Team(generate(D11Team.class));
 
         ReflectionTestUtils.setField(context, "positionCount", context.getPosition().getMaxCount() - 1);
         ReflectionTestUtils.setField(context, "feeSum", 300);
@@ -89,6 +91,8 @@ public class PlayerTransferContextTests extends EasyRandomTests {
         final PlayerTransferContext context = generatePlayerTransferContext();
         final Season season = context.getSeason();
         season.setD11TeamBudget(600);
+
+        context.getTransferListing().setD11Team(generate(D11Team.class));
 
         ReflectionTestUtils.setField(context, "positionCount", context.getPosition().getMaxCount() - 1);
         ReflectionTestUtils.setField(context, "feeSum", 300);
@@ -117,6 +121,7 @@ public class PlayerTransferContextTests extends EasyRandomTests {
         season.setD11TeamBudget(600);
 
         context.getTransferDay().setStatus(Status.ACTIVE);
+        context.getTransferListing().setD11Team(generate(D11Team.class));
 
         ReflectionTestUtils.setField(context, "playerCount", 0);
         ReflectionTestUtils.setField(context, "feeSum", 300);
@@ -142,6 +147,25 @@ public class PlayerTransferContextTests extends EasyRandomTests {
 
         ReflectionTestUtils.setField(context, "transferListing", null);
         assertEquals(0, context.getMaxBid(), "PlayerTransferContext::getMaxBid null transferListing equals");
+    }
+
+    /**
+     * Tests PlayerTransferContext::getMaxBid with invalid transfer listing D11 team.
+     */
+    @Test
+    void testGetMaxBidInvalidTransferListingD11Team() {
+        final PlayerTransferContext context = generatePlayerTransferContext();
+        final Season season = context.getSeason();
+        season.setD11TeamBudget(600);
+
+        context.getTransferDay().setStatus(Status.ACTIVE);
+        context.getTransferListing().setD11Team(context.getD11Team());
+
+        ReflectionTestUtils.setField(context, "positionCount", context.getPosition().getMaxCount() - 1);
+        ReflectionTestUtils.setField(context, "feeSum", 300);
+        ReflectionTestUtils.setField(context, "playerCount", 0);
+
+        assertEquals(0, context.getMaxBid(), "PlayerTransferContext::getMaxBid invalid transferListing d11Team equals");
     }
 
     /**
