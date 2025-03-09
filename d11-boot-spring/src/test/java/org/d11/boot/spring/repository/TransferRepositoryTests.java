@@ -1,6 +1,8 @@
 package org.d11.boot.spring.repository;
 
+import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.Player;
+import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferDay;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,40 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Transfer repository tests.
  */
 class TransferRepositoryTests extends AbstractRepositoryTests<Transfer, TransferRepository> {
+
+    /**
+     * Tests TransferRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId.
+     */
+    @Test
+    void testFindByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId() {
+        final List<Transfer> entities = getEntities();
+        entities.sort(Comparator.comparing(Transfer::getId));
+
+        final Set<Season> seasons = entities.stream()
+                .map(transfer -> transfer.getTransferDay().getTransferWindow().getMatchWeek().getSeason())
+                .collect(Collectors.toSet());
+
+        final Set<D11Team> d11Teams = entities.stream()
+                .map(Transfer::getD11Team)
+                .collect(Collectors.toSet());
+
+        for (final Season season : seasons) {
+            for (final D11Team d11Team : d11Teams) {
+                final List<Transfer> expected = entities.stream()
+                        .filter(transfer ->
+                                transfer.getTransferDay().getTransferWindow().getMatchWeek().getSeason().equals(season)
+                                && transfer.getD11Team().equals(d11Team))
+                        .toList();
+
+                final List<Transfer> result = getRepository()
+                        .findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId(season.getId(), d11Team.getId());
+                result.sort(Comparator.comparing(Transfer::getId));
+
+                assertEquals(expected, result,
+                             "TransferRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId equals");
+            }
+        }
+    }
 
     /**
      * Tests TransferRepository::findByTransferDayIdOrderByD11TeamNameAscFeeDesc.

@@ -14,6 +14,16 @@ import java.util.Optional;
 public interface TransferRepository extends D11EntityRepository<Transfer> {
 
     /**
+     * Finds transfers by season id and D11 team id.
+     *
+     * @param seasonId The season id.
+     * @param d11TeamId The D11 team id.
+     * @return Transfers for the season and D11 team id.
+     */
+    List<Transfer> findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId(@Param("seasonId") Long seasonId,
+                                                                                @Param("d11TeamId") Long d11TeamId);
+
+    /**
      * Finds transfers by transfer day id ordered by D11 team name and fee descending.
      *
      * @param transferDayId The transfer day id.
