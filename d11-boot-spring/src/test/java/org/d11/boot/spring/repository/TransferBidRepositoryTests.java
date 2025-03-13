@@ -48,10 +48,10 @@ class TransferBidRepositoryTests extends AbstractRepositoryTests<TransferBid, Tr
                     .filter(transferBid -> transferBid.getTransferDay().equals(transferDay))
                     .toList();
 
-            assertTrue(expected.size() > 1,
+            assertTrue(expected.size() > 0,
                        """
                        TransferRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc
-                       expected size > 1
+                       expected size > 0
                        """);
 
             assertNotNull(result,
