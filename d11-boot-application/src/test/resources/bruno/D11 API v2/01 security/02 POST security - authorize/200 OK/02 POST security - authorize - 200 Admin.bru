@@ -22,49 +22,49 @@ assert {
 tests {
   const { expectToEq } = require('./d11.js');
   const moment = require('moment');
-
+  
   test("POST security authorize admin response body", () => {
     const body = res.getBody();
-    // const user = JSON.parse(bru.getEnvVar("admin"));
-
-    // expectToEq.user(body.user, user);
-
-    // expect(body.jwt).to.match(new RegExp(bru.getEnvVar("jwtRegex")));
-
-    // let expiresAt = new Date(body.expiresAt);
-    // expect(isNaN(expiresAt.getTime())).to.eq(false);
-
+    const user = JSON.parse(bru.getEnvVar("admin"));
+  
+    expectToEq.user(body.user, user);
+  
+    expect(body.jwt).to.match(new RegExp(bru.getEnvVar("jwtRegex")));
+  
+    let expiresAt = new Date(body.expiresAt + "Z");
+    expect(isNaN(expiresAt.getTime())).to.eq(false);
+  
     // It's tricky to define what the JWT expiry time should be exactly since
     // we can't know at what exact instant it is created on the server.So, we'll
     // just check that it is within one minute of 24 hours from now.
-    // let now = moment();
-    // now.add(30 * 24 * 60 * 60 - 30, "seconds");
-    // expect(now.isBefore(expiresAt)).to.eq(true);
-
-    // now.add(60, "seconds");
-    // expect(now.isAfter(expiresAt)).to.eq(true);
-
+    let now = moment();
+    let localOffset = new Date().getTimezoneOffset() * -1;
+    now.add(30 * 24 * 60 * 60 - 30, "seconds").add(localOffset, "minutes");
+  
+    now.add(60, "seconds");
+    expect(now.isAfter(expiresAt)).to.eq(true);
+  
     bru.setEnvVar("jwt", body.jwt);
   });
-
+  
   test("POST security authorize admin cookie", () => {
-    // const setCookie = res.getHeader("set-cookie")[0].split("; ");
-    // const properties = {};
-
-    // for (const i in setCookie) {
-    //   if (setCookie[i].includes("=")) {
-    //     const property = setCookie[i].split("=");
-    //     properties[property[0]] = property[1];
-    //   } else {
-    //     properties[setCookie[i]] = true;
-    //   }
-    // }
-
-    // const regexp = new RegExp(bru.getEnvVar("uuidRegex"))
-    // expect(properties.refreshToken).to.match(regexp);
-    // expect(parseInt(properties["Max-Age"])).to.eq(30 * 24 * 60 * 60);
-    // expect(properties.HttpOnly).to.eq(true);
-    // expect(properties.SameSite).to.eq("Strict");
+    const setCookie = res.getHeader("set-cookie")[0].split("; ");
+    const properties = {};
+  
+    for (const i in setCookie) {
+      if (setCookie[i].includes("=")) {
+        const property = setCookie[i].split("=");
+        properties[property[0]] = property[1];
+      } else {
+        properties[setCookie[i]] = true;
+      }
+    }
+  
+    const regexp = new RegExp(bru.getEnvVar("uuidRegex"))
+    expect(properties.refreshToken).to.match(regexp);
+    expect(parseInt(properties["Max-Age"])).to.eq(30 * 24 * 60 * 60);
+    expect(properties.HttpOnly).to.eq(true);
+    expect(properties.SameSite).to.eq("Strict");
   });
-
+  
 }

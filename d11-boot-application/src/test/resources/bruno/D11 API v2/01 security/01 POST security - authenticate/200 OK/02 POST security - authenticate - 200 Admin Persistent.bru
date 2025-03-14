@@ -40,17 +40,15 @@ tests {
   
     expect(body.jwt).to.match(new RegExp(bru.getEnvVar("jwtRegex")));
   
-    let expiresAt = new Date(body.expiresAt);
+    let expiresAt = new Date(body.expiresAt + "Z");
     expect(isNaN(expiresAt.getTime())).to.eq(false);
   
     // It's tricky to define what the JWT expiry time should be exactly since
     // we can't know at what exact instant it is created on the server.So, we'll
     // just check that it is within one minute of 24 hours from now.
     let now = moment();
-    now.add(30 * 24 * 60 * 60 - 30, "seconds")
-      // TODO: Fix timezone issue properly when we have time
-      // This has t0 be 0 during winter time and 1 during summer time until then
-      .add(0, "hours");
+    let localOffset = new Date().getTimezoneOffset() * -1;
+    now.add(30 * 24 * 60 * 60 - 30, "seconds").add(localOffset, "minutes");
   
     expect(now.isBefore(expiresAt)).to.eq(true);
   
