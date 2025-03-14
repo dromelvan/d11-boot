@@ -25,7 +25,13 @@ import org.hibernate.annotations.Immutable;
 @Immutable
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
+@SuppressWarnings("PMD.TooManyFields")
 public class PlayerTransferContext {
+
+    /**
+     * Max player count.
+     */
+    public static final int MAX_PLAYER_COUNT = 11;
 
     /**
      * Composite ID of playerId and d11TeamId.
@@ -183,11 +189,14 @@ public class PlayerTransferContext {
      *
      * @return The max bid the D11 team can make on the player.
      */
+    @SuppressWarnings("checkstyle:BooleanExpressionComplexity")
     public int getMaxBid() {
-        final int reservedAmount = (playerCount <= 9) ? (10 - playerCount) * Transfer.FEE_DIVISOR : 0;
+        final int reservedAmount = playerCount <= MAX_PLAYER_COUNT - 2
+                                   ? (MAX_PLAYER_COUNT - 1 - playerCount) * Transfer.FEE_DIVISOR
+                                   : 0;
 
         return Status.ACTIVE.equals(this.transferDay.getStatus())
-               && this.playerCount < 11
+               && this.playerCount < MAX_PLAYER_COUNT
                && this.positionCount < this.position.getMaxCount()
                && this.transferListing != null
                && !this.d11Team.equals(this.transferListing.getD11Team())

@@ -42,7 +42,7 @@ import java.util.UUID;
  */
 @Slf4j
 @RestControllerAdvice
-@SuppressWarnings("checkstyle:ClassFanOutComplexity")
+@SuppressWarnings({ "checkstyle:ClassFanOutComplexity", "PMD.TooManyMethods" })
 public class ControllerExceptionHandlerV2 {
 
     /**

@@ -46,7 +46,7 @@ import static org.mockito.Mockito.when;
 /**
  * Transfer listing service tests.
  */
-@SuppressWarnings({ "checkstyle:ClassFanOutComplexity", "PMD.TooManyMethods"})
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 class TransferListingServiceTests extends BaseD11BootServiceTests {
 
     /**

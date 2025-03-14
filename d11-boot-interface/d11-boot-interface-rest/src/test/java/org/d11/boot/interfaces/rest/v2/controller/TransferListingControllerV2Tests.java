@@ -31,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Transfer listing controller tests.
  */
-@SuppressWarnings("PMD.TooManyMethods")
 class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
 
     /**

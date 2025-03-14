@@ -54,7 +54,11 @@
     </rule>
     <rule ref="category/java/design.xml/TooManyMethods">
         <properties>
-            <property name="maxmethods" value="15" />
+            <property name="violationSuppressXPath">
+                <value>
+                    //ClassOrInterfaceDeclaration[matches(@Image, '.*Tests')]
+                </value>
+            </property>
         </properties>
     </rule>
 

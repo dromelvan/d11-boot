@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Security controller tests.
  */
-@SuppressWarnings({ "PMD.TooManyMethods", "checkstyle:ClassFanOutComplexity" })
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
     /**

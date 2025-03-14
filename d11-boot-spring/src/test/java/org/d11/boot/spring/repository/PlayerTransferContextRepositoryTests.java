@@ -32,7 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @DataJpaTest
 @ActiveProfiles("test")
-public class PlayerTransferContextRepositoryTests {
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
+class PlayerTransferContextRepositoryTests {
 
     /**
      * Player transfer context repository.
@@ -63,12 +64,6 @@ public class PlayerTransferContextRepositoryTests {
      */
     @Autowired
     private PlayerSeasonStatRepository playerSeasonStatRepository;
-
-    /**
-     * D11 team repository.
-     */
-    @Autowired
-    private D11TeamRepository d11TeamRepository;
 
     /**
      * D11 team season stat repository.
@@ -110,6 +105,14 @@ public class PlayerTransferContextRepositoryTests {
      * Tests PlayerTransferContextRepository::findByPlayerIdAndOwnerId.
      */
     @Test
+    @SuppressWarnings({
+        "checkstyle:JavaNCSS",
+        "checkstyle:ExecutableStatementCount",
+        "PMD.ExcessiveClassLength",
+        "PMD.ExcessiveMethodLength",
+        "PMD.NcssCount",
+        "PMD.CognitiveComplexity"
+    })
     void testFindByPlayerIdAndOwnerIdTransferDay() {
         final List<Player> players = this.playerRepository.findAll();
         final Season season = this.seasonRepository.findFirstByOrderByDateDesc()
@@ -147,7 +150,7 @@ public class PlayerTransferContextRepositoryTests {
                                "PlayerTransferContextRepository::findByPlayerIdAndOwnerId playerSeasonStat present");
 
                     final PlayerTransferContext context = contextOptional.orElseThrow(InvalidTestSetupException::new);
-                    System.out.println(context);
+
                     final PlayerSeasonStat playerSeasonStat =
                             playerSeasonStatOptional.orElseThrow(InvalidTestSetupException::new);
                     final TransferListing transferListing = transferListingRepository
@@ -289,7 +292,8 @@ public class PlayerTransferContextRepositoryTests {
         this.transferBidRepository.flush();
         this.entityManager.clear();
 
-        final PlayerTransferContext updatedContext = this.repository.findByPlayerIdAndOwnerId(player.getId(), owner.getId())
+        final PlayerTransferContext updatedContext = this.repository.findByPlayerIdAndOwnerId(player.getId(),
+                                                                                              owner.getId())
                 .orElseThrow(InvalidTestSetupException::new);
 
         assertEquals(4L, updatedContext.getTransferListing().getId(),
