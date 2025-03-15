@@ -34,6 +34,11 @@ public class PlayerTransferContext {
     public static final int MAX_PLAYER_COUNT = 11;
 
     /**
+     * Max ranking.
+     */
+    public static final int MAX_RANKING = 20;
+
+    /**
      * Composite ID of playerId and d11TeamId.
      */
     @EmbeddedId

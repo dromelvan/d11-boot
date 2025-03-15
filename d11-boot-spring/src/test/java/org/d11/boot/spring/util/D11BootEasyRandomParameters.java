@@ -7,6 +7,8 @@ import org.d11.boot.spring.model.Goal;
 import org.d11.boot.spring.model.Match;
 import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.model.PlayerMatchStat;
+import org.d11.boot.spring.model.PlayerTransferContext;
+import org.d11.boot.spring.model.PlayerTransferContextId;
 import org.d11.boot.spring.model.Position;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.Stadium;
@@ -14,6 +16,7 @@ import org.d11.boot.spring.model.Team;
 import org.d11.boot.spring.model.User;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;
+import org.jeasy.random.randomizers.number.LongRandomizer;
 import org.jeasy.random.randomizers.range.IntegerRangeRandomizer;
 import org.jeasy.random.randomizers.range.LongRangeRandomizer;
 import org.jeasy.random.randomizers.text.StringRandomizer;
@@ -21,7 +24,7 @@ import org.jeasy.random.randomizers.text.StringRandomizer;
 /**
  * EasyRandom parameters with suitable restrictions for generating objects for D11 tests.
  */
-@SuppressWarnings("checkstyle:MultipleStringLiterals")
+@SuppressWarnings({ "checkstyle:MultipleStringLiterals", "checkstyle:ClassDataAbstractionCoupling" })
 public class D11BootEasyRandomParameters extends EasyRandomParameters {
 
     /**
@@ -95,6 +98,13 @@ public class D11BootEasyRandomParameters extends EasyRandomParameters {
 
         randomize(FieldPredicates.named("redCardTime").and(FieldPredicates.inClass(PlayerMatchStat.class)),
                   new IntegerRangeRandomizer(0, PlayerMatchStat.MAX_MATCH_TIME));
+
+        randomize(PlayerTransferContextId.class, () -> new PlayerTransferContextId(
+                new LongRandomizer().getRandomValue(),
+                new LongRandomizer().getRandomValue()
+        ));
+
+        randomize(PlayerTransferContext.class, new PlayerTransferContextRandomizer());
     }
 
 }

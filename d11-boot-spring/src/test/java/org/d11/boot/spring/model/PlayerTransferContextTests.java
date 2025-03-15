@@ -50,7 +50,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testGetMaxBid() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
         final Season season = context.getSeason();
         season.setD11TeamBudget(600);
 
@@ -99,7 +99,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testGetMaxBidMaxPlayerCount() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
         final Season season = context.getSeason();
         season.setD11TeamBudget(600);
 
@@ -118,7 +118,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testGetMaxBidInvalidTransferDayStatus() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
         final Season season = context.getSeason();
         season.setD11TeamBudget(600);
 
@@ -146,7 +146,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testGetMaxBidMaxPositionCount() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
         final Season season = context.getSeason();
         season.setD11TeamBudget(600);
 
@@ -165,7 +165,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testGetMaxBidTransferListingNull() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
         final Season season = context.getSeason();
         season.setD11TeamBudget(600);
 
@@ -184,7 +184,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testGetMaxBidInvalidTransferListingD11Team() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
         final Season season = context.getSeason();
         season.setD11TeamBudget(600);
 
@@ -203,7 +203,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testIsTransferListable() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
 
         context.getTransferDay().setStatus(Status.PENDING);
 
@@ -219,7 +219,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testIsTransferListableInvalidTransferDayStatus() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
 
         ReflectionTestUtils.setField(context, TRANSFER_COUNT, 0);
         ReflectionTestUtils.setField(context, PLAYER_D11_TEAM, context.getD11Team());
@@ -247,7 +247,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testIsTransferListableMaxTransferCount() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
 
         context.getTransferDay().setStatus(Status.PENDING);
 
@@ -264,7 +264,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testIsTransferListableInvalidD11Team() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
 
         context.getTransferDay().setStatus(Status.PENDING);
 
@@ -281,7 +281,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testIsTransferListableTransferListingNotNull() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
 
         context.getTransferDay().setStatus(Status.PENDING);
 
@@ -297,7 +297,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testGetDeletableTransferListing() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
 
         context.getTransferDay().setStatus(Status.PENDING);
         context.getTransferListing().setD11Team(context.getD11Team());
@@ -312,7 +312,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testGetDeletableTransferListingInvalidTransferDayStatus() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
 
         context.getTransferListing().setD11Team(context.getD11Team());
 
@@ -338,7 +338,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testGetDeletableTransferListingInvalidD11Team() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
 
         context.getTransferDay().setStatus(Status.PENDING);
         context.getTransferListing().setD11Team(generate(D11Team.class));
@@ -352,7 +352,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testGetActiveTransferBid() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
 
         context.getTransferDay().setStatus(Status.ACTIVE);
         context.getTransferBid().setD11Team(context.getD11Team());
@@ -367,7 +367,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testGetActiveTransferBidInvalidTransferDayStatus() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
 
         context.getTransferBid().setD11Team(context.getD11Team());
 
@@ -389,55 +389,12 @@ class PlayerTransferContextTests extends EasyRandomTests {
      */
     @Test
     void testGetActiveTransferBidInvalidD11Team() {
-        final PlayerTransferContext context = generatePlayerTransferContext();
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
 
         context.getTransferDay().setStatus(Status.ACTIVE);
         context.getTransferBid().setD11Team(generate(D11Team.class));
 
         assertNull(context.getActiveTransferBid(), "PlayerTransferContext::getActiveTransferBid invalid D11 team");
-    }
-
-    /**
-     * Generates a PlayerTransferContext for testing.
-     *
-     * @return Generated PlayerTransferContext.
-     */
-    private PlayerTransferContext generatePlayerTransferContext() {
-        final Player player = generate(Player.class);
-        final Position position = generate(Position.class);
-        final D11Team playerD11Team = generate(D11Team.class);
-        final Season season = generate(Season.class);
-        final TransferDay transferDay = generate(TransferDay.class);
-        final TransferListing transferListing = generate(TransferListing.class);
-        final TransferBid transferBid = generate(TransferBid.class);
-        final D11Team d11Team = generate(D11Team.class);
-
-        final User owner = generate(User.class);
-        final User coOwner = generate(User.class);
-
-        final int ranking = 1;
-        final int playerCount = 11;
-
-        final PlayerTransferContextId id = new PlayerTransferContextId(player.getId(), d11Team.getId());
-
-        return new PlayerTransferContext(
-                id,
-                owner.getId(),
-                coOwner.getId(),
-                ranking,
-                playerCount,
-                season.getD11TeamBudget(),
-                season.getD11TeamMaxTransfers(),
-                position.getMaxCount(),
-                player,
-                position,
-                playerD11Team,
-                season,
-                transferDay,
-                transferListing,
-                transferBid,
-                d11Team
-        );
     }
 
 }
