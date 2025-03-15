@@ -397,4 +397,20 @@ class PlayerTransferContextTests extends EasyRandomTests {
         assertNull(context.getActiveTransferBid(), "PlayerTransferContext::getActiveTransferBid invalid D11 team");
     }
 
+    /**
+     * Tests computing methods for an empty PlayerTransferContext.
+     */
+    @Test
+    void testEmptyTransferContext() {
+        final PlayerTransferContext context = new PlayerTransferContext();
+
+        assertFalse(context.isTransferListable(),
+                    "PlayerTransferContext::getActiveTransferBid empty isTransferListable");
+        assertNull(context.getDeletableTransferListing(),
+                   "PlayerTransferContext::getActiveTransferBid empty deletableTransferListing");
+        assertEquals(0, context.getMaxBid(), "PlayerTransferContext::getActiveTransferBid empty maxBid equals");
+        assertNull(context.getActiveTransferBid(),
+                   "PlayerTransferContext::getActiveTransferBid empty activeTransferBid");
+    }
+
 }

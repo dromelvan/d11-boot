@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,7 @@ import org.hibernate.annotations.Immutable;
 @ToString
 @Immutable
 @RequiredArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
+@NoArgsConstructor(force = true)
 @SuppressWarnings("PMD.TooManyFields")
 public class PlayerTransferContext {
 
@@ -169,8 +168,10 @@ public class PlayerTransferContext {
      *
      * @return True if the player can be transfer listed by the D11 team, false if not.
      */
+    @SuppressWarnings("checkstyle:BooleanExpressionComplexity")
     public boolean isTransferListable() {
-        return Status.PENDING.equals(this.transferDay.getStatus())
+        return this.transferDay != null
+               && Status.PENDING.equals(this.transferDay.getStatus())
                && this.transferCount < this.season.getD11TeamMaxTransfers()
                && this.playerD11Team.equals(this.d11Team)
                && this.transferListing == null;
@@ -182,7 +183,8 @@ public class PlayerTransferContext {
      * @return The transfer listing if it exists and can be deleted by the D11 team, null if not.
      */
     public TransferListing getDeletableTransferListing() {
-        return Status.PENDING.equals(this.transferDay.getStatus())
+        return this.transferDay != null
+               && Status.PENDING.equals(this.transferDay.getStatus())
                && this.transferListing != null
                && this.d11Team.equals(this.transferListing.getD11Team())
                ? this.transferListing
@@ -200,7 +202,8 @@ public class PlayerTransferContext {
                                    ? (MAX_PLAYER_COUNT - 1 - playerCount) * Transfer.FEE_DIVISOR
                                    : 0;
 
-        return Status.ACTIVE.equals(this.transferDay.getStatus())
+        return this.transferDay != null
+               && Status.ACTIVE.equals(this.transferDay.getStatus())
                && this.playerCount < MAX_PLAYER_COUNT
                && this.positionCount < this.position.getMaxCount()
                && this.transferListing != null
@@ -215,7 +218,8 @@ public class PlayerTransferContext {
      * @return The transfer bid if it exists and can be deleted or updated by the D11 team, null if not.
      */
     public TransferBid getActiveTransferBid() {
-        return Status.ACTIVE.equals(this.transferDay.getStatus())
+        return this.transferDay != null
+               && Status.ACTIVE.equals(this.transferDay.getStatus())
                && this.transferBid != null
                && this.d11Team.equals(this.transferBid.getD11Team())
                ? this.transferBid
