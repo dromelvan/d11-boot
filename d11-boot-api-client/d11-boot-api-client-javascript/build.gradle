@@ -32,6 +32,11 @@ task npmPackJavascriptClient(type:NpmTask) {
     }
 }
 
+node {
+    version = '23.11.0'
+    download = true
+}
+
 build {
     dependsOn tasks.npmPackJavascriptClient
     dependsOn tasks.openApiGenerate
