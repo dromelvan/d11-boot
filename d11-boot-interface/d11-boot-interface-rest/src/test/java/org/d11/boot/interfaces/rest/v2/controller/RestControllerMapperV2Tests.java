@@ -5,6 +5,7 @@ import org.d11.boot.api.v2.model.PlayerDTO;
 import org.d11.boot.api.v2.model.PlayerInputDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
+import org.d11.boot.api.v2.model.PlayerTransferContextDTO;
 import org.d11.boot.api.v2.model.TransferDayInputDTO;
 import org.d11.boot.api.v2.model.TransferWindowInputDTO;
 import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputDTO;
@@ -14,20 +15,24 @@ import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerInput;
 import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.model.PlayerSeasonStat;
+import org.d11.boot.spring.model.PlayerTransferContext;
 import org.d11.boot.spring.model.Team;
 import org.d11.boot.spring.model.TransferDayInput;
 import org.d11.boot.spring.model.TransferWindowInput;
 import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
+import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Rest controller mapper tests.
  */
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 class RestControllerMapperV2Tests extends EasyRandomTests {
 
     /**
@@ -343,6 +348,54 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
                      "RestControllerMapper::mapToTransferDayInput destination status equals");
         assertEquals(source.getDatetime(), destination.datetime(),
                      "RestControllerMapper::mapToTransferDayInput destination datetime equals");
+    }
+
+    /**
+     * Tests RestControllerMapper::mapToPlayerTransferContext with transferDay status PENDING.
+     */
+    @Test
+    void testMapToPlayerTransferContextDTOPending() {
+        final PlayerTransferContext source = generate(PlayerTransferContext.class);
+        source.getTransferDay().setStatus(Status.PENDING);
+        source.getTransferListing().setD11Team(source.getD11Team());
+        final PlayerTransferContextDTO destination = this.mapper.mapToPlayerTransferContextDTO(source);
+
+        assertEquals(source.getPlayer().getId(), destination.getPlayerId(),
+                     "RestControllerMapper::mapToPlayerTransferContext pending destination playerId equals");
+        assertEquals(source.isTransferListable(), destination.isTransferListable(),
+                     "RestControllerMapper::mapToPlayerTransferContext pending destination transferListable");
+        assertEquals(source.getDeletableTransferListing().getId(), destination.getDeletableTransferListingId(),
+             "RestControllerMapper::mapToPlayerTransferContext pending destination deletableTransferListingId equals");
+        assertEquals(source.getMaxBid(), destination.getMaxBid(),
+                     "RestControllerMapper::mapToPlayerTransferContext pending destination maxBid equals");
+        assertNull(destination.getActiveTransferBid(),
+                   "RestControllerMapper::mapToPlayerTransferContext pending destination activeTransferBid null");
+    }
+
+    /**
+     * Tests RestControllerMapper::mapToPlayerTransferContext with transferDay status ACTIVE.
+     */
+    @Test
+    void testMapToPlayerTransferContextDTOActive() {
+        final PlayerTransferContext source = generate(PlayerTransferContext.class);
+        source.getTransferDay().setStatus(Status.ACTIVE);
+        source.getTransferBid().setD11Team(source.getD11Team());
+        final PlayerTransferContextDTO destination = this.mapper.mapToPlayerTransferContextDTO(source);
+
+        assertEquals(source.getPlayer().getId(), destination.getPlayerId(),
+                     "RestControllerMapper::mapToPlayerTransferContext active destination playerId equals");
+        assertEquals(source.isTransferListable(), destination.isTransferListable(),
+                     "RestControllerMapper::mapToPlayerTransferContext active destination transferListable");
+        assertNull(destination.getDeletableTransferListingId(),
+               "RestControllerMapper::mapToPlayerTransferContext active destination deletableTransferListingId null");
+        assertEquals(source.getMaxBid(), destination.getMaxBid(),
+                     "RestControllerMapper::mapToPlayerTransferContext active destination maxBid equals");
+        assertEquals(source.getActiveTransferBid().getId(), destination.getActiveTransferBid().getId(),
+                   "RestControllerMapper::mapToPlayerTransferContext active destination activeTransferBid id equals");
+        assertEquals(source.getActiveTransferBid().getId(), destination.getActiveTransferBid().getId(),
+                     "RestControllerMapper::mapToPlayerTransferContext active destination activeTransferBid id equals");
+        assertEquals(source.getActiveTransferBid().getFee(), destination.getActiveTransferBid().getFee(),
+                 "RestControllerMapper::mapToPlayerTransferContext active destination activeTransferBid fee equals");
     }
 
 }

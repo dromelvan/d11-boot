@@ -5,6 +5,7 @@ import org.d11.boot.api.v2.model.PlayerDTO;
 import org.d11.boot.api.v2.model.PlayerInputDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
+import org.d11.boot.api.v2.model.PlayerTransferContextDTO;
 import org.d11.boot.api.v2.model.TransferDayInputDTO;
 import org.d11.boot.api.v2.model.TransferWindowInputDTO;
 import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputDTO;
@@ -13,6 +14,7 @@ import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerInput;
 import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.model.PlayerSeasonStat;
+import org.d11.boot.spring.model.PlayerTransferContext;
 import org.d11.boot.spring.model.TransferDayInput;
 import org.d11.boot.spring.model.TransferWindowInput;
 import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
@@ -92,5 +94,15 @@ public interface RestControllerMapperV2 {
      * @return Mapped TransferDayInput.
      */
     TransferDayInput mapToTransferDayInput(TransferDayInputDTO transferDayInputDTO);
+
+    /**
+     * Maps a PlayerTransferContext to PlayerTransferContextDTO.
+     *
+     * @param playerTransferContext The PlayerTransferContext.
+     * @return Mapped PlayerTransferContextDTO.
+     */
+    @Mapping(source = "player.id", target = "playerId")
+    @Mapping(source = "deletableTransferListing.id", target = "deletableTransferListingId")
+    PlayerTransferContextDTO mapToPlayerTransferContextDTO(PlayerTransferContext playerTransferContext);
 
 }

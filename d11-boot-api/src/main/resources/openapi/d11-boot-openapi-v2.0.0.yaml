@@ -3176,7 +3176,49 @@ components:
         d11Team:
           $ref: '#/components/schemas/D11TeamBase'
 
-    # Team season stat ---------------------------------------------------------------------------------------------
+    # Player transfer context ------------------------------------------------------------------------------------------
+
+    PlayerTransferContext:
+      type: object
+      required:
+        - playerId
+        - transferListable
+        - maxBid
+      properties:
+        playerId:
+          $ref: '#/components/schemas/Id'
+        transferListable:
+          type: boolean
+        deletableTransferListingId:
+          $ref: '#/components/schemas/Id'
+        maxBid:
+          type: integer
+          format: int32
+        activeTransferBid:
+          $ref: '#/components/schemas/PlayerTransferContextTransferBid'
+
+    PlayerTransferContextTransferBid:
+      type: object
+      required:
+        - id
+        - fee
+      properties:
+        id:
+          type: integer
+          format: int64
+        fee:
+          type: integer
+          format: int32
+
+    PlayerTransferContextResponseBody:
+      type: object
+      required:
+        - playerTransferContext
+      properties:
+        playerTransferContext:
+          $ref: '#/components/schemas/PlayerTransferContext'
+
+    # Team season stat -------------------------------------------------------------------------------------------------
 
     TeamSeasonStat:
       type: object
