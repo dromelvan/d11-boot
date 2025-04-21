@@ -38,9 +38,9 @@ VALUES(2, 33333, 4, 'TeamC', 'ShortC', 'TMC', 2020, 'ColourC', false, '3.png', '
 
 -- D11 Team
 INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)
-VALUES(null, null, 'None', 'None', 'DUM', false, null);
+VALUES(null, null, 'None', 'None', 'DUM', true, null);
 INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)
-VALUES(1, null, 'D11TeamA', 'ShortA', 'DTA', true, '1.png');
+VALUES(1, null, 'D11TeamA', 'ShortA', 'DTA', false, '1.png');
 INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)
 VALUES(2, null, 'D11TeamB', 'ShortB', 'DTB', false, '2.png');
 INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)

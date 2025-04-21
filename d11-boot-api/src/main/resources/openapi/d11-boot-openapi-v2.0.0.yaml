@@ -798,6 +798,35 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  # Player transfer context --------------------------------------------------------------------------------------------
+
+  /v2/player-transfer-contexts/{playerId}:
+    get:
+      tags:
+        - playerTransferContext
+      summary: Get a player transfer context by player id.
+      security: []
+      operationId: getPlayerTransferContextByPlayerId
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          description: Id of the player.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerTransferContextResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Positions ----------------------------------------------------------------------------------------------------------
 
   /v2/positions:

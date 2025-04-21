@@ -15,4 +15,4 @@ d11:
 spring:
   main.banner-mode: "off"
   flyway:
-    locations: classpath:db/migration/table,classpath:db/migration/procedure/h2,classpath:db/migration/test-data/rest
+    locations: classpath:db/migration/table,classpath:db/migration/view,classpath:db/migration/procedure/h2,classpath:db/migration/test-data/rest
