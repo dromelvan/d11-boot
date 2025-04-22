@@ -1,5 +1,6 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
+import feign.FeignException;
 import org.d11.boot.api.v2.client.PlayerTransferContextApi;
 import org.d11.boot.api.v2.model.PlayerTransferContextDTO;
 import org.d11.boot.spring.model.Player;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -67,6 +69,18 @@ class PlayerTransferContextControllerV2Test extends D11BootControllerV2Tests {
                     activeTransferBidId null
                     """);
         }
+    }
+
+    /**
+     * Tests PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId for bad request.
+     */
+    @Test
+    void testGetPlayerTransferContextByPlayerIdBadRequest() {
+        final PlayerTransferContextApi playerTransferContextApi = getUserApi(PlayerTransferContextApi.class);
+
+        assertThrows(FeignException.BadRequest.class,
+                () -> playerTransferContextApi.getPlayerTransferContextByPlayerId(null),
+                "PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId playerId null throws");
     }
 
     /**

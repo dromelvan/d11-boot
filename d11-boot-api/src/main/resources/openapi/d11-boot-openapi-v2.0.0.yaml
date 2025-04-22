@@ -774,33 +774,7 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
-  /v2/players/search:
-    get:
-      tags:
-        - player
-      summary: Searches players by name.
-      security: []
-      operationId: searchPlayersByName
-      parameters:
-        - in: query
-          required: true
-          name: name
-          schema:
-            type: string
-          description: The name.
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PlayerSearchResultsResponseBody"
-        500:
-          $ref: '#/components/responses/InternalServerError'
-
-  # Player transfer context --------------------------------------------------------------------------------------------
-
-  /v2/player-transfer-contexts/{playerId}:
+  /v2/players/{playerId}/player-transfer-context:
     get:
       tags:
         - playerTransferContext
@@ -824,6 +798,30 @@ paths:
                 $ref: "#/components/schemas/PlayerTransferContextResponseBody"
         400:
           $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /v2/players/search:
+    get:
+      tags:
+        - player
+      summary: Searches players by name.
+      security: []
+      operationId: searchPlayersByName
+      parameters:
+        - in: query
+          required: true
+          name: name
+          schema:
+            type: string
+          description: The name.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerSearchResultsResponseBody"
         500:
           $ref: '#/components/responses/InternalServerError'
 
@@ -3210,7 +3208,6 @@ components:
     PlayerTransferContext:
       type: object
       required:
-        - playerId
         - transferListable
         - maxBid
       properties:
