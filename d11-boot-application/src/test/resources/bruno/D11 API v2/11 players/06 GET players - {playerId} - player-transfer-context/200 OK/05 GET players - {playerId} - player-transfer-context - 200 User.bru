@@ -1,0 +1,25 @@
+meta {
+  name: GET players/{playerId}/player-transfer-context - 200 User
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/v2/players/{{playerTransferContextPlayerId}}/player-transfer-context
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.playerTransferContext: isDefined
+  res.body.playerTransferContext.playerId: eq {{playerTransferContextPlayerId}}
+  res.body.playerTransferContext.transferListable: isFalsy
+  res.body.playerTransferContext.deletableTransferListingId: eq {{playerTransferContextDeletableTransferListingId}}
+  res.body.playerTransferContext.maxBid: eq 0
+  res.body.playerTransferContext.activeTransferBid: isNull
+}
