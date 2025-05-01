@@ -1,10 +1,13 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
 import org.d11.boot.api.v2.TransferBidApi;
+import org.d11.boot.api.v2.model.CreateTransferBidRequestBodyDTO;
 import org.d11.boot.api.v2.model.TransferBidDTO;
+import org.d11.boot.api.v2.model.TransferBidResponseBodyDTO;
 import org.d11.boot.api.v2.model.TransferBidsResponseBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.TransferBid;
+import org.d11.boot.spring.security.RoleUser;
 import org.d11.boot.spring.service.TransferBidService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +36,16 @@ public class TransferBidControllerV2 extends RepositoryServiceController<Transfe
         final List<TransferBid> transferBids = getRepositoryService().getByTransferDayId(transferDayId);
         return ResponseEntity.ok(new TransferBidsResponseBodyDTO()
                 .transferBids(map(transferBids, TransferBidDTO.class)));
+    }
+
+    @Override
+    @RoleUser
+    public ResponseEntity<TransferBidResponseBodyDTO> createTransferBid(
+            final CreateTransferBidRequestBodyDTO createTransferBidRequestBodyDTO) {
+        final TransferBid transferBid = getRepositoryService()
+                .createTransferBid(createTransferBidRequestBodyDTO.getPlayerId(),
+                                   createTransferBidRequestBodyDTO.getFee());
+        return ResponseEntity.ok(new TransferBidResponseBodyDTO().transferBid(map(transferBid, TransferBidDTO.class)));
     }
 
 }

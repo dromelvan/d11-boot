@@ -3,15 +3,19 @@ package org.d11.boot.interfaces.rest.v2.controller;
 import feign.FeignException;
 import jakarta.transaction.Transactional;
 import org.d11.boot.api.v2.client.TransferBidApi;
+import org.d11.boot.api.v2.model.CreateTransferBidRequestBodyDTO;
 import org.d11.boot.api.v2.model.TransferBidDTO;
 import org.d11.boot.api.v2.model.TransferBidsResponseBodyDTO;
+import org.d11.boot.spring.model.PlayerTransferContext;
 import org.d11.boot.spring.model.TransferBid;
 import org.d11.boot.spring.model.TransferDay;
+import org.d11.boot.spring.repository.PlayerTransferContextRepository;
 import org.d11.boot.spring.repository.TransferBidRepository;
 import org.d11.boot.spring.repository.TransferDayRepository;
 import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
@@ -37,6 +41,12 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Autowired
     private TransferBidRepository transferBidRepository;
+
+    /**
+     * Player transfer context service.
+     */
+    @Autowired
+    private PlayerTransferContextRepository playerTransferContextRepository;
 
     /**
      * Tests TransferBidControllerV2::getTransferBidsByTransferDayId.
@@ -95,6 +105,133 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
         // Make sure that we have both finished and not finished test transfer days
         assertTrue(finishedCount > 0 && notFinishedCount > 0,
                    "TransferBidControllerV2::getTransferBidsByTransferDayId active and not active count > 0");
+    }
+
+    // createTransferBid -----------------------------------------------------------------------------------------------
+
+    /**
+     * Tests TransferBidControllerV2::createTransferBid for unauthorized.
+     */
+    @Test
+    void testCreateTransferBidUnauthorized() {
+        final TransferBidApi transferBidApi = getApi(TransferBidApi.class);
+        final CreateTransferBidRequestBodyDTO requestBody = new CreateTransferBidRequestBodyDTO()
+                .playerId(1L)
+                .fee(10);
+
+        assertThrows(FeignException.Unauthorized.class, () -> transferBidApi.createTransferBid(requestBody),
+                     "TransferBidControllerV2::createTransferBid unauthorized throws");
+    }
+
+    /**
+     * Tests TransferBidControllerV2::createTransferBid for null player id.
+     */
+    @Test
+    void testCreateTransferBidNullPlayerId() {
+        final TransferBidApi transferBidApi = getApi(TransferBidApi.class);
+        final CreateTransferBidRequestBodyDTO requestBody = new CreateTransferBidRequestBodyDTO()
+                .fee(10);
+
+        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
+                     "TransferBidControllerV2::createTransferBid null playerId throws");
+    }
+
+    /**
+     * Tests TransferBidControllerV2::createTransferBid for null fee.
+     */
+    @Test
+    void testCreateTransferBidNullFee() {
+        final TransferBidApi transferBidApi = getApi(TransferBidApi.class);
+        final CreateTransferBidRequestBodyDTO requestBody = new CreateTransferBidRequestBodyDTO()
+                .playerId(1L);
+
+        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
+                     "TransferBidControllerV2::createTransferBid null fee throws");
+    }
+
+    /**
+     * Tests TransferBidControllerV2::createTransferBid for invalid fee.
+     */
+    @Test
+    void testCreateTransferBidTransferBidInvalidFee() {
+        TransferDay transferDay = this.transferDayRepository.findFirstByOrderByDatetimeDesc()
+                .orElseThrow(RuntimeException::new);
+        transferDay.setStatus(Status.ACTIVE);
+        transferDay = this.transferDayRepository.save(transferDay);
+
+        final TransferBidApi transferBidApi = getUserApi(TransferBidApi.class);
+        final CreateTransferBidRequestBodyDTO requestBody = new CreateTransferBidRequestBodyDTO()
+                .playerId(2L)
+                .fee(0);
+
+        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
+                     "TransferBidControllerV2::createTransferBid 0 fee throws");
+
+        requestBody.setFee(1000);
+
+        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
+                     "TransferBidControllerV2::createTransferBid fee > maxBid throws");
+
+        requestBody.setFee(1);
+
+        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
+                     "TransferBidControllerV2::createTransferBid fee not divisible by 5 throws");
+
+        // @DirtiesContext won't work here for some reason. Maybe figure it out later
+        transferDay.setStatus(Status.PENDING);
+        this.transferDayRepository.save(transferDay);
+    }
+
+    /**
+     * Tests TransferBidControllerV2::createTransferBid for transfer bid not allowed.
+     */
+    @Test
+    void testCreateTransferBidTransferBidNotAllowed() {
+        final TransferBidApi transferBidApi = getAdministratorApi(TransferBidApi.class);
+        final CreateTransferBidRequestBodyDTO requestBody = new CreateTransferBidRequestBodyDTO()
+                .playerId(1L)
+                .fee(10);
+
+        assertThrows(FeignException.Conflict.class, () -> transferBidApi.createTransferBid(requestBody),
+                     "TransferBidControllerV2::createTransferBid transfer bid not allowed throws");
+    }
+
+    /**
+     * Tests TransferBidControllerV2::createTransferBid.
+     */
+    @Test
+    @DirtiesContext
+    void testCreateTransferBid() {
+        final TransferDay transferDay = this.transferDayRepository.findFirstByOrderByDatetimeDesc()
+                .orElseThrow(RuntimeException::new);
+        transferDay.setStatus(Status.ACTIVE);
+        this.transferDayRepository.save(transferDay);
+
+        final PlayerTransferContext playerTransferContext =
+                this.playerTransferContextRepository.findByPlayerIdAndOwnerId(2L, 1L)
+                        .orElse(new PlayerTransferContext());
+
+        final TransferBidApi transferBidApi = getUserApi(TransferBidApi.class);
+        final CreateTransferBidRequestBodyDTO requestBody = new CreateTransferBidRequestBodyDTO()
+                .playerId(2L)
+                .fee(5);
+
+        final TransferBidDTO result = transferBidApi.createTransferBid(requestBody).getTransferBid();
+
+        assertNotNull(result, "TransferBidControllerV2::createTransferBid response not null");
+        assertEquals(playerTransferContext.getTransferListing().getRanking(), result.getPlayerRanking(),
+                     "TransferBidControllerV2::createTransferBid playerRanking equals");
+        assertEquals(playerTransferContext.getRanking(), result.getD11TeamRanking(),
+                     "TransferBidControllerV2::createTransferBid d11TeamRanking equals");
+        assertEquals(requestBody.getFee(), result.getFee(),
+                     "TransferBidControllerV2::createTransferBid fee equals");
+        assertEquals(requestBody.getFee(), result.getActiveFee(),
+                     "TransferBidControllerV2::createTransferBid activeFee equals");
+        assertFalse(result.isSuccessful(), "TransferBidControllerV2::createTransferBid successful");
+        assertEquals(requestBody.getPlayerId(), result.getPlayer().getId(),
+                     "TransferBidControllerV2::createTransferBid playerId equals");
+        assertEquals(playerTransferContext.getD11Team().getId(), result.getD11Team().getId(),
+                     "TransferBidControllerV2::createTransferBid d11TeamId equals");
     }
 
 }

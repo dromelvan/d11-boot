@@ -1817,6 +1817,36 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+    post:
+      tags:
+        - transferBid
+      summary: Creates a transfer bid.
+      security:
+        - BearerAuth: [user]
+      operationId: createTransferBid
+      requestBody:
+        description: New transfer bid properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTransferBidRequestBody"
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferBidResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        409:
+          $ref: '#/components/responses/Conflict'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Transfers ----------------------------------------------------------------------------------------------------------
 
   /v2/transfers:
@@ -3758,6 +3788,14 @@ components:
         d11Team:
           $ref: '#/components/schemas/D11TeamBase'
 
+    TransferBidResponseBody:
+      type: object
+      required:
+        - transferBid
+      properties:
+        transferBid:
+          $ref: '#/components/schemas/TransferBid'
+
     TransferBidsResponseBody:
       type: object
       required:
@@ -3767,6 +3805,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TransferBid'
+
+    CreateTransferBidRequestBody:
+      type: object
+      required:
+        - playerId
+        - fee
+      properties:
+        playerId:
+          $ref: '#/components/schemas/Id'
+        fee:
+          $ref: '#/components/schemas/Fee'
 
     # Transfer ---------------------------------------------------------------------------------------------------------
 
