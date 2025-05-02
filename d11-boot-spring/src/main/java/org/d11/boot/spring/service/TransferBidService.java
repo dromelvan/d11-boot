@@ -4,14 +4,19 @@ import org.d11.boot.spring.model.PlayerTransferContext;
 import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferBid;
 import org.d11.boot.spring.model.TransferDay;
+import org.d11.boot.spring.model.User;
 import org.d11.boot.spring.repository.TransferBidRepository;
 import org.d11.boot.spring.repository.TransferDayRepository;
 import org.d11.boot.util.Status;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ErrorCode;
+import org.d11.boot.util.exception.ForbiddenException;
+import org.d11.boot.util.exception.NotFoundException;
+import org.d11.boot.util.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +107,33 @@ public class TransferBidService extends RepositoryService<TransferBid, TransferB
         transferBid.setFee(fee);
 
         return getJpaRepository().save(transferBid);
+    }
+
+    /**
+     * Deletes a transfer bid.
+     *
+     * @param transferBidId The transfer bid id.
+     */
+    @Transactional
+    public void deleteTransferBid(final Long transferBidId) {
+        if (transferBidId == null) {
+            throw new BadRequestException("transferBidId", ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING);
+        }
+
+        final TransferBid transferBid = getJpaRepository().findById(transferBidId)
+                .orElseThrow(() -> new NotFoundException(transferBidId, TransferBid.class));
+
+        final User user = getCurrentUser().orElseThrow(UnauthorizedException::new);
+
+        if (!transferBid.getD11Team().isAdministratedBy(user)) {
+            throw new ForbiddenException();
+        }
+
+        if (!Status.ACTIVE.equals(transferBid.getTransferDay().getStatus())) {
+            throw new ConflictException(ErrorCode.CONFLICT_TRANSFER_BID_NOT_ALLOWED);
+        }
+
+        getJpaRepository().delete(transferBid);
     }
 
 }

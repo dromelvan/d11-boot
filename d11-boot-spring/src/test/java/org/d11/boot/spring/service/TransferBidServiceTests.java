@@ -7,19 +7,30 @@ import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferBid;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferListing;
+import org.d11.boot.spring.model.User;
 import org.d11.boot.spring.repository.TransferBidRepository;
 import org.d11.boot.spring.repository.TransferDayRepository;
+import org.d11.boot.spring.repository.UserRepository;
+import org.d11.boot.spring.security.JwtBuilder;
 import org.d11.boot.util.Status;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
+import org.d11.boot.util.exception.ForbiddenException;
+import org.d11.boot.util.exception.NotFoundException;
+import org.d11.boot.util.exception.UnauthorizedException;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,6 +48,24 @@ import static org.mockito.Mockito.when;
 class TransferBidServiceTests extends BaseD11BootServiceTests {
 
     /**
+     * Mocked authentication.
+     */
+    @Mock
+    private Authentication authentication;
+
+    /**
+     * Mocked JWT.
+     */
+    @Mock
+    private Jwt jwt;
+
+    /**
+     * Mocked application context.
+     */
+    @Mock
+    private ApplicationContext applicationContext;
+
+    /**
      * Mocked transfer bid repository.
      */
     @Mock
@@ -47,6 +76,12 @@ class TransferBidServiceTests extends BaseD11BootServiceTests {
      */
     @Mock
     private TransferDayRepository transferDayRepository;
+
+    /**
+     * Mocked user repository.
+     */
+    @Mock
+    private UserRepository userRepository;
 
     /**
      * Player transfer context service.
@@ -254,6 +289,118 @@ class TransferBidServiceTests extends BaseD11BootServiceTests {
 
         verify(this.playerTransferContextService, times(1)).getByPlayerId(eq(player.getId()));
         verify(this.transferBidRepository, times(1)).save(any(TransferBid.class));
+    }
+
+    /**
+     * Tests TransferBidService::deleteTransferBid with invalid transfer bid id.
+     */
+    @Test
+    void testDeleteTransferBidInvalidTransferBidId() {
+        assertThrows(BadRequestException.class, () -> this.transferBidService.deleteTransferBid(null),
+                     "TransferBidService::deleteTransferBid transferBidId invalid throws");
+    }
+
+    /**
+     * Tests TransferBidService::deleteTransferBid with transfer bid not found.
+     */
+    @Test
+    void testDeleteTransferBidNotFound() {
+        when(this.transferBidRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> this.transferBidService.deleteTransferBid(1L),
+                     "TransferBidService::deleteTransferBid transferBid not found throws");
+    }
+
+    /**
+     * Tests TransferBidService::deleteTransferBid for unauthorized.
+     */
+    @Test
+    void testDeleteTransferBidUnauthorized() {
+        final TransferBid transferBid = generate(TransferBid.class);
+        when(this.transferBidRepository.findById(any(Long.class))).thenReturn(Optional.of(transferBid));
+
+        SecurityContextHolder.getContext().setAuthentication(null);
+
+        assertThrows(UnauthorizedException.class, () -> this.transferBidService.deleteTransferBid(1L),
+                     "TransferBidService::deleteTransferBid transferBid unauthorized throws");
+    }
+
+    /**
+     * Tests TransferBidService::deleteTransferBid for forbidden.
+     */
+    @Test
+    void testDeleteTransferBidForbidden() {
+        final TransferBid transferBid = generate(TransferBid.class);
+        when(this.transferBidRepository.findById(any(Long.class))).thenReturn(Optional.of(transferBid));
+
+        final User owner = generate(User.class);
+        owner.setAdministrator(false);
+
+        SecurityContextHolder.getContext().setAuthentication(this.authentication);
+        when(this.authentication.getPrincipal()).thenReturn(this.jwt);
+        when(this.jwt.getClaimAsString(JwtBuilder.USERNAME_CLAIM)).thenReturn(JwtBuilder.USERNAME_CLAIM);
+        when(this.applicationContext.getBean(eq(UserRepository.class))).thenReturn(this.userRepository);
+        when(this.userRepository.findByEmail(eq(JwtBuilder.USERNAME_CLAIM))).thenReturn(Optional.of(owner));
+
+        assertThrows(ForbiddenException.class, () -> this.transferBidService.deleteTransferBid(1L),
+                     "TransferBidService::deleteTransferBid transferBid forbidden throws");
+    }
+
+    /**
+     * Tests TransferBidService::deleteTransferBid for invalid transfer day status.
+     */
+    @Test
+    void testDeleteTransferBidInvalidTransferDayStatus() {
+        final TransferBid transferBid = generate(TransferBid.class);
+        transferBid.getTransferDay().setStatus(Status.PENDING);
+
+        when(this.transferBidRepository.findById(any(Long.class))).thenReturn(Optional.of(transferBid));
+
+        final User owner = generate(User.class);
+        owner.setAdministrator(true);
+
+        SecurityContextHolder.getContext().setAuthentication(this.authentication);
+        when(this.authentication.getPrincipal()).thenReturn(this.jwt);
+        when(this.jwt.getClaimAsString(JwtBuilder.USERNAME_CLAIM)).thenReturn(JwtBuilder.USERNAME_CLAIM);
+        when(this.applicationContext.getBean(eq(UserRepository.class))).thenReturn(this.userRepository);
+        when(this.userRepository.findByEmail(eq(JwtBuilder.USERNAME_CLAIM))).thenReturn(Optional.of(owner));
+
+        assertThrows(ConflictException.class, () -> this.transferBidService.deleteTransferBid(1L),
+                     "TransferBidService::deleteTransferBid transferBid forbidden throws");
+    }
+
+    /**
+     * Tests TransferBidService::deleteTransferBid.
+     */
+    @Test
+    void testDeleteTransferBid() {
+        final TransferBid transferBid = generate(TransferBid.class);
+        transferBid.getTransferDay().setStatus(Status.ACTIVE);
+
+        when(this.transferBidRepository.findById(any(Long.class))).thenReturn(Optional.of(transferBid));
+
+        SecurityContextHolder.getContext().setAuthentication(this.authentication);
+        when(this.authentication.getPrincipal()).thenReturn(this.jwt);
+        when(this.jwt.getClaimAsString(JwtBuilder.USERNAME_CLAIM)).thenReturn(JwtBuilder.USERNAME_CLAIM);
+        when(this.applicationContext.getBean(eq(UserRepository.class))).thenReturn(this.userRepository);
+
+        final User owner = generate(User.class);
+        transferBid.getD11Team().setOwner(owner);
+
+        when(this.userRepository.findByEmail(eq(JwtBuilder.USERNAME_CLAIM))).thenReturn(Optional.of(owner));
+
+        assertDoesNotThrow(() -> this.transferBidService.deleteTransferBid(transferBid.getId()),
+                           "TransferBidService::deleteTransferBid user does not throw");
+
+        final User administrator = generate(User.class);
+        administrator.setAdministrator(true);
+
+        when(this.userRepository.findByEmail(eq(JwtBuilder.USERNAME_CLAIM))).thenReturn(Optional.of(administrator));
+
+        assertDoesNotThrow(() -> this.transferBidService.deleteTransferBid(transferBid.getId()),
+                           "TransferBidService::deleteTransferBid administrator does not throw");
+
+        verify(this.transferBidRepository, times(2)).delete(transferBid);
     }
 
 }
