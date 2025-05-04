@@ -48,4 +48,11 @@ public class TransferBidControllerV2 extends RepositoryServiceController<Transfe
         return ResponseEntity.ok(new TransferBidResponseBodyDTO().transferBid(map(transferBid, TransferBidDTO.class)));
     }
 
+    @Override
+    @RoleUser
+    public ResponseEntity<Void> deleteTransferBid(final Long transferBidId) {
+        getRepositoryService().deleteTransferBid(transferBidId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

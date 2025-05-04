@@ -1847,6 +1847,38 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/transfer-bids/{transferBidId}:
+    delete:
+      tags:
+        - transferBid
+      summary: Deletes a transfer bid.
+      security:
+        - BearerAuth: [user]
+      operationId: deleteTransferBid
+      parameters:
+        - name: transferBidId
+          in: path
+          required: true
+          description: Id of the transfer bid that will be deleted.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: No Content
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/Conflict'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   # Transfers ----------------------------------------------------------------------------------------------------------
 
   /v2/transfers:

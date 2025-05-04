@@ -1,7 +1,6 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
 import feign.FeignException;
-import jakarta.transaction.Transactional;
 import org.d11.boot.api.v2.client.TransferBidApi;
 import org.d11.boot.api.v2.model.CreateTransferBidRequestBodyDTO;
 import org.d11.boot.api.v2.model.TransferBidDTO;
@@ -15,10 +14,12 @@ import org.d11.boot.spring.repository.TransferDayRepository;
 import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -196,11 +197,58 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
                      "TransferBidControllerV2::createTransferBid transfer bid not allowed throws");
     }
 
+    // deleteTransferBid -----------------------------------------------------------------------------------------------
+
     /**
-     * Tests TransferBidControllerV2::createTransferBid.
+     * Tests TransferBidControllerV2::deleteTransferBid for unauthorized.
      */
     @Test
-    @DirtiesContext
+    void testDeleteTransferBidUnauthorized() {
+        final TransferBidApi transferBidApi = getApi(TransferBidApi.class);
+
+        assertThrows(FeignException.Unauthorized.class, () -> transferBidApi.deleteTransferBid(1L),
+                     "TransferBidControllerV2::deleteTransferBid unauthorized throws");
+    }
+
+    /**
+     * Tests TransferBidControllerV2::deleteTransferBid for forbidden.
+     */
+    @Test
+    void testDeleteTransferBidForbidden() {
+        final TransferBidApi transferBidApi = getUserApi(TransferBidApi.class);
+
+        assertThrows(FeignException.Forbidden.class, () -> transferBidApi.deleteTransferBid(1L),
+                     "TransferBidControllerV2::deleteTransferBid forbidden throws");
+    }
+
+    /**
+     * Tests TransferBidControllerV2::deleteTransferBid for not found.
+     */
+    @Test
+    void testDeleteTransferBidNotFound() {
+        final TransferBidApi transferBidApi = getUserApi(TransferBidApi.class);
+
+        assertThrows(FeignException.NotFound.class, () -> transferBidApi.deleteTransferBid(-1L),
+                     "TransferBidControllerV2::deleteTransferBid not found throws");
+    }
+
+    /**
+     * Tests TransferBidControllerV2::deleteTransferBid for invalid transfer day status.
+     */
+    @Test
+    void testDeleteTransferBidInvalidTransferDayStatus() {
+        final TransferBidApi transferBidApi = getAdministratorApi(TransferBidApi.class);
+
+        assertThrows(FeignException.Conflict.class, () -> transferBidApi.deleteTransferBid(1L),
+                     "TransferBidControllerV2::deleteTransferBid invalid transferDay status throws");
+    }
+
+    // createTransferBid + deleteTransferBid ---------------------------------------------------------------------------
+
+    /**
+     * Tests TransferBidControllerV2::createTransferBid and TransferBidControllerV2::deleteTransferBid.
+     */
+    @Test
     void testCreateTransferBid() {
         final TransferDay transferDay = this.transferDayRepository.findFirstByOrderByDatetimeDesc()
                 .orElseThrow(RuntimeException::new);
@@ -232,6 +280,18 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
                      "TransferBidControllerV2::createTransferBid playerId equals");
         assertEquals(playerTransferContext.getD11Team().getId(), result.getD11Team().getId(),
                      "TransferBidControllerV2::createTransferBid d11TeamId equals");
+
+        final Optional<TransferBid> created = this.transferBidRepository.findById(result.getId());
+        assertTrue(created.isPresent(), "TransferBidControllerV2::createTransferBid transferBid present");
+
+        assertDoesNotThrow(() -> transferBidApi.deleteTransferBid(result.getId()),
+                           "TransferBidControllerV2::deleteTransferBid does not throw");
+
+        final Optional<TransferBid> deleted = this.transferBidRepository.findById(result.getId());
+        assertFalse(deleted.isPresent(), "TransferBidControllerV2::deleteTransferBid transferBid present");
+
+        transferDay.setStatus(Status.PENDING);
+        this.transferDayRepository.save(transferDay);
     }
 
 }
