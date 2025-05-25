@@ -43,8 +43,8 @@ public class TransferBidControllerV2 extends RepositoryServiceController<Transfe
     public ResponseEntity<TransferBidResponseBodyDTO> createTransferBid(
             final CreateTransferBidRequestBodyDTO createTransferBidRequestBodyDTO) {
         final TransferBid transferBid = getRepositoryService()
-                .createTransferBid(createTransferBidRequestBodyDTO.getPlayerId(),
-                                   createTransferBidRequestBodyDTO.getFee());
+                .createTransferBid(createTransferBidRequestBodyDTO.getTransferBid().getPlayerId(),
+                                   createTransferBidRequestBodyDTO.getTransferBid().getFee());
         return ResponseEntity.ok(new TransferBidResponseBodyDTO().transferBid(map(transferBid, TransferBidDTO.class)));
     }
 

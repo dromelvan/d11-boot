@@ -4,6 +4,7 @@ import feign.FeignException;
 import org.d11.boot.api.v2.client.TransferBidApi;
 import org.d11.boot.api.v2.model.CreateTransferBidRequestBodyDTO;
 import org.d11.boot.api.v2.model.TransferBidDTO;
+import org.d11.boot.api.v2.model.TransferBidInputDTO;
 import org.d11.boot.api.v2.model.TransferBidsResponseBodyDTO;
 import org.d11.boot.spring.model.PlayerTransferContext;
 import org.d11.boot.spring.model.TransferBid;
@@ -117,8 +118,9 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
     void testCreateTransferBidUnauthorized() {
         final TransferBidApi transferBidApi = getApi(TransferBidApi.class);
         final CreateTransferBidRequestBodyDTO requestBody = new CreateTransferBidRequestBodyDTO()
-                .playerId(1L)
-                .fee(10);
+                .transferBid(new TransferBidInputDTO()
+                                     .playerId(1L)
+                                     .fee(10));
 
         assertThrows(FeignException.Unauthorized.class, () -> transferBidApi.createTransferBid(requestBody),
                      "TransferBidControllerV2::createTransferBid unauthorized throws");
@@ -131,7 +133,8 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
     void testCreateTransferBidNullPlayerId() {
         final TransferBidApi transferBidApi = getApi(TransferBidApi.class);
         final CreateTransferBidRequestBodyDTO requestBody = new CreateTransferBidRequestBodyDTO()
-                .fee(10);
+                .transferBid(new TransferBidInputDTO()
+                                     .fee(10));
 
         assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
                      "TransferBidControllerV2::createTransferBid null playerId throws");
@@ -144,7 +147,8 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
     void testCreateTransferBidNullFee() {
         final TransferBidApi transferBidApi = getApi(TransferBidApi.class);
         final CreateTransferBidRequestBodyDTO requestBody = new CreateTransferBidRequestBodyDTO()
-                .playerId(1L);
+                .transferBid(new TransferBidInputDTO()
+                                     .playerId(1L));
 
         assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
                      "TransferBidControllerV2::createTransferBid null fee throws");
@@ -162,18 +166,19 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
 
         final TransferBidApi transferBidApi = getUserApi(TransferBidApi.class);
         final CreateTransferBidRequestBodyDTO requestBody = new CreateTransferBidRequestBodyDTO()
-                .playerId(2L)
-                .fee(0);
+                .transferBid(new TransferBidInputDTO()
+                                     .playerId(2L)
+                                     .fee(0));
 
         assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
                      "TransferBidControllerV2::createTransferBid 0 fee throws");
 
-        requestBody.setFee(1000);
+        requestBody.getTransferBid().setFee(1000);
 
         assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
                      "TransferBidControllerV2::createTransferBid fee > maxBid throws");
 
-        requestBody.setFee(1);
+        requestBody.getTransferBid().setFee(1);
 
         assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
                      "TransferBidControllerV2::createTransferBid fee not divisible by 5 throws");
@@ -190,8 +195,9 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
     void testCreateTransferBidTransferBidNotAllowed() {
         final TransferBidApi transferBidApi = getAdministratorApi(TransferBidApi.class);
         final CreateTransferBidRequestBodyDTO requestBody = new CreateTransferBidRequestBodyDTO()
-                .playerId(1L)
-                .fee(10);
+                .transferBid(new TransferBidInputDTO()
+                                     .playerId(1L)
+                                     .fee(10));
 
         assertThrows(FeignException.Conflict.class, () -> transferBidApi.createTransferBid(requestBody),
                      "TransferBidControllerV2::createTransferBid transfer bid not allowed throws");
@@ -261,8 +267,9 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
 
         final TransferBidApi transferBidApi = getUserApi(TransferBidApi.class);
         final CreateTransferBidRequestBodyDTO requestBody = new CreateTransferBidRequestBodyDTO()
-                .playerId(2L)
-                .fee(5);
+                .transferBid(new TransferBidInputDTO()
+                                     .playerId(2L)
+                                     .fee(5));
 
         final TransferBidDTO result = transferBidApi.createTransferBid(requestBody).getTransferBid();
 
@@ -271,12 +278,12 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
                      "TransferBidControllerV2::createTransferBid playerRanking equals");
         assertEquals(playerTransferContext.getRanking(), result.getD11TeamRanking(),
                      "TransferBidControllerV2::createTransferBid d11TeamRanking equals");
-        assertEquals(requestBody.getFee(), result.getFee(),
+        assertEquals(requestBody.getTransferBid().getFee(), result.getFee(),
                      "TransferBidControllerV2::createTransferBid fee equals");
-        assertEquals(requestBody.getFee(), result.getActiveFee(),
+        assertEquals(requestBody.getTransferBid().getFee(), result.getActiveFee(),
                      "TransferBidControllerV2::createTransferBid activeFee equals");
         assertFalse(result.isSuccessful(), "TransferBidControllerV2::createTransferBid successful");
-        assertEquals(requestBody.getPlayerId(), result.getPlayer().getId(),
+        assertEquals(requestBody.getTransferBid().getPlayerId(), result.getPlayer().getId(),
                      "TransferBidControllerV2::createTransferBid playerId equals");
         assertEquals(playerTransferContext.getD11Team().getId(), result.getD11Team().getId(),
                      "TransferBidControllerV2::createTransferBid d11TeamId equals");

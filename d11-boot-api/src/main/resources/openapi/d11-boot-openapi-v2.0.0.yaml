@@ -3820,6 +3820,17 @@ components:
         d11Team:
           $ref: '#/components/schemas/D11TeamBase'
 
+    TransferBidInput:
+      type: object
+      required:
+        - playerId
+        - fee
+      properties:
+        playerId:
+          $ref: '#/components/schemas/Id'
+        fee:
+          $ref: '#/components/schemas/Fee'
+
     TransferBidResponseBody:
       type: object
       required:
@@ -3841,13 +3852,10 @@ components:
     CreateTransferBidRequestBody:
       type: object
       required:
-        - playerId
-        - fee
+        - transferBid
       properties:
-        playerId:
-          $ref: '#/components/schemas/Id'
-        fee:
-          $ref: '#/components/schemas/Fee'
+        transferBid:
+          $ref: '#/components/schemas/TransferBidInput'
 
     # Transfer ---------------------------------------------------------------------------------------------------------
 
