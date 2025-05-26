@@ -24,7 +24,7 @@ import org.hibernate.annotations.Immutable;
 @Immutable
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
-@SuppressWarnings("PMD.TooManyFields")
+@SuppressWarnings({ "PMD.TooManyFields", "checkstyle:CyclomaticComplexity" })
 public class PlayerTransferContext {
 
     /**
@@ -172,7 +172,9 @@ public class PlayerTransferContext {
     public boolean isTransferListable() {
         return this.transferDay != null
                && Status.PENDING.equals(this.transferDay.getStatus())
+               && this.season != null
                && this.transferCount < this.season.getD11TeamMaxTransfers()
+               && this.playerD11Team != null
                && this.playerD11Team.equals(this.d11Team)
                && this.transferListing == null;
     }
@@ -182,10 +184,12 @@ public class PlayerTransferContext {
      *
      * @return The transfer listing if it exists and can be deleted by the D11 team, null if not.
      */
+    @SuppressWarnings("checkstyle:BooleanExpressionComplexity")
     public TransferListing getDeletableTransferListing() {
         return this.transferDay != null
                && Status.PENDING.equals(this.transferDay.getStatus())
                && this.transferListing != null
+               && this.d11Team != null
                && this.d11Team.equals(this.transferListing.getD11Team())
                ? this.transferListing
                : null;
@@ -205,9 +209,12 @@ public class PlayerTransferContext {
         return this.transferDay != null
                && Status.ACTIVE.equals(this.transferDay.getStatus())
                && this.playerCount < MAX_PLAYER_COUNT
+               && this.position != null
                && this.positionCount < this.position.getMaxCount()
                && this.transferListing != null
+               && this.d11Team != null
                && !this.d11Team.equals(this.transferListing.getD11Team())
+               && this.season != null
                ? this.season.getD11TeamBudget() - reservedAmount - this.feeSum
                : 0;
     }
@@ -217,10 +224,12 @@ public class PlayerTransferContext {
      *
      * @return The transfer bid if it exists and can be deleted or updated by the D11 team, null if not.
      */
+    @SuppressWarnings("checkstyle:BooleanExpressionComplexity")
     public TransferBid getActiveTransferBid() {
         return this.transferDay != null
                && Status.ACTIVE.equals(this.transferDay.getStatus())
                && this.transferBid != null
+               && this.d11Team != null
                && this.d11Team.equals(this.transferBid.getD11Team())
                ? this.transferBid
                : null;
