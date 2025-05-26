@@ -1,0 +1,29 @@
+meta {
+  name: POST transfer-bids - 401 Invalid Auth
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-bids
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{expiredJwt}}
+}
+
+body:json {
+  {
+      "transferBid": {
+          "playerId": {{transferBiddablePlayerId}},
+          "fee": 5        
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 401
+}
