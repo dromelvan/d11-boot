@@ -2,6 +2,7 @@ package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferDayInput;
+import org.d11.boot.spring.model.TransferDayStatusInput;
 import org.d11.boot.spring.repository.TransferDayRepository;
 import org.d11.boot.util.Status;
 import org.d11.boot.util.exception.BadRequestException;
@@ -19,6 +20,11 @@ import java.util.Optional;
  */
 @Service
 public class TransferDayService extends RepositoryService<TransferDay, TransferDayRepository> {
+
+    /**
+     * Transfer day status property name.
+     */
+    private static final String TRANSFER_DAY_STATUS = "transferDay.status";
 
     /**
      * Creates a new transfer day service.
@@ -64,13 +70,41 @@ public class TransferDayService extends RepositoryService<TransferDay, TransferD
      */
     public TransferDay updateTransferDay(final Long transferDayId, final TransferDayInput transferDayInput) {
         if (Status.FULL_TIME.equals(transferDayInput.status())) {
-            throw new BadRequestException("transferDay.status", ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
+            throw new BadRequestException(TRANSFER_DAY_STATUS, ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
         }
 
         final TransferDay transferDay = getJpaRepository().findById(transferDayId)
                 .orElseThrow(() -> new NotFoundException(transferDayId, TransferDay.class));
 
         getServiceMapper().mapToTransferDay(transferDayInput, transferDay);
+
+        return getJpaRepository().save(transferDay);
+    }
+
+    /**
+     * Updates the status of a transfer day.
+     *
+     * @param transferDayId Transfer day id.
+     * @param transferDayStatusInput Transfer day status properties.
+     * @return The updated transfer day.
+     */
+    public TransferDay updateTransferDayStatus(final Long transferDayId,
+                                               final TransferDayStatusInput transferDayStatusInput) {
+        if (Status.FULL_TIME.equals(transferDayStatusInput.status())) {
+            throw new BadRequestException(TRANSFER_DAY_STATUS, ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
+        }
+
+        final TransferDay transferDay = getJpaRepository().findById(transferDayId)
+                .orElseThrow(() -> new NotFoundException(transferDayId, TransferDay.class));
+
+        if (transferDayStatusInput.process()
+            && !transferDay.getStatus().isValidTransition(transferDayStatusInput.status())) {
+            throw new ConflictException(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS);
+        }
+
+        transferDay.setStatus(transferDayStatusInput.status());
+
+        // TODO Add processing call here
 
         return getJpaRepository().save(transferDay);
     }
