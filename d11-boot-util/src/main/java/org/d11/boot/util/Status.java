@@ -8,6 +8,7 @@ import java.util.Arrays;
 /**
  * Entity status.
  */
+@Getter
 @AllArgsConstructor
 public enum Status {
 
@@ -35,13 +36,11 @@ public enum Status {
     /**
      * Status id.
      */
-    @Getter
     private final int id;
 
     /**
      * Status name.
      */
-    @Getter
     private final String name;
 
     @Override
@@ -61,6 +60,25 @@ public enum Status {
                 .filter(status -> status.getId() == id)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Status with id " + id + " does not exist."));
+    }
+
+    /**
+     * Checks if a transition from this status to another status is valid.
+     *
+     * @param status The proposed new status.
+     * @return True if a transition from this status to the proposed status is valid.
+     */
+    public boolean isValidTransition(final Status status) {
+        if (Status.PENDING.equals(this)) {
+            return Status.ACTIVE.equals(status) || Status.POSTPONED.equals(status);
+        } else if (Status.ACTIVE.equals(this)) {
+            return Status.FULL_TIME.equals(status) || Status.FINISHED.equals(status);
+        } else if (Status.FULL_TIME.equals(this)) {
+            return Status.FINISHED.equals(status);
+        } else if (Status.POSTPONED.equals(this)) {
+            return Status.PENDING.equals(status);
+        }
+        return false;
     }
 
 }
