@@ -1,0 +1,29 @@
+meta {
+  name: PATCH transfer-days/{transferDayId} - 401 Invalid Auth
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/v2/transfer-days/{{transferDayId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{expiredJwt}}
+}
+
+body:json {
+  {
+      "transferDay": {
+          "status": "Pending",
+          "process": false
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 401
+}

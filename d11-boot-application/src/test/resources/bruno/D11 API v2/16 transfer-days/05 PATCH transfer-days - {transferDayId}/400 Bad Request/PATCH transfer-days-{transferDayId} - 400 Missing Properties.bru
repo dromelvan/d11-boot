@@ -1,0 +1,34 @@
+meta {
+  name: PATCH transfer-days/{transferDayId} - 400 Missing Properties
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{baseUrl}}/v2/transfer-days/{{transferDayId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferDay": {
+        
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq PATCH
+  res.body.path: eq /v2/transfer-days/{{transferDayId}}
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq transferDay.status
+  res.body.validationErrors[0].error: eq is missing
+}
