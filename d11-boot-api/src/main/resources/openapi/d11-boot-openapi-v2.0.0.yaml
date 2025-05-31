@@ -1634,10 +1634,50 @@ paths:
     put:
       tags:
         - transferDay
-      summary: Updates the status of a transfer day.
+      summary: Updates a transfer day.
       security:
         - BearerAuth: [admin]
       operationId: updateTransferDay
+      parameters:
+        - name: transferDayId
+          in: path
+          required: true
+          description: Id of the transfer day that will be updated.
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update transfer day.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTransferDayRequestBody"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferDayResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+    patch:
+      tags:
+        - transferDay
+      summary: Updates the status of a transfer day.
+      security:
+        - BearerAuth: [admin]
+      operationId: updateTransferDayStatus
       parameters:
         - name: transferDayId
           in: path
@@ -1652,7 +1692,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateTransferDayRequestBody"
+              $ref: "#/components/schemas/UpdateTransferDayStatusRequestBody"
       responses:
         200:
           description: OK
@@ -3616,6 +3656,17 @@ components:
           type: string
           format: date-time
 
+    TransferDayStatusInput:
+      type: object
+      required:
+        - status
+        - process
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+        process:
+          type: boolean
+
     TransferDayResponseBody:
       type: object
       required:
@@ -3647,6 +3698,14 @@ components:
       properties:
         transferDay:
           $ref: '#/components/schemas/TransferDayInput'
+
+    UpdateTransferDayStatusRequestBody:
+      type: object
+      required:
+        - transferDay
+      properties:
+        transferDay:
+          $ref: '#/components/schemas/TransferDayStatusInput'
 
   # Transfer listing ---------------------------------------------------------------------------------------------------
 

@@ -7,6 +7,7 @@ import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.v2.model.PlayerTransferContextDTO;
 import org.d11.boot.api.v2.model.TransferDayInputDTO;
+import org.d11.boot.api.v2.model.TransferDayStatusInputDTO;
 import org.d11.boot.api.v2.model.TransferWindowInputDTO;
 import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputDTO;
 import org.d11.boot.spring.EasyRandomTests;
@@ -18,6 +19,7 @@ import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.PlayerTransferContext;
 import org.d11.boot.spring.model.Team;
 import org.d11.boot.spring.model.TransferDayInput;
+import org.d11.boot.spring.model.TransferDayStatusInput;
 import org.d11.boot.spring.model.TransferWindowInput;
 import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
 import org.d11.boot.util.Status;
@@ -329,7 +331,7 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
         assertEquals(source.getStatus().name(), destination.status().name(),
                      "RestControllerMapper::mapToTransferWindowInput destination status equals");
         assertEquals(source.getDatetime(), destination.datetime(),
-                     "RestControllerMapper::mapToTransferWindowInput destination datetime equals");
+                     "RestControllerMapper::mapToTransferWindowInput destination process equals");
         assertEquals(source.getMatchWeekId(), destination.matchWeekId(),
                      "RestControllerMapper::mapToTransferWindowInput destination matchWeekId equals");
     }
@@ -347,7 +349,21 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
         assertEquals(source.getStatus().name(), destination.status().name(),
                      "RestControllerMapper::mapToTransferDayInput destination status equals");
         assertEquals(source.getDatetime(), destination.datetime(),
-                     "RestControllerMapper::mapToTransferDayInput destination datetime equals");
+                     "RestControllerMapper::mapToTransferDayInput destination process equals");
+    }
+
+    /**
+     * Tests RestControllerMapper::mapToTransferDayStatusInput.
+     */
+    @Test
+    void testMapToTransferDayStatusInput() {
+        final TransferDayStatusInputDTO source = generate(TransferDayStatusInputDTO.class);
+        final TransferDayStatusInput destination = this.mapper.mapToTransferDayStatusInput(source);
+
+        assertEquals(source.getStatus().name(), destination.status().name(),
+                     "RestControllerMapper::mapToTransferDayStatusInput destination status equals");
+        assertEquals(source.isProcess(), destination.process(),
+                     "RestControllerMapper::mapToTransferDayStatusInput destination process equals");
     }
 
     /**

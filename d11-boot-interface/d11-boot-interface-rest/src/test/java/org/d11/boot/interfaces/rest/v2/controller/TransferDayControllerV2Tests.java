@@ -7,9 +7,11 @@ import org.d11.boot.api.v2.model.StatusDTO;
 import org.d11.boot.api.v2.model.TransferDayDTO;
 import org.d11.boot.api.v2.model.TransferDayInputDTO;
 import org.d11.boot.api.v2.model.TransferDayResponseBodyDTO;
+import org.d11.boot.api.v2.model.TransferDayStatusInputDTO;
 import org.d11.boot.api.v2.model.TransferDaysResponseBodyDTO;
 import org.d11.boot.api.v2.model.TransferWindowDTO;
 import org.d11.boot.api.v2.model.UpdateTransferDayRequestBodyDTO;
+import org.d11.boot.api.v2.model.UpdateTransferDayStatusRequestBodyDTO;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferWindow;
 import org.d11.boot.spring.repository.TransferDayRepository;
@@ -311,6 +313,118 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
                      "TransferDayController::updateTransferDay result status equals");
         assertEquals(transferDayInputDTO.getDatetime(), response.getTransferDay().getDatetime(),
                      "TransferDayController::updateTransferDay result datetime equals");
+    }
+
+    /**
+     * Tests TransferDayController::updateTransferDayStatus for invalid status.
+     */
+    @Test
+    void testUpdateTransferDayStatusStatusInvalid() {
+        final TransferDayApi transferDayApi = getAdministratorApi(TransferDayApi.class);
+
+        final UpdateTransferDayStatusRequestBodyDTO requestBodyDTO = new UpdateTransferDayStatusRequestBodyDTO()
+                .transferDay(new TransferDayStatusInputDTO()
+                                     .status(StatusDTO.FULL_TIME)
+                                     .process(false));
+
+        final FeignException.BadRequest e =
+                assertThrows(FeignException.BadRequest.class,
+                             () -> transferDayApi.updateTransferDayStatus(1L, requestBodyDTO),
+                             "TransferDayControllerV2::updateTransferDayStatus status invalid throws");
+
+        assertTrue(e.getMessage().contains("transferDay.status"),
+                   "TransferDayControllerV2::updateTransferDayStatus status invalid property equals");
+        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_INVALID_PARAMETER.getMessage()),
+                   "TransferDayControllerV2::updateTransferDayStatus status invalid message contains");
+    }
+
+    /**
+     * Tests TransferDayController::updateTransferDayStatus for unauthorized.
+     */
+    @Test
+    void testUpdateTransferDayStatusUnauthorized() {
+        final TransferDayApi transferDayApi = getApi(TransferDayApi.class);
+
+        final UpdateTransferDayStatusRequestBodyDTO requestBodyDTO = new UpdateTransferDayStatusRequestBodyDTO()
+                .transferDay(new TransferDayStatusInputDTO()
+                                     .status(StatusDTO.FINISHED));
+
+        assertThrows(FeignException.Unauthorized.class,
+                     () -> transferDayApi.updateTransferDayStatus(1L, requestBodyDTO),
+                     "TransferDayControllerV2::updateTransferDayStatus unauthorized throws");
+    }
+
+    /**
+     * Tests TransferDayController::updateTransferDayStatus for forbidden.
+     */
+    @Test
+    void testUpdateTransferDayStatusForbidden() {
+        final TransferDayApi transferDayApi = getUserApi(TransferDayApi.class);
+
+        final UpdateTransferDayStatusRequestBodyDTO requestBodyDTO = new UpdateTransferDayStatusRequestBodyDTO()
+                .transferDay(new TransferDayStatusInputDTO()
+                                     .status(StatusDTO.FINISHED));
+
+        assertThrows(FeignException.Forbidden.class,
+                     () -> transferDayApi.updateTransferDayStatus(1L, requestBodyDTO),
+                     "TransferDayControllerV2::updateTransferDayStatus forbidden throws");
+    }
+
+    /**
+     * Tests TransferDayController::updateTransferDayStatus for not found.
+     */
+    @Test
+    void testUpdateTransferDayStatusNotFound() {
+        final TransferDayApi transferDayApi = getAdministratorApi(TransferDayApi.class);
+
+        final UpdateTransferDayStatusRequestBodyDTO requestBodyDTO = new UpdateTransferDayStatusRequestBodyDTO()
+                .transferDay(new TransferDayStatusInputDTO()
+                                     .status(StatusDTO.FINISHED));
+
+        assertThrows(FeignException.NotFound.class,
+                     () -> transferDayApi.updateTransferDayStatus(-1L, requestBodyDTO),
+                     "TransferDayControllerV2::updateTransferDayStatus not found throws");
+    }
+
+    /**
+     * Tests TransferDayController::updateTransferDayStatus for invalid status transition.
+     */
+    @Test
+    void testUpdateTransferDayStatusInvalidStatusTransition() {
+        final TransferDayApi transferDayApi = getAdministratorApi(TransferDayApi.class);
+
+        final UpdateTransferDayStatusRequestBodyDTO requestBodyDTO = new UpdateTransferDayStatusRequestBodyDTO()
+                .transferDay(new TransferDayStatusInputDTO()
+                                     .status(StatusDTO.PENDING)
+                                     .process(true));
+
+        final FeignException.Conflict e =
+                assertThrows(FeignException.Conflict.class,
+                             () -> transferDayApi.updateTransferDayStatus(1L, requestBodyDTO),
+                             "TransferDayControllerV2::updateTransferDayStatus invalid status transition throws");
+        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS.getMessage()),
+                   "TransferDayControllerV2::updateTransferDayStatus invalid status transition message contains");
+    }
+
+    /**
+     * Tests TransferDayController::updateTransferDayStatus.
+     */
+    @Test
+    void testUpdateTransferDayStatus() {
+        final TransferDayApi transferDayApi = getAdministratorApi(TransferDayApi.class);
+
+        final TransferDayStatusInputDTO transferDayInputDTO = new TransferDayStatusInputDTO().status(StatusDTO.PENDING);
+
+        final UpdateTransferDayStatusRequestBodyDTO requestBodyDTO = new UpdateTransferDayStatusRequestBodyDTO()
+                .transferDay(transferDayInputDTO);
+
+        final TransferDayResponseBodyDTO response = transferDayApi.updateTransferDayStatus(1L, requestBodyDTO);
+
+        assertEquals(transferDayInputDTO.getStatus().name(), response.getTransferDay().getStatus().name(),
+                     "TransferDayController::updateTransferDayStatus result status equals");
+
+        transferDayInputDTO.setStatus(StatusDTO.FINISHED);
+        transferDayApi.updateTransferDayStatus(1L, requestBodyDTO);
     }
 
 }
