@@ -1,0 +1,33 @@
+meta {
+  name: Setup - Update Transfer Day Status
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/v2/transfer-days/{{currentTransferDayId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferDay": {
+            "status": "Active",
+            "process": false
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 200
+  res.body.transferDay: isDefined
+  res.body.transferWindow: isDefined
+  res.body.matchWeek: isDefined
+  res.body.transferDay.status: eq Active
+}

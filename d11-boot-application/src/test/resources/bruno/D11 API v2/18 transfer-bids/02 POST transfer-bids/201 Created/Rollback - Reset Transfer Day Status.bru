@@ -1,0 +1,33 @@
+meta {
+  name: Rollback - Reset Transfer Day Status
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{baseUrl}}/v2/transfer-days/{{currentTransferDayId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferDay": {
+            "status": "Pending",
+            "process": false
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 200
+  res.body.transferDay: isDefined
+  res.body.transferWindow: isDefined
+  res.body.matchWeek: isDefined
+  res.body.transferDay.status: eq Pending
+}

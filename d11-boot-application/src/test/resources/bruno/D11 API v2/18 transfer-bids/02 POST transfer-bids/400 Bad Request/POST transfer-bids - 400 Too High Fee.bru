@@ -1,7 +1,7 @@
 meta {
-  name: POST transfer-bids - 400 Invalid Request Body
+  name: POST transfer-bids - 400 Too High Fee
   type: http
-  seq: 2
+  seq: 7
 }
 
 post {
@@ -17,7 +17,8 @@ auth:bearer {
 body:json {
   {
       "transferBid": {
-            
+          "playerId": {{transferBiddablePlayerId}},
+          "fee": 1000      
       }
   }
 }
@@ -28,9 +29,7 @@ assert {
   res.body.method: eq POST
   res.body.path: eq /v2/transfer-bids
   res.body.validationErrors: isDefined
-  res.body.validationErrors.length: eq 2
-  res.body.validationErrors[0].property: eq transferBid.fee
-  res.body.validationErrors[0].error: eq is missing
-  res.body.validationErrors[1].property: eq transferBid.playerId
-  res.body.validationErrors[1].error: eq is missing
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq fee
+  res.body.validationErrors[0].error: eq is invalid
 }

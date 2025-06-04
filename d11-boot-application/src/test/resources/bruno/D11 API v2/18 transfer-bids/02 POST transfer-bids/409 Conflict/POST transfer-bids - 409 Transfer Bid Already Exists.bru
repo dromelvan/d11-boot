@@ -1,0 +1,33 @@
+meta {
+  name: POST transfer-bids - 409 Transfer Bid Already Exists
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-bids
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferBid": {
+          "playerId": {{transferBiddablePlayerId}},
+          "fee": 5        
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 409
+  res.body.error: eq Conflict
+  res.body.message: eq Transfer bid is not allowed
+  res.body.method: eq POST
+  res.body.path: eq /v2/transfer-bids
+}

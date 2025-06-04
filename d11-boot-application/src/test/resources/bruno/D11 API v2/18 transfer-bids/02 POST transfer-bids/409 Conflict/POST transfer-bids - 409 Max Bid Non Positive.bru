@@ -1,0 +1,32 @@
+meta {
+  name: POST transfer-bids - 409 Max Bid Non Positive
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-bids
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferBid": {
+          "playerId": {{nonTransferBiddablePlayerId}},
+          "fee": 5
+      }
+  }
+}
+
+assert {
+  res.status: eq 409
+  res.body.error: eq Conflict
+  res.body.message: eq Transfer bid is not allowed
+  res.body.method: eq POST
+  res.body.path: eq /v2/transfer-bids
+}

@@ -1,0 +1,32 @@
+meta {
+  name: POST transfer-bids - 400 Missing Request Body
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-bids
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+  
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq POST
+  res.body.path: eq /v2/transfer-bids
+  res.body.validationErrors: isDefined
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq transferBid
+  res.body.validationErrors[0].error: eq is missing
+}
