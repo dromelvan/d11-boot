@@ -1,0 +1,45 @@
+meta {
+  name: POST transfer-bids - 201
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/v2/transfer-bids
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferBid": {
+          "playerId": {{transferBiddablePlayerId}},
+          "fee": 5        
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 201
+  res.body.transferBid: isDefined
+  res.body.transferBid.id: gt 0
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("POST player response body", () => {
+    const body = res.getBody();
+    const transferBid = JSON.parse(bru.getEnvVar("newTransferBid"));
+  
+    transferBid.id = body.transferBid.id
+  
+    expectToEq.transferBid(body.transferBid, transferBid);
+  });
+  
+}

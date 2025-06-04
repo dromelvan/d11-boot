@@ -10,6 +10,7 @@ import org.d11.boot.spring.model.TransferBid;
 import org.d11.boot.spring.security.RoleUser;
 import org.d11.boot.spring.service.TransferBidService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,7 +46,11 @@ public class TransferBidControllerV2 extends RepositoryServiceController<Transfe
         final TransferBid transferBid = getRepositoryService()
                 .createTransferBid(createTransferBidRequestBodyDTO.getTransferBid().getPlayerId(),
                                    createTransferBidRequestBodyDTO.getTransferBid().getFee());
-        return ResponseEntity.ok(new TransferBidResponseBodyDTO().transferBid(map(transferBid, TransferBidDTO.class)));
+
+        final TransferBidResponseBodyDTO responseBody = new TransferBidResponseBodyDTO()
+                .transferBid(map(transferBid, TransferBidDTO.class));
+
+        return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
     @Override

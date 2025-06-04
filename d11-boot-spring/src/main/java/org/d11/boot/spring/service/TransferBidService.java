@@ -86,6 +86,7 @@ public class TransferBidService extends RepositoryService<TransferBid, TransferB
      * @param fee The fee.
      * @return The created transfer bid.
      */
+    @Transactional
     public TransferBid createTransferBid(final Long playerId, final Integer fee) {
         final PlayerTransferContext playerTransferContext = this.playerTransferContextService.getByPlayerId(playerId);
 
