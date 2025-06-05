@@ -1,0 +1,23 @@
+meta {
+  name: DELETE transfer-bids/{transferBidId} - 409 Invalid Transfer Day Status
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{baseUrl}}/v2/transfer-bids/{{nonDeletableTransferBidId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+assert {
+  res.status: eq 409
+  res.body.error: eq Conflict
+  res.body.message: eq Transfer day status is invalid
+  res.body.method: eq DELETE
+  res.body.path: eq /v2/transfer-bids/{{nonDeletableTransferBidId}}
+}

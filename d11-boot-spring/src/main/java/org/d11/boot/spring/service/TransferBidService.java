@@ -131,7 +131,7 @@ public class TransferBidService extends RepositoryService<TransferBid, TransferB
         }
 
         if (!Status.ACTIVE.equals(transferBid.getTransferDay().getStatus())) {
-            throw new ConflictException(ErrorCode.CONFLICT_TRANSFER_BID_NOT_ALLOWED);
+            throw new ConflictException(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS);
         }
 
         getJpaRepository().delete(transferBid);

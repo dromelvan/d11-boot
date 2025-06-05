@@ -1,0 +1,19 @@
+meta {
+  name: DELETE transfer-bids/{transferBidId} - 401 Invalid Auth
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/v2/transfer-bids/{{newTransferBidId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{expiredJwt}}
+}
+
+assert {
+  res.status: eq 401
+}
