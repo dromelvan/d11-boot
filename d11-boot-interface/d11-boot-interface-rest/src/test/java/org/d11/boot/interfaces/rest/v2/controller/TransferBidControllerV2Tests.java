@@ -4,12 +4,16 @@ import feign.FeignException;
 import org.d11.boot.api.v2.client.TransferBidApi;
 import org.d11.boot.api.v2.model.CreateTransferBidRequestBodyDTO;
 import org.d11.boot.api.v2.model.TransferBidDTO;
+import org.d11.boot.api.v2.model.TransferBidFeeInputDTO;
 import org.d11.boot.api.v2.model.TransferBidInputDTO;
 import org.d11.boot.api.v2.model.TransferBidsResponseBodyDTO;
+import org.d11.boot.api.v2.model.UpdateTransferBidFeeRequestBodyDTO;
 import org.d11.boot.spring.model.PlayerTransferContext;
+import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.TransferBid;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.repository.PlayerTransferContextRepository;
+import org.d11.boot.spring.repository.SeasonRepository;
 import org.d11.boot.spring.repository.TransferBidRepository;
 import org.d11.boot.spring.repository.TransferDayRepository;
 import org.d11.boot.util.Status;
@@ -49,6 +53,12 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Autowired
     private PlayerTransferContextRepository playerTransferContextRepository;
+
+    /**
+     * Season repository.
+     */
+    @Autowired
+    private SeasonRepository seasonRepository;
 
     /**
      * Tests TransferBidControllerV2::getTransferBidsByTransferDayId.
@@ -201,6 +211,188 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
 
         assertThrows(FeignException.Conflict.class, () -> transferBidApi.createTransferBid(requestBody),
                      "TransferBidControllerV2::createTransferBid transfer bid not allowed throws");
+    }
+
+    // updateTransferBidFee --------------------------------------------------------------------------------------------
+
+    /**
+     * Tests TransferBidControllerV2::updateTransferBidFee.
+     */
+    @Test
+    void testUpdateTransferBid() {
+        final TransferBidApi transferBidApi = getUserApi(TransferBidApi.class);
+
+        final TransferDay transferDay = this.transferDayRepository.findFirstByOrderByDatetimeDesc()
+                .orElseThrow(RuntimeException::new);
+        transferDay.setStatus(Status.ACTIVE);
+        this.transferDayRepository.save(transferDay);
+
+        final Long transferBidId = transferBidApi.createTransferBid(new CreateTransferBidRequestBodyDTO()
+                                                                            .transferBid(new TransferBidInputDTO()
+                                                                                                 .playerId(2L)
+                                                                                                 .fee(5)))
+                .getTransferBid().getId();
+
+        final UpdateTransferBidFeeRequestBodyDTO requestBody = new UpdateTransferBidFeeRequestBodyDTO()
+                .transferBid(new TransferBidFeeInputDTO().fee(10));
+
+        final TransferBidDTO result = transferBidApi.updateTransferBidFee(transferBidId, requestBody).getTransferBid();
+
+        assertNotNull(result, "TransferBidControllerV2::updateTransferBidFee response not null");
+        assertEquals(requestBody.getTransferBid().getFee(), result.getFee(),
+                     "TransferBidControllerV2::updateTransferBidFee fee equals");
+        assertEquals(requestBody.getTransferBid().getFee(), result.getActiveFee(),
+                     "TransferBidControllerV2::updateTransferBidFee activeFee equals");
+
+        transferDay.setStatus(Status.PENDING);
+        this.transferDayRepository.save(transferDay);
+        this.transferBidRepository.deleteById(transferBidId);
+    }
+
+    /**
+     * Tests TransferBidControllerV2::updateTransferBidFee for invalid fee.
+     */
+    @Test
+    void testUpdateTransferBidFeeInvalidFee() {
+        final TransferBidApi transferBidApi = getUserApi(TransferBidApi.class);
+
+        final TransferDay transferDay = this.transferDayRepository.findFirstByOrderByDatetimeDesc()
+                .orElseThrow(RuntimeException::new);
+        transferDay.setStatus(Status.ACTIVE);
+        this.transferDayRepository.save(transferDay);
+
+        final Long transferBidId = transferBidApi.createTransferBid(new CreateTransferBidRequestBodyDTO()
+                                                                               .transferBid(new TransferBidInputDTO()
+                                                                                                    .playerId(2L)
+                                                                                                    .fee(5)))
+                .getTransferBid().getId();
+
+        final UpdateTransferBidFeeRequestBodyDTO requestBody = new UpdateTransferBidFeeRequestBodyDTO()
+                .transferBid(new TransferBidFeeInputDTO());
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody),
+                     "TransferBidControllerV2::updateTransferBidFee null fee throws");
+
+        requestBody.getTransferBid().setFee(-5);
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody),
+                     "TransferBidControllerV2::updateTransferBidFee negative fee throws");
+
+        final PlayerTransferContext playerTransferContext =
+                this.playerTransferContextRepository.findByPlayerIdAndOwnerId(2L, 1L)
+                        .orElse(new PlayerTransferContext());
+
+        requestBody.getTransferBid().setFee(playerTransferContext.getMaxBid() + 5);
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody),
+                     "TransferBidControllerV2::updateTransferBidFee too high fee throws");
+
+        requestBody.getTransferBid().setFee(1);
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody),
+                     "TransferBidControllerV2::updateTransferBidFee invalid fee throws");
+
+        // @DirtiesContext won't work here either
+        transferDay.setStatus(Status.PENDING);
+        this.transferDayRepository.save(transferDay);
+        this.transferBidRepository.deleteById(transferBidId);
+    }
+
+    /**
+     * Tests TransferBidControllerV2::updateTransferBidFee for unauthorized.
+     */
+    @Test
+    void testUpdateTransferBidFeeUnauthorized() {
+        final TransferBidApi transferBidApi = getApi(TransferBidApi.class);
+        final UpdateTransferBidFeeRequestBodyDTO requestBody = new UpdateTransferBidFeeRequestBodyDTO()
+                .transferBid(new TransferBidFeeInputDTO()
+                                     .fee(10));
+
+        assertThrows(FeignException.Unauthorized.class, () -> transferBidApi.updateTransferBidFee(1L, requestBody),
+                     "TransferBidControllerV2::updateTransferBidFee unauthorized throws");
+    }
+
+    /**
+     * Tests TransferBidControllerV2::updateTransferBidFee for forbidden.
+     */
+    @Test
+    void testUpdateTransferBidFeeForbidden() {
+        final TransferBidApi transferBidApi = getUserApi(TransferBidApi.class);
+
+        final TransferDay transferDay = this.transferDayRepository.findFirstByOrderByDatetimeDesc()
+                .orElseThrow(RuntimeException::new);
+        transferDay.setStatus(Status.ACTIVE);
+        this.transferDayRepository.save(transferDay);
+
+        final UpdateTransferBidFeeRequestBodyDTO requestBody = new UpdateTransferBidFeeRequestBodyDTO()
+                .transferBid(new TransferBidFeeInputDTO()
+                                     .fee(10));
+
+        assertThrows(FeignException.Forbidden.class, () -> transferBidApi.updateTransferBidFee(16L, requestBody),
+                     "TransferBidControllerV2::updateTransferBidFee forbidden throws");
+
+        // See above
+        transferDay.setStatus(Status.PENDING);
+        this.transferDayRepository.save(transferDay);
+    }
+
+    /**
+     * Tests TransferBidControllerV2::updateTransferBidFee for not found.
+     */
+    @Test
+    void testUpdateTransferBidFeeNotFound() {
+        final TransferBidApi transferBidApi = getUserApi(TransferBidApi.class);
+        final UpdateTransferBidFeeRequestBodyDTO requestBody = new UpdateTransferBidFeeRequestBodyDTO()
+                .transferBid(new TransferBidFeeInputDTO()
+                                     .fee(10));
+
+        assertThrows(FeignException.NotFound.class, () -> transferBidApi.updateTransferBidFee(-1L, requestBody),
+                     "TransferBidControllerV2::updateTransferBidFee not found throws");
+    }
+
+    /**
+     * Tests TransferBidControllerV2::updateTransferBidFee for transfer bid not allowed.
+     */
+    @Test
+    void testUpdateTransferBidFeeTransferBidNotAllowed() {
+        final TransferBidApi transferBidApi = getUserApi(TransferBidApi.class);
+
+        final TransferDay transferDay = this.transferDayRepository.findFirstByOrderByDatetimeDesc()
+                .orElseThrow(RuntimeException::new);
+        transferDay.setStatus(Status.ACTIVE);
+        this.transferDayRepository.save(transferDay);
+
+        final Long transferBidId = transferBidApi.createTransferBid(new CreateTransferBidRequestBodyDTO()
+                                                                            .transferBid(new TransferBidInputDTO()
+                                                                                                 .playerId(2L)
+                                                                                                 .fee(5)))
+                .getTransferBid().getId();
+
+        final Season season = this.seasonRepository.findFirstByOrderByDateDesc().orElseThrow(RuntimeException::new);
+        final int d11TeamBudget = season.getD11TeamBudget();
+        season.setD11TeamBudget(1);
+        this.seasonRepository.save(season);
+
+        final UpdateTransferBidFeeRequestBodyDTO requestBody = new UpdateTransferBidFeeRequestBodyDTO()
+                .transferBid(new TransferBidFeeInputDTO()
+                                     .fee(10));
+
+        assertThrows(FeignException.Conflict.class,
+                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody),
+                     "TransferBidControllerV2::updateTransferBidFee transfer bid not allowed throws");
+
+        // Clean up, @DirtiesContext won't work here either
+        transferDay.setStatus(Status.PENDING);
+        this.transferDayRepository.save(transferDay);
+
+        season.setD11TeamBudget(d11TeamBudget);
+        this.seasonRepository.save(season);
+
+        this.transferBidRepository.deleteById(transferBidId);
     }
 
     // deleteTransferBid -----------------------------------------------------------------------------------------------

@@ -1888,6 +1888,48 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 
   /v2/transfer-bids/{transferBidId}:
+    patch:
+      tags:
+        - transferBid
+      summary: Updates a transfer bid fee.
+      security:
+        - BearerAuth: [user]
+      operationId: updateTransferBidFee
+      parameters:
+        - name: transferBidId
+          in: path
+          required: true
+          description: Id of the transfer bid that will be updated.
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Transfer bid fee.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTransferBidFeeRequestBody"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferBidResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/Conflict'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
     delete:
       tags:
         - transferBid
@@ -3890,6 +3932,14 @@ components:
         fee:
           $ref: '#/components/schemas/Fee'
 
+    TransferBidFeeInput:
+      type: object
+      required:
+        - fee
+      properties:
+        fee:
+          $ref: '#/components/schemas/Fee'
+
     TransferBidResponseBody:
       type: object
       required:
@@ -3915,6 +3965,14 @@ components:
       properties:
         transferBid:
           $ref: '#/components/schemas/TransferBidInput'
+
+    UpdateTransferBidFeeRequestBody:
+      type: object
+      required:
+        - transferBid
+      properties:
+        transferBid:
+          $ref: '#/components/schemas/TransferBidFeeInput'
 
     # Transfer ---------------------------------------------------------------------------------------------------------
 

@@ -148,6 +148,7 @@ public class TransferBidService extends RepositoryService<TransferBid, TransferB
         }
 
         transferBid.setFee(fee);
+        transferBid.setActiveFee(fee);
 
         return getJpaRepository().save(transferBid);
     }

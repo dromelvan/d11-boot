@@ -392,6 +392,8 @@ class TransferBidServiceTests extends BaseD11BootServiceTests {
         assertNotNull(updatedTransferBid, "TransferBidService::updateTransferBidFee updatedTransferBid not null");
         assertEquals(fee, updatedTransferBid.getFee(),
                      "TransferBidService::updateTransferBidFee updatedTransferBid fee equals");
+        assertEquals(fee, updatedTransferBid.getActiveFee(),
+                     "TransferBidService::updateTransferBidFee updatedTransferBid activeFee equals");
 
         verify(this.transferBidRepository, times(1)).findById(eq(transferBid.getId()));
         verify(this.playerTransferContextService, times(1)).getByPlayerId(eq(transferBid.getPlayer().getId()));

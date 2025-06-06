@@ -5,6 +5,7 @@ import org.d11.boot.api.v2.model.CreateTransferBidRequestBodyDTO;
 import org.d11.boot.api.v2.model.TransferBidDTO;
 import org.d11.boot.api.v2.model.TransferBidResponseBodyDTO;
 import org.d11.boot.api.v2.model.TransferBidsResponseBodyDTO;
+import org.d11.boot.api.v2.model.UpdateTransferBidFeeRequestBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.TransferBid;
 import org.d11.boot.spring.security.RoleUser;
@@ -51,6 +52,19 @@ public class TransferBidControllerV2 extends RepositoryServiceController<Transfe
                 .transferBid(map(transferBid, TransferBidDTO.class));
 
         return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
+    }
+
+    @Override
+    @RoleUser
+    public ResponseEntity<TransferBidResponseBodyDTO> updateTransferBidFee(
+            final Long transferBidId,
+            final UpdateTransferBidFeeRequestBodyDTO updateTransferBidFeeRequestBodyDTO) {
+
+        final TransferBid transferBid = getRepositoryService()
+                .updateTransferBidFee(transferBidId, updateTransferBidFeeRequestBodyDTO.getTransferBid().getFee());
+
+        return ResponseEntity.ok(new TransferBidResponseBodyDTO()
+                                         .transferBid(map(transferBid, TransferBidDTO.class)));
     }
 
     @Override
