@@ -413,4 +413,27 @@ class PlayerTransferContextTests extends EasyRandomTests {
                    "PlayerTransferContext::getActiveTransferBid empty activeTransferBid");
     }
 
+    /**
+     * Tests PlayerTransferContext::isValidFee.
+     */
+    @Test
+    void testIsValidFee() {
+        final PlayerTransferContext context = generate(PlayerTransferContext.class);
+        final Season season = context.getSeason();
+        season.setD11TeamBudget(600);
+
+        context.getTransferDay().setStatus(Status.ACTIVE);
+        context.getTransferListing().setD11Team(generate(D11Team.class));
+
+        ReflectionTestUtils.setField(context, POSITION_COUNT, context.getPosition().getMaxCount() - 1);
+        ReflectionTestUtils.setField(context, FEE_SUM, 300);
+        ReflectionTestUtils.setField(context, PLAYER_COUNT, 0);
+
+        assertFalse(context.isValidFee(null), "PlayerTransferContext::isValidFee null fee valid");
+        assertFalse(context.isValidFee(-5), "PlayerTransferContext::isValidFee negative fee valid");
+        assertEquals(250, context.getMaxBid(), "PlayerTransferContext::isValidFee max bid equals");
+        assertFalse(context.isValidFee(250 + 5), "PlayerTransferContext::isValidFee too high fee valid");
+        assertFalse(context.isValidFee(1), "PlayerTransferContext::isValidFee invalid fee valid");
+    }
+
 }

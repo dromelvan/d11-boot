@@ -235,4 +235,17 @@ public class PlayerTransferContext {
                : null;
     }
 
+    /**
+     * Checks if a fee is valid.
+     *
+     * @param fee The fee.
+     * @return True if the fee is valid in this context, false if not.
+     */
+    public boolean isValidFee(final Integer fee) {
+        return fee != null
+                && fee > 0
+                && fee <= getMaxBid()
+                && fee % Transfer.FEE_DIVISOR == 0;
+    }
+
 }
