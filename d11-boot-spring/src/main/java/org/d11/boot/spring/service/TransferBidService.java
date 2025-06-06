@@ -1,7 +1,6 @@
 package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.PlayerTransferContext;
-import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferBid;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.User;
@@ -27,6 +26,16 @@ import java.util.Optional;
  */
 @Service
 public class TransferBidService extends RepositoryService<TransferBid, TransferBidRepository> {
+
+    /**
+     * Fee property name.
+     */
+    private static final String FEE = "fee";
+
+    /**
+     * Transfer bid id property name.
+     */
+    private static final String TRANSFER_BID_ID = "transferBidId";
 
     /**
      * Repository for looking up current transfer day.
@@ -92,11 +101,8 @@ public class TransferBidService extends RepositoryService<TransferBid, TransferB
 
         if (playerTransferContext.getMaxBid() <= 0 || playerTransferContext.getActiveTransferBid() != null) {
             throw new ConflictException(ErrorCode.CONFLICT_TRANSFER_BID_NOT_ALLOWED);
-        } else if (fee == null
-                   || fee <= 0
-                   || fee > playerTransferContext.getMaxBid()
-                   || fee % Transfer.FEE_DIVISOR != 0) {
-            throw new BadRequestException("fee", ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
+        } else if (!playerTransferContext.isValidFee(fee)) {
+            throw new BadRequestException(FEE, ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
         }
 
         final TransferBid transferBid = new TransferBid();
@@ -111,6 +117,42 @@ public class TransferBidService extends RepositoryService<TransferBid, TransferB
     }
 
     /**
+     * Updates the fee of an existing transfer bid.
+     *
+     * @param transferBidId The transfer bid id.
+     * @param fee The new fee.
+     * @return The updated transfer bid.
+     */
+    @Transactional
+    public TransferBid updateTransferBidFee(final Long transferBidId, final Integer fee) {
+        if (transferBidId == null) {
+            throw new BadRequestException(TRANSFER_BID_ID, ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING);
+        }
+
+        final TransferBid transferBid = getJpaRepository().findById(transferBidId)
+                .orElseThrow(() -> new NotFoundException(transferBidId, TransferBid.class));
+
+        final PlayerTransferContext playerTransferContext = this.playerTransferContextService
+                .getByPlayerId(transferBid.getPlayer().getId());
+
+        if (!transferBid.equals(playerTransferContext.getActiveTransferBid())) {
+            // This could let an owner know if there's a bid from at least one other owner on the player. We could
+            // throw not found instead but for now let's put more importance on being consistent
+            throw new ForbiddenException();
+        }
+
+        if (playerTransferContext.getMaxBid() <= 0) {
+            throw new ConflictException(ErrorCode.CONFLICT_TRANSFER_BID_NOT_ALLOWED);
+        } else if (!playerTransferContext.isValidFee(fee)) {
+            throw new BadRequestException(FEE, ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
+        }
+
+        transferBid.setFee(fee);
+
+        return getJpaRepository().save(transferBid);
+    }
+
+    /**
      * Deletes a transfer bid.
      *
      * @param transferBidId The transfer bid id.
@@ -118,7 +160,7 @@ public class TransferBidService extends RepositoryService<TransferBid, TransferB
     @Transactional
     public void deleteTransferBid(final Long transferBidId) {
         if (transferBidId == null) {
-            throw new BadRequestException("transferBidId", ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING);
+            throw new BadRequestException(TRANSFER_BID_ID, ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING);
         }
 
         final TransferBid transferBid = getJpaRepository().findById(transferBidId)

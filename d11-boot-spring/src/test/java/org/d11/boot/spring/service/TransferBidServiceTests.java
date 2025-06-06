@@ -153,6 +153,8 @@ class TransferBidServiceTests extends BaseD11BootServiceTests {
                 .findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(eq(transferDay.getId()));
     }
 
+    // createTransferBid -----------------------------------------------------------------------------------------------
+
     /**
      * Tests TransferBidService::createTransferBid with no user logged in.
      */
@@ -268,6 +270,7 @@ class TransferBidServiceTests extends BaseD11BootServiceTests {
         when(playerTransferContext.getPlayer()).thenReturn(player);
         when(playerTransferContext.getTransferListing()).thenReturn(transferListing);
         when(playerTransferContext.getRanking()).thenReturn(ranking);
+        when(playerTransferContext.isValidFee(eq(fee))).thenReturn(true);
 
         when(this.playerTransferContextService.getByPlayerId(eq(player.getId()))).thenReturn(playerTransferContext);
 
@@ -290,6 +293,112 @@ class TransferBidServiceTests extends BaseD11BootServiceTests {
         verify(this.playerTransferContextService, times(1)).getByPlayerId(eq(player.getId()));
         verify(this.transferBidRepository, times(1)).save(any(TransferBid.class));
     }
+
+    // updateTransferBidFee --------------------------------------------------------------------------------------------
+
+    /**
+     * Tests TransferBidService::updateTransferBidFee with invalid transfer bid id.
+     */
+    @Test
+    void testUpdateTransferBidFeeInvalidTransferBidId() {
+        assertThrows(BadRequestException.class, () -> this.transferBidService.updateTransferBidFee(null, 0),
+                     "TransferBidService::updateTransferBidFee transferBidId invalid throws");
+    }
+
+    /**
+     * Tests TransferBidService::updateTransferBidFee invalid fee.
+     */
+    @Test
+    void testUpdateTransferBidFeeInvalidFee() {
+        final TransferBid transferBid = generate(TransferBid.class);
+        when(this.transferBidRepository.findById(any(Long.class))).thenReturn(Optional.of(transferBid));
+
+        final int maxBid = 50;
+        final PlayerTransferContext playerTransferContext = mock(PlayerTransferContext.class);
+        when(playerTransferContext.getMaxBid()).thenReturn(maxBid);
+        when(playerTransferContext.getActiveTransferBid()).thenReturn(transferBid);
+        when(playerTransferContext.isValidFee(any(Integer.class))).thenReturn(false);
+
+        when(this.playerTransferContextService.getByPlayerId(any(Long.class))).thenReturn(playerTransferContext);
+
+        assertThrows(BadRequestException.class, () -> this.transferBidService.updateTransferBidFee(1L, 5),
+                     "TransferBidService::updateTransferBidFee invalid fee throws");
+    }
+
+    /**
+     * Tests TransferBidService::updateTransferBidFee with transfer bid not found.
+     */
+    @Test
+    void testUpdateTransferBidFeeNotFound() {
+        when(this.transferBidRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> this.transferBidService.updateTransferBidFee(1L, 0),
+                     "TransferBidService::updateTransferBidFee transferBid not found throws");
+    }
+
+    /**
+     * Tests TransferBidService::updateTransferBidFee for forbidden.
+     */
+    @Test
+    void testUpdateTransferBidFeeForbidden() {
+        final TransferBid transferBid = generate(TransferBid.class);
+        when(this.transferBidRepository.findById(any(Long.class))).thenReturn(Optional.of(transferBid));
+
+        final PlayerTransferContext playerTransferContext = mock(PlayerTransferContext.class);
+        when(this.playerTransferContextService.getByPlayerId(any(Long.class))).thenReturn(playerTransferContext);
+
+        assertThrows(ForbiddenException.class, () -> this.transferBidService.updateTransferBidFee(1L, 0),
+                     "TransferBidService::updateTransferBidFee transferBid forbidden throws");
+    }
+
+    /**
+     * Tests TransferBidService::updateTransferBidFee for transfer bid not allowed.
+     */
+    @Test
+    void testUpdateTransferBidFeeTransferBidNotAllowed() {
+        final TransferBid transferBid = generate(TransferBid.class);
+        when(this.transferBidRepository.findById(any(Long.class))).thenReturn(Optional.of(transferBid));
+
+        final PlayerTransferContext playerTransferContext = mock(PlayerTransferContext.class);
+        when(playerTransferContext.getMaxBid()).thenReturn(0);
+        when(playerTransferContext.getActiveTransferBid()).thenReturn(transferBid);
+        when(this.playerTransferContextService.getByPlayerId(any(Long.class))).thenReturn(playerTransferContext);
+
+        assertThrows(ConflictException.class, () -> this.transferBidService.updateTransferBidFee(1L, 0),
+                     "TransferBidService::updateTransferBidFee transferBid not allowed throws");
+    }
+
+    /**
+     * Tests TransferBidService::updateTransferBidFee.
+     */
+    @Test
+    void testUpdateTransferBidFee() {
+        final TransferBid transferBid = generate(TransferBid.class);
+        when(this.transferBidRepository.findById(eq(transferBid.getId()))).thenReturn(Optional.of(transferBid));
+
+        final int fee = 5;
+        final int maxBid = 50;
+        final PlayerTransferContext playerTransferContext = mock(PlayerTransferContext.class);
+        when(playerTransferContext.getMaxBid()).thenReturn(maxBid);
+        when(playerTransferContext.getActiveTransferBid()).thenReturn(transferBid);
+        when(playerTransferContext.isValidFee(eq(fee))).thenReturn(true);
+        when(this.playerTransferContextService.getByPlayerId(eq(transferBid.getPlayer().getId())))
+                .thenReturn(playerTransferContext);
+
+        when(this.transferBidRepository.save(any(TransferBid.class))).then(AdditionalAnswers.returnsFirstArg());
+
+        final TransferBid updatedTransferBid = this.transferBidService.updateTransferBidFee(transferBid.getId(), fee);
+
+        assertNotNull(updatedTransferBid, "TransferBidService::updateTransferBidFee updatedTransferBid not null");
+        assertEquals(fee, updatedTransferBid.getFee(),
+                     "TransferBidService::updateTransferBidFee updatedTransferBid fee equals");
+
+        verify(this.transferBidRepository, times(1)).findById(eq(transferBid.getId()));
+        verify(this.playerTransferContextService, times(1)).getByPlayerId(eq(transferBid.getPlayer().getId()));
+        verify(this.transferBidRepository, times(1)).save(eq(transferBid));
+    }
+
+    // deleteTransferBid -----------------------------------------------------------------------------------------------
 
     /**
      * Tests TransferBidService::deleteTransferBid with invalid transfer bid id.
