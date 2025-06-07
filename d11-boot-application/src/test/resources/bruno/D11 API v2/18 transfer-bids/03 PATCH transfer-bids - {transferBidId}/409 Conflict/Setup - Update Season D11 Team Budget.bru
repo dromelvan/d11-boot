@@ -1,0 +1,35 @@
+meta {
+  name: Setup - Update Season D11 Team Budget
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{baseUrl}}/v2/seasons/{{currentSeasonId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "season": {
+      "name": "2023-2024",
+      "shortName": "23-24",
+      "d11TeamBudget": 5,
+      "d11TeamMaxTransfers": 3,
+      "status": "Active",
+      "date": "2023-01-01",
+      "legacy": false
+    }
+  }
+  
+}
+
+assert {
+  res.status: eq 200
+  res.body.season.d11TeamBudget: eq 5
+}

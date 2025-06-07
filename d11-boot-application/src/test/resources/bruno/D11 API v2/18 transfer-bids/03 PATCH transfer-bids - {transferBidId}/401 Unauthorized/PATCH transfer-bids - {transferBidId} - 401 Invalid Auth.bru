@@ -1,0 +1,28 @@
+meta {
+  name: PATCH transfer-bids - {transferBidId} - 401 Invalid Auth
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/v2/transfer-bids/{{newTransferBidId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{expiredJwt}}
+}
+
+body:json {
+  {
+      "transferBid": {
+          "fee": 5        
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 401
+}

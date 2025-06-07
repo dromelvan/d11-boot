@@ -1,0 +1,28 @@
+meta {
+  name: PATCH transfer-bids/{transferBidId} - 403
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/v2/transfer-bids/{{transferBidId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferBid": {
+          "fee": 5  
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 403
+}

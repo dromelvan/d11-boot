@@ -1,0 +1,24 @@
+meta {
+  name: PATCH transfer-bids - {transferBidId} - 401 No Auth
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{baseUrl}}/v2/transfer-bids/{{newTransferBidId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "transferBid": {
+          "fee": 5        
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 401
+}

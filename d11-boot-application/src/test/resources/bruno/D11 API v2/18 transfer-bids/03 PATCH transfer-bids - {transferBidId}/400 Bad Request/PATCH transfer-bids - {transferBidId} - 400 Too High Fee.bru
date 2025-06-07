@@ -1,0 +1,35 @@
+meta {
+  name: PATCH transfer-bids - {transferBidId} - 400 Too High Fee
+  type: http
+  seq: 8
+}
+
+patch {
+  url: {{baseUrl}}/v2/transfer-bids/{{newTransferBidId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferBid": {
+          "fee": 1000  
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq PATCH
+  res.body.path: eq /v2/transfer-bids/{{newTransferBidId}}
+  res.body.validationErrors: isDefined
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq fee
+  res.body.validationErrors[0].error: eq is invalid
+}

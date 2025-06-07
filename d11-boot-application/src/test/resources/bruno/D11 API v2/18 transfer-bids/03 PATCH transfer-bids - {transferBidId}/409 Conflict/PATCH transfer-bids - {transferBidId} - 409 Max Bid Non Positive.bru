@@ -1,0 +1,32 @@
+meta {
+  name: PATCH transfer-bids - {transferBidId} - 409 Max Bid Non Positive
+  type: http
+  seq: 8
+}
+
+patch {
+  url: {{baseUrl}}/v2/transfer-bids/{{newTransferBidId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferBid": {
+          "fee": 10        
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 409
+  res.body.error: eq Conflict
+  res.body.message: eq Transfer bid is not allowed
+  res.body.method: eq PATCH
+  res.body.path: eq /v2/transfer-bids/{{newTransferBidId}}
+}

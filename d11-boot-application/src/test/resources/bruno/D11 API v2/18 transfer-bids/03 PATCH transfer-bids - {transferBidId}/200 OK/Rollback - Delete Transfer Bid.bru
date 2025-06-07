@@ -1,0 +1,19 @@
+meta {
+  name: Rollback - Delete Transfer Bid
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/v2/transfer-bids/{{newTransferBidId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+assert {
+  res.status: eq 204
+}

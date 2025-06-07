@@ -1,11 +1,11 @@
 meta {
-  name: POST transfer-bids - 400 Missing Request Body
+  name: PATCH transfer-bids - {transferBidId} - 400 Missing Request Body
   type: http
-  seq: 4
+  seq: 5
 }
 
-post {
-  url: {{baseUrl}}/v2/transfer-bids
+patch {
+  url: {{baseUrl}}/v2/transfer-bids/{{newTransferBidId}}
   body: json
   auth: bearer
 }
@@ -23,8 +23,8 @@ body:json {
 assert {
   res.status: eq 400
   res.body.error: eq Bad Request
-  res.body.method: eq POST
-  res.body.path: eq /v2/transfer-bids
+  res.body.method: eq PATCH
+  res.body.path: eq /v2/transfer-bids/{{newTransferBidId}}
   res.body.validationErrors: isDefined
   res.body.validationErrors.length: eq 1
   res.body.validationErrors[0].property: eq transferBid

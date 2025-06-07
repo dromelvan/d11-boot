@@ -1,0 +1,31 @@
+meta {
+  name: PATCH transfer-bids - {transferBidId} - 200 User
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/v2/transfer-bids/{{newTransferBidId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transferBid": {
+          "fee": 10        
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 200
+  res.body.transferBid: isDefined
+  res.body.transferBid.fee: eq 10
+  res.body.transferBid.activeFee: eq 10
+}
