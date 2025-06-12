@@ -3,8 +3,10 @@ package org.d11.boot.spring.service;
 import org.d11.boot.spring.EasyRandomTests;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerInput;
+import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferDayInput;
+import org.d11.boot.spring.model.TransferInput;
 import org.d11.boot.spring.model.TransferWindow;
 import org.d11.boot.spring.model.TransferWindowInput;
 import org.d11.boot.util.Status;
@@ -137,6 +139,18 @@ class ServiceMapperTests extends EasyRandomTests {
                      "ServiceMapper::mapToTransferWindow destination status equals");
         assertEquals(source.datetime(), destination.getDatetime(),
                      "ServiceMapper::mapToTransferWindow destination datetime equals");
+    }
+
+    /**
+     * Tests ServiceMapper::mapToTransfer.
+     */
+    @Test
+    void testMapToTransfer() {
+        final TransferInput source = new TransferInput(5, 1, 2, 3);
+
+        final Transfer destination = this.mapper.mapToTransfer(source);
+
+        assertEquals(source.fee(), destination.getFee(), "ServiceMapper::mapToTransfer destination fee equals");
     }
 
 }

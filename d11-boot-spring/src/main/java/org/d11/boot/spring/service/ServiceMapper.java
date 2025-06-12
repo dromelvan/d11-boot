@@ -2,8 +2,10 @@ package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerInput;
+import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferDayInput;
+import org.d11.boot.spring.model.TransferInput;
 import org.d11.boot.spring.model.TransferWindow;
 import org.d11.boot.spring.model.TransferWindowInput;
 import org.mapstruct.Mapper;
@@ -17,7 +19,7 @@ import org.mapstruct.MappingTarget;
 public interface ServiceMapper {
 
     /**
-     * Maps a player input to an new player.
+     * Maps a player input to a new player.
      *
      * @param playerInput The player input.
      * @return Mapped player.
@@ -51,5 +53,13 @@ public interface ServiceMapper {
      */
     TransferWindow mapToTransferWindow(TransferWindowInput transferWindowInput,
                                        @MappingTarget TransferWindow transferWindow);
+
+    /**
+     * Maps a transfer input to a new transfer.
+     *
+     * @param transferInput The transfer input.
+     * @return Mapped transfer.
+     */
+    Transfer mapToTransfer(TransferInput transferInput);
 
 }
