@@ -3,7 +3,10 @@ package org.d11.boot.interfaces.rest.v2.controller;
 import feign.FeignException;
 import jakarta.transaction.Transactional;
 import org.d11.boot.api.v2.client.TransferApi;
+import org.d11.boot.api.v2.model.CreateTransferRequestBodyDTO;
 import org.d11.boot.api.v2.model.TransferDTO;
+import org.d11.boot.api.v2.model.TransferInputDTO;
+import org.d11.boot.api.v2.model.TransferResponseBodyDTO;
 import org.d11.boot.api.v2.model.TransfersResponseBodyDTO;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.Transfer;
@@ -11,6 +14,7 @@ import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.spring.repository.TransferDayRepository;
 import org.d11.boot.spring.repository.TransferRepository;
+import org.d11.boot.util.exception.ErrorCode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -122,5 +126,166 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
                     "TransferControllerV2::getTransfersByPlayerId equals");
         }
     }
+
+    // createTransfer --------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests TransferService::createTransfer.
+     */
+    @Test
+    void testCreateTransfer() {
+        final TransferApi transferApi = getAdministratorApi(TransferApi.class);
+
+        final CreateTransferRequestBodyDTO requestBodyDTO = new CreateTransferRequestBodyDTO()
+                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(1L).d11TeamId(1L));
+
+        final TransferResponseBodyDTO response = transferApi.createTransfer(requestBodyDTO);
+
+        assertNotNull(response, "TransferControllerV2::createTransfer response not null");
+        assertNotNull(response.getTransfer(), "TransferControllerV2::createTransfer transfer not null");
+
+        assertEquals(requestBodyDTO.getTransfer().getFee(), response.getTransfer().getFee(),
+                     "TransferControllerV2::createTransfer fee equals");
+        assertEquals(requestBodyDTO.getTransfer().getTransferDayId(), response.getTransfer().getTransferDay().getId(),
+                     "TransferControllerV2::createTransfer transferDay.id equals");
+        assertEquals(requestBodyDTO.getTransfer().getPlayerId(), response.getTransfer().getPlayer().getId(),
+                     "TransferControllerV2::createTransfer player.id equals");
+        assertEquals(requestBodyDTO.getTransfer().getD11TeamId(), response.getTransfer().getD11Team().getId(),
+                     "TransferControllerV2::createTransfer d11Team.id equals");
+    }
+
+    /**
+     * Tests TransferService::createTransfer with invalid fee.
+     */
+    @Test
+    void testCreateTransferInvalidFee() {
+        final TransferApi transferApi = getAdministratorApi(TransferApi.class);
+        final String feeProperty = "fee";
+
+        final CreateTransferRequestBodyDTO requestBodyDTO = new CreateTransferRequestBodyDTO()
+                .transfer(new TransferInputDTO().fee(-5).transferDayId(1L).playerId(1L).d11TeamId(1L));
+
+        final FeignException.BadRequest negativeFeeException =
+                assertThrows(FeignException.BadRequest.class,
+                             () -> transferApi.createTransfer(requestBodyDTO),
+                             "TransferControllerV2::createTransfer fee negative throws");
+
+        assertTrue(negativeFeeException.getMessage().contains(feeProperty),
+                   "TransferWindowControllerV2::updateTransferWindow fee negative property equals");
+        assertTrue(negativeFeeException.getMessage().contains(ErrorCode.BAD_REQUEST_INVALID_PARAMETER.getMessage()),
+                   "TransferWindowControllerV2::updateTransferWindow fee negative message contains");
+
+        requestBodyDTO.getTransfer().setFee(1);
+
+        final FeignException.BadRequest invalidFeeException =
+                assertThrows(FeignException.BadRequest.class,
+                             () -> transferApi.createTransfer(requestBodyDTO),
+                             "TransferControllerV2::createTransfer fee invalid throws");
+
+        assertTrue(invalidFeeException.getMessage().contains(feeProperty),
+                   "TransferWindowControllerV2::updateTransferWindow fee invalid property equals");
+        assertTrue(invalidFeeException.getMessage().contains(ErrorCode.BAD_REQUEST_INVALID_PARAMETER.getMessage()),
+                   "TransferWindowControllerV2::updateTransferWindow fee invalid message contains");
+    }
+
+    /**
+     * Tests TransferService::createTransfer for unauthorized.
+     */
+    @Test
+    void testCreateTransferUnauthorized() {
+        final TransferApi transferApi = getApi(TransferApi.class);
+
+        final CreateTransferRequestBodyDTO requestBodyDTO = new CreateTransferRequestBodyDTO()
+                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(1L).d11TeamId(1L));
+
+        assertThrows(FeignException.Unauthorized.class,
+                     () -> transferApi.createTransfer(requestBodyDTO),
+                     "TransferControllerV2::createTransfer unauthorized throws");
+    }
+
+    /**
+     * Tests TransferService::createTransfer for forbidden.
+     */
+    @Test
+    void testCreateTransferForbidden() {
+        final TransferApi transferApi = getUserApi(TransferApi.class);
+
+        final CreateTransferRequestBodyDTO requestBodyDTO = new CreateTransferRequestBodyDTO()
+                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(1L).d11TeamId(1L));
+
+        assertThrows(FeignException.Forbidden.class,
+                     () -> transferApi.createTransfer(requestBodyDTO),
+                     "TransferControllerV2::createTransfer forbidden throws");
+    }
+
+    /**
+     * Tests TransferService::createTransfer with transfer day not found.
+     */
+    @Test
+    void testCreateTransferTransferDayNotFound() {
+        final TransferApi transferApi = getAdministratorApi(TransferApi.class);
+
+        final CreateTransferRequestBodyDTO requestBodyDTO = new CreateTransferRequestBodyDTO()
+                .transfer(new TransferInputDTO().fee(5).transferDayId(-1L).playerId(1L).d11TeamId(1L));
+
+        final FeignException.NotFound e =
+                assertThrows(FeignException.NotFound.class,
+                             () -> transferApi.createTransfer(requestBodyDTO),
+                             "TransferControllerV2::createTransfer transferDay not found throws");
+
+        assertTrue(e.getMessage().contains("\"error\":\"Not Found\""),
+                   "TransferWindowControllerV2::createTransfer message contains error");
+        assertTrue(e.getMessage().contains("\"resource\":\"TransferDay\""),
+                   "TransferWindowControllerV2::createTransfer message contains resource");
+        assertTrue(e.getMessage().contains("\"id\":" + requestBodyDTO.getTransfer().getTransferDayId()),
+                   "TransferWindowControllerV2::createTransfer message contains player id");
+    }
+
+    /**
+     * Tests TransferService::createTransfer with player not found.
+     */
+    @Test
+    void testCreateTransferPlayerNotFound() {
+        final TransferApi transferApi = getAdministratorApi(TransferApi.class);
+
+        final CreateTransferRequestBodyDTO requestBodyDTO = new CreateTransferRequestBodyDTO()
+                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(-1L).d11TeamId(1L));
+
+        final FeignException.NotFound e =
+                assertThrows(FeignException.NotFound.class,
+                             () -> transferApi.createTransfer(requestBodyDTO),
+                             "TransferControllerV2::createTransfer player not found throws");
+
+        assertTrue(e.getMessage().contains("\"error\":\"Not Found\""),
+                   "TransferWindowControllerV2::createTransfer message contains error");
+        assertTrue(e.getMessage().contains("\"resource\":\"Player\""),
+                   "TransferWindowControllerV2::createTransfer message contains resource");
+        assertTrue(e.getMessage().contains("\"id\":" + requestBodyDTO.getTransfer().getPlayerId()),
+                   "TransferWindowControllerV2::createTransfer message contains player id");
+    }
+
+    /**
+     * Tests TransferService::createTransfer with D11 team not found.
+     */
+    @Test
+    void testCreateTransferD11TeamNotFound() {
+        final TransferApi transferApi = getAdministratorApi(TransferApi.class);
+
+        final CreateTransferRequestBodyDTO requestBodyDTO = new CreateTransferRequestBodyDTO()
+                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(1L).d11TeamId(-1L));
+
+        final FeignException.NotFound e =
+                assertThrows(FeignException.NotFound.class,
+                             () -> transferApi.createTransfer(requestBodyDTO),
+                             "TransferControllerV2::createTransfer D11 team not found throws");
+
+        assertTrue(e.getMessage().contains("\"error\":\"Not Found\""),
+                   "TransferWindowControllerV2::createTransfer message contains error");
+        assertTrue(e.getMessage().contains("\"resource\":\"D11Team\""),
+                   "TransferWindowControllerV2::createTransfer message contains resource");
+        assertTrue(e.getMessage().contains("\"id\":" + requestBodyDTO.getTransfer().getD11TeamId()),
+                   "TransferWindowControllerV2::createTransfer message contains D11 team id");
+    }
+
 
 }

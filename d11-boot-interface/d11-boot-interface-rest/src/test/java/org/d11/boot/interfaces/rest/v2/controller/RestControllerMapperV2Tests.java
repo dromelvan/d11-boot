@@ -6,8 +6,10 @@ import org.d11.boot.api.v2.model.PlayerInputDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.v2.model.PlayerTransferContextDTO;
+import org.d11.boot.api.v2.model.TransferDTO;
 import org.d11.boot.api.v2.model.TransferDayInputDTO;
 import org.d11.boot.api.v2.model.TransferDayStatusInputDTO;
+import org.d11.boot.api.v2.model.TransferInputDTO;
 import org.d11.boot.api.v2.model.TransferWindowInputDTO;
 import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputDTO;
 import org.d11.boot.spring.EasyRandomTests;
@@ -18,8 +20,10 @@ import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.PlayerTransferContext;
 import org.d11.boot.spring.model.Team;
+import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferDayInput;
 import org.d11.boot.spring.model.TransferDayStatusInput;
+import org.d11.boot.spring.model.TransferInput;
 import org.d11.boot.spring.model.TransferWindowInput;
 import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
 import org.d11.boot.util.Status;
@@ -364,6 +368,70 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
                      "RestControllerMapper::mapToTransferDayStatusInput destination status equals");
         assertEquals(source.isProcess(), destination.process(),
                      "RestControllerMapper::mapToTransferDayStatusInput destination process equals");
+    }
+
+    /**
+     * Tests RestControllerMapper::mapToTransferInput.
+     */
+    @Test
+    void testMapToTransferInput() {
+        final TransferInputDTO source = generate(TransferInputDTO.class);
+        final TransferInput destination = this.mapper.mapToTransferInput(source);
+
+        assertEquals(source.getFee(), destination.fee(),
+                     "RestControllerMapper::mapToTransferInput destination fee equals");
+        assertEquals(source.getTransferDayId(), destination.transferDayId(),
+                     "RestControllerMapper::mapToTransferInput destination transferDayId equals");
+        assertEquals(source.getPlayerId(), destination.playerId(),
+                     "RestControllerMapper::mapToTransferInput destination playerId equals");
+        assertEquals(source.getD11TeamId(), destination.d11TeamId(),
+                     "RestControllerMapper::mapToTransferInput destination d11TeamId equals");
+    }
+
+    /**
+     * Tests RestControllerMapper::mapToTransferDTO.
+     */
+    @Test
+    void testMapToTransferDTO() {
+        final Transfer source = generate(Transfer.class);
+        final TransferDTO destination = this.mapper.mapToTransferDTO(source);
+
+        assertEquals(source.getId(), destination.getId(), "RestControllerMapper::mapToTransferDTO id equals");
+        assertEquals(source.getFee(), destination.getFee(), "RestControllerMapper::mapToTransferDTO fee equals");
+
+        assertEquals(source.getTransferDay().getId(), destination.getTransferDay().getId(),
+                     "RestControllerMapper::mapToTransferDTO transferDay id equals");
+        assertEquals(source.getTransferDay().getTransferDayNumber(),
+                     destination.getTransferDay().getTransferDayNumber(),
+                     "RestControllerMapper::mapToTransferDTO transferDay transferDayNumber equals");
+        assertEquals(source.getTransferDay().getStatus().getName(), destination.getTransferDay().getStatus().getValue(),
+                     "RestControllerMapper::mapToTransferDTO transferDay status equals");
+        assertEquals(source.getTransferDay().getDatetime(), destination.getTransferDay().getDatetime(),
+                     "RestControllerMapper::mapToTransferDTO transferDay dateTime equals");
+
+        assertEquals(source.getPlayer().getId(), destination.getPlayer().getId(),
+                     "RestControllerMapper::mapToTransferDTO player id equals");
+        assertEquals(source.getPlayer().getFirstName(), destination.getPlayer().getFirstName(),
+                     "RestControllerMapper::mapToTransferDTO player firstName equals");
+        assertEquals(source.getPlayer().getLastName(), destination.getPlayer().getLastName(),
+                     "RestControllerMapper::mapToTransferDTO player lastName equals");
+        assertEquals(source.getPlayer().getName(), destination.getPlayer().getName(),
+                     "RestControllerMapper::mapToTransferDTO player name equals");
+        assertEquals(source.getPlayer().getShortName(), destination.getPlayer().getShortName(),
+                     "RestControllerMapper::mapToTransferDTO player shortName equals");
+        assertEquals(source.getPlayer().getParameterizedName(), destination.getPlayer().getParameterizedName(),
+                     "RestControllerMapper::mapToTransferDTO player parameterizedName equals");
+
+        assertEquals(source.getD11Team().getId(), destination.getD11Team().getId(),
+                     "RestControllerMapper::mapToTransferDTO d11Team id equals");
+        assertEquals(source.getD11Team().getName(), destination.getD11Team().getName(),
+                     "RestControllerMapper::mapToTransferDTO d11Team name equals");
+        assertEquals(source.getD11Team().getShortName(), destination.getD11Team().getShortName(),
+                     "RestControllerMapper::mapToTransferDTO d11Team shortName equals");
+        assertEquals(source.getD11Team().getCode(), destination.getD11Team().getCode(),
+                     "RestControllerMapper::mapToTransferDTO d11Team code equals");
+        assertEquals(source.getD11Team().isDummy(), destination.getD11Team().isDummy(),
+                     "RestControllerMapper::mapToTransferDTO d11Team dummy equals");
     }
 
     /**

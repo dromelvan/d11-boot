@@ -6,8 +6,10 @@ import org.d11.boot.api.v2.model.PlayerInputDTO;
 import org.d11.boot.api.v2.model.PlayerSearchResultDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.v2.model.PlayerTransferContextDTO;
+import org.d11.boot.api.v2.model.TransferDTO;
 import org.d11.boot.api.v2.model.TransferDayInputDTO;
 import org.d11.boot.api.v2.model.TransferDayStatusInputDTO;
+import org.d11.boot.api.v2.model.TransferInputDTO;
 import org.d11.boot.api.v2.model.TransferWindowInputDTO;
 import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputDTO;
 import org.d11.boot.spring.model.CreatePlayerSeasonStatInput;
@@ -16,8 +18,10 @@ import org.d11.boot.spring.model.PlayerInput;
 import org.d11.boot.spring.model.PlayerSearchResult;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.PlayerTransferContext;
+import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferDayInput;
 import org.d11.boot.spring.model.TransferDayStatusInput;
+import org.d11.boot.spring.model.TransferInput;
 import org.d11.boot.spring.model.TransferWindowInput;
 import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
 import org.mapstruct.Mapper;
@@ -28,7 +32,7 @@ import org.mapstruct.MappingConstants;
  * Mapper for V2 REST controllers.
  */
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-@SuppressWarnings("checkstyle.ClassFanOutComplexity")
+@SuppressWarnings({ "PMD.TooManyMethods", "checkstyle.ClassFanOutComplexity" })
 public interface RestControllerMapperV2 {
 
     /**
@@ -105,6 +109,22 @@ public interface RestControllerMapperV2 {
      * @return Mapped TransferDayStatusInput.
      */
     TransferDayStatusInput mapToTransferDayStatusInput(TransferDayStatusInputDTO transferDayStatusInputDTO);
+
+    /**
+     * Maps a TransferInputDTO to a TransferInput.
+     *
+     * @param transferInputDTO The TransferInputDTO.
+     * @return Mapped TransferInput.
+     */
+    TransferInput mapToTransferInput(TransferInputDTO transferInputDTO);
+
+    /**
+     * Maps a Transfer to a TransferDTO.
+     *
+     * @param transfer The Transfer.
+     * @return Mapped TransferDTO.
+     */
+    TransferDTO mapToTransferDTO(Transfer transfer);
 
     /**
      * Maps a PlayerTransferContext to PlayerTransferContextDTO.

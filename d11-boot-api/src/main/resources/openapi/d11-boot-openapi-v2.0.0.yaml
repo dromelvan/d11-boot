@@ -1990,6 +1990,36 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+    post:
+      tags:
+        - transfer
+      summary: Creates a transfer.
+      security:
+        - BearerAuth: [admin]
+      operationId: createTransfer
+      requestBody:
+        description: New transfer properties.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTransferRequestBody"
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferResponseBody"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
 # Components -----------------------------------------------------------------------------------------------------------
 
 components:
@@ -3997,6 +4027,31 @@ components:
         d11Team:
           $ref: '#/components/schemas/D11TeamBase'
 
+    TransferInput:
+      type: object
+      required:
+        - fee
+        - transferDayId
+        - playerId
+        - d11TeamId
+      properties:
+        fee:
+          $ref: '#/components/schemas/Fee'
+        transferDayId:
+          $ref: '#/components/schemas/Id'
+        playerId:
+          $ref: '#/components/schemas/Id'
+        d11TeamId:
+          $ref: '#/components/schemas/Id'
+
+    TransferResponseBody:
+      type: object
+      required:
+        - transfer
+      properties:
+        transfer:
+          $ref: '#/components/schemas/Transfer'
+
     TransfersResponseBody:
       type: object
       required:
@@ -4006,6 +4061,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Transfer'
+
+    CreateTransferRequestBody:
+      type: object
+      required:
+        - transfer
+      properties:
+        transfer:
+          $ref: '#/components/schemas/TransferInput'
 
   # Security schemes ---------------------------------------------------------------------------------------------------
 
