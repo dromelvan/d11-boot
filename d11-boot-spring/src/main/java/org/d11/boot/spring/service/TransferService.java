@@ -120,4 +120,16 @@ public class TransferService extends RepositoryService<Transfer, TransferReposit
         return getJpaRepository().save(transfer);
     }
 
+    /**
+     * Deletes a transfer. This is pretty lenient as it should only be used by admins.
+     *
+     * @param transferId Transfer id.
+     */
+    @Transactional
+    public void deleteTransfer(final Long transferId) {
+        final Transfer transfer = getById(transferId);
+
+        getJpaRepository().delete(transfer);
+    }
+
 }

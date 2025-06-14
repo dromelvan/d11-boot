@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -258,6 +259,39 @@ class TransferServiceTests extends BaseD11BootServiceTests {
         assertEquals(d11Team, transfer.getD11Team(), "TransferService::createTransfer d11Team equals");
 
         verify(this.transferRepository, times(1)).save(eq(transfer));
+    }
+
+    // deleteTransfer --------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests TransferService::deleteTransfer with not found.
+     */
+    @Test
+    void testDeleteTransferNotFound() {
+        final Transfer transfer = new Transfer();
+        transfer.setId(1L);
+
+        when(this.transferRepository.findById(eq(transfer.getId()))).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class,
+                     () -> this.transferService.deleteTransfer(transfer.getId()),
+                     "TransferService::deleteTransfer not found throws");
+    }
+
+    /**
+     * Tests TransferService::deleteTransfer.
+     */
+    @Test
+    void testDeleteTransfer() {
+        final Transfer transfer = new Transfer();
+        transfer.setId(1L);
+
+        when(this.transferRepository.findById(eq(transfer.getId()))).thenReturn(Optional.of(transfer));
+
+        assertDoesNotThrow(() -> this.transferService.deleteTransfer(transfer.getId()),
+                           "TransferService::deleteTransfer does not throw");
+
+        verify(this.transferRepository, times(1)).delete(eq(transfer));
     }
 
 }
