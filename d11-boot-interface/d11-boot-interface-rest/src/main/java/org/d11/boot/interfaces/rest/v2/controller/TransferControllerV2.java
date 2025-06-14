@@ -66,4 +66,11 @@ public class TransferControllerV2 extends RepositoryServiceController<TransferSe
         return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
+    @Override
+    @RoleAdmin
+    public ResponseEntity<Void> deleteTransfer(final Long transferId) {
+        getRepositoryService().deleteTransfer(transferId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

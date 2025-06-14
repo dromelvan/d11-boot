@@ -19,7 +19,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -171,9 +173,9 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
                              "TransferControllerV2::createTransfer fee negative throws");
 
         assertTrue(negativeFeeException.getMessage().contains(feeProperty),
-                   "TransferWindowControllerV2::updateTransferWindow fee negative property equals");
+                   "TransferControllerV2::updateTransfer fee negative property equals");
         assertTrue(negativeFeeException.getMessage().contains(ErrorCode.BAD_REQUEST_INVALID_PARAMETER.getMessage()),
-                   "TransferWindowControllerV2::updateTransferWindow fee negative message contains");
+                   "TransferControllerV2::updateTransfer fee negative message contains");
 
         requestBodyDTO.getTransfer().setFee(1);
 
@@ -183,9 +185,9 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
                              "TransferControllerV2::createTransfer fee invalid throws");
 
         assertTrue(invalidFeeException.getMessage().contains(feeProperty),
-                   "TransferWindowControllerV2::updateTransferWindow fee invalid property equals");
+                   "TransferControllerV2::updateTransfer fee invalid property equals");
         assertTrue(invalidFeeException.getMessage().contains(ErrorCode.BAD_REQUEST_INVALID_PARAMETER.getMessage()),
-                   "TransferWindowControllerV2::updateTransferWindow fee invalid message contains");
+                   "TransferControllerV2::updateTransfer fee invalid message contains");
     }
 
     /**
@@ -234,11 +236,11 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
                              "TransferControllerV2::createTransfer transferDay not found throws");
 
         assertTrue(e.getMessage().contains("\"error\":\"Not Found\""),
-                   "TransferWindowControllerV2::createTransfer message contains error");
+                   "TransferControllerV2::createTransfer message contains error");
         assertTrue(e.getMessage().contains("\"resource\":\"TransferDay\""),
-                   "TransferWindowControllerV2::createTransfer message contains resource");
+                   "TransferControllerV2::createTransfer message contains resource");
         assertTrue(e.getMessage().contains("\"id\":" + requestBodyDTO.getTransfer().getTransferDayId()),
-                   "TransferWindowControllerV2::createTransfer message contains player id");
+                   "TransferControllerV2::createTransfer message contains player id");
     }
 
     /**
@@ -257,11 +259,11 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
                              "TransferControllerV2::createTransfer player not found throws");
 
         assertTrue(e.getMessage().contains("\"error\":\"Not Found\""),
-                   "TransferWindowControllerV2::createTransfer message contains error");
+                   "TransferControllerV2::createTransfer message contains error");
         assertTrue(e.getMessage().contains("\"resource\":\"Player\""),
-                   "TransferWindowControllerV2::createTransfer message contains resource");
+                   "TransferControllerV2::createTransfer message contains resource");
         assertTrue(e.getMessage().contains("\"id\":" + requestBodyDTO.getTransfer().getPlayerId()),
-                   "TransferWindowControllerV2::createTransfer message contains player id");
+                   "TransferControllerV2::createTransfer message contains player id");
     }
 
     /**
@@ -280,12 +282,66 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
                              "TransferControllerV2::createTransfer D11 team not found throws");
 
         assertTrue(e.getMessage().contains("\"error\":\"Not Found\""),
-                   "TransferWindowControllerV2::createTransfer message contains error");
+                   "TransferControllerV2::createTransfer message contains error");
         assertTrue(e.getMessage().contains("\"resource\":\"D11Team\""),
-                   "TransferWindowControllerV2::createTransfer message contains resource");
+                   "TransferControllerV2::createTransfer message contains resource");
         assertTrue(e.getMessage().contains("\"id\":" + requestBodyDTO.getTransfer().getD11TeamId()),
-                   "TransferWindowControllerV2::createTransfer message contains D11 team id");
+                   "TransferControllerV2::createTransfer message contains D11 team id");
     }
 
+    // deleteTransfer --------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests TransferController::deleteTransfer for unauthorized.
+     */
+    @Test
+    void testDeleteTransferUnauthorized() {
+        assertThrows(FeignException.Unauthorized.class,
+                     () -> getApi(TransferApi.class).deleteTransfer(1L),
+                     "TransferController::deleteTransfer unauthorized throws");
+    }
+
+    /**
+     * Tests TransferController::deleteTransfer for forbidden.
+     */
+    @Test
+    void testDeleteTransferForbidden() {
+        assertThrows(FeignException.Forbidden.class,
+                     () -> getUserApi(TransferApi.class).deleteTransfer(1L),
+                     "TransferController::deleteTransfer user throws");
+    }
+
+    /**
+     * Tests TransferController::deleteTransfer for not found.
+     */
+    @Test
+    void testDeleteTransferNotFound() {
+        final TransferApi transferApi = getAdministratorApi(TransferApi.class);
+
+        assertThrows(FeignException.NotFound.class,
+                     () -> transferApi.deleteTransfer(0L),
+                     "TransferController::deleteTransfer not found throws");
+    }
+
+    /**
+     * Tests TransferController::deleteTransfer.
+     */
+    @Test
+    void testDeleteTransfer() {
+        final TransferApi transferApi = getAdministratorApi(TransferApi.class);
+
+        final CreateTransferRequestBodyDTO createRequest = new CreateTransferRequestBodyDTO()
+                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(1L).d11TeamId(1L));
+
+        final TransferDTO transferDTO = transferApi.createTransfer(createRequest).getTransfer();
+
+        assertDoesNotThrow(() -> transferApi.deleteTransfer(transferDTO.getId()),
+                           "TransferController::deleteTransfer does not throw");
+
+        final Optional<Transfer> optional = this.transferRepository.findById(transferDTO.getId());
+
+        assertFalse(optional.isPresent(),
+                    "TransferController::deleteTransfer transfer deleted present");
+    }
 
 }

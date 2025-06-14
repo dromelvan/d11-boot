@@ -2020,6 +2020,34 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/transfers/{transferId}:
+    delete:
+      tags:
+        - transfer
+      summary: Deletes a transfer.
+      security:
+        - BearerAuth: [admin]
+      operationId: deleteTransfer
+      parameters:
+        - name: transferId
+          in: path
+          required: true
+          description: Id of the transfer that will be deleted.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: No Content
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
 # Components -----------------------------------------------------------------------------------------------------------
 
 components:
