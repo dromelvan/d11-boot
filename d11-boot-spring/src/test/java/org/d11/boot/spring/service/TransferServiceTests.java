@@ -261,6 +261,162 @@ class TransferServiceTests extends BaseD11BootServiceTests {
         verify(this.transferRepository, times(1)).save(eq(transfer));
     }
 
+    // updateTransfer --------------------------------------------------------------------------------------------------
+
+    /**
+     * Tests TransferService::updateTransfer with invalid transfer id.
+     */
+    @Test
+    void testUpdateTransferInvalidTransferId() {
+        final BadRequestException e =
+                assertThrows(BadRequestException.class,
+                             () -> this.transferService.updateTransfer(null, new TransferInput(5, 0, 0, 0)),
+                             "TransferService::updateTransfer invalid transfer id throws");
+
+        assertEquals("transferId", e.getParameter(),
+                     "TransferService::updateTransfer invalid transfer id parameter equals");
+        assertEquals(ErrorCode.BAD_REQUEST_INVALID_PARAMETER.getMessage(), e.getMessage(),
+                     "TransferService::updateTransfer invalid transfer id message equals");
+    }
+
+    /**
+     * Tests TransferService::updateTransfer with invalid fee.
+     */
+    @Test
+    void testUpdateTransferInvalidFee() {
+        final String feeProperty = "fee";
+
+        final BadRequestException negativeFeeException =
+                assertThrows(BadRequestException.class,
+                             () -> this.transferService.updateTransfer(1L, new TransferInput(-5, 0, 0, 0)),
+                             "TransferService::updateTransfer negative fee throws");
+
+        assertEquals(feeProperty, negativeFeeException.getParameter(),
+                     "TransferService::updateTransfer negative fee parameter equals");
+        assertEquals(ErrorCode.BAD_REQUEST_INVALID_PARAMETER.getMessage(), negativeFeeException.getMessage(),
+                     "TransferService::updateTransfer negative fee message equals");
+
+        final BadRequestException invalidFeeException =
+                assertThrows(BadRequestException.class,
+                             () -> this.transferService.updateTransfer(1L, new TransferInput(1, 0, 0, 0)),
+                             "TransferService::updateTransfer invalid fee throws");
+
+        assertEquals(feeProperty, invalidFeeException.getParameter(),
+                     "TransferService::updateTransfer invalid fee parameter equals");
+        assertEquals(ErrorCode.BAD_REQUEST_INVALID_PARAMETER.getMessage(), invalidFeeException.getMessage(),
+                     "TransferService::updateTransfer invalid fee message equals");
+    }
+
+    /**
+     * Tests TransferService::updateTransfer with transfer not found.
+     */
+    @Test
+    void testUpdateTransferTransferNotFound() {
+        final TransferInput transferInput = new TransferInput(5, 1, 2, 3);
+        when(this.transferRepository.findById(eq(1L))).thenReturn(Optional.empty());
+
+        final NotFoundException e = assertThrows(NotFoundException.class,
+                                                 () -> this.transferService.updateTransfer(1L, transferInput),
+                                                 "TransferService::updateTransfer transfer not found throws");
+
+        assertEquals(Transfer.class.getSimpleName(), e.getResource(),
+                     "TransferService::updateTransfer transfer not found resource equals");
+        assertEquals(1L, e.getId(), "TransferService::updateTransfer transfer not found id equals");
+    }
+
+    /**
+     * Tests TransferService::updateTransfer with transfer day not found.
+     */
+    @Test
+    void testUpdateTransferTransferDayNotFound() {
+        final TransferInput transferInput = new TransferInput(5, 1, 2, 3);
+        when(this.transferRepository.findById(eq(1L))).thenReturn(Optional.of(generate(Transfer.class)));
+        when(this.transferDayRepository.findById(eq(transferInput.transferDayId()))).thenReturn(Optional.empty());
+
+        final NotFoundException e = assertThrows(NotFoundException.class,
+                                                 () -> this.transferService.updateTransfer(1L, transferInput),
+                                                 "TransferService::updateTransfer transfer day not found throws");
+
+        assertEquals(TransferDay.class.getSimpleName(), e.getResource(),
+                     "TransferService::updateTransfer transfer day not found resource equals");
+        assertEquals(transferInput.transferDayId(), e.getId(),
+                     "TransferService::updateTransfer transfer day not found id equals");
+    }
+
+    /**
+     * Tests TransferService::updateTransfer with player not found.
+     */
+    @Test
+    void testUpdateTransferPlayerNotFound() {
+        final TransferInput transferInput = new TransferInput(5, 1, 2, 3);
+        when(this.transferRepository.findById(eq(1L))).thenReturn(Optional.of(generate(Transfer.class)));
+        when(this.transferDayRepository.findById(eq(transferInput.transferDayId())))
+                .thenReturn(Optional.of(generate(TransferDay.class)));
+        when(this.playerRepository.findById(eq(transferInput.playerId()))).thenReturn(Optional.empty());
+
+        final NotFoundException e = assertThrows(NotFoundException.class,
+                                                 () -> this.transferService.updateTransfer(1L, transferInput),
+                                                 "TransferService::updateTransfer player not found throws");
+
+        assertEquals(Player.class.getSimpleName(), e.getResource(),
+                     "TransferService::updateTransfer player not found resource equals");
+        assertEquals(transferInput.playerId(), e.getId(),
+                     "TransferService::updateTransfer player not found id equals");
+    }
+
+    /**
+     * Tests TransferService::updateTransfer with D11 team not found.
+     */
+    @Test
+    void testUpdateTransferD11TeamNotFound() {
+        final TransferInput transferInput = new TransferInput(5, 1, 2, 3);
+        when(this.transferRepository.findById(eq(1L))).thenReturn(Optional.of(generate(Transfer.class)));
+        when(this.transferDayRepository.findById(eq(transferInput.transferDayId())))
+                .thenReturn(Optional.of(generate(TransferDay.class)));
+        when(this.playerRepository.findById(eq(transferInput.playerId())))
+                .thenReturn(Optional.of(generate(Player.class)));
+        when(this.d11TeamRepository.findById(eq(transferInput.d11TeamId()))).thenReturn(Optional.empty());
+
+        final NotFoundException e = assertThrows(NotFoundException.class,
+                                                 () -> this.transferService.updateTransfer(1L, transferInput),
+                                                 "TransferService::updateTransfer D11 team not found throws");
+
+        assertEquals(D11Team.class.getSimpleName(), e.getResource(),
+                     "TransferService::updateTransfer D11 team not found resource equals");
+        assertEquals(transferInput.d11TeamId(), e.getId(),
+                     "TransferService::updateTransfer D11 team not found id equals");
+    }
+
+    /**
+     * Tests TransferService::updateTransfer.
+     */
+    @Test
+    void testUpdateTransfer() {
+        final TransferInput transferInput = new TransferInput(5, 1, 2, 3);
+        final Transfer transfer = generate(Transfer.class);
+        final TransferDay transferDay = generate(TransferDay.class);
+        final Player player = generate(Player.class);
+        final D11Team d11Team = generate(D11Team.class);
+
+        when(this.transferRepository.findById(eq(1L))).thenReturn(Optional.of(transfer));
+        when(this.transferDayRepository.findById(eq(transferInput.transferDayId())))
+                .thenReturn(Optional.of(transferDay));
+        when(this.playerRepository.findById(eq(transferInput.playerId()))).thenReturn(Optional.of(player));
+        when(this.d11TeamRepository.findById(eq(transferInput.d11TeamId()))).thenReturn(Optional.of(d11Team));
+        when(this.transferRepository.save(any(Transfer.class))).then(AdditionalAnswers.returnsFirstArg());
+
+        final Transfer updatedTransfer = this.transferService.updateTransfer(1L, transferInput);
+
+        assertNotNull(updatedTransfer, "TransferService::updateTransfer not null");
+        assertEquals(transferInput.fee(), updatedTransfer.getFee(), "TransferService::updateTransfer fee equals");
+        assertEquals(transferDay, updatedTransfer.getTransferDay(),
+                     "TransferService::updateTransfer transferDay equals");
+        assertEquals(player, updatedTransfer.getPlayer(), "TransferService::updateTransfer player equals");
+        assertEquals(d11Team, updatedTransfer.getD11Team(), "TransferService::updateTransfer d11Team equals");
+
+        verify(this.transferRepository, times(1)).save(eq(transfer));
+    }
+
     // deleteTransfer --------------------------------------------------------------------------------------------------
 
     /**

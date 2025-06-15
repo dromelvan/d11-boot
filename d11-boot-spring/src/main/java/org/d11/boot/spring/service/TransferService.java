@@ -25,6 +25,11 @@ import java.util.List;
 public class TransferService extends RepositoryService<Transfer, TransferRepository> {
 
     /**
+     * Fee property name.
+     */
+    private static final String FEE = "fee";
+
+    /**
      * Message for invalid id parameter errors.
      */
     private static final String INVALID_ID_MESSAGE = "must be positive";
@@ -100,7 +105,7 @@ public class TransferService extends RepositoryService<Transfer, TransferReposit
     @Transactional
     public Transfer createTransfer(final TransferInput transferInput) {
         if (transferInput.fee() <= 0 || transferInput.fee() % Transfer.FEE_DIVISOR != 0) {
-            throw new BadRequestException("fee", ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
+            throw new BadRequestException(FEE, ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
         }
 
         final TransferDay transferDay = this.transferDayRepository.findById(transferInput.transferDayId())
@@ -113,6 +118,42 @@ public class TransferService extends RepositoryService<Transfer, TransferReposit
                 .orElseThrow(() -> new NotFoundException(transferInput.d11TeamId(), D11Team.class));
 
         final Transfer transfer = getServiceMapper().mapToTransfer(transferInput);
+        transfer.setTransferDay(transferDay);
+        transfer.setPlayer(player);
+        transfer.setD11Team(d11Team);
+
+        return getJpaRepository().save(transfer);
+    }
+
+    /**
+     * Updates an existing transfer. This is pretty lenient as it should only be used by admins.
+     *
+     * @param transferId Transfer id.
+     * @param transferInput Transfer properties.
+     * @return Updated transfer.
+     */
+    @Transactional
+    public Transfer updateTransfer(final Long transferId, final TransferInput transferInput) {
+        if (transferId == null) {
+            throw new BadRequestException("transferId", ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
+        }
+
+        if (transferInput.fee() <= 0 || transferInput.fee() % Transfer.FEE_DIVISOR != 0) {
+            throw new BadRequestException(FEE, ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
+        }
+
+        final Transfer transfer = getById(transferId);
+
+        final TransferDay transferDay = this.transferDayRepository.findById(transferInput.transferDayId())
+                .orElseThrow(() -> new NotFoundException(transferInput.transferDayId(), TransferDay.class));
+
+        final Player player = this.playerRepository.findById(transferInput.playerId())
+                .orElseThrow(() -> new NotFoundException(transferInput.playerId(), Player.class));
+
+        final D11Team d11Team = this.d11TeamRepository.findById(transferInput.d11TeamId())
+                .orElseThrow(() -> new NotFoundException(transferInput.d11TeamId(), D11Team.class));
+
+        transfer.setFee(transferInput.fee());
         transfer.setTransferDay(transferDay);
         transfer.setPlayer(player);
         transfer.setD11Team(d11Team);
