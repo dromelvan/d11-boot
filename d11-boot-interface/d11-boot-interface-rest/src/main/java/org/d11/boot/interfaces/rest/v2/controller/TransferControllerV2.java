@@ -5,6 +5,7 @@ import org.d11.boot.api.v2.model.CreateTransferRequestBodyDTO;
 import org.d11.boot.api.v2.model.TransferDTO;
 import org.d11.boot.api.v2.model.TransferResponseBodyDTO;
 import org.d11.boot.api.v2.model.TransfersResponseBodyDTO;
+import org.d11.boot.api.v2.model.UpdateTransferRequestBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferInput;
@@ -64,6 +65,21 @@ public class TransferControllerV2 extends RepositoryServiceController<TransferSe
                 .transfer(this.mapper.mapToTransferDTO(transfer));
 
         return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
+    }
+
+    @Override
+    @RoleAdmin
+    public ResponseEntity<TransferResponseBodyDTO> updateTransfer(
+            final Long transferId,
+            final UpdateTransferRequestBodyDTO updateTransferRequestBodyDTO) {
+
+        final TransferInput transferInput = this.mapper.mapToTransferInput(updateTransferRequestBodyDTO.getTransfer());
+        final Transfer transfer = getRepositoryService().updateTransfer(transferId, transferInput);
+
+        final TransferResponseBodyDTO responseBody = new TransferResponseBodyDTO()
+                .transfer(this.mapper.mapToTransferDTO(transfer));
+
+        return ResponseEntity.ok(responseBody);
     }
 
     @Override
