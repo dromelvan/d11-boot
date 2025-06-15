@@ -1,0 +1,19 @@
+meta {
+  name: DELETE transfers - {transferId}
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/v2/transfers/{{newTransferId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+assert {
+  res.status: eq 204
+}

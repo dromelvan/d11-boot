@@ -1,0 +1,24 @@
+meta {
+  name: DELETE transfers - {transferId} 404
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/v2/transfers/-1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+assert {
+  res.status: eq 404
+  res.body.error: eq Not Found
+  res.body.resource: eq Transfer
+  res.body.id: eq -1
+  res.body.method: eq DELETE
+  res.body.path: eq /v2/transfers/-1
+}

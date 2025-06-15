@@ -1,0 +1,53 @@
+meta {
+  name: POST transfers - 201
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/v2/transfers
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transfer": {
+          "fee": 5,
+          "transferDayId": {{currentTransferDayId}},
+          "playerId": {{playerId}},
+          "d11TeamId": {{d11TeamId}}
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 201
+  res.body.transfer: isDefined
+  res.body.transfer.id: gt 0
+}
+
+script:post-response {
+  const body = res.getBody();
+  bru.setEnvVar("newTransferId", body.transfer.id);
+  
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("POST transfer response body", () => {
+    const body = res.getBody();
+    const transfer = JSON.parse(bru.getEnvVar("newTransfer"));
+  
+    transfer.id = body.transfer.id
+  
+    expectToEq.transfer(body.transfer, transfer);
+  });
+  
+}

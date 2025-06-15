@@ -1,0 +1,38 @@
+meta {
+  name: POST transfers - 400 Negative Fee
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/v2/transfers
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transfer": {
+          "fee": -5,
+          "transferDayId": {{currentTransferDayId}},
+          "playerId": {{playerId}},
+          "d11TeamId": {{d11TeamId}}
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq POST
+  res.body.path: eq /v2/transfers
+  res.body.validationErrors: isDefined
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq fee
+  res.body.validationErrors[0].error: eq is invalid
+}

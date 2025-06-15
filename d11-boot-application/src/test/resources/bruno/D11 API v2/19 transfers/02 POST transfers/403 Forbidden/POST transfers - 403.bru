@@ -1,0 +1,31 @@
+meta {
+  name: POST transfers - 403
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/v2/transfers
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transfer": {
+          "fee": 5,
+          "transferDayId": {{currentTransferDayId}},
+          "playerId": {{playerId}},
+          "d11TeamId": {{d11TeamId}}
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 403
+}

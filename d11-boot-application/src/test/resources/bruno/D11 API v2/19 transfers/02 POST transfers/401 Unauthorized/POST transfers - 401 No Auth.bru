@@ -1,0 +1,27 @@
+meta {
+  name: POST transfers - 401 No Auth
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/v2/transfers
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "transfer": {
+          "fee": 5,
+          "transferDayId": {{currentTransferDayId}},
+          "playerId": {{playerId}},
+          "d11TeamId": {{d11TeamId}}
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 401
+}

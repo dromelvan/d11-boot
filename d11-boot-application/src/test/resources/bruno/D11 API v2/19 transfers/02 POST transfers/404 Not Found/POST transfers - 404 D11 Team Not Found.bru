@@ -1,0 +1,36 @@
+meta {
+  name: POST transfers - 404 D11 Team Not Found
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/v2/transfers
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transfer": {
+          "fee": 5,
+          "transferDayId": {{transferDayId}},
+          "playerId": {{playerId}},
+          "d11TeamId": -1
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 404
+  res.body.error: eq Not Found
+  res.body.resource: eq D11Team
+  res.body.id: eq -1
+  res.body.method: eq POST
+  res.body.path: eq /v2/transfers
+}
