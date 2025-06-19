@@ -1,0 +1,41 @@
+meta {
+  name: PUT  transfers - {transferId} - 400 Invalid Request Body
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/v2/transfers/{{transferId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transfer": {
+        
+      }  
+  }
+  
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq PUT
+  res.body.path: eq /v2/transfers/{{transferId}}
+  res.body.validationErrors: isDefined
+  res.body.validationErrors.length: eq 4
+  res.body.validationErrors[0].property: eq transfer.d11TeamId
+  res.body.validationErrors[0].error: eq is missing
+  res.body.validationErrors[1].property: eq transfer.fee
+  res.body.validationErrors[1].error: eq is missing
+  res.body.validationErrors[2].property: eq transfer.playerId
+  res.body.validationErrors[2].error: eq is missing
+  res.body.validationErrors[3].property: eq transfer.transferDayId
+  res.body.validationErrors[3].error: eq is missing
+}

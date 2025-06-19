@@ -1,0 +1,27 @@
+meta {
+  name: PUT transfers - {transferId} - 401 No Auth
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/v2/transfers/{{transferId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "transfer": {
+          "fee": 5,
+          "transferDayId": {{currentTransferDayId}},
+          "playerId": {{playerId}},
+          "d11TeamId": {{d11TeamId}}
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 401
+}

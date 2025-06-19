@@ -1,0 +1,45 @@
+meta {
+  name: PUT transfers - {transferId}
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/v2/transfers/{{newTransferId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transfer": {
+          "fee": 5,
+          "transferDayId": {{updateTransferTransferDayId}},
+          "playerId": {{updateTransferPlayerId}},
+          "d11TeamId": {{updateTransferD11TeamId}}
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 200
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("POST transfer response body", () => {
+    const body = res.getBody();
+    const transfer = JSON.parse(bru.getEnvVar("updatedTransfer"));
+  
+    transfer.id = body.transfer.id
+  
+    expectToEq.transfer(body.transfer, transfer);
+  });
+  
+}

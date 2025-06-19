@@ -1,0 +1,36 @@
+meta {
+  name: PUT transfers - {transferId} - 404 Player Not Found copy
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/v2/transfers/{{transferId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transfer": {
+          "fee": 5,
+          "transferDayId": {{transferDayId}},
+          "playerId": -1,
+          "d11TeamId": {{d11TeamId}}
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 404
+  res.body.error: eq Not Found
+  res.body.resource: eq Player
+  res.body.id: eq -1
+  res.body.method: eq PUT
+  res.body.path: eq /v2/transfers/{{transferId}}
+}

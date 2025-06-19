@@ -1,0 +1,19 @@
+meta {
+  name: Rollback - Delete Transfer
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/v2/transfers/{{newTransferId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+assert {
+  res.status: eq 204
+}
