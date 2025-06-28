@@ -10,12 +10,11 @@ import org.d11.boot.download.whoscored.WhoscoredMatchDownloader;
 import org.d11.boot.jms.JmsQueue;
 import org.d11.boot.parser.match.MatchParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Builds a route to download WhoScored match pages.
  */
-@Component
+//@Component -- Disable this since we are switching to Fotmob with the new Python updater
 public class DownloadWhoscoredMatchRouteBuilder extends AbstractJmsRouteBuilder {
 
     /**
