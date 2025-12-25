@@ -87,7 +87,7 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
     private SecurityService securityService;
 
     /**
-     * Tests SecurityService::authenticate for a non persistent authentication.
+     * Tests SecurityService::authenticate for a non-persistent authentication.
      */
     @Test
     void testAuthenticateNonPersistent() {
@@ -104,14 +104,18 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
             user.setConfirmRegistrationToken(null);
 
             assertThrows(BadCredentialsException.class,
-                         () -> this.securityService.authenticate(user.getEmail(), user.getEncryptedPassword(), false),
+                         () -> this.securityService.authenticate(user.getEmail(),
+                                                                 user.getEncryptedPassword(),
+                                                                 false,
+                                                                 null),
                          "SecurityService::authenticate non persistent bad credentials");
 
             when(this.userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
             final Authentication result = this.securityService.authenticate(user.getEmail(),
                                                                             user.getEncryptedPassword(),
-                                                                            false);
+                                                                            false,
+                                                                            null);
 
             assertNotNull(result, "SecurityService::authenticate non persistent not null");
 
@@ -129,6 +133,7 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
                          "SecurityService::authenticate non persistent refresh token expires at");
         });
 
+        verify(this.refreshTokenRepository, times(0)).delete(any(RefreshToken.class));
     }
 
     /**
@@ -149,14 +154,18 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
             user.setConfirmRegistrationToken(null);
 
             assertThrows(BadCredentialsException.class,
-                         () -> this.securityService.authenticate(user.getEmail(), user.getEncryptedPassword(), true),
+                         () -> this.securityService.authenticate(user.getEmail(),
+                                                                 user.getEncryptedPassword(),
+                                                                 true,
+                                                                 null),
                          "SecurityService::authenticate persistent bad credentials");
 
             when(this.userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
             final Authentication result = this.securityService.authenticate(user.getEmail(),
                                                                             user.getEncryptedPassword(),
-                                                                            true);
+                                                                            true,
+                                                                            null);
 
             assertNotNull(result, "SecurityService::authenticate persistent not null");
 
@@ -174,6 +183,94 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
                        "SecurityService::authenticate persistent refresh token expires at");
         });
 
+        verify(this.refreshTokenRepository, times(0)).delete(any(RefreshToken.class));
+    }
+
+    /**
+     * Tests SecurityServiceTests::authenticate with a current refresh token.
+     */
+    @Test
+    void testAuthenticateWithCurrentRefreshToken() {
+        final User user = generate(User.class);
+
+        user.setEncryptedPassword(PASSWORD);
+        user.setConfirmRegistrationToken(null);
+
+        final RefreshToken refreshToken = generate(RefreshToken.class);
+
+        when(this.passwordEncoder.matches(eq(PASSWORD), anyString())).thenReturn(true);
+        when(this.jwtBuilder.build(anyString(), any(LocalDateTime.class))).thenReturn(JWT);
+        when(this.userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(this.refreshTokenRepository.save(any(RefreshToken.class)))
+                .thenAnswer(invocation -> invocation.getArguments()[0]);
+        when(this.refreshTokenRepository.findByUuid(refreshToken.getUuid())).thenReturn(Optional.of(refreshToken));
+
+        final Authentication result = this.securityService.authenticate(user.getEmail(),
+                                                                        user.getEncryptedPassword(),
+                                                                        true,
+                                                                        refreshToken.getUuid());
+
+        assertNotNull(result, "SecurityService::authenticate refreshToken not null");
+
+        assertEquals(user, result.getUser(), "SecurityService::authenticate refreshToken user");
+        assertEquals(JWT, result.getJwt(), "SecurityService::authenticate refreshToken jwt");
+        assertEquals(LocalDate.now().plusDays(Authentication.PERSISTENT_DAYS_VALID),
+                     result.getExpiresAt().toLocalDate(),
+                     "SecurityService::authenticate refreshToken expires at");
+        assertTrue(result.isPersistent(), "SecurityService::authenticate refreshToken persistent");
+
+        assertNotNull(result.getRefreshToken(), "SecurityService::authenticate persistent refreshToken token not null");
+        assertEquals(result.getUser(), result.getRefreshToken().getUser(),
+                     "SecurityService::authenticate refreshToken refresh token user");
+        assertNull(result.getRefreshToken().getExpiresAt(),
+                   "SecurityService::authenticate refreshToken refresh token expires at");
+
+        verify(this.refreshTokenRepository, times(1)).findByUuid(eq(refreshToken.getUuid()));
+        verify(this.refreshTokenRepository, times(1)).delete(eq(refreshToken));
+    }
+
+    /**
+     * Tests SecurityServiceTests::authenticate with a current refresh token that's already deleted.
+     */
+    @Test
+    void testAuthenticateWithCurrentRefreshTokenAlreadyDeleted() {
+        final User user = generate(User.class);
+
+        user.setEncryptedPassword(PASSWORD);
+        user.setConfirmRegistrationToken(null);
+
+        final RefreshToken refreshToken = generate(RefreshToken.class);
+
+        when(this.passwordEncoder.matches(eq(PASSWORD), anyString())).thenReturn(true);
+        when(this.jwtBuilder.build(anyString(), any(LocalDateTime.class))).thenReturn(JWT);
+        when(this.userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(this.refreshTokenRepository.save(any(RefreshToken.class)))
+                .thenAnswer(invocation -> invocation.getArguments()[0]);
+        when(this.refreshTokenRepository.findByUuid(refreshToken.getUuid())).thenReturn(Optional.empty());
+
+        final Authentication result = this.securityService.authenticate(user.getEmail(),
+                                                                        user.getEncryptedPassword(),
+                                                                        true,
+                                                                        refreshToken.getUuid());
+
+        assertNotNull(result, "SecurityService::authenticate refreshToken deleted not null");
+
+        assertEquals(user, result.getUser(), "SecurityService::authenticate refreshToken deleted user");
+        assertEquals(JWT, result.getJwt(), "SecurityService::authenticate refreshToken deleted jwt");
+        assertEquals(LocalDate.now().plusDays(Authentication.PERSISTENT_DAYS_VALID),
+                     result.getExpiresAt().toLocalDate(),
+                     "SecurityService::authenticate refreshToken deleted expires at");
+        assertTrue(result.isPersistent(), "SecurityService::authenticate refreshToken deleted persistent");
+
+        assertNotNull(result.getRefreshToken(),
+                      "SecurityService::authenticate refreshToken deleted refresh token not null");
+        assertEquals(result.getUser(), result.getRefreshToken().getUser(),
+                     "SecurityService::authenticate refreshToken deleted refresh token user");
+        assertNull(result.getRefreshToken().getExpiresAt(),
+                   "SecurityService::authenticate refreshToken deleted refresh token expires at");
+
+        verify(this.refreshTokenRepository, times(1)).findByUuid(eq(refreshToken.getUuid()));
+        verify(this.refreshTokenRepository, times(0)).delete(any(RefreshToken.class));
     }
 
     /**
@@ -192,13 +289,16 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
             when(this.userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
             assertThrows(BadCredentialsException.class,
-                         () -> this.securityService.authenticate(user.getEmail(), user.getEncryptedPassword(), true),
+                         () -> this.securityService.authenticate(user.getEmail(),
+                                                                 user.getEncryptedPassword(),
+                                                                 true,
+                                                                 null),
                          "SecurityService::authenticate unconfirmed bad credentials");
         });
     }
 
     /**
-     * Tests SecurityService::authorize for a non persistent authentication.
+     * Tests SecurityService::authorize for a non-persistent authentication.
      */
     @Test
     void testAuthorizeNonPersistent() {
@@ -311,7 +411,7 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
         assertNotNull(user.getResetPasswordToken(),
                       "SecurityService::requestPasswordReset resetPasswordToken not null");
         assertNotNull(resetPasswordLinkMailMessage.getTo(), "SecurityService::requestPasswordReset to not null");
-        assertEquals(resetPasswordLinkMailMessage.getTo().length, 1,
+        assertEquals(1, resetPasswordLinkMailMessage.getTo().length,
                      "SecurityService::requestPasswordReset to length equals");
         assertEquals(resetPasswordLinkMailMessage.getTo()[0], user.getEmail(),
                      "SecurityService::requestPasswordReset to equals");
@@ -348,7 +448,7 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
 
         this.securityService.resetPassword(user.getEmail(), PASSWORD, user.getResetPasswordToken());
 
-        assertEquals(user.getEncryptedPassword(), encryptedPassword,
+        assertEquals(encryptedPassword, user.getEncryptedPassword(),
                      "SecurityService::resetPassword encryptedPassword equals");
         assertNull(user.getResetPasswordToken(), "SecurityService::resetPassword resetPasswordToken null");
         verify(this.passwordEncoder, times(1)).encode(eq(PASSWORD));

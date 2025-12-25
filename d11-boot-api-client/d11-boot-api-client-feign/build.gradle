@@ -51,13 +51,27 @@ openApiGenerate() {
     ]
 }
 
-task openApiClean(type: Delete) {
+// Feign client does not allow body and cookie parameters in the same method for some reason. Remove the cookie
+// parameter from the SecurityApi calls after generating feign client classes
+tasks.named("openApiGenerate") {
+    doLast {
+        fileTree("$buildDir/generated/src/main/java").matching {
+            include "**/client/SecurityApi.java"
+        }.forEach { file ->
+            def text = file.text
+            text = text.replaceAll(/, @Param\("refreshToken"\) UUID refreshToken/, "")
+            file.text = text
+        }
+    }
+}
+
+tasks.register('openApiClean', Delete) {
     dependsOn tasks.openApiGenerate
     // We don't need the automagically generated ApiUtil
     delete fileTree('build\\generated\\src\\') {
         include '**/AndroidManifest.xml'
     }
-    delete ('build\\generated\\src\\test')
+    delete('build\\generated\\src\\test')
     delete fileTree('build\\generated\\src\\main\\java\\org\\d11\\boot\\api\\v2\\model\\') {
         exclude '**/ApiResponse.java'
     }

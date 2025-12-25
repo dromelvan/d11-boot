@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -114,7 +115,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
     // Authentication --------------------------------------------------------------------------------------------------
 
     /**
-     * Tests SecurityController::authenticate for a non persistent authentication.
+     * Tests SecurityController::authenticate for a non-persistent authentication.
      */
     @Test
     void testAuthenticateNonPersistent() {
@@ -233,6 +234,51 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
     }
 
     /**
+     * Tests SecurityController::authenticate with a current refresh token. Here we just want to check that a current
+     * active refresh token is deleted when we authenticate again.
+     */
+    @Test
+    void testAuthenticateCurrentRefreshToken() {
+        final List<User> users = this.userRepository.findAll().stream()
+                .filter(user -> user.getConfirmRegistrationToken() == null)
+                .toList();
+
+        assertFalse(users.isEmpty(),
+                    "SecurityController::authenticate refreshToken users empty");
+
+        users.forEach(user -> {
+            assertDoesNotThrow(() -> authenticate(user, true),
+                               "SecurityController::authenticate refreshToken authenticate does not throw");
+
+            final UUID uuid = this.refreshTokenCookieDecoder.getCookieValue();
+            assertNotNull(uuid, "SecurityController::authenticate refreshToken cookie value not null");
+
+            final RefreshToken refreshToken = this.refreshTokenRepository.findByUuid(uuid).orElse(null);
+            assertNotNull(refreshToken, "SecurityController::authenticate refreshToken refresh token not null");
+
+            this.cookieRequestInterceptor.setRefreshToken(uuid);
+            assertDoesNotThrow(() -> authenticate(user, true),
+                               "SecurityController::authenticate refreshToken reauthenticate does not throw");
+
+            final UUID newUuid = this.refreshTokenCookieDecoder.getCookieValue();
+            assertNotNull(newUuid, "SecurityController::authenticate refreshToken new cookie value not null");
+            assertNotEquals(uuid, newUuid, "SecurityController::authenticate refreshToken new cookie value not equals");
+
+            final RefreshToken newRefreshToken = this.refreshTokenRepository.findByUuid(newUuid).orElse(null);
+            assertNotNull(newRefreshToken, "SecurityController::authenticate refreshToken new refresh token not null");
+            assertNotEquals(refreshToken, newRefreshToken,
+                            "SecurityController::authenticate refreshToken new refresh token equals");
+
+            assertTrue(this.refreshTokenRepository.findByUuid(uuid).isEmpty(),
+                       "SecurityController::authenticate refreshToken refresh token empty");
+
+            // Check we don't get an exception when authenticating with an already deleted refresh token
+            assertDoesNotThrow(() -> authenticate(user, true),
+                               "SecurityController::authenticate refreshToken deleted does not throw");
+        });
+    }
+
+    /**
      * Tests SecurityController::authenticate for an unconfirmed user.
      */
     @Test
@@ -288,7 +334,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
     // Authorization ---------------------------------------------------------------------------------------------------
 
     /**
-     * Tests SecurityController::authorize for a non persistent authentication.
+     * Tests SecurityController::authorize for a non-persistent authentication.
      */
     @Test
     void testAuthorizeNonPersistent() {

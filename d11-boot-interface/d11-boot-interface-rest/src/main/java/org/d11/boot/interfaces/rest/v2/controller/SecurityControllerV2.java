@@ -55,12 +55,14 @@ public class SecurityControllerV2 extends D11BootRestController implements Secur
 
     @Override
     public ResponseEntity<AuthenticationResponseBodyDTO> authenticate(
-        final @Valid AuthenticationRequestBodyDTO authenticationRequestBodyDTO) {
+            final @Valid AuthenticationRequestBodyDTO authenticationRequestBodyDTO,
+            final UUID refreshToken) {
 
         final Authentication authentication = this.securityService.authenticate(
             authenticationRequestBodyDTO.getUsername(),
             authenticationRequestBodyDTO.getPassword(),
-            authenticationRequestBodyDTO.isPersistent()
+            authenticationRequestBodyDTO.isPersistent(),
+            refreshToken
         );
 
         final int maxAge = authentication.isPersistent()

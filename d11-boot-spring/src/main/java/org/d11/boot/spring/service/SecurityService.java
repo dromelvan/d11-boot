@@ -88,10 +88,14 @@ public class SecurityService extends D11BootService {
      * @param username   User username.
      * @param password   User password.
      * @param persistent Remember user login.
+     * @param currentRefreshToken Already existing refresh token if cookie is present in the request.
      * @return Authentication details.
      */
     @Transactional
-    public Authentication authenticate(final String username, final String password, final boolean persistent) {
+    public Authentication authenticate(final String username,
+                                       final String password,
+                                       final boolean persistent,
+                                       final UUID currentRefreshToken) {
         final User user = this.userRepository.findByEmail(username)
             .orElseThrow(() -> new BadCredentialsException(AUTHENTICATION_FAILED_MESSAGE));
 
@@ -106,6 +110,10 @@ public class SecurityService extends D11BootService {
             final RefreshToken refreshToken = persistent
                 ? new RefreshToken(user)
                 : new RefreshToken(user, expiresAt);
+
+            if (currentRefreshToken != null) {
+                unauthorize(currentRefreshToken);
+            }
 
             return new Authentication(user, jwt, expiresAt, this.refreshTokenRepository.save(refreshToken));
         }

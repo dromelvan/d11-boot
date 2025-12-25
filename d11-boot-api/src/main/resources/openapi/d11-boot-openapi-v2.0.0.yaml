@@ -21,6 +21,13 @@ paths:
         - security
       summary: Authenticate a user by username/password.
       operationId: authenticate
+      parameters:
+        - in: cookie
+          name: refreshToken
+          required: false
+          schema:
+            type: string
+            format: uuid
       requestBody:
         description: User authentication properties.
         required: true
