@@ -30,8 +30,8 @@ public class DownloadConfiguration {
      */
     @Bean
     public WhoscoredMatchDownloader<ChromeBrowser> whoscoredMatchDownloader(
-            @Value("${d11.download.selenium.remoteUrl}") final String remoteDriverUrl,
-            @Value("${d11.download.selenium.userDataDir:#{null}}") final String userDataDir) {
+            @Value("${app.download.selenium.remoteUrl}") final String remoteDriverUrl,
+            @Value("${app.download.selenium.userDataDir:#{null}}") final String userDataDir) {
         final Callable<ChromeBrowser> callable = () -> {
             final ChromeBrowser chromeBrowser = new ChromeBrowser();
             chromeBrowser.setRemoteDriverUrl(new URL(remoteDriverUrl));

@@ -31,25 +31,25 @@ public class KeystoreConfiguration {
     /**
      * Keystore resource.
      */
-    @Value("classpath:${d11.security.keystore.location}")
+    @Value("classpath:${app.security.keystore.location}")
     private Resource keyStoreResource;
 
     /**
      * Password for the keystore.
      */
-    @Value("${d11.security.keystore.password}")
+    @Value("${app.security.keystore.password}")
     private String password;
 
     /**
      * Key alias the keys are associated with.
      */
-    @Value("${d11.security.keystore.keyAlias}")
+    @Value("${app.security.keystore.keyAlias}")
     private String keyAlias;
 
     /**
      * Passphrase for the private key.
      */
-    @Value("${d11.security.keystore.privateKeyPassphrase}")
+    @Value("${app.security.keystore.privateKeyPassphrase}")
     private String privateKeyPassphrase;
 
     /**

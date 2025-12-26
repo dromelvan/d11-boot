@@ -1,4 +1,4 @@
-d11:
+app:
   download.selenium:
     remoteUrl: http://localhost:4444/wd/hub
     # Provide user data dir only if using a standalone application Selenium

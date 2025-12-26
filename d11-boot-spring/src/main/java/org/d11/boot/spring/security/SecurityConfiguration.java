@@ -39,7 +39,7 @@ public class SecurityConfiguration {
     /**
      * Allowed origins for CORS configuration.
      */
-    @Value("${d11.security.allowedOrigins}")
+    @Value("${app.security.allowedOrigins}")
     private String[] allowedOrigins;
 
     /**
