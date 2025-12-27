@@ -1,5 +1,7 @@
-d11:
+app:
   security:
+    time-to-live:
+      jwt: 300
     keystore:
       # Create keystore with: keytool -genkey -alias <alias> -keyalg RSA -keystore <profile>-keystore.jks -keysize 2048
       location: keys/test-keystore.jks

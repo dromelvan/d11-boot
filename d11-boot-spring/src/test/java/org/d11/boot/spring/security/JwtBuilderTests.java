@@ -27,6 +27,11 @@ class JwtBuilderTests {
     private static final String JWT_REGEX = "^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$";
 
     /**
+     * Token time to live in seconds.
+     */
+    private static final int TIME_TO_LIVE = 300;
+
+    /**
      * Tests JwtBuilder::build and JwtBuilder::decode.
      *
      * @throws NoSuchAlgorithmException This won't happen
@@ -37,21 +42,22 @@ class JwtBuilderTests {
         generator.initialize(2048);
         final KeyPair keyPair = generator.generateKeyPair();
         final JwtBuilder jwtBuilder = new JwtBuilder((RSAPrivateKey) keyPair.getPrivate(),
-                                                     (RSAPublicKey) keyPair.getPublic());
+                                                     (RSAPublicKey) keyPair.getPublic(),
+                                                     TIME_TO_LIVE);
 
         final String username = "username";
-        final LocalDateTime expiresAt = LocalDateTime.now().plusDays(1);
+        final JwtBuildResult result = jwtBuilder.build(username);
+        final LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(TIME_TO_LIVE).truncatedTo(ChronoUnit.SECONDS);
 
-        final String jwt = jwtBuilder.build(username, expiresAt);
+        assertNotNull(result, "JwtBuilder::build not null");
+        assertTrue(result.jwt().matches(JWT_REGEX), "JwtBuilder::build jwt matches");
+        assertEquals(expiresAt, result.expiresAt(), "JwtBuilder::build expiresAt equals");
 
-        assertNotNull(jwt, "JwtBuilder::build not null");
-        assertTrue(jwt.matches(JWT_REGEX), "JwtBuilder::build matches");
+        final DecodedJWT decodedJWT = jwtBuilder.decode(result.jwt());
 
-        final DecodedJWT decodedJWT = jwtBuilder.decode(jwt);
         assertNotNull(decodedJWT, "JwtBuilder::decode not null");
-
         assertEquals(username, decodedJWT.getClaim("username").asString(), "JwtBuilder::decode username equals");
-        assertEquals(expiresAt.atZone(ZoneId.systemDefault()).toInstant().truncatedTo(ChronoUnit.SECONDS),
+        assertEquals(result.expiresAt().atZone(ZoneId.systemDefault()).toInstant(),
                      decodedJWT.getExpiresAt().toInstant(),
                      "JwtBuilder::decode expiresAt equals");
     }

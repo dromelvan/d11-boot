@@ -36,13 +36,13 @@ tests {
   
     // It's tricky to define what the JWT expiry time should be exactly since
     // we can't know at what exact instant it is created on the server.So, we'll
-    // just check that it is within one minute of 24 hours from now.
+    // just check that it is within five seconds of five minutes from now.
     let now = moment();
     let localOffset = new Date().getTimezoneOffset() * -1;
-    now.add(30 * 24 * 60 * 60 - 30, "seconds").add(localOffset, "minutes");
+    now.add(60 * 5 - 5, "seconds").add(localOffset, "minutes");
     expect(now.isBefore(expiresAt)).to.eq(true);
   
-    now.add(60, "seconds");
+    now.add(5, "seconds");
   
     expect(now.isAfter(expiresAt)).to.eq(true);
   

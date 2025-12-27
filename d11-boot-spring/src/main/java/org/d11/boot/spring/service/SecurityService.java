@@ -6,6 +6,7 @@ import org.d11.boot.spring.model.RefreshToken;
 import org.d11.boot.spring.model.User;
 import org.d11.boot.spring.repository.RefreshTokenRepository;
 import org.d11.boot.spring.repository.UserRepository;
+import org.d11.boot.spring.security.JwtBuildResult;
 import org.d11.boot.spring.security.JwtBuilder;
 import org.d11.boot.spring.security.ResetPasswordLinkMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -101,21 +103,25 @@ public class SecurityService extends D11BootService {
 
         if (user.getConfirmRegistrationToken() == null
             && this.passwordEncoder.matches(password, user.getEncryptedPassword())) {
+
+            final JwtBuildResult jwtBuildResult = this.jwtBuilder.build(username);
+
             final LocalDateTime expiresAt = persistent
                 ? LocalDateTime.now().plusDays(Authentication.PERSISTENT_DAYS_VALID)
                 : LocalDateTime.now().plusDays(1L);
 
-            final String jwt = this.jwtBuilder.build(username, expiresAt);
-
             final RefreshToken refreshToken = persistent
                 ? new RefreshToken(user)
-                : new RefreshToken(user, expiresAt);
+                : new RefreshToken(user, expiresAt.truncatedTo(ChronoUnit.SECONDS));
 
             if (currentRefreshToken != null) {
                 unauthorize(currentRefreshToken);
             }
 
-            return new Authentication(user, jwt, expiresAt, this.refreshTokenRepository.save(refreshToken));
+            return new Authentication(user,
+                                      jwtBuildResult.jwt(),
+                                      jwtBuildResult.expiresAt(),
+                                      this.refreshTokenRepository.save(refreshToken));
         }
         throw new BadCredentialsException(AUTHENTICATION_FAILED_MESSAGE);
     }
@@ -136,15 +142,12 @@ public class SecurityService extends D11BootService {
         final LocalDateTime expiresAt = authorizeRefreshToken.getExpiresAt();
         this.refreshTokenRepository.delete(authorizeRefreshToken);
 
-        final LocalDateTime jwtExpiresAt = authorizeRefreshToken.getExpiresAt() == null
-            ? LocalDateTime.now().plusDays(Authentication.PERSISTENT_DAYS_VALID)
-            : expiresAt;
-        final String jwt = this.jwtBuilder.build(user.getEmail(), jwtExpiresAt);
+        final JwtBuildResult jwtBuildResult = this.jwtBuilder.build(user.getEmail());
 
         final RefreshToken refreshToken = new RefreshToken(user, expiresAt);
         this.refreshTokenRepository.save(refreshToken);
 
-        return new Authorization(user, jwt, jwtExpiresAt, refreshToken);
+        return new Authorization(user, jwtBuildResult.jwt(), jwtBuildResult.expiresAt(), refreshToken);
     }
 
     /**
