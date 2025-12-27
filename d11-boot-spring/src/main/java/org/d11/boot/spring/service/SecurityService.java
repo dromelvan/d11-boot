@@ -1,5 +1,6 @@
 package org.d11.boot.spring.service;
 
+import lombok.Getter;
 import org.d11.boot.spring.model.Authentication;
 import org.d11.boot.spring.model.Authorization;
 import org.d11.boot.spring.model.RefreshToken;
@@ -9,6 +10,7 @@ import org.d11.boot.spring.repository.UserRepository;
 import org.d11.boot.spring.security.JwtBuildResult;
 import org.d11.boot.spring.security.JwtBuilder;
 import org.d11.boot.spring.security.ResetPasswordLinkMailMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,6 +50,18 @@ public class SecurityService extends D11BootService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     /**
+     * Refresh token time to live.
+     */
+    @Getter
+    private final int refreshTokenTimeToLive;
+
+    /**
+     * Persistent refresh token time to live.
+     */
+    @Getter
+    private final int refreshTokenTimeToLivePersistent;
+
+    /**
      * Password encoder that matches provided password with the encrypted user password in the database.
      */
     private final PasswordEncoder passwordEncoder;
@@ -65,19 +79,27 @@ public class SecurityService extends D11BootService {
     /**
      * Creates a new security service.
      *
-     * @param userRepository         The user repository the service will use.
-     * @param refreshTokenRepository The refresh token repository the service will use.
-     * @param passwordEncoder        The password encoder the service will use.
-     * @param jwtBuilder             The JWT builder the service will use.
-     * @param javaMailSender         Password reset email sender.
+     * @param userRepository                   The user repository the service will use.
+     * @param refreshTokenRepository           The refresh token repository the service will use.
+     * @param refreshTokenTimeToLive           Refresh token time to live.
+     * @param refreshTokenTimeToLivePersistent Persistent refresh token time to live.
+     * @param passwordEncoder                  The password encoder the service will use.
+     * @param jwtBuilder                       The JWT builder the service will use.
+     * @param javaMailSender                   Password reset email sender.
      */
     public SecurityService(final UserRepository userRepository,
                            final RefreshTokenRepository refreshTokenRepository,
+                           @Value("${app.security.time-to-live.refresh-token}")
+                           final int refreshTokenTimeToLive,
+                           @Value("${app.security.time-to-live.refresh_token-persistent}")
+                           final int refreshTokenTimeToLivePersistent,
                            final PasswordEncoder passwordEncoder,
                            final JwtBuilder jwtBuilder,
                            final JavaMailSender javaMailSender) {
         this.userRepository = userRepository;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.refreshTokenTimeToLive = refreshTokenTimeToLive;
+        this.refreshTokenTimeToLivePersistent = refreshTokenTimeToLivePersistent;
         this.passwordEncoder = passwordEncoder;
         this.jwtBuilder = jwtBuilder;
         this.javaMailSender = javaMailSender;
@@ -107,12 +129,10 @@ public class SecurityService extends D11BootService {
             final JwtBuildResult jwtBuildResult = this.jwtBuilder.build(username);
 
             final LocalDateTime expiresAt = persistent
-                ? LocalDateTime.now().plusDays(Authentication.PERSISTENT_DAYS_VALID)
-                : LocalDateTime.now().plusDays(1L);
+                ? LocalDateTime.now().plusSeconds(this.refreshTokenTimeToLivePersistent)
+                : LocalDateTime.now().plusSeconds(this.refreshTokenTimeToLive);
 
-            final RefreshToken refreshToken = persistent
-                ? new RefreshToken(user)
-                : new RefreshToken(user, expiresAt.truncatedTo(ChronoUnit.SECONDS));
+            final RefreshToken refreshToken = new RefreshToken(user, expiresAt.truncatedTo(ChronoUnit.SECONDS));
 
             if (currentRefreshToken != null) {
                 unauthorize(currentRefreshToken);
@@ -121,7 +141,8 @@ public class SecurityService extends D11BootService {
             return new Authentication(user,
                                       jwtBuildResult.jwt(),
                                       jwtBuildResult.expiresAt(),
-                                      this.refreshTokenRepository.save(refreshToken));
+                                      this.refreshTokenRepository.save(refreshToken),
+                                      persistent);
         }
         throw new BadCredentialsException(AUTHENTICATION_FAILED_MESSAGE);
     }
@@ -147,7 +168,9 @@ public class SecurityService extends D11BootService {
         final RefreshToken refreshToken = new RefreshToken(user, expiresAt);
         this.refreshTokenRepository.save(refreshToken);
 
-        return new Authorization(user, jwtBuildResult.jwt(), jwtBuildResult.expiresAt(), refreshToken);
+        final boolean persistent = expiresAt.isAfter(LocalDateTime.now().plusSeconds(this.refreshTokenTimeToLive));
+
+        return new Authorization(user, jwtBuildResult.jwt(), jwtBuildResult.expiresAt(), refreshToken, persistent);
     }
 
     /**

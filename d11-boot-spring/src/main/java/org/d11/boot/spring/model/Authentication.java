@@ -15,11 +15,6 @@ import java.time.LocalDateTime;
 public class Authentication extends D11Model {
 
     /**
-     * The number of days a persistent authentication will be valid.
-     */
-    public static final int PERSISTENT_DAYS_VALID = 30;
-
-    /**
      * The user that was authenticated.
      */
     private final User user;
@@ -40,13 +35,8 @@ public class Authentication extends D11Model {
     private RefreshToken refreshToken;
 
     /**
-     * Gets persistent state.
-     *
-     * @return True if the authentication is persistent, false if not.
+     * Authentication persistent status.
      */
-    public boolean isPersistent() {
-        return this.refreshToken != null
-            && this.refreshToken.getExpiresAt() == null;
-    }
+    private boolean persistent;
 
 }

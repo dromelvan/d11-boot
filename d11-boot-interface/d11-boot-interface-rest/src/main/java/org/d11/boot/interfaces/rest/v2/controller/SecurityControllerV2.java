@@ -30,16 +30,6 @@ import java.util.UUID;
 public class SecurityControllerV2 extends D11BootRestController implements SecurityApi {
 
     /**
-     * Expiry time in seconds of a non-persistent refresh token cookie. Refresh tokens will be valid for one day.
-     */
-    private static final int REFRESH_TOKEN_MAX_AGE = 86_400;
-
-    /**
-     * Expiry time in seconds of a persistent refresh token cookie. Refresh tokens will be valid for one month.
-     */
-    private static final int PERSISTENT_REFRESH_TOKEN_MAX_AGE = 2_592_000;
-
-    /**
      * The security service the controller will use.
      */
     private final SecurityService securityService;
@@ -66,8 +56,8 @@ public class SecurityControllerV2 extends D11BootRestController implements Secur
         );
 
         final int maxAge = authentication.isPersistent()
-            ? PERSISTENT_REFRESH_TOKEN_MAX_AGE
-            : REFRESH_TOKEN_MAX_AGE;
+            ? this.securityService.getRefreshTokenTimeToLivePersistent()
+            : this.securityService.getRefreshTokenTimeToLive();
 
         final ResponseCookie responseCookie = new RefreshTokenCookieBuilder()
             .withUuid(authentication.getRefreshToken().getUuid())
@@ -84,8 +74,8 @@ public class SecurityControllerV2 extends D11BootRestController implements Secur
         final Authorization authorization = this.securityService.authorize(uuid);
 
         final int maxAge = authorization.isPersistent()
-            ? PERSISTENT_REFRESH_TOKEN_MAX_AGE
-            : REFRESH_TOKEN_MAX_AGE;
+            ? this.securityService.getRefreshTokenTimeToLivePersistent()
+            : this.securityService.getRefreshTokenTimeToLive();
 
         final ResponseCookie responseCookie = new RefreshTokenCookieBuilder()
             .withUuid(authorization.getRefreshToken().getUuid())

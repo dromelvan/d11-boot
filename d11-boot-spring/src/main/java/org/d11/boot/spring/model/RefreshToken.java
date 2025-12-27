@@ -31,9 +31,9 @@ public class RefreshToken extends D11Entity {
     private final UUID uuid = UUID.randomUUID();
 
     /**
-     * The time the token expires and can no longer be used to re-authorize a user. If this value is null then the token
-     * will not expire.
+     * The time the token expires and can no longer be used to re-authorize a user.
      */
+    @NotNull
     private final LocalDateTime expiresAt;
 
     /**
@@ -51,17 +51,6 @@ public class RefreshToken extends D11Entity {
     @SuppressWarnings("PMD.NullAssignment")
     protected RefreshToken() {
         this.user = null;
-        this.expiresAt = null;
-    }
-
-    /**
-     * Creates a new token for a user.
-     *
-     * @param user The token user.
-     */
-    @SuppressWarnings("PMD.NullAssignment")
-    public RefreshToken(final User user) {
-        this.user = user;
         this.expiresAt = null;
     }
 

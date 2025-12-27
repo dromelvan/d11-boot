@@ -25,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -55,12 +56,12 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
     private static final int TIME_TO_LIVE = 300;
 
     /**
-     * Max age for a refresh token cookie.
+     * Max age for a refresh token cookie. Defined in application-test.yaml.
      */
     private static final long COOKIE_MAX_AGE = 60L * 60L * 24L;
 
     /**
-     * Max age for a persistent refresh token cookie.
+     * Max age for a persistent refresh token cookie. Defined in application-test.yaml.
      */
     private static final long PERSISTENT_COOKIE_MAX_AGE = 60L * 60L * 24L * 30L;
 
@@ -130,7 +131,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
         users.forEach(user -> {
             final AuthenticationResponseBodyDTO result = authenticate(user, false);
-            final LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(TIME_TO_LIVE);
+            final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
             assertNotNull(result, "SecurityController::authenticate non persistent not null");
 
@@ -153,9 +154,9 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
             // It's tricky to calculate what the exact expires at should be down to the millisecond so check that it is
             // within five seconds of what we expect it to be.
-            assertTrue(result.getExpiresAt().isBefore(expiresAt.plusSeconds(5)),
+            assertTrue(result.getExpiresAt().isBefore(now.plusSeconds(TIME_TO_LIVE).plusSeconds(5)),
                        "SecurityController::authenticate non persistent expires at before");
-            assertTrue(result.getExpiresAt().isAfter(expiresAt.minusSeconds(5)),
+            assertTrue(result.getExpiresAt().isAfter(now.plusSeconds(TIME_TO_LIVE).minusSeconds(5)),
                        "SecurityController::authenticate non persistent expires at after");
 
             assertFalse(result.isPersistent(),
@@ -177,8 +178,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                          "SecurityController::authenticate non persistent refresh token uuid");
             assertEquals(user, refreshToken.getUser(),
                          "SecurityController::authenticate non persistent refresh token user");
-            assertEquals(result.getExpiresAt().minusSeconds(TIME_TO_LIVE).plusDays(1L),
-                         refreshToken.getExpiresAt(),
+            assertEquals(now.plusSeconds(COOKIE_MAX_AGE), refreshToken.getExpiresAt(),
                          "SecurityController::authenticate non persistent refresh token expires at");
         });
     }
@@ -197,7 +197,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
         users.forEach(user -> {
             final AuthenticationResponseBodyDTO result = authenticate(user, true);
-            final LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(TIME_TO_LIVE);
+            final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
             assertNotNull(result, "SecurityController::authenticate persistent not null");
 
@@ -218,9 +218,9 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                          LocalDateTime.ofInstant(decodedJWT.getExpiresAtAsInstant(), ZoneId.systemDefault()),
                          "SecurityController::authenticate persistent jwt expires at");
 
-            assertTrue(result.getExpiresAt().isBefore(expiresAt.plusSeconds(5)),
+            assertTrue(result.getExpiresAt().isBefore(now.plusSeconds(TIME_TO_LIVE).plusSeconds(5)),
                        "SecurityController::authenticate persistent expires at before");
-            assertTrue(result.getExpiresAt().isAfter(expiresAt.minusSeconds(5)),
+            assertTrue(result.getExpiresAt().isAfter(now.plusSeconds(TIME_TO_LIVE).minusSeconds(5)),
                        "SecurityController::authenticate persistent expires at after");
 
             assertTrue(result.isPersistent(),
@@ -243,7 +243,8 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                          "SecurityController::authenticate persistent refresh token uuid");
             assertEquals(user, refreshToken.getUser(),
                          "SecurityController::authenticate persistent refresh token user");
-            assertNull(refreshToken.getExpiresAt(), "SecurityController::authenticate persistent refresh token null");
+            assertEquals(now.plusSeconds(PERSISTENT_COOKIE_MAX_AGE), refreshToken.getExpiresAt(),
+                         "SecurityController::authenticate persistent refresh token expires at");
         });
     }
 
@@ -273,6 +274,8 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
             this.cookieRequestInterceptor.setRefreshToken(uuid);
             assertDoesNotThrow(() -> authenticate(user, true),
                                "SecurityController::authenticate refreshToken reauthenticate does not throw");
+            final LocalDateTime expiresAt =
+                    LocalDateTime.now().plusSeconds(PERSISTENT_COOKIE_MAX_AGE).truncatedTo(ChronoUnit.SECONDS);
 
             final UUID newUuid = this.refreshTokenCookieDecoder.getCookieValue();
             assertNotNull(newUuid, "SecurityController::authenticate refreshToken new cookie value not null");
@@ -282,6 +285,8 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
             assertNotNull(newRefreshToken, "SecurityController::authenticate refreshToken new refresh token not null");
             assertNotEquals(refreshToken, newRefreshToken,
                             "SecurityController::authenticate refreshToken new refresh token equals");
+            assertEquals(expiresAt, newRefreshToken.getExpiresAt(),
+                         "SecurityController::authenticate refreshToken new expiresAt equals");
 
             assertTrue(this.refreshTokenRepository.findByUuid(uuid).isEmpty(),
                        "SecurityController::authenticate refreshToken refresh token empty");
@@ -489,8 +494,8 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                          "SecurityController::authorize persistent refresh token uuid");
             assertEquals(authenticationRefreshToken.getUser(), refreshToken.getUser(),
                          "SecurityController::authorize persistent refresh token user");
-            assertNull(refreshToken.getExpiresAt(),
-                       "SecurityController::authorize persistent refresh token expires at null");
+            assertEquals(authenticationRefreshToken.getExpiresAt(), refreshToken.getExpiresAt(),
+                         "SecurityController::authorize persistent refresh token expires at equals");
         });
     }
 

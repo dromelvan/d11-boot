@@ -33,6 +33,7 @@ class RefreshTokenRepositoryTests extends AbstractRepositoryTests<RefreshToken, 
     @Test
     void testFindByUuidAndExpiresAtIsAfterOrExpiresAtIsNull() {
         final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime tomorrow = now.plusSeconds(60 * 60 * 24);
 
         int persistentCount = 0;
         int nonExpiredCount = 0;
@@ -43,13 +44,13 @@ class RefreshTokenRepositoryTests extends AbstractRepositoryTests<RefreshToken, 
                     getRepository().findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull(refreshToken.getUuid(), now)
                             .orElse(null);
 
-            if (refreshToken.getExpiresAt() == null) {
+            if (refreshToken.getExpiresAt().isAfter(tomorrow)) {
                 assertNotNull(result,
                               "RefreshTokenRepository::findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull pers not null");
                 assertEquals(refreshToken, result,
                              "RefreshTokenRepository::findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull pers equals");
-                assertNull(refreshToken.getExpiresAt(),
-                           "RefreshTokenRepository::findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull pers expiresAt");
+                assertNotNull(refreshToken.getExpiresAt(),
+                              "RefreshTokenRepository::findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull pers expiresAt");
                 ++persistentCount;
             } else if (refreshToken.getExpiresAt().isAfter(now)) {
                 assertNotNull(result,

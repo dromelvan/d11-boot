@@ -2,6 +2,8 @@ app:
   security:
     time-to-live:
       jwt: 300
+      refresh-token: 86400
+      refresh_token-persistent: 2592000
   download.selenium:
     remoteUrl: http://localhost:4444/wd/hub
     # Provide user data dir only if using a standalone application Selenium

@@ -14,12 +14,14 @@ public class Authorization extends Authentication {
      * @param jwt          JWT for further authorization.
      * @param expiresAt    JWT expiration time.
      * @param refreshToken Token that can be used to refresh the authorization.
+     * @param persistent   Authorization persistent status.
      */
     public Authorization(final User user,
                          final String jwt,
                          final LocalDateTime expiresAt,
-                         final RefreshToken refreshToken) {
-        super(user, jwt, expiresAt, refreshToken);
+                         final RefreshToken refreshToken,
+                         final boolean persistent) {
+        super(user, jwt, expiresAt, refreshToken, persistent);
     }
 
 }
