@@ -14,19 +14,13 @@ class ParameterizerTests {
      */
     @Test
     void testParameterize() {
-        assertEquals("first-last", Parameterizer.parameterize("First Last"),
-                     "Parameterizer::parameterize First Last equals");
-        assertEquals("jordao", Parameterizer.parameterize("Jordão"), "Parameterizer::parameterize Jordão equals");
-        assertEquals("bonds-n-gala", Parameterizer.parameterize("Bonds N'Gala"),
-                     "Parameterizer::parameterize Bonds N'Gala equals");
-        assertEquals("daniel-tozer", Parameterizer.parameterize("Daniel Tözer"),
-                     "Parameterizer::parameterize Daniel Tözer equals");
-        assertEquals("pascal-gross", Parameterizer.parameterize("Pascal Groß"),
-                     "Parameterizer::parameterize Pascal Groß equals");
-        assertEquals("shaun-wright-phillips", Parameterizer.parameterize("Shaun Wright-Phillips"),
-                     "Parameterizer::parameterize Shaun Wright-Phillips equals");
-        assertEquals("martin-odegaard", Parameterizer.parameterize("Martin Ødegaard"),
-                     "Parameterizer::parameterize Martin Ødegaard equals");
+        assertEquals("first-last", Parameterizer.parameterize("First Last"));
+        assertEquals("jordao", Parameterizer.parameterize("Jordão"));
+        assertEquals("bonds-n-gala", Parameterizer.parameterize("Bonds N'Gala"));
+        assertEquals("daniel-tozer", Parameterizer.parameterize("Daniel Tözer"));
+        assertEquals("pascal-gross", Parameterizer.parameterize("Pascal Groß"));
+        assertEquals("shaun-wright-phillips", Parameterizer.parameterize("Shaun Wright-Phillips"));
+        assertEquals("martin-odegaard", Parameterizer.parameterize("Martin Ødegaard"));
     }
 
 }

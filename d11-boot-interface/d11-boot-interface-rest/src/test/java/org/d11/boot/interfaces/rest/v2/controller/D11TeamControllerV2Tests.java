@@ -37,21 +37,21 @@ class D11TeamControllerV2Tests extends D11BootControllerV2Tests {
         final D11TeamApi d11TeamApi = getApi(D11TeamApi.class);
 
         final List<D11Team> d11Teams = this.d11TeamRepository.findByOrderByName();
-        assertFalse(d11Teams.isEmpty(), "D11TeamController::getD11Teams not empty");
+        assertFalse(d11Teams.isEmpty());
 
         final D11TeamsResponseBodyDTO d11TeamsResponseBodyDTO = d11TeamApi.getD11Teams();
 
-        assertNotNull(d11TeamsResponseBodyDTO, "D11TeamController::getD11Teams not null");
+        assertNotNull(d11TeamsResponseBodyDTO);
 
         final List<D11TeamDTO> result = d11TeamsResponseBodyDTO.getD11Teams();
 
-        assertEquals(d11Teams.size(), result.size(), "D11TeamController::getD11Teams size");
+        assertEquals(d11Teams.size(), result.size());
 
         for (int i = 0; i < d11Teams.size(); ++i) {
             final D11Team d11Team = d11Teams.get(i);
             final D11TeamDTO d11TeamDTO = result.get(i);
 
-            assertEquals(map(d11Team, D11TeamDTO.class), d11TeamDTO, "D11TeamController::getD11Teams equals");
+            assertEquals(map(d11Team, D11TeamDTO.class), d11TeamDTO);
         }
     }
 
@@ -62,18 +62,16 @@ class D11TeamControllerV2Tests extends D11BootControllerV2Tests {
     void testGetTeamById() {
         final D11TeamApi d11TeamApi = getApi(D11TeamApi.class);
 
-        assertThrows(FeignException.NotFound.class, () -> d11TeamApi.getD11TeamById(0L),
-                     "D11TeamController::getD11TeamById not found");
+        assertThrows(FeignException.NotFound.class, () -> d11TeamApi.getD11TeamById(0L));
 
         final List<D11Team> d11Teams = this.d11TeamRepository.findAll();
 
-        assertFalse(d11Teams.isEmpty(), "D11TeamController::getD11TeamById players not empty");
+        assertFalse(d11Teams.isEmpty());
 
         for (final D11Team d11Team : d11Teams) {
             final D11TeamResponseBodyDTO result = d11TeamApi.getD11TeamById(d11Team.getId());
-            assertNotNull(result, "D11TeamController::getD11TeamById not null");
-            assertEquals(getMapper().map(d11Team, D11TeamDTO.class), result.getD11Team(),
-                    "D11TeamController::getD11TeamById equals");
+            assertNotNull(result);
+            assertEquals(getMapper().map(d11Team, D11TeamDTO.class), result.getD11Team());
         }
     }
 

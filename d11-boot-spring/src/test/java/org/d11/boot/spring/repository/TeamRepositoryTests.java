@@ -24,8 +24,8 @@ class TeamRepositoryTests extends AbstractRepositoryTests<Team, TeamRepository> 
 
         final List<Team> result = getRepository().findByOrderByName();
 
-        assertNotNull(result, "TeamRepository::findByOrderByName not null");
-        assertEquals(teams, result, "TeamRepository::findByOrderByName");
+        assertNotNull(result);
+        assertEquals(teams, result);
     }
 
 }

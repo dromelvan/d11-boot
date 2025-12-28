@@ -42,7 +42,7 @@ class SeleniumBrowserTests {
         final TestDownloader<ChromeBrowser> testDownloader = new TestDownloader<>(callable);
         final WebPage webPage = testDownloader.download();
 
-        assertNotNull(webPage, "TestDownloader::download Selenium standalone is null");
+        assertNotNull(webPage);
     }
 
     /**
@@ -59,7 +59,7 @@ class SeleniumBrowserTests {
         final TestDownloader<ChromeBrowser> testDownloader = new TestDownloader<>(callable);
         final WebPage webPage = testDownloader.download();
 
-        assertNotNull(webPage, "TestDownloader::download Selenium Docker is null");
+        assertNotNull(webPage);
     }
 
 }

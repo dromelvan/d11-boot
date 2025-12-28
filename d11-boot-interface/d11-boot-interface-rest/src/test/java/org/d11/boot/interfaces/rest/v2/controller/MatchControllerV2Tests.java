@@ -56,25 +56,20 @@ class MatchControllerV2Tests extends D11BootControllerV2Tests {
         final MatchApi matchApi = getApi(MatchApi.class);
         final List<Match> matches = this.matchRepository.findAll();
 
-        assertFalse(matches.isEmpty(), "MatchController::getMatchById empty");
+        assertFalse(matches.isEmpty());
 
         for (final Long matchId : matches.stream().map(D11Entity::getId).toList()) {
             final MatchResponseBodyDTO result = matchApi.getMatchById(matchId);
-            assertNotNull(result, "MatchController::getMatchById not null");
+            assertNotNull(result);
 
             // Have to do findById to get the associations needed for the mapping
             final Match match = this.matchRepository.findById(matchId).orElseThrow(IllegalStateException::new);
 
-            assertEquals(getMapper().map(match, MatchDTO.class),
-                         result.getMatch(),
-                         "MatchController::getMatchById equals");
-            assertEquals(getMapper().map(match.getStadium(), StadiumDTO.class),
-                         result.getStadium(),
-                         "MatchController::getMatchById stadium equals");
+            assertEquals(getMapper().map(match, MatchDTO.class), result.getMatch());
+            assertEquals(getMapper().map(match.getStadium(), StadiumDTO.class), result.getStadium());
         }
 
-        assertThrows(FeignException.NotFound.class, () -> matchApi.getMatchById(0L),
-                     "MatchController::getMatchById not found");
+        assertThrows(FeignException.NotFound.class, () -> matchApi.getMatchById(0L));
     }
 
     /**
@@ -85,33 +80,29 @@ class MatchControllerV2Tests extends D11BootControllerV2Tests {
     void testGetMatchesByMatchWeekId() {
         final MatchApi matchApi = getApi(MatchApi.class);
 
-        assertThrows(FeignException.BadRequest.class,
-                     () -> matchApi.getMatchesByMatchWeekId((Long) null),
-                     "MatchController::getMatchesByMatchWeekId matchWeekId null throws");
+        assertThrows(FeignException.BadRequest.class, () -> matchApi.getMatchesByMatchWeekId((Long) null));
 
-        assertThrows(FeignException.BadRequest.class,
-                    () -> matchApi.getMatchesByMatchWeekId(-1L),
-                    "MatchController::getMatchesByMatchWeekId matchWeekId negative throws");
+        assertThrows(FeignException.BadRequest.class, () -> matchApi.getMatchesByMatchWeekId(-1L));
 
         final List<MatchWeek> matchWeeks = this.matchWeekRepository.findAll().stream()
                 .filter(matchWeek -> !matchWeek.getMatches().isEmpty())
                 .toList();
 
-        assertTrue(matchWeeks.size() > 1, "MatchController::getMatchesByMatchWeekId matchWeeks size > 0");
+        assertTrue(matchWeeks.size() > 1);
 
         for (final MatchWeek matchWeek : matchWeeks) {
             final MatchesResponseBodyDTO matchesByMatchWeekId = matchApi.getMatchesByMatchWeekId(matchWeek.getId());
-            assertNotNull(matchesByMatchWeekId, "MatchController::getMatchesByMatchWeekId response not null");
+            assertNotNull(matchesByMatchWeekId);
 
             final List<MatchBaseDTO> result = matchesByMatchWeekId.getMatches();
 
-            assertNotNull(result, "MatchController::getMatchesByMatchWeekId not null ");
-            assertFalse(result.isEmpty(), "MatchController::getMatchesByMatchWeekId empty");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
 
             final List<Match> matches =
                     this.matchRepository.findByMatchWeekIdOrderByDatetimeAscIdAsc(matchWeek.getId());
 
-            assertEquals(map(matches, MatchBaseDTO.class), result, "MatchController::getMatchesByMatchWeekId equals");
+            assertEquals(map(matches, MatchBaseDTO.class), result);
         }
     }
 
@@ -122,21 +113,13 @@ class MatchControllerV2Tests extends D11BootControllerV2Tests {
     void testGetMatchesByTeamIdAndSeasonId() {
         final MatchApi matchApi = getApi(MatchApi.class);
 
-        assertThrows(FeignException.BadRequest.class,
-                     () -> matchApi.getMatchesByTeamIdAndSeasonId(null, 1L),
-                     "MatchController::getMatchesByTeamIdAndSeasonId teamId null throws");
+        assertThrows(FeignException.BadRequest.class, () -> matchApi.getMatchesByTeamIdAndSeasonId(null, 1L));
 
-        assertThrows(FeignException.BadRequest.class,
-                     () -> matchApi.getMatchesByTeamIdAndSeasonId(-1L, 1L),
-                     "MatchController::getMatchesByTeamIdAndSeasonId teamId negative throws");
+        assertThrows(FeignException.BadRequest.class, () -> matchApi.getMatchesByTeamIdAndSeasonId(-1L, 1L));
 
-        assertThrows(FeignException.BadRequest.class,
-                     () -> matchApi.getMatchesByTeamIdAndSeasonId(1L, (Long) null),
-                     "MatchController::getMatchesByTeamIdAndSeasonId seasonId null throws");
+        assertThrows(FeignException.BadRequest.class, () -> matchApi.getMatchesByTeamIdAndSeasonId(1L, (Long) null));
 
-        assertThrows(FeignException.BadRequest.class,
-                     () -> matchApi.getMatchesByTeamIdAndSeasonId(1L, -1L),
-                     "MatchController::getMatchesByTeamIdAndSeasonId seasonId negative throws");
+        assertThrows(FeignException.BadRequest.class, () -> matchApi.getMatchesByTeamIdAndSeasonId(1L, -1L));
 
         final List<Match> matches = this.matchRepository.findAll();
         final Set<Team> teams = new HashSet<>();
@@ -147,16 +130,16 @@ class MatchControllerV2Tests extends D11BootControllerV2Tests {
             seasons.add(match.getMatchWeek().getSeason());
         }
 
-        assertTrue(teams.size() > 1, "MatchController::getMatchesByTeamIdAndSeasonId teams size > 0");
-        assertTrue(seasons.size() > 1, "MatchController::getMatchesByTeamIdAndSeasonId seasons size > 0");
+        assertTrue(teams.size() > 1);
+        assertTrue(seasons.size() > 1);
 
         for (final Team team: teams) {
             for (final Season season : seasons) {
                 final MatchesResponseBodyDTO response = matchApi.getMatchesByTeamIdAndSeasonId(team.getId(),
                                                                                                season.getId());
 
-                assertNotNull(response, "MatchController::getMatchesByTeamIdAndSeasonId not null ");
-                assertFalse(response.getMatches().isEmpty(), "MatchController::getMatchesByTeamIdAndSeasonId empty");
+                assertNotNull(response);
+                assertFalse(response.getMatches().isEmpty());
 
                 final List<Match> expected = matches.stream()
                         .filter(match -> (match.getHomeTeam() == team || match.getAwayTeam() == team)
@@ -164,8 +147,7 @@ class MatchControllerV2Tests extends D11BootControllerV2Tests {
                         .sorted(Comparator.comparing(Match::getDatetime))
                         .toList();
 
-                assertEquals(map(expected, MatchBaseDTO.class), response.getMatches(),
-                             "MatchController::getMatchesByTeamIdAndSeasonId equals");
+                assertEquals(map(expected, MatchBaseDTO.class), response.getMatches());
             }
         }
     }
@@ -192,10 +174,10 @@ class MatchControllerV2Tests extends D11BootControllerV2Tests {
 
         final List<MatchBaseDTO> result = response.getMatches();
 
-        assertNotNull(result, "MatchController::getCurrentMatches not null ");
-        assertFalse(result.isEmpty(), "MatchController::getCurrentMatches empty");
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
 
-        assertEquals(map(expected, MatchBaseDTO.class), result, "MatchController::getCurrentMatches equals");
+        assertEquals(map(expected, MatchBaseDTO.class), result);
     }
 
 }

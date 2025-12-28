@@ -43,8 +43,7 @@ class D11TeamSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
         final D11TeamSeasonStatApi d11TeamSeasonStatApi = getApi(D11TeamSeasonStatApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStatsBySeasonId((Long) null),
-                     "D11TeamSeasonStatController::getD11TeamSeasonStatsBySeasonId seasonId null throws");
+                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStatsBySeasonId((Long) null));
 
         final List<D11TeamSeasonStat> d11TeamSeasonStats = this.d11TeamSeasonStatRepository.findAll();
         d11TeamSeasonStats.sort(Comparator.comparing(D11TeamSeasonStat::getRanking));
@@ -53,27 +52,24 @@ class D11TeamSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
                 .map(D11TeamSeasonStat::getSeason)
                 .collect(Collectors.toSet());
 
-        assertTrue(seasons.size() > 1, "D11TeamSeasonStatController::getD11TeamSeasonStatsBySeasonId seasons size > 0");
+        assertTrue(seasons.size() > 1);
 
         for (final Season season : seasons) {
             final D11TeamSeasonStatsResponseBodyDTO d11TeamSeasonStatsResponseBodyDTO =
                     d11TeamSeasonStatApi.getD11TeamSeasonStatsBySeasonId(season.getId());
-            assertNotNull(d11TeamSeasonStatsResponseBodyDTO,
-                          "D11TeamSeasonStatController::getD11TeamSeasonStatsBySeasonId response not null");
+            assertNotNull(d11TeamSeasonStatsResponseBodyDTO);
 
             final List<D11TeamSeasonStat> expected = d11TeamSeasonStats.stream()
                     .filter(d11TeamSeasonStat -> d11TeamSeasonStat.getSeason().equals(season))
                     .toList();
 
-            assertTrue(expected.size() > 1,
-                       "D11TeamSeasonStatController::getD11TeamSeasonStatsBySeasonId expected size > 1");
+            assertTrue(expected.size() > 1);
 
             final List<D11TeamSeasonStatDTO> result = d11TeamSeasonStatsResponseBodyDTO.getD11TeamSeasonStats();
 
-            assertNotNull(result, "D11TeamSeasonStatController::getD11TeamSeasonStatsBySeasonId not null ");
-            assertFalse(result.isEmpty(), "D11TeamSeasonStatController::getD11TeamSeasonStatsBySeasonId empty");
-            assertEquals(map(expected, D11TeamSeasonStatDTO.class), result,
-                         "D11TeamSeasonStatController::getD11TeamSeasonStatsBySeasonId equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(map(expected, D11TeamSeasonStatDTO.class), result);
         }
     }
 
@@ -86,20 +82,16 @@ class D11TeamSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
         final D11TeamSeasonStatApi d11TeamSeasonStatApi = getApi(D11TeamSeasonStatApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStatByD11TeamIdAndSeasonId(null, 1L),
-                     "D11TeamSeasonStatController::getD11TeamSeasonStatByD11TeamIdAndSeasonId d11TeamId null throws");
+                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStatByD11TeamIdAndSeasonId(null, 1L));
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStatByD11TeamIdAndSeasonId(-1L, 1L),
-                     "D11TeamSeasonStatController::getD11TeamSeasonStatByD11TeamIdAndSeasonId d11TeamId negative throws");
+                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStatByD11TeamIdAndSeasonId(-1L, 1L));
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStatByD11TeamIdAndSeasonId(1L, (Long) null),
-                     "D11TeamSeasonStatController::getD11TeamSeasonStatByD11TeamIdAndSeasonId seasonId null throws");
+                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStatByD11TeamIdAndSeasonId(1L, (Long) null));
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStatByD11TeamIdAndSeasonId(1L, -1L),
-                     "D11TeamSeasonStatController::getD11TeamSeasonStatByD11TeamIdAndSeasonId seasonId negative throws");
+                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStatByD11TeamIdAndSeasonId(1L, -1L));
 
         final List<D11TeamSeasonStat> d11TeamSeasonStats = this.d11TeamSeasonStatRepository.findAll();
         d11TeamSeasonStats.sort(Comparator.comparing(D11TeamSeasonStat::getRanking));
@@ -111,34 +103,28 @@ class D11TeamSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
                 .map(D11TeamSeasonStat::getSeason)
                 .collect(Collectors.toSet());
 
-        assertFalse(d11Teams.isEmpty(),
-                    "D11TeamSeasonStatController::getD11TeamSeasonStatByD11TeamIdAndSeasonId d11Teams empty");
-        assertFalse(seasons.isEmpty(),
-                    "D11TeamSeasonStatController::getD11TeamSeasonStatByD11TeamIdAndSeasonId seasons empty");
+        assertFalse(d11Teams.isEmpty());
+        assertFalse(seasons.isEmpty());
 
         for (final D11Team d11Team : d11Teams) {
             for (final Season season : seasons) {
                 final D11TeamSeasonStatResponseBodyDTO response =
                         d11TeamSeasonStatApi.getD11TeamSeasonStatByD11TeamIdAndSeasonId(d11Team.getId(),
                                                                                         season.getId());
-                assertNotNull(response,
-                              "D11TeamSeasonStatController::getD11TeamSeasonStatByD11TeamIdAndSeasonId response not null");
+                assertNotNull(response);
 
                 final Optional<D11TeamSeasonStat> expected = d11TeamSeasonStats.stream()
                         .filter(teamSeasonStat -> teamSeasonStat.getD11Team().equals(d11Team)
                                                   && teamSeasonStat.getSeason().equals(season))
                         .findAny();
 
-                assertTrue(expected.isPresent(),
-                           "D11TeamSeasonStatController::getD11TeamSeasonStatByD11TeamIdAndSeasonId expected present");
+                assertTrue(expected.isPresent());
 
                 expected.ifPresent(d11TeamSeasonStat -> {
                     final D11TeamSeasonStatDTO result = response.getD11TeamSeasonStat();
 
-                    assertNotNull(result,
-                                  "D11TeamSeasonStatController::getD11TeamSeasonStatByD11TeamIdAndSeasonId not null ");
-                    assertEquals(map(d11TeamSeasonStat, D11TeamSeasonStatDTO.class), result,
-                                 "D11TeamSeasonStatController::getD11TeamSeasonStatByD11TeamIdAndSeasonId equals");
+                    assertNotNull(result);
+                    assertEquals(map(d11TeamSeasonStat, D11TeamSeasonStatDTO.class), result);
                 });
             }
         }

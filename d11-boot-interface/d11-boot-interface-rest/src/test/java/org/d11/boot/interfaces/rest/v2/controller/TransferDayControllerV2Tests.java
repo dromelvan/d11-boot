@@ -51,26 +51,20 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
         final TransferDayApi transferDayApi = getApi(TransferDayApi.class);
         final List<TransferDay> transferDays = this.transferDayRepository.findAll();
 
-        assertFalse(transferDays.isEmpty(), "TransferDayController::getTransferDayById empty");
+        assertFalse(transferDays.isEmpty());
 
         for (final TransferDay transferDay : transferDays) {
             final TransferDayResponseBodyDTO result = transferDayApi.getTransferDayById(transferDay.getId());
-            assertNotNull(result, "TransferDayController::getTransferDayById not null");
+            assertNotNull(result);
 
-            assertEquals(getMapper().map(transferDay, TransferDayDTO.class),
-                         result.getTransferDay(),
-                         "TransferDayController::getTransferDayById equals");
+            assertEquals(getMapper().map(transferDay, TransferDayDTO.class), result.getTransferDay());
             assertEquals(getMapper().map(transferDay.getTransferWindow(), TransferWindowDTO.class),
-                         result.getTransferWindow(),
-                         "TransferDayController::getTransferDayById transferWindow equals");
-            assertEquals(getMapper().map(transferDay.getTransferWindow().getMatchWeek(),
-                                         MatchWeekDTO.class),
-                         result.getMatchWeek(),
-                         "TransferDayController::getTransferDayById matchWeek equals");
+                         result.getTransferWindow());
+            assertEquals(getMapper().map(transferDay.getTransferWindow().getMatchWeek(), MatchWeekDTO.class),
+                         result.getMatchWeek());
         }
 
-        assertThrows(FeignException.NotFound.class, () -> transferDayApi.getTransferDayById(0L),
-                     "TransferDayController::getTransferDayById not found");
+        assertThrows(FeignException.NotFound.class, () -> transferDayApi.getTransferDayById(0L));
     }
 
     /**
@@ -82,19 +76,16 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
 
         final Optional<TransferDay> optional = this.transferDayRepository.findFirstByOrderByDatetimeDesc();
 
-        assertFalse(optional.isEmpty(), "TransferDayController::getCurrentTransferDay transferDay present");
+        assertFalse(optional.isEmpty());
 
         optional.ifPresent(transferDay -> {
             final TransferDayResponseBodyDTO result = transferDayApi.getCurrentTransferDay();
-            assertNotNull(result, "TransferDayController::getCurrentTransferDay not null");
-            assertEquals(getMapper().map(transferDay, TransferDayDTO.class), result.getTransferDay(),
-                         "TransferDayController::getCurrentTransferDay equals");
+            assertNotNull(result);
+            assertEquals(getMapper().map(transferDay, TransferDayDTO.class), result.getTransferDay());
             assertEquals(getMapper().map(transferDay.getTransferWindow(), TransferWindowDTO.class),
-                         result.getTransferWindow(),
-                         "TransferDayController::getCurrentTransferDay transfer window equals");
+                         result.getTransferWindow());
             assertEquals(getMapper().map(transferDay.getTransferWindow().getMatchWeek(), MatchWeekDTO.class),
-                         result.getMatchWeek(),
-                         "TransferDayController::getCurrentTransferDay match week equals");
+                         result.getMatchWeek());
         });
     }
 
@@ -106,11 +97,9 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
         final TransferDayApi transferDayApi = getApi(TransferDayApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> transferDayApi.getTransferDaysByTransferWindowId((Long) null),
-                     "TransferDayController::getTransferDaysByTransferWindowId transferWindowId null throws");
+                     () -> transferDayApi.getTransferDaysByTransferWindowId((Long) null));
         assertThrows(FeignException.BadRequest.class,
-                     () -> transferDayApi.getTransferDaysByTransferWindowId(-1L),
-                     "TransferDayController::getTransferDaysByTransferWindowId transferWindowId negative throws");
+                     () -> transferDayApi.getTransferDaysByTransferWindowId(-1L));
 
         final List<TransferDay> transferDays = this.transferDayRepository.findAll();
         transferDays.sort(Comparator.comparing(TransferDay::getDatetime).reversed());
@@ -122,22 +111,19 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
         for (final TransferWindow transferWindow : transferWindows) {
             final TransferDaysResponseBodyDTO transferDaysResponseBodyDTO =
                     transferDayApi.getTransferDaysByTransferWindowId(transferWindow.getId());
-            assertNotNull(transferDaysResponseBodyDTO,
-                          "TransferDayController::getTransferDaysByTransferWindowId response not null");
+            assertNotNull(transferDaysResponseBodyDTO);
 
             final List<TransferDay> expected = transferDays.stream()
                     .filter(transferDay -> transferDay.getTransferWindow().equals(transferWindow))
                     .toList();
 
-            assertTrue(expected.size() > 1,
-                       "TransferDayController::getTransferDaysByTransferWindowId expected size > 1");
+            assertTrue(expected.size() > 1);
 
             final List<TransferDayDTO> result = transferDaysResponseBodyDTO.getTransferDays();
 
-            assertNotNull(result, "TransferDayController::getTransferDaysByTransferWindowId not null ");
-            assertFalse(result.isEmpty(), "TransferDayController::getTransferDaysByTransferWindowId empty");
-            assertEquals(map(expected, TransferDayDTO.class), result,
-                         "TransferDayController::getTransferDaysByTransferWindowId equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(map(expected, TransferDayDTO.class), result);
         }
     }
 
@@ -157,13 +143,10 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
 
         final FeignException.BadRequest e =
                 assertThrows(FeignException.BadRequest.class,
-                             () -> transferDayApi.updateTransferDay(1L, requestBodyDTO),
-                             "TransferDayControllerV2::updateTransferDay transferDayNumber null throws");
+                             () -> transferDayApi.updateTransferDay(1L, requestBodyDTO));
 
-        assertTrue(e.getMessage().contains("transferDay.transferDayNumber"),
-                   "TransferDayControllerV2::updateTransferDay transferDayNumber null property equals");
-        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING.getMessage()),
-                   "TransferDayControllerV2::updateTransferDay transferDayNumber null message contains");
+        assertTrue(e.getMessage().contains("transferDay.transferDayNumber"));
+        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING.getMessage()));
     }
 
     /**
@@ -180,13 +163,10 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
 
         final FeignException.BadRequest e =
                 assertThrows(FeignException.BadRequest.class,
-                             () -> transferDayApi.updateTransferDay(1L, requestBodyDTO),
-                             "TransferDayControllerV2::updateTransferDay status null throws");
+                             () -> transferDayApi.updateTransferDay(1L, requestBodyDTO));
 
-        assertTrue(e.getMessage().contains("transferDay.status"),
-                   "TransferDayControllerV2::updateTransferDay status null property equals");
-        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING.getMessage()),
-                   "TransferDayControllerV2::updateTransferDay status null message contains");
+        assertTrue(e.getMessage().contains("transferDay.status"));
+        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING.getMessage()));
     }
 
     /**
@@ -204,13 +184,10 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
 
         final FeignException.BadRequest e =
                 assertThrows(FeignException.BadRequest.class,
-                             () -> transferDayApi.updateTransferDay(1L, requestBodyDTO),
-                             "TransferDayControllerV2::updateTransferDay status invalid throws");
+                             () -> transferDayApi.updateTransferDay(1L, requestBodyDTO));
 
-        assertTrue(e.getMessage().contains("transferDay.status"),
-                   "TransferDayControllerV2::updateTransferDay status invalid property equals");
-        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_INVALID_PARAMETER.getMessage()),
-                   "TransferDayControllerV2::updateTransferDay status invalid message contains");
+        assertTrue(e.getMessage().contains("transferDay.status"));
+        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_INVALID_PARAMETER.getMessage()));
     }
 
     /**
@@ -227,13 +204,10 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
 
         final FeignException.BadRequest e =
                 assertThrows(FeignException.BadRequest.class,
-                             () -> transferDayApi.updateTransferDay(1L, requestBodyDTO),
-                             "TransferDayControllerV2::updateTransferDay datetime null throws");
+                             () -> transferDayApi.updateTransferDay(1L, requestBodyDTO));
 
-        assertTrue(e.getMessage().contains("transferDay.datetime"),
-                   "TransferDayControllerV2::updateTransferDay datetime null property equals");
-        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING.getMessage()),
-                   "TransferDayControllerV2::updateTransferDay datetime null message contains");
+        assertTrue(e.getMessage().contains("transferDay.datetime"));
+        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_PROPERTY_IS_MISSING.getMessage()));
     }
 
     /**
@@ -249,9 +223,7 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
                                      .status(StatusDTO.FINISHED)
                                      .datetime(LocalDateTime.now()));
 
-        assertThrows(FeignException.Unauthorized.class,
-                     () -> transferDayApi.updateTransferDay(1L, requestBodyDTO),
-                     "TransferDayControllerV2::updateTransferDay unauthorized throws");
+        assertThrows(FeignException.Unauthorized.class, () -> transferDayApi.updateTransferDay(1L, requestBodyDTO));
     }
 
     /**
@@ -267,9 +239,7 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
                                      .status(StatusDTO.FINISHED)
                                      .datetime(LocalDateTime.now()));
 
-        assertThrows(FeignException.Forbidden.class,
-                     () -> transferDayApi.updateTransferDay(1L, requestBodyDTO),
-                     "TransferDayControllerV2::updateTransferDay forbidden throws");
+        assertThrows(FeignException.Forbidden.class, () -> transferDayApi.updateTransferDay(1L, requestBodyDTO));
     }
 
     /**
@@ -285,9 +255,7 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
                                      .status(StatusDTO.FINISHED)
                                      .datetime(LocalDateTime.now()));
 
-        assertThrows(FeignException.NotFound.class,
-                     () -> transferDayApi.updateTransferDay(-1L, requestBodyDTO),
-                     "TransferDayControllerV2::updateTransferDay not found throws");
+        assertThrows(FeignException.NotFound.class, () -> transferDayApi.updateTransferDay(-1L, requestBodyDTO));
     }
 
     /**
@@ -307,12 +275,9 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
 
         final TransferDayResponseBodyDTO response = transferDayApi.updateTransferDay(1L, requestBodyDTO);
 
-        assertEquals(transferDayInputDTO.getTransferDayNumber(), response.getTransferDay().getTransferDayNumber(),
-                     "TransferDayController::updateTransferDay result transferDayNumber equals");
-        assertEquals(transferDayInputDTO.getStatus().name(), response.getTransferDay().getStatus().name(),
-                     "TransferDayController::updateTransferDay result status equals");
-        assertEquals(transferDayInputDTO.getDatetime(), response.getTransferDay().getDatetime(),
-                     "TransferDayController::updateTransferDay result datetime equals");
+        assertEquals(transferDayInputDTO.getTransferDayNumber(), response.getTransferDay().getTransferDayNumber());
+        assertEquals(transferDayInputDTO.getStatus().name(), response.getTransferDay().getStatus().name());
+        assertEquals(transferDayInputDTO.getDatetime(), response.getTransferDay().getDatetime());
     }
 
     /**
@@ -329,13 +294,10 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
 
         final FeignException.BadRequest e =
                 assertThrows(FeignException.BadRequest.class,
-                             () -> transferDayApi.updateTransferDayStatus(1L, requestBodyDTO),
-                             "TransferDayControllerV2::updateTransferDayStatus status invalid throws");
+                             () -> transferDayApi.updateTransferDayStatus(1L, requestBodyDTO));
 
-        assertTrue(e.getMessage().contains("transferDay.status"),
-                   "TransferDayControllerV2::updateTransferDayStatus status invalid property equals");
-        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_INVALID_PARAMETER.getMessage()),
-                   "TransferDayControllerV2::updateTransferDayStatus status invalid message contains");
+        assertTrue(e.getMessage().contains("transferDay.status"));
+        assertTrue(e.getMessage().contains(ErrorCode.BAD_REQUEST_INVALID_PARAMETER.getMessage()));
     }
 
     /**
@@ -350,8 +312,7 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
                                      .status(StatusDTO.FINISHED));
 
         assertThrows(FeignException.Unauthorized.class,
-                     () -> transferDayApi.updateTransferDayStatus(1L, requestBodyDTO),
-                     "TransferDayControllerV2::updateTransferDayStatus unauthorized throws");
+                     () -> transferDayApi.updateTransferDayStatus(1L, requestBodyDTO));
     }
 
     /**
@@ -365,9 +326,7 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
                 .transferDay(new TransferDayStatusInputDTO()
                                      .status(StatusDTO.FINISHED));
 
-        assertThrows(FeignException.Forbidden.class,
-                     () -> transferDayApi.updateTransferDayStatus(1L, requestBodyDTO),
-                     "TransferDayControllerV2::updateTransferDayStatus forbidden throws");
+        assertThrows(FeignException.Forbidden.class, () -> transferDayApi.updateTransferDayStatus(1L, requestBodyDTO));
     }
 
     /**
@@ -381,9 +340,7 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
                 .transferDay(new TransferDayStatusInputDTO()
                                      .status(StatusDTO.FINISHED));
 
-        assertThrows(FeignException.NotFound.class,
-                     () -> transferDayApi.updateTransferDayStatus(-1L, requestBodyDTO),
-                     "TransferDayControllerV2::updateTransferDayStatus not found throws");
+        assertThrows(FeignException.NotFound.class, () -> transferDayApi.updateTransferDayStatus(-1L, requestBodyDTO));
     }
 
     /**
@@ -400,10 +357,8 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
 
         final FeignException.Conflict e =
                 assertThrows(FeignException.Conflict.class,
-                             () -> transferDayApi.updateTransferDayStatus(1L, requestBodyDTO),
-                             "TransferDayControllerV2::updateTransferDayStatus invalid status transition throws");
-        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS.getMessage()),
-                   "TransferDayControllerV2::updateTransferDayStatus invalid status transition message contains");
+                             () -> transferDayApi.updateTransferDayStatus(1L, requestBodyDTO));
+        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS.getMessage()));
     }
 
     /**
@@ -420,8 +375,7 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
 
         final TransferDayResponseBodyDTO response = transferDayApi.updateTransferDayStatus(1L, requestBodyDTO);
 
-        assertEquals(transferDayInputDTO.getStatus().name(), response.getTransferDay().getStatus().name(),
-                     "TransferDayController::updateTransferDayStatus result status equals");
+        assertEquals(transferDayInputDTO.getStatus().name(), response.getTransferDay().getStatus().name());
 
         transferDayInputDTO.setStatus(StatusDTO.FINISHED);
         transferDayApi.updateTransferDayStatus(1L, requestBodyDTO);

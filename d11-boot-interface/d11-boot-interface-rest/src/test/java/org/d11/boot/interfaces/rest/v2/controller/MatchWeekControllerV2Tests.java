@@ -42,19 +42,16 @@ class MatchWeekControllerV2Tests extends D11BootControllerV2Tests {
     void testGetMatchWeekById() {
         final MatchWeekApi matchWeekApi = getApi(MatchWeekApi.class);
 
-        assertThrows(FeignException.NotFound.class, () -> matchWeekApi.getMatchWeekById(0L),
-                "MatchWeekController::getMatchWeekById not found");
+        assertThrows(FeignException.NotFound.class, () -> matchWeekApi.getMatchWeekById(0L));
 
         final List<MatchWeek> matchWeeks = this.matchWeekRepository.findAll();
 
-        assertFalse(matchWeeks.isEmpty(), "MatchWeekController::getMatchWeekById matchWeeks not empty");
+        assertFalse(matchWeeks.isEmpty());
 
         for (final MatchWeek matchWeek : matchWeeks) {
             final MatchWeekResponseBodyDTO result = matchWeekApi.getMatchWeekById(matchWeek.getId());
-            assertNotNull(result, "MatchWeekController::getMatchWeekById not null");
-            assertEquals(getMapper().map(matchWeek, MatchWeekDTO.class),
-                         result.getMatchWeek(),
-                         "MatchWeekController::getMatchWeekById equals");
+            assertNotNull(result);
+            assertEquals(getMapper().map(matchWeek, MatchWeekDTO.class), result.getMatchWeek());
         }
     }
 
@@ -68,14 +65,12 @@ class MatchWeekControllerV2Tests extends D11BootControllerV2Tests {
         final Optional<MatchWeek> optional =
                 this.matchWeekRepository.findFirstByDateLessThanEqualOrderByDateDesc(LocalDate.now());
 
-        assertFalse(optional.isEmpty(), "MatchWeekController::getCurrentMatchWeek matchWeek present");
+        assertFalse(optional.isEmpty());
 
         optional.ifPresent(matchWeek -> {
             final MatchWeekResponseBodyDTO result = matchWeekApi.getCurrentMatchWeek();
-            assertNotNull(result, "MatchWeekController::getCurrentMatchWeek not null");
-            assertEquals(getMapper().map(matchWeek, MatchWeekDTO.class),
-                         result.getMatchWeek(),
-                         "MatchWeekController::getCurrentMatchWeek equals");
+            assertNotNull(result);
+            assertEquals(getMapper().map(matchWeek, MatchWeekDTO.class), result.getMatchWeek());
         });
     }
 
@@ -86,8 +81,7 @@ class MatchWeekControllerV2Tests extends D11BootControllerV2Tests {
     void testGetMatchWeeksBySeasonId() {
         final MatchWeekApi matchWeekApi = getApi(MatchWeekApi.class);
 
-        assertThrows(FeignException.BadRequest.class, () -> matchWeekApi.getMatchWeeksBySeasonId((Long) null),
-                     "MatchWeekController::getMatchWeeksBySeasonId seasonId null throws");
+        assertThrows(FeignException.BadRequest.class, () -> matchWeekApi.getMatchWeeksBySeasonId((Long) null));
 
         final List<MatchWeek> matchWeeks = this.matchWeekRepository.findAll();
         matchWeeks.sort(Comparator.comparing(MatchWeek::getDate));
@@ -96,25 +90,24 @@ class MatchWeekControllerV2Tests extends D11BootControllerV2Tests {
                 .map(MatchWeek::getSeason)
                 .collect(Collectors.toSet());
 
-        assertTrue(seasons.size() > 1, "MatchWeekController::getMatchWeeksBySeasonId seasons size > 0");
+        assertTrue(seasons.size() > 1);
 
         for (final Season season : seasons) {
             final MatchWeeksResponseBodyDTO matchWeeksResponseBodyDTO =
                     matchWeekApi.getMatchWeeksBySeasonId(season.getId());
-            assertNotNull(matchWeeksResponseBodyDTO, "MatchWeekController::getMatchWeeksBySeasonId response not null");
+            assertNotNull(matchWeeksResponseBodyDTO);
 
             final List<MatchWeek> expected = matchWeeks.stream()
                     .filter(matchWeek -> matchWeek.getSeason().equals(season))
                     .toList();
 
-            assertTrue(expected.size() > 1, "MatchWeekController::getMatchWeeksBySeasonId expected size > 1");
+            assertTrue(expected.size() > 1);
 
             final List<MatchWeekDTO> result = matchWeeksResponseBodyDTO.getMatchWeeks();
 
-            assertNotNull(result, "MatchWeekController::getMatchWeeksBySeasonId not null ");
-            assertFalse(result.isEmpty(), "MatchWeekController::getMatchWeeksBySeasonId empty");
-            assertEquals(map(expected, MatchWeekDTO.class), result,
-                         "MatchWeekController::getMatchWeeksBySeasonId equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(map(expected, MatchWeekDTO.class), result);
         }
     }
 

@@ -87,8 +87,8 @@ class D11BootServiceTests extends BaseD11BootServiceTests {
 
         final UserRepository result = d11BootService.getRepository(UserRepository.class);
 
-        assertNotNull(result, "D11BootService::getRepository result not null");
-        assertEquals(this.userRepository, result, "D11BootService::getRepository result equals");
+        assertNotNull(result);
+        assertEquals(this.userRepository, result);
 
         verify(this.applicationContext, times(1)).getBean(eq(UserRepository.class));
     }
@@ -100,14 +100,12 @@ class D11BootServiceTests extends BaseD11BootServiceTests {
     void testGetCurrentUser() {
         final D11BootService d11BootService = new D11BootService();
 
-        assertFalse(d11BootService.getCurrentUser().isPresent(),
-                    "D11BootService::getCurrentUser no authentication present");
+        assertFalse(d11BootService.getCurrentUser().isPresent());
 
         SecurityContextHolder.getContext().setAuthentication(this.authentication);
         when(this.authentication.getPrincipal()).thenReturn(this.authentication);
 
-        assertFalse(d11BootService.getCurrentUser().isPresent(),
-                    "D11BootService::getCurrentUser non JWT authentication present");
+        assertFalse(d11BootService.getCurrentUser().isPresent());
 
         when(this.authentication.getPrincipal()).thenReturn(this.jwt);
         when(this.applicationContext.getBean(eq(UserRepository.class))).thenReturn(this.userRepository);
@@ -122,8 +120,8 @@ class D11BootServiceTests extends BaseD11BootServiceTests {
 
         final User result = d11BootService.getCurrentUser().orElse(null);
 
-        assertNotNull(result, "D11BootService::getCurrentUser result not null");
-        assertEquals(user, result, "D11BootService::getCurrentUser result equals");
+        assertNotNull(result);
+        assertEquals(user, result);
     }
 
     /**
@@ -136,8 +134,7 @@ class D11BootServiceTests extends BaseD11BootServiceTests {
         when(this.applicationContext.getBean(eq(SeasonRepository.class))).thenReturn(this.seasonRepository);
         d11BootService.setApplicationContext(this.applicationContext);
 
-        assertThrows(ConflictException.class, d11BootService::getCurrentSeason,
-                     "D11BootService::getCurrentSeason throws");
+        assertThrows(ConflictException.class, d11BootService::getCurrentSeason);
 
         final Season season = generate(Season.class);
 
@@ -145,7 +142,7 @@ class D11BootServiceTests extends BaseD11BootServiceTests {
 
         final Season result = d11BootService.getCurrentSeason();
 
-        assertEquals(season, result, "D11BootService::getCurrentSeason result equals");
+        assertEquals(season, result);
 
         verify(this.seasonRepository, times(2)).findFirstByOrderByDateDesc();
     }
@@ -160,8 +157,7 @@ class D11BootServiceTests extends BaseD11BootServiceTests {
         when(this.applicationContext.getBean(eq(D11TeamRepository.class))).thenReturn(this.d11TeamRepository);
         d11BootService.setApplicationContext(this.applicationContext);
 
-        assertThrows(ConflictException.class, d11BootService::getDefaultD11Team,
-                     "D11BootService::getDefaultD11Team throws");
+        assertThrows(ConflictException.class, d11BootService::getDefaultD11Team);
 
         final D11Team d11Team = generate(D11Team.class);
 
@@ -169,7 +165,7 @@ class D11BootServiceTests extends BaseD11BootServiceTests {
 
         final D11Team result = d11BootService.getDefaultD11Team();
 
-        assertEquals(d11Team, result, "D11BootService::getDefaultD11Team result equals");
+        assertEquals(d11Team, result);
 
         verify(this.d11TeamRepository, times(2)).findById(eq(D11Team.DEFAULT_D11_TEAM_ID));
     }
@@ -184,8 +180,7 @@ class D11BootServiceTests extends BaseD11BootServiceTests {
         when(this.applicationContext.getBean(eq(TeamRepository.class))).thenReturn(this.teamRepository);
         d11BootService.setApplicationContext(this.applicationContext);
 
-        assertThrows(ConflictException.class, d11BootService::getDefaultTeam,
-                     "D11BootService::getDefaultTeam throws");
+        assertThrows(ConflictException.class, d11BootService::getDefaultTeam);
 
         final Team team = generate(Team.class);
 
@@ -193,7 +188,7 @@ class D11BootServiceTests extends BaseD11BootServiceTests {
 
         final Team result = d11BootService.getDefaultTeam();
 
-        assertEquals(team, result, "D11BootService::getDefaultTeam result equals");
+        assertEquals(team, result);
 
         verify(this.teamRepository, times(2)).findById(eq(Team.DEFAULT_TEAM_ID));
     }

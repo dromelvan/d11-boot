@@ -20,45 +20,44 @@ class SeasonTests extends EasyRandomTests {
      * Tests Season::isValid.
      */
     @Test
-    @SuppressWarnings("DataFlowIssue")
     void testIsValid() {
         final Season season = generate(Season.class);
 
-        assertTrue(season.isValid(), "Season::isValid");
+        assertTrue(season.isValid());
 
         season.setName("");
-        assertFalse(season.isValid(), "Season::isValid name empty");
+        assertFalse(season.isValid());
         season.setName(null);
-        assertFalse(season.isValid(), "Season::isValid name null");
-        assertNull(season.getShortName(), "Season::getShortName name null");
+        assertFalse(season.isValid());
+        assertNull(season.getShortName());
         season.setName("INVALID_NAME");
-        assertFalse(season.isValid(), "Season::isValid name invalid");
+        assertFalse(season.isValid());
         season.setName("1002-1001");
-        assertFalse(season.isValid(), "Season::isValid year interval invalid");
+        assertFalse(season.isValid());
         season.setName("1000-1001");
-        assertEquals(season.getShortName(), "00-01", "Season::getShortName");
-        assertTrue(season.isValid(), "Season::isValid name valid");
+        assertEquals("00-01", season.getShortName());
+        assertTrue(season.isValid());
 
         season.setD11TeamBudget(0);
-        assertFalse(season.isValid(), "Season::isValid team budget non positive");
+        assertFalse(season.isValid());
         season.setD11TeamBudget(1);
-        assertTrue(season.isValid(), "Season::isValid team budget valid");
+        assertTrue(season.isValid());
 
         season.setD11TeamMaxTransfers(-1);
-        assertFalse(season.isValid(), "Season::isValid max transfers negative");
+        assertFalse(season.isValid());
         season.setD11TeamMaxTransfers(1);
-        assertTrue(season.isValid(), "Season::isValid max transfers valid");
+        assertTrue(season.isValid());
 
         season.setStatus(null);
-        assertFalse(season.isValid(), "Season::isValid status null");
+        assertFalse(season.isValid());
         season.setStatus(Status.PENDING);
-        assertTrue(season.isValid(), "Season::isValid status valid");
+        assertTrue(season.isValid());
 
         season.setDate(null);
-        assertFalse(season.isValid(), "Season::isValid date null");
+        assertFalse(season.isValid());
         season.setDate(LocalDate.now());
 
-        assertTrue(season.isValid(), "Season::isValid valid");
+        assertTrue(season.isValid());
     }
 
 }

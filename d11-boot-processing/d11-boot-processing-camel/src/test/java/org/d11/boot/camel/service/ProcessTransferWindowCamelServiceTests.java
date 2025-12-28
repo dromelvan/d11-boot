@@ -51,8 +51,8 @@ class ProcessTransferWindowCamelServiceTests extends BaseD11BootServiceTests {
         final TransferWindow result =
                 this.processTransferWindowCamelService.createTransferWindow(LocalDateTime.now(), 1);
 
-        assertNotNull(result, "ProcessTransferWindowCamelService::createTransferWindow not null");
-        assertEquals(transferWindow, result, "ProcessTransferWindowCamelService::createTransferWindow equals");
+        assertNotNull(result);
+        assertEquals(transferWindow, result);
     }
 
 }

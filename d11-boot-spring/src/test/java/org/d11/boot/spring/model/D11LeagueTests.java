@@ -15,23 +15,22 @@ class D11LeagueTests extends EasyRandomTests {
      * Tests D11League::isValid.
      */
     @Test
-    @SuppressWarnings("DataFlowIssue")
     void testIsValid() {
         final D11League d11League = generate(D11League.class);
 
-        assertTrue(d11League.isValid(), "D11League::isValid");
+        assertTrue(d11League.isValid());
 
         d11League.setName("");
-        assertFalse(d11League.isValid(), "D11League::isValid name empty");
+        assertFalse(d11League.isValid());
         d11League.setName(null);
-        assertFalse(d11League.isValid(), "D11League::isValid name null");
+        assertFalse(d11League.isValid());
         d11League.setName("Name");
 
         d11League.setSeason(null);
-        assertFalse(d11League.isValid(), "D11League::isValid season null");
+        assertFalse(d11League.isValid());
         d11League.setSeason(new Season());
 
-        assertTrue(d11League.isValid(), "D11League::isValid valid");
+        assertTrue(d11League.isValid());
     }
 
 }

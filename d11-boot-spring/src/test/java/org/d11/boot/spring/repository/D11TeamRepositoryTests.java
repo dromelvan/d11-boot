@@ -25,8 +25,8 @@ class D11TeamRepositoryTests extends AbstractRepositoryTests<D11Team, D11TeamRep
 
         final List<D11Team> result = getRepository().findByOrderByName();
 
-        assertNotNull(result, "D11TeamRepository::findByOrderByName not null");
-        assertEquals(d11Teams, result, "D11TeamRepository::findByOrderByName");
+        assertNotNull(result);
+        assertEquals(d11Teams, result);
     }
 
 }

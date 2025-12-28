@@ -53,30 +53,22 @@ class D11MatchServiceTests extends BaseD11BootServiceTests {
         final String d11TeamIdProperty = "d11TeamId";
 
         final BadRequestException nullD11TeamIdException =
-                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByD11TeamIdAndSeasonId(null, 1L),
-                             "D11MatchService::getByD11TeamIdAmdSeasonId null d11TeamId throws");
-        assertEquals(d11TeamIdProperty, nullD11TeamIdException.getParameter(),
-                     "D11MatchService::getByD11TeamIdAmdSeasonId property equals null d11TeamId");
+                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByD11TeamIdAndSeasonId(null, 1L));
+        assertEquals(d11TeamIdProperty, nullD11TeamIdException.getParameter());
 
         final BadRequestException invalidD11TeamIdException =
-                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByD11TeamIdAndSeasonId(-1L, 1L),
-                             "D11MatchService::getByD11TeamIdAmdSeasonId invalid d11TeamId throws");
-        assertEquals(d11TeamIdProperty, invalidD11TeamIdException.getParameter(),
-                     "D11MatchService::getByD11TeamIdAmdSeasonId property equals invalid d11TeamId");
+                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByD11TeamIdAndSeasonId(-1L, 1L));
+        assertEquals(d11TeamIdProperty, invalidD11TeamIdException.getParameter());
 
         final String seasonIdProperty = "seasonId";
 
         final BadRequestException nullSeasonIdException =
-                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByD11TeamIdAndSeasonId(1L, null),
-                             "D11MatchService::getByD11TeamIdAmdSeasonId null seasonId throws");
-        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter(),
-                     "D11MatchService::getByD11TeamIdAmdSeasonId property equals null seasonId");
+                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByD11TeamIdAndSeasonId(1L, null));
+        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter());
 
         final BadRequestException invalidSeasonIdException =
-                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByD11TeamIdAndSeasonId(1L, -1L),
-                             "D11MatchService::getByD11TeamIdAmdSeasonId invalid seasonId throws");
-        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter(),
-                     "D11MatchService::getByD11TeamIdAmdSeasonId property equals invalid seasonId");
+                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByD11TeamIdAndSeasonId(1L, -1L));
+        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter());
 
         // Success -----------------------------------------------------------------------------------------------------
 
@@ -87,9 +79,9 @@ class D11MatchServiceTests extends BaseD11BootServiceTests {
 
         final List<D11Match> result = this.d11MatchService.getByD11TeamIdAndSeasonId(1L, 1L);
 
-        assertNotNull(result, "D11MatchService::getByD11TeamIdAmdSeasonId not null");
-        assertFalse(result.isEmpty(), "D11MatchService::getByD11TeamIdAmdSeasonId isEmpty");
-        assertEquals(d11Matches, result, "D11MatchService::getByD11TeamIdAmdSeasonId equals");
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(d11Matches, result);
     }
 
     /**
@@ -102,16 +94,12 @@ class D11MatchServiceTests extends BaseD11BootServiceTests {
         final String matchWeekIdProperty = "matchWeekId";
 
         final BadRequestException nullMatchWeekIdException =
-                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByMatchWeekId(null),
-                        "D11MatchService::getByMatchWeekId null matchWeekId throws");
-        assertEquals(matchWeekIdProperty, nullMatchWeekIdException.getParameter(),
-                     "D11MatchService::getByMatchWeekId property equals null matchWeekId");
+                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByMatchWeekId(null));
+        assertEquals(matchWeekIdProperty, nullMatchWeekIdException.getParameter());
 
         final BadRequestException invalidMatchWeekIdException =
-                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByMatchWeekId(-1L),
-                        "D11MatchService::getByMatchWeekId invalid matchWeekId throws");
-        assertEquals(matchWeekIdProperty, invalidMatchWeekIdException.getParameter(),
-                     "D11MatchService::getByMatchWeekId property equals invalid matchWeekId");
+                assertThrows(BadRequestException.class, () -> this.d11MatchService.getByMatchWeekId(-1L));
+        assertEquals(matchWeekIdProperty, invalidMatchWeekIdException.getParameter());
 
         // Success -----------------------------------------------------------------------------------------------------
 
@@ -122,9 +110,9 @@ class D11MatchServiceTests extends BaseD11BootServiceTests {
 
         final List<D11Match> result = this.d11MatchService.getByMatchWeekId(1L);
 
-        assertNotNull(result, "D11MatchService::getByMatchWeekId not null");
-        assertFalse(result.isEmpty(), "D11MatchService::getByMatchWeekId isEmpty");
-        assertEquals(d11Matches, result, "D11MatchService::getByMatchWeekId equals");
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(d11Matches, result);
     }
 
     /**
@@ -143,9 +131,9 @@ class D11MatchServiceTests extends BaseD11BootServiceTests {
 
         final List<D11Match> result = this.d11MatchService.getCurrentD11Matches();
 
-        assertNotNull(result, "D11MatchService::getCurrentD11Matches not null");
-        assertFalse(result.isEmpty(), "D11MatchService::getCurrentD11Matches isEmpty");
-        assertEquals(d11Matches, result, "D11MatchService::getCurrentD11Matches equals");
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(d11Matches, result);
     }
 
 }

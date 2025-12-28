@@ -52,22 +52,11 @@ class PlayerTransferContextControllerV2Test extends D11BootControllerV2Tests {
                     playerTransferContextApi.getPlayerTransferContextByPlayerId(player.getId())
                             .getPlayerTransferContext();
 
-            assertNull(result.getPlayerId(), """
-                    PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId unauthorized playerId null
-                    """);
-            assertFalse(result.isTransferListable(), """
-                    PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId unauthorized transferListable
-                    """);
-            assertNull(result.getDeletableTransferListingId(), """ 
-                    PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId unauthorized
-                    deletableTransferListingId null
-                    """);
-            assertEquals(0, result.getMaxBid(),
-                    "PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId unauthorized maxBid equals");
-            assertNull(result.getActiveTransferBid(), """
-                    PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId unauthorized
-                    activeTransferBidId null
-                    """);
+            assertNull(result.getPlayerId());
+            assertFalse(result.isTransferListable());
+            assertNull(result.getDeletableTransferListingId());
+            assertEquals(0, result.getMaxBid());
+            assertNull(result.getActiveTransferBid());
         }
     }
 
@@ -79,8 +68,7 @@ class PlayerTransferContextControllerV2Test extends D11BootControllerV2Tests {
         final PlayerTransferContextApi playerTransferContextApi = getUserApi(PlayerTransferContextApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                () -> playerTransferContextApi.getPlayerTransferContextByPlayerId(null),
-                "PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId playerId null throws");
+                () -> playerTransferContextApi.getPlayerTransferContextByPlayerId(null));
     }
 
     /**
@@ -102,74 +90,39 @@ class PlayerTransferContextControllerV2Test extends D11BootControllerV2Tests {
             final PlayerTransferContext expected = this.playerTransferContextRepository
                     .findByPlayerIdAndOwnerId(player.getId(), 1L).orElse(null);
 
-            assertNotNull(result,
-                          "PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId result not null");
+            assertNotNull(result);
 
             if (expected == null) {
-                assertNull(result.getPlayerId(), """
-                        PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId not found playerId null
-                        """);
-                assertFalse(result.isTransferListable(), """
-                        PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId not found transferListable
-                        """);
-                assertNull(result.getDeletableTransferListingId(), """
-                        PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId not found
-                        deletableTransferListingId null
-                        """);
-                assertEquals(0, result.getMaxBid(), """
-                        PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId not found maxBid equals
-                        """);
-                assertNull(result.getActiveTransferBid(), """
-                        PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId not found
-                        activeTransferBidId null
-                        """);
+                assertNull(result.getPlayerId());
+                assertFalse(result.isTransferListable());
+                assertNull(result.getDeletableTransferListingId());
+                assertEquals(0, result.getMaxBid());
+                assertNull(result.getActiveTransferBid());
             } else {
                 ++expectedCount;
 
-                assertEquals(expected.getPlayer().getId(), result.getPlayerId(), """
-                        PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId playerId equals
-                        """);
-                assertEquals(expected.isTransferListable(), result.isTransferListable(), """
-                        PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId transferListable
-                        """);
+                assertEquals(expected.getPlayer().getId(), result.getPlayerId());
+                assertEquals(expected.isTransferListable(), result.isTransferListable());
 
                 if (expected.getDeletableTransferListing() == null) {
-                    assertNull(result.getDeletableTransferListingId(), """
-                            PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId
-                            deletableTransferListing null deletableTransferListingId null
-                            """);
+                    assertNull(result.getDeletableTransferListingId());
                 } else {
-                    assertEquals(expected.getDeletableTransferListing().getId(), result.getDeletableTransferListingId(),
-                                         """
-                                         PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId
-                                         deletableTransferListingId eq
-                                         """);
+                    assertEquals(expected.getDeletableTransferListing().getId(),
+                                 result.getDeletableTransferListingId());
                 }
 
-                assertEquals(expected.getMaxBid(), result.getMaxBid(), """
-                        PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId maxBid equals
-                        """);
+                assertEquals(expected.getMaxBid(), result.getMaxBid());
 
                 if (expected.getActiveTransferBid() == null) {
-                    assertNull(result.getActiveTransferBid(), """
-                            PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId activeTransferBid null
-                            activeTransferBidId null
-                            """);
+                    assertNull(result.getActiveTransferBid());
                 } else {
-                    assertEquals(expected.getActiveTransferBid().getId(), result.getActiveTransferBid().getId(), """
-                            PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId activeTransferBid.id
-                            equals
-                            """);
-                    assertEquals(expected.getActiveTransferBid().getFee(), result.getActiveTransferBid().getFee(), """
-                            PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId activeTransferBid.fee
-                            equals
-                            """);
+                    assertEquals(expected.getActiveTransferBid().getId(), result.getActiveTransferBid().getId());
+                    assertEquals(expected.getActiveTransferBid().getFee(), result.getActiveTransferBid().getFee());
                 }
             }
         }
 
-        assertTrue(expectedCount > 0,
-                   "PlayerTransferContextControllerV2::getPlayerTransferContextByPlayerId valid test setup");
+        assertTrue(expectedCount > 0);
     }
 
 }

@@ -35,15 +35,13 @@ class D11MatchRepositoryTests extends AbstractRepositoryTests<D11Match, D11Match
                 .map(D11Match::getMatchWeek)
                 .collect(Collectors.toSet());
 
-        assertTrue(matchWeeks.size() > 1,
-                   "D11MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime matchWeeks size > 1");
+        assertTrue(matchWeeks.size() > 1);
 
         final Set<Status> statuses = d11Matches.stream()
               .map(D11Match::getStatus)
               .collect(Collectors.toSet());
 
-        assertTrue(statuses.size() > 1,
-                   "D11MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime statuses size > 1");
+        assertTrue(statuses.size() > 1);
 
         matchWeeks.forEach(matchWeek -> {
             final List<D11Match> expected = d11Matches.stream()
@@ -53,17 +51,15 @@ class D11MatchRepositoryTests extends AbstractRepositoryTests<D11Match, D11Match
             final List<D11Match> result =
                     getRepository().findByMatchWeekIdOrStatusInOrderByDatetime(matchWeek.getId(), Set.of());
 
-            assertNotNull(result, "D11MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime not null");
-            assertEquals(expected, result, "D11MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime equals");
+            assertNotNull(result);
+            assertEquals(expected, result);
 
             final List<D11Match> withStatusResult =
                     getRepository().findByMatchWeekIdOrStatusInOrderByDatetime(matchWeek.getId(),
                                                                                Set.of(Status.values()));
 
-            assertNotNull(result,
-                          "D11MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime with status not null");
-            assertEquals(d11Matches, withStatusResult,
-                         "D11MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime with status equals");
+            assertNotNull(result);
+            assertEquals(d11Matches, withStatusResult);
         });
     }
 
@@ -83,10 +79,8 @@ class D11MatchRepositoryTests extends AbstractRepositoryTests<D11Match, D11Match
                 .map(d11Match -> d11Match.getMatchWeek().getSeason())
                 .collect(Collectors.toSet());
 
-        assertTrue(d11Teams.size() > 1,
-                   "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime d11Teams size > 1");
-        assertTrue(seasons.size() > 1,
-                   "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime seasons size > 1");
+        assertTrue(d11Teams.size() > 1);
+        assertTrue(seasons.size() > 1);
 
         for (final D11Team d11Team : d11Teams) {
             for (final Season season : seasons) {
@@ -100,15 +94,11 @@ class D11MatchRepositoryTests extends AbstractRepositoryTests<D11Match, D11Match
                                             && d11Match.getMatchWeek().getSeason().equals(season))
                         .toList();
 
-                assertTrue(expected.size() > 1,
-                           "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime expected size > 1");
+                assertTrue(expected.size() > 1);
 
-                assertNotNull(result,
-                              "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime not null");
-                assertFalse(result.isEmpty(),
-                            "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime empty");
-                assertEquals(expected, result,
-                             "D11MatchRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByDatetime equals");
+                assertNotNull(result);
+                assertFalse(result.isEmpty());
+                assertEquals(expected, result);
             }
         }
     }
@@ -126,22 +116,20 @@ class D11MatchRepositoryTests extends AbstractRepositoryTests<D11Match, D11Match
                 .map(D11Match::getMatchWeek)
                 .collect(Collectors.toSet());
 
-        assertTrue(matchWeeks.size() > 1,
-                "D11MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc matchWeeks size > 1");
+        assertTrue(matchWeeks.size() > 1);
 
         for (final MatchWeek matchWeek : matchWeeks) {
             final List<D11Match> expected = entities.stream()
                     .filter(d11Match -> d11Match.getMatchWeek().equals(matchWeek))
                     .toList();
 
-            assertTrue(expected.size() > 1,
-                    "D11MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc expected size > 1");
+            assertTrue(expected.size() > 1);
 
             final List<D11Match> result = getRepository().findByMatchWeekIdOrderByDatetimeAscIdAsc(matchWeek.getId());
 
-            assertNotNull(result, "D11MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc not null");
-            assertFalse(result.isEmpty(), "D11MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc empty");
-            assertEquals(expected, result, "D11MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(expected, result);
         }
     }
 

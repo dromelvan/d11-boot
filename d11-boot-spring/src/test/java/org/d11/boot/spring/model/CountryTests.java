@@ -18,26 +18,25 @@ class CountryTests extends EasyRandomTests {
     void testIsValid() {
         final Country country = generate(Country.class);
 
-        assertTrue(country.isValid(), "Country::isValid");
+        assertTrue(country.isValid());
 
         country.setName("");
-        assertFalse(country.isValid(), "Country::isValid name empty");
+        assertFalse(country.isValid());
         country.setName(null);
-        assertFalse(country.isValid(), "Country::isValid name null");
+        assertFalse(country.isValid());
         country.setName("Name");
 
         country.setIso("");
-        assertFalse(country.isValid(), "Country::isValid ISO empty");
-        //noinspection DataFlowIssue
+        assertFalse(country.isValid());
         country.setIso(null);
-        assertFalse(country.isValid(), "Country::isValid ISO null");
+        assertFalse(country.isValid());
         country.setIso("A");
-        assertFalse(country.isValid(), "Country::isValid ISO too short");
+        assertFalse(country.isValid());
         country.setIso("AAA");
-        assertFalse(country.isValid(), "Country::isValid ISO too long");
+        assertFalse(country.isValid());
         country.setIso("AA");
 
-        assertTrue(country.isValid(), "Country::isValid valid");
+        assertTrue(country.isValid());
     }
 
 }

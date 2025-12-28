@@ -50,13 +50,11 @@ class SeasonServiceTests extends BaseD11BootServiceTests {
 
         seasons.forEach(season -> {
             final Season result = this.seasonService.getById(season.getId());
-            assertNotNull(result, "SeasonService::getById not null");
-            assertEquals(season, result, "SeasonService::getById");
+            assertNotNull(result);
+            assertEquals(season, result);
         });
 
-        assertThrows(NotFoundException.class,
-                     () -> this.seasonService.getById(-1L),
-                     "SeasonService::getById not found");
+        assertThrows(NotFoundException.class, () -> this.seasonService.getById(-1L));
     }
 
     /**
@@ -69,9 +67,9 @@ class SeasonServiceTests extends BaseD11BootServiceTests {
 
         final List<Season> result = this.seasonService.getSeasons();
 
-        assertNotNull(result, "SeasonService::getSeasons not null");
-        assertTrue(result.size() >= 2, "SeasonService::getSeasons size");
-        assertEquals(seasons, result, "SeasonService::getSeasons");
+        assertNotNull(result);
+        assertTrue(result.size() >= 2);
+        assertEquals(seasons, result);
     }
 
     /**
@@ -83,8 +81,8 @@ class SeasonServiceTests extends BaseD11BootServiceTests {
         when(this.seasonRepository.findFirstByOrderByDateDesc()).thenReturn(Optional.of(currentSeason));
 
         final Season result = this.seasonService.getCurrentSeason();
-        assertNotNull(result, "SeasonService::getCurrentSeason not null");
-        assertEquals(currentSeason, result, "SeasonService::getCurrentSeason");
+        assertNotNull(result);
+        assertEquals(currentSeason, result);
     }
 
     /**
@@ -101,18 +99,15 @@ class SeasonServiceTests extends BaseD11BootServiceTests {
 
         final Season result = this.seasonService.updateSeason(updatedSeason);
 
-        assertNotNull(result, "SeasonService::updateSeason not null");
-        assertEquals(updatedSeason.getId(), result.getId(), "SeasonService::updateSeason id equals");
-        assertEquals(updatedSeason.getName(), result.getName(), "SeasonService::updateSeason name equals");
-        assertEquals(updatedSeason.getShortName(), result.getShortName(),
-                     "SeasonService::updateSeason shortName equals");
-        assertEquals(updatedSeason.getD11TeamBudget(), result.getD11TeamBudget(),
-                     "SeasonService::updateSeason d11TeamBudget equals");
-        assertEquals(updatedSeason.getD11TeamMaxTransfers(), result.getD11TeamMaxTransfers(),
-                     "SeasonService::updateSeason d11TeamMaxTransfers equals");
-        assertEquals(updatedSeason.getStatus(), result.getStatus(), "SeasonService::updateSeason status equals");
-        assertEquals(updatedSeason.getDate(), result.getDate(), "SeasonService::updateSeason date equals");
-        assertEquals(updatedSeason.isLegacy(), result.isLegacy(), "SeasonService::updateSeason legacy equals");
+        assertNotNull(result);
+        assertEquals(updatedSeason.getId(), result.getId());
+        assertEquals(updatedSeason.getName(), result.getName());
+        assertEquals(updatedSeason.getShortName(), result.getShortName());
+        assertEquals(updatedSeason.getD11TeamBudget(), result.getD11TeamBudget());
+        assertEquals(updatedSeason.getD11TeamMaxTransfers(), result.getD11TeamMaxTransfers());
+        assertEquals(updatedSeason.getStatus(), result.getStatus());
+        assertEquals(updatedSeason.getDate(), result.getDate());
+        assertEquals(updatedSeason.isLegacy(), result.isLegacy());
 
         verify(this.seasonRepository, times(1)).findById(eq(season.getId()));
         verify(this.seasonRepository, times(1)).save(eq(season));

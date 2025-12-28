@@ -20,51 +20,51 @@ class PlayerSeasonStatTests extends EasyRandomTests {
      * Tests PlayerSeasonStat::isValid.
      */
     @Test
-    @SuppressWarnings({ "DataFlowIssue", "checkstyle:ExecutableStatementCount" })
+    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     void testIsValid() {
         final PlayerSeasonStat playerSeasonStat = generate(PlayerSeasonStat.class);
 
-        assertTrue(playerSeasonStat.isValid(), "PlayerSeasonStat::isValid");
+        assertTrue(playerSeasonStat.isValid());
 
         playerSeasonStat.setShirtNumber(null);
-        assertTrue(playerSeasonStat.isValid(), "PlayerSeasonStat::isValid shirt number null");
+        assertTrue(playerSeasonStat.isValid());
         playerSeasonStat.setShirtNumber(-1);
-        assertFalse(playerSeasonStat.isValid(), "PlayerSeasonStat::isValid shirt number negative");
+        assertFalse(playerSeasonStat.isValid());
         playerSeasonStat.setShirtNumber(0);
-        assertFalse(playerSeasonStat.isValid(), "PlayerSeasonStat::isValid shirt number non positive");
+        assertFalse(playerSeasonStat.isValid());
         playerSeasonStat.setShirtNumber(1);
 
         playerSeasonStat.setFee(-1);
-        assertFalse(playerSeasonStat.isValid(), "PlayerSeasonStat::isValid fee negative");
+        assertFalse(playerSeasonStat.isValid());
         playerSeasonStat.setFee(1);
 
         playerSeasonStat.setWinCount(null);
-        assertTrue(playerSeasonStat.isValid(), "PlayerSeasonStat::isValid win count null");
+        assertTrue(playerSeasonStat.isValid());
         playerSeasonStat.setWinCount(0);
-        assertFalse(playerSeasonStat.isValid(), "PlayerSeasonStat::isValid win count negative");
+        assertFalse(playerSeasonStat.isValid());
         playerSeasonStat.setWinCount(1);
 
         playerSeasonStat.setPlayer(null);
-        assertFalse(playerSeasonStat.isValid(), "PlayerSeasonStat::isValid player null");
+        assertFalse(playerSeasonStat.isValid());
         playerSeasonStat.setPlayer(new Player());
 
         playerSeasonStat.setSeason(null);
-        assertFalse(playerSeasonStat.isValid(), "PlayerSeasonStat::isValid season null");
+        assertFalse(playerSeasonStat.isValid());
         playerSeasonStat.setSeason(new Season());
 
         playerSeasonStat.setTeam(null);
-        assertFalse(playerSeasonStat.isValid(), "PlayerSeasonStat::isValid team null");
+        assertFalse(playerSeasonStat.isValid());
         playerSeasonStat.setTeam(new Team());
 
         playerSeasonStat.setD11Team(null);
-        assertFalse(playerSeasonStat.isValid(), "PlayerSeasonStat::isValid D11 team null");
+        assertFalse(playerSeasonStat.isValid());
         playerSeasonStat.setD11Team(new D11Team());
 
         playerSeasonStat.setPosition(null);
-        assertFalse(playerSeasonStat.isValid(), "PlayerSeasonStat::isValid position null");
+        assertFalse(playerSeasonStat.isValid());
         playerSeasonStat.setPosition(new Position());
 
-        assertTrue(playerSeasonStat.isValid(), "PlayerSeasonStat::isValid valid");
+        assertTrue(playerSeasonStat.isValid());
     }
 
     /**
@@ -77,8 +77,8 @@ class PlayerSeasonStatTests extends EasyRandomTests {
 
         playerSeasonStat.reset();
 
-        assertEquals(0, playerSeasonStat.getFormPoints(), "PlayerSeasonStat::form points equals");
-        assertTrue(playerSeasonStat.getFormMatchPoints().isEmpty(), "PlayerSeasonStat::reset form match points empty");
+        assertEquals(0, playerSeasonStat.getFormPoints());
+        assertTrue(playerSeasonStat.getFormMatchPoints().isEmpty());
     }
 
     /**
@@ -132,38 +132,24 @@ class PlayerSeasonStatTests extends EasyRandomTests {
 
         playerSeasonStat.updateStats(playerMatchStats);
 
-        assertEquals(goals, playerSeasonStat.getGoals(), "PlayerSeasonStat::updateStats goals equals");
-        assertEquals(goalAssists, playerSeasonStat.getGoalAssists(),
-                     "PlayerSeasonStat::updateStats goal assists equals");
-        assertEquals(ownGoals, playerSeasonStat.getOwnGoals(), "PlayerSeasonStat::updateStats own goals equals");
-        assertEquals(goalsConceded, playerSeasonStat.getGoalsConceded(),
-                     "PlayerSeasonStat::updateStats goals conceded equals");
-        assertEquals(rating, playerSeasonStat.getRating(), "PlayerSeasonStat::updateStats rating equals");
-        assertEquals(points, playerSeasonStat.getPoints(), "PlayerSeasonStat::updateStats points equals");
-        assertEquals(pointsPerAppearance, playerSeasonStat.getPointsPerAppearance(),
-                     "PlayerSeasonStat::updateStats points per appearance equals");
-        assertEquals(cleanSheets, playerSeasonStat.getCleanSheets(),
-                     "PlayerSeasonStat::updateStats clean sheets equals");
-        assertEquals(yellowCards, playerSeasonStat.getYellowCards(),
-                     "PlayerSeasonStat::updateStats yellow cards equals");
-        assertEquals(redCards, playerSeasonStat.getRedCards(),
-                     "PlayerSeasonStat::updateStats red cards equals");
-        assertEquals(substitutionsOn, playerSeasonStat.getSubstitutionsOn(),
-                     "PlayerSeasonStat::updateStats substitutions on equals");
-        assertEquals(substitutionsOff, playerSeasonStat.getSubstitutionsOff(),
-                     "PlayerSeasonStat::updateStats substitutions off equals");
-        assertEquals(manOfTheMatch, playerSeasonStat.getManOfTheMatch(),
-                     "PlayerSeasonStat::updateStats man of the match equals");
-        assertEquals(sharedManOfTheMatch, playerSeasonStat.getSharedManOfTheMatch(),
-                     "PlayerSeasonStat::updateStats shared man of the match equals");
-        assertEquals(gamesStarted, playerSeasonStat.getGamesStarted(),
-                     "PlayerSeasonStat::updateStats games started equals");
-        assertEquals(gamesSubstitute, playerSeasonStat.getGamesSubstitute(),
-                     "PlayerSeasonStat::updateStats games substitute equals");
-        assertEquals(gamesDidNotParticipate, playerSeasonStat.getGamesDidNotParticipate(),
-                     "PlayerSeasonStat::updateStats games did not participate equals");
-        assertEquals(minutesPlayed, playerSeasonStat.getMinutesPlayed(),
-                     "PlayerSeasonStat::updateStats minutes played equals");
+        assertEquals(goals, playerSeasonStat.getGoals());
+        assertEquals(goalAssists, playerSeasonStat.getGoalAssists());
+        assertEquals(ownGoals, playerSeasonStat.getOwnGoals());
+        assertEquals(goalsConceded, playerSeasonStat.getGoalsConceded());
+        assertEquals(rating, playerSeasonStat.getRating());
+        assertEquals(points, playerSeasonStat.getPoints());
+        assertEquals(pointsPerAppearance, playerSeasonStat.getPointsPerAppearance());
+        assertEquals(cleanSheets, playerSeasonStat.getCleanSheets());
+        assertEquals(yellowCards, playerSeasonStat.getYellowCards());
+        assertEquals(redCards, playerSeasonStat.getRedCards());
+        assertEquals(substitutionsOn, playerSeasonStat.getSubstitutionsOn());
+        assertEquals(substitutionsOff, playerSeasonStat.getSubstitutionsOff());
+        assertEquals(manOfTheMatch, playerSeasonStat.getManOfTheMatch());
+        assertEquals(sharedManOfTheMatch, playerSeasonStat.getSharedManOfTheMatch());
+        assertEquals(gamesStarted, playerSeasonStat.getGamesStarted());
+        assertEquals(gamesSubstitute, playerSeasonStat.getGamesSubstitute());
+        assertEquals(gamesDidNotParticipate, playerSeasonStat.getGamesDidNotParticipate());
+        assertEquals(minutesPlayed, playerSeasonStat.getMinutesPlayed());
     }
 
 }

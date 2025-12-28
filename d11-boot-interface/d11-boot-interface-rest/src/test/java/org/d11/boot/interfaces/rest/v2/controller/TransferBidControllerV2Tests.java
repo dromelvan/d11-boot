@@ -68,18 +68,13 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
     void testGetTransferBidsByTransferDayId() {
         final TransferBidApi transferBidApi = getApi(TransferBidApi.class);
 
-        assertThrows(FeignException.BadRequest.class,
-                     () -> transferBidApi.getTransferBidsByTransferDayId((Long) null),
-                     "TransferBidControllerV2::getTransferBidsByTransferDayId transferDayId null throws");
+        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.getTransferBidsByTransferDayId((Long) null));
 
-        assertThrows(FeignException.BadRequest.class,
-                     () -> transferBidApi.getTransferBidsByTransferDayId(-1L),
-                     "TransferBidControllerV2::getTransferBidsByTransferDayId transferDayId negative throws");
+        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.getTransferBidsByTransferDayId(-1L));
 
         final List<TransferDay> transferDays = this.transferDayRepository.findAll();
 
-        assertTrue(transferDays.size() > 1,
-                   "TransferBidControllerV2::getTransferBidsByTransferDayId transferDays size > 0");
+        assertTrue(transferDays.size() > 1);
 
         int finishedCount = 0;
         int notFinishedCount = 0;
@@ -87,36 +82,31 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
         for (final TransferDay transferDay : transferDays) {
             final TransferBidsResponseBodyDTO transferBidsResponseBodyDTO =
                     transferBidApi.getTransferBidsByTransferDayId(transferDay.getId());
-            assertNotNull(transferBidsResponseBodyDTO,
-                          "TransferBidControllerV2::getTransferBidsByTransferDayId response not null");
+            assertNotNull(transferBidsResponseBodyDTO);
 
             final List<TransferBidDTO> result = transferBidsResponseBodyDTO.getTransferBids();
 
-            assertNotNull(result, "TransferBidControllerV2::getTransferBidsByTransferDayId not null ");
+            assertNotNull(result);
 
             if (Status.FINISHED.equals(transferDay.getStatus())) {
-                assertFalse(result.isEmpty(), "TransferBidControllerV2::getTransferBidsByTransferDayId empty");
+                assertFalse(result.isEmpty());
 
                 final List<TransferBid> transferBids = this.transferBidRepository
                         .findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(transferDay.getId());
 
-                assertEquals(map(transferBids, TransferBidDTO.class), result,
-                             "TransferBidControllerV2::getTransferBidsByTransferDayId equals");
+                assertEquals(map(transferBids, TransferBidDTO.class), result);
                 ++finishedCount;
             } else {
-                assertTrue(result.isEmpty(),
-                           "TransferBidControllerV2::getTransferBidsByTransferDayId pending empty");
+                assertTrue(result.isEmpty());
                 if (!Status.PENDING.equals(transferDay.getStatus())) {
-                    assertFalse(transferDay.getTransferBids().isEmpty(),
-                                "TransferBidControllerV2::getTransferBidsByTransferDayId test data not empty");
+                    assertFalse(transferDay.getTransferBids().isEmpty());
                 }
                 ++notFinishedCount;
             }
         }
 
         // Make sure that we have both finished and not finished test transfer days
-        assertTrue(finishedCount > 0 && notFinishedCount > 0,
-                   "TransferBidControllerV2::getTransferBidsByTransferDayId active and not active count > 0");
+        assertTrue(finishedCount > 0 && notFinishedCount > 0);
     }
 
     // createTransferBid -----------------------------------------------------------------------------------------------
@@ -132,8 +122,7 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
                                      .playerId(1L)
                                      .fee(10));
 
-        assertThrows(FeignException.Unauthorized.class, () -> transferBidApi.createTransferBid(requestBody),
-                     "TransferBidControllerV2::createTransferBid unauthorized throws");
+        assertThrows(FeignException.Unauthorized.class, () -> transferBidApi.createTransferBid(requestBody));
     }
 
     /**
@@ -146,8 +135,7 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
                 .transferBid(new TransferBidInputDTO()
                                      .fee(10));
 
-        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
-                     "TransferBidControllerV2::createTransferBid null playerId throws");
+        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody));
     }
 
     /**
@@ -160,8 +148,7 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
                 .transferBid(new TransferBidInputDTO()
                                      .playerId(1L));
 
-        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
-                     "TransferBidControllerV2::createTransferBid null fee throws");
+        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody));
     }
 
     /**
@@ -180,18 +167,15 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
                                      .playerId(2L)
                                      .fee(0));
 
-        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
-                     "TransferBidControllerV2::createTransferBid 0 fee throws");
+        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody));
 
         requestBody.getTransferBid().setFee(1000);
 
-        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
-                     "TransferBidControllerV2::createTransferBid fee > maxBid throws");
+        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody));
 
         requestBody.getTransferBid().setFee(1);
 
-        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody),
-                     "TransferBidControllerV2::createTransferBid fee not divisible by 5 throws");
+        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.createTransferBid(requestBody));
 
         // @DirtiesContext won't work here for some reason. Maybe figure it out later
         transferDay.setStatus(Status.PENDING);
@@ -209,8 +193,7 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
                                      .playerId(1L)
                                      .fee(10));
 
-        assertThrows(FeignException.Conflict.class, () -> transferBidApi.createTransferBid(requestBody),
-                     "TransferBidControllerV2::createTransferBid transfer bid not allowed throws");
+        assertThrows(FeignException.Conflict.class, () -> transferBidApi.createTransferBid(requestBody));
     }
 
     // updateTransferBidFee --------------------------------------------------------------------------------------------
@@ -238,11 +221,9 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
 
         final TransferBidDTO result = transferBidApi.updateTransferBidFee(transferBidId, requestBody).getTransferBid();
 
-        assertNotNull(result, "TransferBidControllerV2::updateTransferBidFee response not null");
-        assertEquals(requestBody.getTransferBid().getFee(), result.getFee(),
-                     "TransferBidControllerV2::updateTransferBidFee fee equals");
-        assertEquals(requestBody.getTransferBid().getFee(), result.getActiveFee(),
-                     "TransferBidControllerV2::updateTransferBidFee activeFee equals");
+        assertNotNull(result);
+        assertEquals(requestBody.getTransferBid().getFee(), result.getFee());
+        assertEquals(requestBody.getTransferBid().getFee(), result.getActiveFee());
 
         transferDay.setStatus(Status.PENDING);
         this.transferDayRepository.save(transferDay);
@@ -271,14 +252,12 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
                 .transferBid(new TransferBidFeeInputDTO());
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody),
-                     "TransferBidControllerV2::updateTransferBidFee null fee throws");
+                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody));
 
         requestBody.getTransferBid().setFee(-5);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody),
-                     "TransferBidControllerV2::updateTransferBidFee negative fee throws");
+                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody));
 
         final PlayerTransferContext playerTransferContext =
                 this.playerTransferContextRepository.findByPlayerIdAndOwnerId(2L, 1L)
@@ -287,14 +266,12 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
         requestBody.getTransferBid().setFee(playerTransferContext.getMaxBid() + 5);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody),
-                     "TransferBidControllerV2::updateTransferBidFee too high fee throws");
+                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody));
 
         requestBody.getTransferBid().setFee(1);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody),
-                     "TransferBidControllerV2::updateTransferBidFee invalid fee throws");
+                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody));
 
         // @DirtiesContext won't work here either
         transferDay.setStatus(Status.PENDING);
@@ -312,8 +289,7 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
                 .transferBid(new TransferBidFeeInputDTO()
                                      .fee(10));
 
-        assertThrows(FeignException.Unauthorized.class, () -> transferBidApi.updateTransferBidFee(1L, requestBody),
-                     "TransferBidControllerV2::updateTransferBidFee unauthorized throws");
+        assertThrows(FeignException.Unauthorized.class, () -> transferBidApi.updateTransferBidFee(1L, requestBody));
     }
 
     /**
@@ -332,8 +308,7 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
                 .transferBid(new TransferBidFeeInputDTO()
                                      .fee(10));
 
-        assertThrows(FeignException.Forbidden.class, () -> transferBidApi.updateTransferBidFee(16L, requestBody),
-                     "TransferBidControllerV2::updateTransferBidFee forbidden throws");
+        assertThrows(FeignException.Forbidden.class, () -> transferBidApi.updateTransferBidFee(16L, requestBody));
 
         // See above
         transferDay.setStatus(Status.PENDING);
@@ -350,8 +325,7 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
                 .transferBid(new TransferBidFeeInputDTO()
                                      .fee(10));
 
-        assertThrows(FeignException.NotFound.class, () -> transferBidApi.updateTransferBidFee(-1L, requestBody),
-                     "TransferBidControllerV2::updateTransferBidFee not found throws");
+        assertThrows(FeignException.NotFound.class, () -> transferBidApi.updateTransferBidFee(-1L, requestBody));
     }
 
     /**
@@ -382,8 +356,7 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
                                      .fee(10));
 
         assertThrows(FeignException.Conflict.class,
-                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody),
-                     "TransferBidControllerV2::updateTransferBidFee transfer bid not allowed throws");
+                     () -> transferBidApi.updateTransferBidFee(transferBidId, requestBody));
 
         // Clean up, @DirtiesContext won't work here either
         transferDay.setStatus(Status.PENDING);
@@ -404,8 +377,7 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
     void testDeleteTransferBidUnauthorized() {
         final TransferBidApi transferBidApi = getApi(TransferBidApi.class);
 
-        assertThrows(FeignException.Unauthorized.class, () -> transferBidApi.deleteTransferBid(1L),
-                     "TransferBidControllerV2::deleteTransferBid unauthorized throws");
+        assertThrows(FeignException.Unauthorized.class, () -> transferBidApi.deleteTransferBid(1L));
     }
 
     /**
@@ -415,8 +387,7 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
     void testDeleteTransferBidForbidden() {
         final TransferBidApi transferBidApi = getUserApi(TransferBidApi.class);
 
-        assertThrows(FeignException.Forbidden.class, () -> transferBidApi.deleteTransferBid(1L),
-                     "TransferBidControllerV2::deleteTransferBid forbidden throws");
+        assertThrows(FeignException.Forbidden.class, () -> transferBidApi.deleteTransferBid(1L));
     }
 
     /**
@@ -426,8 +397,7 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
     void testDeleteTransferBidNotFound() {
         final TransferBidApi transferBidApi = getUserApi(TransferBidApi.class);
 
-        assertThrows(FeignException.NotFound.class, () -> transferBidApi.deleteTransferBid(-1L),
-                     "TransferBidControllerV2::deleteTransferBid not found throws");
+        assertThrows(FeignException.NotFound.class, () -> transferBidApi.deleteTransferBid(-1L));
     }
 
     /**
@@ -437,8 +407,7 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
     void testDeleteTransferBidInvalidTransferDayStatus() {
         final TransferBidApi transferBidApi = getAdministratorApi(TransferBidApi.class);
 
-        assertThrows(FeignException.Conflict.class, () -> transferBidApi.deleteTransferBid(1L),
-                     "TransferBidControllerV2::deleteTransferBid invalid transferDay status throws");
+        assertThrows(FeignException.Conflict.class, () -> transferBidApi.deleteTransferBid(1L));
     }
 
     // createTransferBid + deleteTransferBid ---------------------------------------------------------------------------
@@ -465,29 +434,22 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
 
         final TransferBidDTO result = transferBidApi.createTransferBid(requestBody).getTransferBid();
 
-        assertNotNull(result, "TransferBidControllerV2::createTransferBid response not null");
-        assertEquals(playerTransferContext.getTransferListing().getRanking(), result.getPlayerRanking(),
-                     "TransferBidControllerV2::createTransferBid playerRanking equals");
-        assertEquals(playerTransferContext.getRanking(), result.getD11TeamRanking(),
-                     "TransferBidControllerV2::createTransferBid d11TeamRanking equals");
-        assertEquals(requestBody.getTransferBid().getFee(), result.getFee(),
-                     "TransferBidControllerV2::createTransferBid fee equals");
-        assertEquals(requestBody.getTransferBid().getFee(), result.getActiveFee(),
-                     "TransferBidControllerV2::createTransferBid activeFee equals");
-        assertFalse(result.isSuccessful(), "TransferBidControllerV2::createTransferBid successful");
-        assertEquals(requestBody.getTransferBid().getPlayerId(), result.getPlayer().getId(),
-                     "TransferBidControllerV2::createTransferBid playerId equals");
-        assertEquals(playerTransferContext.getD11Team().getId(), result.getD11Team().getId(),
-                     "TransferBidControllerV2::createTransferBid d11TeamId equals");
+        assertNotNull(result);
+        assertEquals(playerTransferContext.getTransferListing().getRanking(), result.getPlayerRanking());
+        assertEquals(playerTransferContext.getRanking(), result.getD11TeamRanking());
+        assertEquals(requestBody.getTransferBid().getFee(), result.getFee());
+        assertEquals(requestBody.getTransferBid().getFee(), result.getActiveFee());
+        assertFalse(result.isSuccessful());
+        assertEquals(requestBody.getTransferBid().getPlayerId(), result.getPlayer().getId());
+        assertEquals(playerTransferContext.getD11Team().getId(), result.getD11Team().getId());
 
         final Optional<TransferBid> created = this.transferBidRepository.findById(result.getId());
-        assertTrue(created.isPresent(), "TransferBidControllerV2::createTransferBid transferBid present");
+        assertTrue(created.isPresent());
 
-        assertDoesNotThrow(() -> transferBidApi.deleteTransferBid(result.getId()),
-                           "TransferBidControllerV2::deleteTransferBid does not throw");
+        assertDoesNotThrow(() -> transferBidApi.deleteTransferBid(result.getId()));
 
         final Optional<TransferBid> deleted = this.transferBidRepository.findById(result.getId());
-        assertFalse(deleted.isPresent(), "TransferBidControllerV2::deleteTransferBid transferBid present");
+        assertFalse(deleted.isPresent());
 
         transferDay.setStatus(Status.PENDING);
         this.transferDayRepository.save(transferDay);

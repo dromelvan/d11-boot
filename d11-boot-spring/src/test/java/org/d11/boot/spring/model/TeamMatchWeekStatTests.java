@@ -17,21 +17,20 @@ class TeamMatchWeekStatTests extends EasyRandomTests {
      * Tests TeamMatchWeekStat::isValid.
      */
     @Test
-    @SuppressWarnings("DataFlowIssue")
     void testIsValid() {
         final TeamMatchWeekStat teamMatchWeekStat = generate(TeamMatchWeekStat.class);
 
-        assertTrue(teamMatchWeekStat.isValid(), "TeamMatchWeekStat::isValid");
+        assertTrue(teamMatchWeekStat.isValid());
 
         teamMatchWeekStat.setTeam(null);
-        assertFalse(teamMatchWeekStat.isValid(), "TeamMatchWeekStat::isValid team null");
+        assertFalse(teamMatchWeekStat.isValid());
         teamMatchWeekStat.setTeam(new Team());
 
         teamMatchWeekStat.setMatchWeek(null);
-        assertFalse(teamMatchWeekStat.isValid(), "TeamMatchWeekStat::isValid match week null");
+        assertFalse(teamMatchWeekStat.isValid());
         teamMatchWeekStat.setMatchWeek(new MatchWeek());
 
-        assertTrue(teamMatchWeekStat.isValid(), "TeamMatchWeekStat::isValid valid");
+        assertTrue(teamMatchWeekStat.isValid());
     }
 
     /**
@@ -49,22 +48,14 @@ class TeamMatchWeekStatTests extends EasyRandomTests {
 
         teamMatchWeekStat.updateStats();
 
-        assertEquals(0, teamMatchWeekStat.getMatchesPlayed(),
-                     "TeamMatchWeekStat::updateStats pending matches played equals");
-        assertEquals(0, teamMatchWeekStat.getMatchesWon(),
-                     "TeamMatchWeekStat::updateStats pending matches won equals");
-        assertEquals(0, teamMatchWeekStat.getMatchesDrawn(),
-                     "TeamMatchWeekStat::updateStats pending matches drawn equals");
-        assertEquals(0, teamMatchWeekStat.getMatchesLost(),
-                     "TeamMatchWeekStat::updateStats pending matches lost equals");
-        assertEquals(0, teamMatchWeekStat.getGoalsFor(),
-                     "TeamMatchWeekStat::updateStats pending goals for equals");
-        assertEquals(0, teamMatchWeekStat.getGoalsAgainst(),
-                     "TeamMatchWeekStat::updateStats pending goals against equals");
-        assertEquals(0, teamMatchWeekStat.getGoalDifference(),
-                     "TeamMatchWeekStat::updateStats pending goal difference equals");
-        assertEquals(0, teamMatchWeekStat.getPoints(),
-                     "TeamMatchWeekStat::updateStats pending points equals");
+        assertEquals(0, teamMatchWeekStat.getMatchesPlayed());
+        assertEquals(0, teamMatchWeekStat.getMatchesWon());
+        assertEquals(0, teamMatchWeekStat.getMatchesDrawn());
+        assertEquals(0, teamMatchWeekStat.getMatchesLost());
+        assertEquals(0, teamMatchWeekStat.getGoalsFor());
+        assertEquals(0, teamMatchWeekStat.getGoalsAgainst());
+        assertEquals(0, teamMatchWeekStat.getGoalDifference());
+        assertEquals(0, teamMatchWeekStat.getPoints());
 
         match.setStatus(Status.FINISHED);
         match.setHomeTeamGoalsScored(1);
@@ -72,62 +63,38 @@ class TeamMatchWeekStatTests extends EasyRandomTests {
 
         teamMatchWeekStat.updateStats();
 
-        assertEquals(1, teamMatchWeekStat.getMatchesPlayed(),
-                     "TeamMatchWeekStat::updateStats win matches played equals");
-        assertEquals(1, teamMatchWeekStat.getMatchesWon(),
-                     "TeamMatchWeekStat::updateStats win matches won equals");
-        assertEquals(0, teamMatchWeekStat.getMatchesDrawn(),
-                     "TeamMatchWeekStat::updateStats win matches drawn equals");
-        assertEquals(0, teamMatchWeekStat.getMatchesLost(),
-                     "TeamMatchWeekStat::updateStats win matches lost equals");
-        assertEquals(1, teamMatchWeekStat.getGoalsFor(),
-                     "TeamMatchWeekStat::updateStats win goals for equals");
-        assertEquals(0, teamMatchWeekStat.getGoalsAgainst(),
-                     "TeamMatchWeekStat::updateStats win goals against equals");
-        assertEquals(1, teamMatchWeekStat.getGoalDifference(),
-                     "TeamMatchWeekStat::updateStats win goal difference equals");
-        assertEquals(Match.WIN_POINTS, teamMatchWeekStat.getPoints(),
-                     "TeamMatchWeekStat::updateStats win points equals");
+        assertEquals(1, teamMatchWeekStat.getMatchesPlayed());
+        assertEquals(1, teamMatchWeekStat.getMatchesWon());
+        assertEquals(0, teamMatchWeekStat.getMatchesDrawn());
+        assertEquals(0, teamMatchWeekStat.getMatchesLost());
+        assertEquals(1, teamMatchWeekStat.getGoalsFor());
+        assertEquals(0, teamMatchWeekStat.getGoalsAgainst());
+        assertEquals(1, teamMatchWeekStat.getGoalDifference());
+        assertEquals(Match.WIN_POINTS, teamMatchWeekStat.getPoints());
 
         match.setAwayTeamGoalsScored(1);
         teamMatchWeekStat.updateStats();
 
-        assertEquals(1, teamMatchWeekStat.getMatchesPlayed(),
-                     "TeamMatchWeekStat::updateStats draw matches played equals");
-        assertEquals(0, teamMatchWeekStat.getMatchesWon(),
-                     "TeamMatchWeekStat::updateStats draw matches won equals");
-        assertEquals(1, teamMatchWeekStat.getMatchesDrawn(),
-                     "TeamMatchWeekStat::updateStats draw matches drawn equals");
-        assertEquals(0, teamMatchWeekStat.getMatchesLost(),
-                     "TeamMatchWeekStat::updateStats draw matches lost equals");
-        assertEquals(1, teamMatchWeekStat.getGoalsFor(),
-                     "TeamMatchWeekStat::updateStats draw goals for equals");
-        assertEquals(1, teamMatchWeekStat.getGoalsAgainst(),
-                     "TeamMatchWeekStat::updateStats draw goals against equals");
-        assertEquals(0, teamMatchWeekStat.getGoalDifference(),
-                     "TeamMatchWeekStat::updateStats draw goal difference equals");
-        assertEquals(Match.DRAW_POINTS, teamMatchWeekStat.getPoints(),
-                     "TeamMatchWeekStat::updateStats draw points equals");
+        assertEquals(1, teamMatchWeekStat.getMatchesPlayed());
+        assertEquals(0, teamMatchWeekStat.getMatchesWon());
+        assertEquals(1, teamMatchWeekStat.getMatchesDrawn());
+        assertEquals(0, teamMatchWeekStat.getMatchesLost());
+        assertEquals(1, teamMatchWeekStat.getGoalsFor());
+        assertEquals(1, teamMatchWeekStat.getGoalsAgainst());
+        assertEquals(0, teamMatchWeekStat.getGoalDifference());
+        assertEquals(Match.DRAW_POINTS, teamMatchWeekStat.getPoints());
 
         match.setHomeTeamGoalsScored(0);
         teamMatchWeekStat.updateStats();
 
-        assertEquals(1, teamMatchWeekStat.getMatchesPlayed(),
-                     "TeamMatchWeekStat::updateStats loss matches played equals");
-        assertEquals(0, teamMatchWeekStat.getMatchesWon(),
-                     "TeamMatchWeekStat::updateStats loss matches won equals");
-        assertEquals(0, teamMatchWeekStat.getMatchesDrawn(),
-                     "TeamMatchWeekStat::updateStats loss matches drawn equals");
-        assertEquals(1, teamMatchWeekStat.getMatchesLost(),
-                     "TeamMatchWeekStat::updateStats loss matches lost equals");
-        assertEquals(0, teamMatchWeekStat.getGoalsFor(),
-                     "TeamMatchWeekStat::updateStats loss goals for equals");
-        assertEquals(1, teamMatchWeekStat.getGoalsAgainst(),
-                     "TeamMatchWeekStat::updateStats loss goals against equals");
-        assertEquals(-1, teamMatchWeekStat.getGoalDifference(),
-                     "TeamMatchWeekStat::updateStats loss goal difference equals");
-        assertEquals(Match.LOSS_POINTS, teamMatchWeekStat.getPoints(),
-                     "TeamMatchWeekStat::updateStats loss points equals");
+        assertEquals(1, teamMatchWeekStat.getMatchesPlayed());
+        assertEquals(0, teamMatchWeekStat.getMatchesWon());
+        assertEquals(0, teamMatchWeekStat.getMatchesDrawn());
+        assertEquals(1, teamMatchWeekStat.getMatchesLost());
+        assertEquals(0, teamMatchWeekStat.getGoalsFor());
+        assertEquals(1, teamMatchWeekStat.getGoalsAgainst());
+        assertEquals(-1, teamMatchWeekStat.getGoalDifference());
+        assertEquals(Match.LOSS_POINTS, teamMatchWeekStat.getPoints());
     }
 
 }

@@ -61,37 +61,37 @@ class PlayerTransferContextTests extends EasyRandomTests {
         ReflectionTestUtils.setField(context, FEE_SUM, 300);
 
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 0);
-        assertEquals(250, context.getMaxBid(), "PlayerTransferContext::getMaxBid playerCount 0 equals");
+        assertEquals(250, context.getMaxBid());
 
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 1);
-        assertEquals(255, context.getMaxBid(), "PlayerTransferContext::getMaxBid playerCount 1 equals");
+        assertEquals(255, context.getMaxBid());
 
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 2);
-        assertEquals(260, context.getMaxBid(), "PlayerTransferContext::getMaxBid playerCount 2 equals");
+        assertEquals(260, context.getMaxBid());
 
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 3);
-        assertEquals(265, context.getMaxBid(), "PlayerTransferContext::getMaxBid playerCount 3 equals");
+        assertEquals(265, context.getMaxBid());
 
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 4);
-        assertEquals(270, context.getMaxBid(), "PlayerTransferContext::getMaxBid playerCount 4 equals");
+        assertEquals(270, context.getMaxBid());
 
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 5);
-        assertEquals(275, context.getMaxBid(), "PlayerTransferContext::getMaxBid playerCount 5 equals");
+        assertEquals(275, context.getMaxBid());
 
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 6);
-        assertEquals(280, context.getMaxBid(), "PlayerTransferContext::getMaxBid playerCount 6 equals");
+        assertEquals(280, context.getMaxBid());
 
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 7);
-        assertEquals(285, context.getMaxBid(), "PlayerTransferContext::getMaxBid playerCount 7 equals");
+        assertEquals(285, context.getMaxBid());
 
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 8);
-        assertEquals(290, context.getMaxBid(), "PlayerTransferContext::getMaxBid playerCount 8 equals");
+        assertEquals(290, context.getMaxBid());
 
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 9);
-        assertEquals(295, context.getMaxBid(), "PlayerTransferContext::getMaxBid playerCount 9 equals");
+        assertEquals(295, context.getMaxBid());
 
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 10);
-        assertEquals(300, context.getMaxBid(), "PlayerTransferContext::getMaxBid playerCount 10 equals");
+        assertEquals(300, context.getMaxBid());
     }
 
     /**
@@ -110,7 +110,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
         ReflectionTestUtils.setField(context, FEE_SUM, 300);
 
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 11);
-        assertEquals(0, context.getMaxBid(), "PlayerTransferContext::getMaxBid playerCount 11 equals");
+        assertEquals(0, context.getMaxBid());
     }
 
     /**
@@ -129,16 +129,16 @@ class PlayerTransferContextTests extends EasyRandomTests {
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 0);
 
         context.getTransferDay().setStatus(Status.PENDING);
-        assertEquals(0, context.getMaxBid(), "PlayerTransferContext::getMaxBid transferDay status PENDING equals");
+        assertEquals(0, context.getMaxBid());
 
         context.getTransferDay().setStatus(Status.FULL_TIME);
-        assertEquals(0, context.getMaxBid(), "PlayerTransferContext::getMaxBid transferDay status FULL_TIME equals");
+        assertEquals(0, context.getMaxBid());
 
         context.getTransferDay().setStatus(Status.FINISHED);
-        assertEquals(0, context.getMaxBid(), "PlayerTransferContext::getMaxBid transferDay status FINISHED equals");
+        assertEquals(0, context.getMaxBid());
 
         context.getTransferDay().setStatus(Status.POSTPONED);
-        assertEquals(0, context.getMaxBid(), "PlayerTransferContext::getMaxBid transferDay status POSTPONED equals");
+        assertEquals(0, context.getMaxBid());
     }
 
     /**
@@ -157,7 +157,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
         ReflectionTestUtils.setField(context, FEE_SUM, 300);
 
         ReflectionTestUtils.setField(context, POSITION_COUNT, context.getPosition().getMaxCount());
-        assertEquals(0, context.getMaxBid(), "PlayerTransferContext::getMaxBid max positionCount equals");
+        assertEquals(0, context.getMaxBid());
     }
 
     /**
@@ -176,7 +176,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 0);
 
         ReflectionTestUtils.setField(context, TRANSFER_LISTING, null);
-        assertEquals(0, context.getMaxBid(), "PlayerTransferContext::getMaxBid null transferListing equals");
+        assertEquals(0, context.getMaxBid());
     }
 
     /**
@@ -195,7 +195,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
         ReflectionTestUtils.setField(context, FEE_SUM, 300);
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 0);
 
-        assertEquals(0, context.getMaxBid(), "PlayerTransferContext::getMaxBid invalid transferListing d11Team equals");
+        assertEquals(0, context.getMaxBid());
     }
 
     /**
@@ -211,7 +211,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
         ReflectionTestUtils.setField(context, PLAYER_D11_TEAM, context.getD11Team());
         ReflectionTestUtils.setField(context, TRANSFER_LISTING, null);
 
-        assertTrue(context.isTransferListable(), "PlayerTransferContext::isTransferListable");
+        assertTrue(context.isTransferListable());
     }
 
     /**
@@ -226,20 +226,16 @@ class PlayerTransferContextTests extends EasyRandomTests {
         ReflectionTestUtils.setField(context, TRANSFER_LISTING, null);
 
         context.getTransferDay().setStatus(Status.ACTIVE);
-        assertFalse(context.isTransferListable(),
-                    "PlayerTransferContext::isTransferListable transferDay status ACTIVE");
+        assertFalse(context.isTransferListable());
 
         context.getTransferDay().setStatus(Status.FULL_TIME);
-        assertFalse(context.isTransferListable(),
-                    "PlayerTransferContext::isTransferListable transferDay status FULL_TIME");
+        assertFalse(context.isTransferListable());
 
         context.getTransferDay().setStatus(Status.FINISHED);
-        assertFalse(context.isTransferListable(),
-                    "PlayerTransferContext::isTransferListable transferDay status FINISHED");
+        assertFalse(context.isTransferListable());
 
         context.getTransferDay().setStatus(Status.POSTPONED);
-        assertFalse(context.isTransferListable(),
-                    "PlayerTransferContext::isTransferListable transferDay status POSTPONED");
+        assertFalse(context.isTransferListable());
     }
 
     /**
@@ -255,8 +251,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
         ReflectionTestUtils.setField(context, PLAYER_D11_TEAM, context.getD11Team());
         ReflectionTestUtils.setField(context, TRANSFER_LISTING, null);
 
-        assertFalse(context.isTransferListable(),
-                    "PlayerTransferContext::isTransferListable max transfer count");
+        assertFalse(context.isTransferListable());
     }
 
     /**
@@ -272,8 +267,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
         ReflectionTestUtils.setField(context, TRANSFER_LISTING, null);
 
         ReflectionTestUtils.setField(context, PLAYER_D11_TEAM, generate(D11Team.class));
-        assertFalse(context.isTransferListable(),
-                    "PlayerTransferContext::isTransferListable invalid D11 team");
+        assertFalse(context.isTransferListable());
     }
 
     /**
@@ -289,7 +283,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
         ReflectionTestUtils.setField(context, PLAYER_D11_TEAM, context.getD11Team());
         ReflectionTestUtils.setField(context, TRANSFER_LISTING, generate(TransferListing.class));
 
-        assertFalse(context.isTransferListable(), "PlayerTransferContext::isTransferListable transferListing not null");
+        assertFalse(context.isTransferListable());
     }
 
     /**
@@ -302,9 +296,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
         context.getTransferDay().setStatus(Status.PENDING);
         context.getTransferListing().setD11Team(context.getD11Team());
 
-        assertEquals(context.getTransferListing(),
-                     context.getDeletableTransferListing(),
-                     "PlayerTransferContext::getDeletableTransferListing");
+        assertEquals(context.getTransferListing(), context.getDeletableTransferListing());
     }
 
     /**
@@ -317,20 +309,16 @@ class PlayerTransferContextTests extends EasyRandomTests {
         context.getTransferListing().setD11Team(context.getD11Team());
 
         context.getTransferDay().setStatus(Status.ACTIVE);
-        assertNull(context.getDeletableTransferListing(),
-                   "PlayerTransferContext::getDeletableTransferListing transferDay status ACTIVE");
+        assertNull(context.getDeletableTransferListing());
 
         context.getTransferDay().setStatus(Status.FULL_TIME);
-        assertNull(context.getDeletableTransferListing(),
-                   "PlayerTransferContext::getDeletableTransferListing transferDay status FULL_TIME");
+        assertNull(context.getDeletableTransferListing());
 
         context.getTransferDay().setStatus(Status.FINISHED);
-        assertNull(context.getDeletableTransferListing(),
-                   "PlayerTransferContext::getDeletableTransferListing transferDay status FINISHED");
+        assertNull(context.getDeletableTransferListing());
 
         context.getTransferDay().setStatus(Status.POSTPONED);
-        assertNull(context.getDeletableTransferListing(),
-                   "PlayerTransferContext::getDeletableTransferListing transferDay status POSTPONED");
+        assertNull(context.getDeletableTransferListing());
     }
 
     /**
@@ -343,8 +331,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
         context.getTransferDay().setStatus(Status.PENDING);
         context.getTransferListing().setD11Team(generate(D11Team.class));
 
-        assertNull(context.getDeletableTransferListing(),
-                   "PlayerTransferContext::getDeletableTransferListing invalid D11 team");
+        assertNull(context.getDeletableTransferListing());
     }
 
     /**
@@ -357,9 +344,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
         context.getTransferDay().setStatus(Status.ACTIVE);
         context.getTransferBid().setD11Team(context.getD11Team());
 
-        assertEquals(context.getTransferBid(),
-                     context.getActiveTransferBid(),
-                     "PlayerTransferContext::getActiveTransferBid");
+        assertEquals(context.getTransferBid(), context.getActiveTransferBid());
     }
 
     /**
@@ -372,16 +357,16 @@ class PlayerTransferContextTests extends EasyRandomTests {
         context.getTransferBid().setD11Team(context.getD11Team());
 
         context.getTransferDay().setStatus(Status.PENDING);
-        assertNull(context.getActiveTransferBid(), "PlayerTransferContext::getActiveTransferBid status PENDING");
+        assertNull(context.getActiveTransferBid());
 
         context.getTransferDay().setStatus(Status.FULL_TIME);
-        assertNull(context.getActiveTransferBid(), "PlayerTransferContext::getActiveTransferBid status FULL_TIME");
+        assertNull(context.getActiveTransferBid());
 
         context.getTransferDay().setStatus(Status.FINISHED);
-        assertNull(context.getActiveTransferBid(), "PlayerTransferContext::getActiveTransferBid status FINISHED");
+        assertNull(context.getActiveTransferBid());
 
         context.getTransferDay().setStatus(Status.POSTPONED);
-        assertNull(context.getActiveTransferBid(), "PlayerTransferContext::getActiveTransferBid status POSTPONED");
+        assertNull(context.getActiveTransferBid());
     }
 
     /**
@@ -394,7 +379,7 @@ class PlayerTransferContextTests extends EasyRandomTests {
         context.getTransferDay().setStatus(Status.ACTIVE);
         context.getTransferBid().setD11Team(generate(D11Team.class));
 
-        assertNull(context.getActiveTransferBid(), "PlayerTransferContext::getActiveTransferBid invalid D11 team");
+        assertNull(context.getActiveTransferBid());
     }
 
     /**
@@ -404,13 +389,10 @@ class PlayerTransferContextTests extends EasyRandomTests {
     void testEmptyTransferContext() {
         final PlayerTransferContext context = new PlayerTransferContext();
 
-        assertFalse(context.isTransferListable(),
-                    "PlayerTransferContext::getActiveTransferBid empty isTransferListable");
-        assertNull(context.getDeletableTransferListing(),
-                   "PlayerTransferContext::getActiveTransferBid empty deletableTransferListing");
-        assertEquals(0, context.getMaxBid(), "PlayerTransferContext::getActiveTransferBid empty maxBid equals");
-        assertNull(context.getActiveTransferBid(),
-                   "PlayerTransferContext::getActiveTransferBid empty activeTransferBid");
+        assertFalse(context.isTransferListable());
+        assertNull(context.getDeletableTransferListing());
+        assertEquals(0, context.getMaxBid());
+        assertNull(context.getActiveTransferBid());
     }
 
     /**
@@ -429,11 +411,11 @@ class PlayerTransferContextTests extends EasyRandomTests {
         ReflectionTestUtils.setField(context, FEE_SUM, 300);
         ReflectionTestUtils.setField(context, PLAYER_COUNT, 0);
 
-        assertFalse(context.isValidFee(null), "PlayerTransferContext::isValidFee null fee valid");
-        assertFalse(context.isValidFee(-5), "PlayerTransferContext::isValidFee negative fee valid");
-        assertEquals(250, context.getMaxBid(), "PlayerTransferContext::isValidFee max bid equals");
-        assertFalse(context.isValidFee(250 + 5), "PlayerTransferContext::isValidFee too high fee valid");
-        assertFalse(context.isValidFee(1), "PlayerTransferContext::isValidFee invalid fee valid");
+        assertFalse(context.isValidFee(null));
+        assertFalse(context.isValidFee(-5));
+        assertEquals(250, context.getMaxBid());
+        assertFalse(context.isValidFee(250 + 5));
+        assertFalse(context.isValidFee(1));
     }
 
 }

@@ -16,46 +16,45 @@ class TeamTests extends EasyRandomTests {
      * Tests Team::isValid.
      */
     @Test
-    @SuppressWarnings("DataFlowIssue")
     void testIsValid() {
         final Team team = generate(Team.class);
 
-        assertTrue(team.isValid(), "Team::isValid");
+        assertTrue(team.isValid());
 
         team.setWhoscoredId(0);
-        assertFalse(team.isValid(), "Team::isValid WhoScored id too low");
+        assertFalse(team.isValid());
         team.setWhoscoredId(1);
 
         team.setPremierLeagueId(-1);
-        assertFalse(team.isValid(), "Team::isValid Premier League id negative");
+        assertFalse(team.isValid());
         team.setPremierLeagueId(1);
 
         team.setName("");
-        assertFalse(team.isValid(), "Team::isValid name empty");
+        assertFalse(team.isValid());
         team.setName(null);
         assertFalse(team.isValid(), "Name null");
         team.setName("Name");
 
         team.setShortName("");
-        assertFalse(team.isValid(), "Team::isValid short name empty");
+        assertFalse(team.isValid());
         team.setShortName(null);
-        assertFalse(team.isValid(), "Team::isValid short name null");
+        assertFalse(team.isValid());
         team.setShortName("ShortName");
 
         team.setCode("");
-        assertFalse(team.isValid(), "Team::isValid code empty");
+        assertFalse(team.isValid());
         team.setCode(null);
-        assertFalse(team.isValid(), "Team::isValid code null");
+        assertFalse(team.isValid());
         team.setCode("ABCD");
-        assertFalse(team.isValid(), "Team::isValid code too long");
+        assertFalse(team.isValid());
         team.setCode("AB");
-        assertFalse(team.isValid(), "Team::isValid code too short");
+        assertFalse(team.isValid());
         team.setCode("ABC");
 
         team.setEstablished(Team.MIN_ESTABLISHED_YEAR - 1);
-        assertFalse(team.isValid(), "Team::isValid established too low");
+        assertFalse(team.isValid());
         team.setEstablished(Team.MAX_ESTABLISHED_YEAR + 1);
-        assertFalse(team.isValid(), "Team::isValid established too high");
+        assertFalse(team.isValid());
         team.setEstablished(Team.MIN_ESTABLISHED_YEAR);
 
         team.setColour("");
@@ -65,16 +64,16 @@ class TeamTests extends EasyRandomTests {
         team.setColour("Colour");
 
         team.setStadium(null);
-        assertFalse(team.isValid(), "Team::isValid stadium null");
+        assertFalse(team.isValid());
         team.setStadium(new Stadium());
 
         team.setUrl("");
-        assertFalse(team.isValid(), "Team::isValid url empty");
+        assertFalse(team.isValid());
         team.setUrl(null);
-        assertFalse(team.isValid(), "Team::isValid url null");
+        assertFalse(team.isValid());
         team.setUrl("http");
 
-        assertTrue(team.isValid(), "Team::isValid valid");
+        assertTrue(team.isValid());
     }
 
 }

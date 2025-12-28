@@ -18,16 +18,15 @@ class TransferFeeValidatorTests {
     void testIsValid() {
         final TransferFeeValidator validator = new TransferFeeValidator();
 
-        assertFalse(validator.isValid(null), "TransferFeeValidator::isValid null");
-        assertFalse(validator.isValid(-1), "TransferFeeValidator::isValid negative");
-        assertFalse(validator.isValid(0), "TransferFeeValidator::isValid non positive");
+        assertFalse(validator.isValid(null));
+        assertFalse(validator.isValid(-1));
+        assertFalse(validator.isValid(0));
 
         for (int i = 1; i <= Transfer.FEE_DIVISOR * Transfer.FEE_DIVISOR; ++i) {
             if (i % Transfer.FEE_DIVISOR == 0) {
-                assertTrue(validator.isValid(i), "TransferFeeValidator::isValid divisible by " + Transfer.FEE_DIVISOR);
+                assertTrue(validator.isValid(i));
             } else {
-                assertFalse(validator.isValid(i),
-                            "TransferFeeValidator::isValid not divisible by " + Transfer.FEE_DIVISOR);
+                assertFalse(validator.isValid(i));
             }
         }
     }

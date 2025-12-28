@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 /**
  * Decoder used to get cookie values when performing controller tests.
  */
-public class CookieDecoderV2 extends ApiResponseDecoder {
+public class CookieDecoderV2Tests extends ApiResponseDecoder {
 
     /**
      * Decoder that does the actual decoding.
@@ -24,7 +24,8 @@ public class CookieDecoderV2 extends ApiResponseDecoder {
      * @param objectMapper              The object mapper the decoder will use.
      * @param refreshTokenCookieDecoder The decoder that will do the actual decoding.
      */
-    public CookieDecoderV2(final ObjectMapper objectMapper, final RefreshTokenCookieDecoder refreshTokenCookieDecoder) {
+    public CookieDecoderV2Tests(final ObjectMapper objectMapper,
+                                final RefreshTokenCookieDecoder refreshTokenCookieDecoder) {
         super(objectMapper);
         this.refreshTokenCookieDecoder = refreshTokenCookieDecoder;
     }

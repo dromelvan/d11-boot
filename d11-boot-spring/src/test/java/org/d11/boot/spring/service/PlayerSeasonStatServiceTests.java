@@ -103,16 +103,12 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
 
         final BadRequestException nullPlayerIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.playerSeasonStatService.getByPlayerId(null),
-                             "PlayerSeasonStatService::getByPlayerId null playerId throws");
-        assertEquals(playerIdProperty, nullPlayerIdException.getParameter(),
-                     "PlayerSeasonStatService::getByPlayerId property equals null playerId");
+                             () -> this.playerSeasonStatService.getByPlayerId(null));
+        assertEquals(playerIdProperty, nullPlayerIdException.getParameter());
 
         final BadRequestException invalidPlayerIdException =
-                assertThrows(BadRequestException.class, () -> this.playerSeasonStatService.getByPlayerId(-1L),
-                             "PlayerSeasonStatService::getByPlayerId invalid playerId throws");
-        assertEquals(playerIdProperty, invalidPlayerIdException.getParameter(),
-                     "PlayerSeasonStatService::getByPlayerId property equals invalid playerId");
+                assertThrows(BadRequestException.class, () -> this.playerSeasonStatService.getByPlayerId(-1L));
+        assertEquals(playerIdProperty, invalidPlayerIdException.getParameter());
 
         // Success -----------------------------------------------------------------------------------------------------
 
@@ -124,7 +120,7 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
 
         final List<PlayerSeasonStat> result = this.playerSeasonStatService.getByPlayerId(playerId);
 
-        assertEquals(playerSeasonStats, result, "PlayerSeasonStatService::getByPlayerId result equals");
+        assertEquals(playerSeasonStats, result);
 
         verify(this.playerSeasonStatRepository, times(1)).findByPlayerIdOrderBySeasonIdDesc(eq(playerId));
     }
@@ -141,22 +137,16 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
 
         final BadRequestException nullSeasonIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.playerSeasonStatService.getBySeasonId(null, 0),
-                             "PlayerSeasonStatService::getBySeasonId null seasonId throws");
-        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter(),
-                     "PlayerSeasonStatService::getBySeasonId property equals null seasonId");
+                             () -> this.playerSeasonStatService.getBySeasonId(null, 0));
+        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter());
 
         final BadRequestException invalidSeasonIdException =
-                assertThrows(BadRequestException.class, () -> this.playerSeasonStatService.getBySeasonId(-1L, 0),
-                             "PlayerSeasonStatService::getBySeasonId invalid seasonId throws");
-        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter(),
-                     "PlayerSeasonStatService::getBySeasonId property equals invalid seasonId");
+                assertThrows(BadRequestException.class, () -> this.playerSeasonStatService.getBySeasonId(-1L, 0));
+        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter());
 
         final BadRequestException invalidPageException =
-                assertThrows(BadRequestException.class, () -> this.playerSeasonStatService.getBySeasonId(1L, -1),
-                             "PlayerSeasonStatService::getBySeasonId invalid page throws");
-        assertEquals("page", invalidPageException.getParameter(),
-                     "PlayerSeasonStatService::getBySeasonId property equals invalid page");
+                assertThrows(BadRequestException.class, () -> this.playerSeasonStatService.getBySeasonId(1L, -1));
+        assertEquals("page", invalidPageException.getParameter());
 
         // Success -----------------------------------------------------------------------------------------------------
 
@@ -168,7 +158,7 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
 
         final List<PlayerSeasonStat> result = this.playerSeasonStatService.getBySeasonId(seasonId, 0);
 
-        assertEquals(playerSeasonStats, result, "PlayerSeasonStatService::getBySeasonId result equals");
+        assertEquals(playerSeasonStats, result);
 
         verify(this.playerSeasonStatRepository, times(1)).findBySeasonId(eq(seasonId), any(Pageable.class));
     }
@@ -185,33 +175,25 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
 
         final BadRequestException nullTeamIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.playerSeasonStatService.getByTeamIdAndSeasonId(null, 1L),
-                             "PlayerSeasonStatService::getByTeamIdAndSeasonId null teamId throws");
-        assertEquals(teamIdProperty, nullTeamIdException.getParameter(),
-                     "PlayerSeasonStatService::getByTeamIdAndSeasonId property equals null teamId");
+                             () -> this.playerSeasonStatService.getByTeamIdAndSeasonId(null, 1L));
+        assertEquals(teamIdProperty, nullTeamIdException.getParameter());
 
         final BadRequestException invalidTeamIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.playerSeasonStatService.getByTeamIdAndSeasonId(-1L, 1L),
-                             "PlayerSeasonStatService::getByTeamIdAndSeasonId invalid teamId throws");
-        assertEquals(teamIdProperty, invalidTeamIdException.getParameter(),
-                     "PlayerSeasonStatService::getByTeamIdAndSeasonId property equals invalid teamId");
+                             () -> this.playerSeasonStatService.getByTeamIdAndSeasonId(-1L, 1L));
+        assertEquals(teamIdProperty, invalidTeamIdException.getParameter());
 
         final String seasonIdProperty = "seasonId";
 
         final BadRequestException nullSeasonIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.playerSeasonStatService.getByTeamIdAndSeasonId(1L, null),
-                             "PlayerSeasonStatService::getByTeamIdAndSeasonId null seasonId throws");
-        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter(),
-                     "PlayerSeasonStatService::getByTeamIdAndSeasonId property equals null seasonId");
+                             () -> this.playerSeasonStatService.getByTeamIdAndSeasonId(1L, null));
+        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter());
 
         final BadRequestException invalidSeasonIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.playerSeasonStatService.getByTeamIdAndSeasonId(1L, -1L),
-                             "PlayerSeasonStatService::getByTeamIdAndSeasonId invalid seasonId throws");
-        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter(),
-                     "PlayerSeasonStatService::getByTeamIdAndSeasonId property equals invalid seasonId");
+                             () -> this.playerSeasonStatService.getByTeamIdAndSeasonId(1L, -1L));
+        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter());
 
         // Success -----------------------------------------------------------------------------------------------------
 
@@ -225,7 +207,7 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
 
         final List<PlayerSeasonStat> result = this.playerSeasonStatService.getByTeamIdAndSeasonId(teamId, seasonId);
 
-        assertEquals(playerSeasonStats, result, "PlayerSeasonStatService::getByTeamIdAndSeasonId result equals");
+        assertEquals(playerSeasonStats, result);
 
         verify(this.playerSeasonStatRepository, times(1))
                 .findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking(eq(teamId), eq(seasonId));
@@ -243,33 +225,25 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
 
         final BadRequestException nullD11TeamIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.playerSeasonStatService.getByD11TeamIdAndSeasonId(null, 1L),
-                             "PlayerSeasonStatService::getByD11TeamIdAndSeasonId null d11TeamId throws");
-        assertEquals(d11TeamIdProperty, nullD11TeamIdException.getParameter(),
-                     "PlayerSeasonStatService::getByD11TeamIdAndSeasonId property equals null d11TeamId");
+                             () -> this.playerSeasonStatService.getByD11TeamIdAndSeasonId(null, 1L));
+        assertEquals(d11TeamIdProperty, nullD11TeamIdException.getParameter());
 
         final BadRequestException invalidD11TeamIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.playerSeasonStatService.getByD11TeamIdAndSeasonId(-1L, 1L),
-                             "PlayerSeasonStatService::getByD11TeamIdAndSeasonId invalid d11TeamId throws");
-        assertEquals(d11TeamIdProperty, invalidD11TeamIdException.getParameter(),
-                     "PlayerSeasonStatService::getByD11TeamIdAndSeasonId property equals invalid d11TeamId");
+                             () -> this.playerSeasonStatService.getByD11TeamIdAndSeasonId(-1L, 1L));
+        assertEquals(d11TeamIdProperty, invalidD11TeamIdException.getParameter());
 
         final String seasonIdProperty = "seasonId";
 
         final BadRequestException nullSeasonIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.playerSeasonStatService.getByTeamIdAndSeasonId(1L, null),
-                             "PlayerSeasonStatService::getByD11TeamIdAndSeasonId null seasonId throws");
-        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter(),
-                     "PlayerSeasonStatService::getByD11TeamIdAndSeasonId property equals null seasonId");
+                             () -> this.playerSeasonStatService.getByTeamIdAndSeasonId(1L, null));
+        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter());
 
         final BadRequestException invalidSeasonIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.playerSeasonStatService.getByTeamIdAndSeasonId(1L, -1L),
-                             "PlayerSeasonStatService::getByD11TeamIdAndSeasonId invalid seasonId throws");
-        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter(),
-                     "PlayerSeasonStatService::getByD11TeamIdAndSeasonId property equals invalid seasonId");
+                             () -> this.playerSeasonStatService.getByTeamIdAndSeasonId(1L, -1L));
+        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter());
 
         // Success -----------------------------------------------------------------------------------------------------
 
@@ -284,7 +258,7 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
         final List<PlayerSeasonStat> result =
                 this.playerSeasonStatService.getByD11TeamIdAndSeasonId(d11TeamId, seasonId);
 
-        assertEquals(playerSeasonStats, result, "PlayerSeasonStatService::getByD11TeamIdAndSeasonId result equals");
+        assertEquals(playerSeasonStats, result);
 
         verify(this.playerSeasonStatRepository, times(1))
                 .findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking(eq(d11TeamId), eq(seasonId));
@@ -305,12 +279,10 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
 
         final BadRequestException e = assertThrows(
                 BadRequestException.class,
-                () -> this.playerSeasonStatService.createPlayerSeasonStat(new CreatePlayerSeasonStatInput(-1, -1, -1)),
-                "PlayerSeasonStatService::createPlayerSeasonStat invalid input throws");
+                () -> this.playerSeasonStatService.createPlayerSeasonStat(new CreatePlayerSeasonStatInput(-1, -1, -1)));
 
         final List<String> properties = Arrays.asList("playerId", "positionId", "teamId");
-        assertEquals(properties, e.getValidationErrors().stream().map(ValidationError::property).toList(),
-                     "PlayerSeasonStatService::createPlayerSeasonStat validation error properties equals");
+        assertEquals(properties, e.getValidationErrors().stream().map(ValidationError::property).toList());
 
         final Player player = generate(Player.class);
         final Season season = generate(Season.class);
@@ -332,26 +304,22 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
 
         assertThrows(NotFoundException.class,
                      () -> this.playerSeasonStatService.createPlayerSeasonStat(
-                             new CreatePlayerSeasonStatInput(invalidId, team.getId(), position.getId())),
-                     "PlayerSeasonStatService::createPlayerSeasonStat player not found throws");
+                             new CreatePlayerSeasonStatInput(invalidId, team.getId(), position.getId())));
 
         assertThrows(NotFoundException.class,
                      () -> this.playerSeasonStatService.createPlayerSeasonStat(
-                             new CreatePlayerSeasonStatInput(player.getId(), invalidId, position.getId())),
-                     "PlayerSeasonStatService::createPlayerSeasonStat team not found throws");
+                             new CreatePlayerSeasonStatInput(player.getId(), invalidId, position.getId())));
 
         assertThrows(NotFoundException.class,
                      () -> this.playerSeasonStatService.createPlayerSeasonStat(
-                             new CreatePlayerSeasonStatInput(player.getId(), team.getId(), invalidId)),
-                     "PlayerSeasonStatService::createPlayerSeasonStat position not found throws");
+                             new CreatePlayerSeasonStatInput(player.getId(), team.getId(), invalidId)));
 
         when(this.playerSeasonStatRepository.findByPlayerIdAndSeasonId(eq(player.getId()), eq(season.getId())))
                 .thenReturn(Optional.of(new PlayerSeasonStat()));
 
         assertThrows(ConflictException.class,
                      () -> this.playerSeasonStatService.createPlayerSeasonStat(
-                             new CreatePlayerSeasonStatInput(player.getId(), team.getId(), invalidId)),
-                     "PlayerSeasonStatService::createPlayerSeasonStat player season stat exists throws");
+                             new CreatePlayerSeasonStatInput(player.getId(), team.getId(), invalidId)));
 
         when(this.playerSeasonStatRepository.findByPlayerIdAndSeasonId(eq(player.getId()), eq(season.getId())))
                 .thenReturn(Optional.empty());
@@ -362,16 +330,11 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
                 new CreatePlayerSeasonStatInput(player.getId(), team.getId(), position.getId());
         final PlayerSeasonStat result = this.playerSeasonStatService.createPlayerSeasonStat(input);
 
-        assertEquals(player, result.getPlayer(),
-                     "PlayerSeasonStatService::createPlayerSeasonStat result player equals");
-        assertEquals(season, result.getSeason(),
-                     "PlayerSeasonStatService::createPlayerSeasonStat result season equals");
-        assertEquals(team, result.getTeam(),
-                     "PlayerSeasonStatService::createPlayerSeasonStat result team equals");
-        assertEquals(d11Team, result.getD11Team(),
-                     "PlayerSeasonStatService::createPlayerSeasonStat result D11 team equals");
-        assertEquals(position, result.getPosition(),
-                     "PlayerSeasonStatService::createPlayerSeasonStat result position equals");
+        assertEquals(player, result.getPlayer());
+        assertEquals(season, result.getSeason());
+        assertEquals(team, result.getTeam());
+        assertEquals(d11Team, result.getD11Team());
+        assertEquals(position, result.getPosition());
 
         verify(this.playerSeasonStatRepository, times(1)).save(eq(result));
     }
@@ -391,13 +354,11 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
                 () -> this.playerSeasonStatService.updatePlayerSeasonStat(
                         -1L,
                         new UpdatePlayerSeasonStatInput(-1, -1, -1)
-                ),
-                "PlayerSeasonStatService::updatePlayerSeasonStat invalid input throws");
+                ));
 
         final List<String> properties = Arrays.asList("d11TeamId", "positionId", "teamId");
         assertEquals(properties, badRequestException.getValidationErrors().stream()
-                        .map(ValidationError::property).toList(),
-                     "PlayerSeasonStatService::updatePlayerSeasonStat validation error properties equals");
+                        .map(ValidationError::property).toList());
 
         final Team team = generate(Team.class);
         final D11Team d11Team = generate(D11Team.class);
@@ -420,39 +381,30 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
         NotFoundException e = assertThrows(NotFoundException.class,
                 () -> this.playerSeasonStatService.updatePlayerSeasonStat(
                         invalidId,
-                        new UpdatePlayerSeasonStatInput(team.getId(), d11Team.getId(), position.getId())),
-                "PlayerSeasonStatService::updatePlayerSeasonStat playerSeasonStat not found throws");
-        assertEquals(invalidId, e.getId(),
-                     "PlayerSeasonStatService::updatePlayerSeasonStat playerSeasonStat not found id");
-        assertEquals(PlayerSeasonStat.class.getSimpleName(), e.getResource(),
-                     "PlayerSeasonStatService::updatePlayerSeasonStat playerSeasonStat not found class");
+                        new UpdatePlayerSeasonStatInput(team.getId(), d11Team.getId(), position.getId())));
+        assertEquals(invalidId, e.getId());
+        assertEquals(PlayerSeasonStat.class.getSimpleName(), e.getResource());
 
         e = assertThrows(NotFoundException.class,
                 () -> this.playerSeasonStatService.updatePlayerSeasonStat(
                         playerSeasonStat.getId(),
-                        new UpdatePlayerSeasonStatInput(invalidId, d11Team.getId(), position.getId())),
-                "PlayerSeasonStatService::updatePlayerSeasonStat team not found throws");
-        assertEquals(invalidId, e.getId(), "PlayerSeasonStatService::updatePlayerSeasonStat team not found id");
-        assertEquals(Team.class.getSimpleName(), e.getResource(),
-                "PlayerSeasonStatService::updatePlayerSeasonStat team not found class");
+                        new UpdatePlayerSeasonStatInput(invalidId, d11Team.getId(), position.getId())));
+        assertEquals(invalidId, e.getId());
+        assertEquals(Team.class.getSimpleName(), e.getResource());
 
         e = assertThrows(NotFoundException.class,
                 () -> this.playerSeasonStatService.updatePlayerSeasonStat(
                         playerSeasonStat.getId(),
-                        new UpdatePlayerSeasonStatInput(team.getId(), invalidId, position.getId())),
-                "PlayerSeasonStatService::updatePlayerSeasonStat D11 team not found throws");
-        assertEquals(invalidId, e.getId(), "PlayerSeasonStatService::updatePlayerSeasonStat D11 team not found id");
-        assertEquals(D11Team.class.getSimpleName(), e.getResource(),
-                "PlayerSeasonStatService::updatePlayerSeasonStat D11 team not found class");
+                        new UpdatePlayerSeasonStatInput(team.getId(), invalidId, position.getId())));
+        assertEquals(invalidId, e.getId());
+        assertEquals(D11Team.class.getSimpleName(), e.getResource());
 
         e = assertThrows(NotFoundException.class,
                 () -> this.playerSeasonStatService.updatePlayerSeasonStat(
                         playerSeasonStat.getId(),
-                        new UpdatePlayerSeasonStatInput(team.getId(), d11Team.getId(), invalidId)),
-                "PlayerSeasonStatService::updatePlayerSeasonStat position not found throws");
-        assertEquals(invalidId, e.getId(), "PlayerSeasonStatService::updatePlayerSeasonStat position not found id");
-        assertEquals(Position.class.getSimpleName(), e.getResource(),
-                "PlayerSeasonStatService::updatePlayerSeasonStat position not found class");
+                        new UpdatePlayerSeasonStatInput(team.getId(), d11Team.getId(), invalidId)));
+        assertEquals(invalidId, e.getId());
+        assertEquals(Position.class.getSimpleName(), e.getResource());
 
         when(this.playerSeasonStatRepository.save(any(PlayerSeasonStat.class)))
                 .then(AdditionalAnswers.returnsFirstArg());
@@ -462,13 +414,10 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
                 new UpdatePlayerSeasonStatInput(team.getId(), d11Team.getId(), position.getId())
         );
 
-        assertEquals(playerSeasonStat, result, "PlayerSeasonStatService::updatePlayerSeasonStat result equals");
-        assertEquals(team, result.getTeam(),
-                "PlayerSeasonStatService::updatePlayerSeasonStat result team equals");
-        assertEquals(d11Team, result.getD11Team(),
-                "PlayerSeasonStatService::updatePlayerSeasonStat result D11 team equals");
-        assertEquals(position, result.getPosition(),
-                "PlayerSeasonStatService::updatePlayerSeasonStat result position equals");
+        assertEquals(playerSeasonStat, result);
+        assertEquals(team, result.getTeam());
+        assertEquals(d11Team, result.getD11Team());
+        assertEquals(position, result.getPosition());
 
         verify(this.playerSeasonStatRepository, times(1)).save(eq(playerSeasonStat));
     }

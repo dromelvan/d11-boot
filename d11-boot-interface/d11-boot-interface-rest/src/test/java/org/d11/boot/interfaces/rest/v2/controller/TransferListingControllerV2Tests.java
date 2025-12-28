@@ -72,8 +72,7 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
         final TransferListingApi transferListingApi = getApi(TransferListingApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> transferListingApi.createTransferListing(new CreateTransferListingRequestBodyDTO()),
-                     "TransferListingControllerV2::createTransferListing playerId null throws");
+                     () -> transferListingApi.createTransferListing(new CreateTransferListingRequestBodyDTO()));
     }
 
     /**
@@ -85,8 +84,7 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
 
         assertThrows(FeignException.Unauthorized.class,
                      () -> transferListingApi.createTransferListing(
-                             new CreateTransferListingRequestBodyDTO().playerId(1L)),
-                     "TransferListingControllerV2::createTransferListing unauthorized throws");
+                             new CreateTransferListingRequestBodyDTO().playerId(1L)));
     }
 
     /**
@@ -98,8 +96,7 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
 
         assertThrows(FeignException.Forbidden.class,
                      () -> transferListingApi.createTransferListing(
-                             new CreateTransferListingRequestBodyDTO().playerId(3L)),
-                     "TransferListingControllerV2::createTransferListing forbidden throws");
+                             new CreateTransferListingRequestBodyDTO().playerId(3L)));
     }
 
     /**
@@ -111,11 +108,9 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
 
         final FeignException.Conflict e = assertThrows(FeignException.Conflict.class,
                      () -> transferListingApi.createTransferListing(
-                             new CreateTransferListingRequestBodyDTO().playerId(1_000L)),
-                     "TransferListingControllerV2::createTransferListing playerSeasonStat not found throws");
+                             new CreateTransferListingRequestBodyDTO().playerId(1_000L)));
 
-        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_NO_PLAYER_SEASON_STAT.getMessage()),
-                   "TransferListingControllerV2::createTransferListing playerSeasonStat not found message contains");
+        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_NO_PLAYER_SEASON_STAT.getMessage()));
     }
 
     /**
@@ -132,11 +127,9 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
 
         final FeignException.Conflict e = assertThrows(FeignException.Conflict.class,
                      () -> transferListingApi.createTransferListing(
-                             new CreateTransferListingRequestBodyDTO().playerId(PLAYER_ID)),
-                     "TransferListingControllerV2::createTransferListing D11 team max transfers throws");
+                             new CreateTransferListingRequestBodyDTO().playerId(PLAYER_ID)));
 
-        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_NO_REMAINING_D11_TEAM_TRANSFERS.getMessage()),
-                   "TransferListingControllerV2::createTransferListing D11 team max transfers message contains");
+        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_NO_REMAINING_D11_TEAM_TRANSFERS.getMessage()));
 
         season.setD11TeamMaxTransfers(d11TeamMaxTransfers);
         this.seasonRepository.save(season);
@@ -157,11 +150,9 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
 
         final FeignException.Conflict e = assertThrows(FeignException.Conflict.class,
                      () -> transferListingApi.createTransferListing(
-                             new CreateTransferListingRequestBodyDTO().playerId(PLAYER_ID)),
-                     "TransferListingControllerV2::createTransferListing transfer day invalid status throws");
+                             new CreateTransferListingRequestBodyDTO().playerId(PLAYER_ID)));
 
-        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS.getMessage()),
-                   "TransferListingControllerV2::createTransferListing transfer day invalid status message contains");
+        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS.getMessage()));
 
         transferDay.setStatus(status);
         this.transferDayRepository.save(transferDay);
@@ -176,11 +167,9 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
 
         final FeignException.Conflict e = assertThrows(FeignException.Conflict.class,
                      () -> transferListingApi.createTransferListing(
-                             new CreateTransferListingRequestBodyDTO().playerId(1L)),
-                     "TransferListingControllerV2::createTransferListing player already transfer listed throws");
+                             new CreateTransferListingRequestBodyDTO().playerId(1L)));
 
-        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_NON_UNIQUE_TRANSFER_LISTING.getMessage()),
-               "TransferListingControllerV2::createTransferListing player already transfer listed message contains");
+        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_NON_UNIQUE_TRANSFER_LISTING.getMessage()));
     }
 
     /**
@@ -230,9 +219,7 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
     void testDeleteTransferListingUnauthorized() {
         final TransferListingApi transferListingApi = getApi(TransferListingApi.class);
 
-        assertThrows(FeignException.Unauthorized.class,
-                     () -> transferListingApi.deleteTransferListing(1L),
-                     "TransferListingControllerV2::deleteTransferListing unauthorized throws");
+        assertThrows(FeignException.Unauthorized.class, () -> transferListingApi.deleteTransferListing(1L));
     }
 
     /**
@@ -242,9 +229,7 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
     void testDeleteTransferListingForbidden() {
         final TransferListingApi transferListingApi = getUserApi(TransferListingApi.class);
 
-        assertThrows(FeignException.Forbidden.class,
-                     () -> transferListingApi.deleteTransferListing(12L),
-                     "TransferListingControllerV2::deleteTransferListing forbidden throws");
+        assertThrows(FeignException.Forbidden.class, () -> transferListingApi.deleteTransferListing(12L));
     }
 
     /**
@@ -254,9 +239,7 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
     void testDeleteTransferListingTransferListingNotFound() {
         final TransferListingApi transferListingApi = getUserApi(TransferListingApi.class);
 
-        assertThrows(FeignException.NotFound.class,
-                     () -> transferListingApi.deleteTransferListing(1_000L),
-                     "TransferListingControllerV2::deleteTransferListing transferListing not found throws");
+        assertThrows(FeignException.NotFound.class, () -> transferListingApi.deleteTransferListing(1_000L));
     }
 
     /**
@@ -267,11 +250,9 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
         final TransferListingApi transferListingApi = getUserApi(TransferListingApi.class);
 
         final FeignException.Conflict e = assertThrows(FeignException.Conflict.class,
-                     () -> transferListingApi.deleteTransferListing(13L),
-                     "TransferListingControllerV2::deleteTransferListing transferDay invalid status user throws");
+                                                       () -> transferListingApi.deleteTransferListing(13L));
 
-        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS.getMessage()),
-               "TransferListingControllerV2::deleteTransferListing transferDay invalid status user message contains");
+        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS.getMessage()));
     }
 
     /**
@@ -281,11 +262,9 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
     void testDeleteTransferListingTransferDayInvalidStatusAdmin() {
         final TransferListingApi transferListingApi = getAdministratorApi(TransferListingApi.class);
 
-        assertDoesNotThrow(() -> transferListingApi.deleteTransferListing(13L),
-                 "TransferListingControllerV2::deleteTransferListing transferDay invalid status admin does not throw");
+        assertDoesNotThrow(() -> transferListingApi.deleteTransferListing(13L));
 
-        assertFalse(this.transferListingRepository.findById(13L).isPresent(),
-                    "TransferListingControllerV2::deleteTransferListing transferDay invalid status admin isPresent");
+        assertFalse(this.transferListingRepository.findById(13L).isPresent());
     }
 
     /**
@@ -295,11 +274,9 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
     void testDeleteTransferListingUser() {
         final TransferListingApi transferListingApi = getUserApi(TransferListingApi.class);
 
-        assertDoesNotThrow(() -> transferListingApi.deleteTransferListing(14L),
-                           "TransferListingControllerV2::deleteTransferListing user does not throw");
+        assertDoesNotThrow(() -> transferListingApi.deleteTransferListing(14L));
 
-        assertFalse(this.transferListingRepository.findById(14L).isPresent(),
-                    "TransferListingControllerV2::deleteTransferListing user isPresent");
+        assertFalse(this.transferListingRepository.findById(14L).isPresent());
     }
 
     /**
@@ -309,11 +286,9 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
     void testDeleteTransferListingAdmin() {
         final TransferListingApi transferListingApi = getAdministratorApi(TransferListingApi.class);
 
-        assertDoesNotThrow(() -> transferListingApi.deleteTransferListing(15L),
-                           "TransferListingControllerV2::deleteTransferListing admin does not throw");
+        assertDoesNotThrow(() -> transferListingApi.deleteTransferListing(15L));
 
-        assertFalse(this.transferListingRepository.findById(15L).isPresent(),
-                    "TransferListingControllerV2::deleteTransferListing admin isPresent");
+        assertFalse(this.transferListingRepository.findById(15L).isPresent());
     }
 
     // getTransferListingsByTransferDayId ------------------------------------------------------------------------------
@@ -327,17 +302,14 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
         final TransferListingApi transferListingApi = getApi(TransferListingApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> transferListingApi.getTransferListingsByTransferDayId(null, 1),
-                     "TransferListingControllerV2::getTransferListingsByTransferDayId transferDayId null throws");
+                     () -> transferListingApi.getTransferListingsByTransferDayId(null, 1));
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> transferListingApi.getTransferListingsByTransferDayId(1L, null),
-                     "TransferListingControllerV2::getTransferListingsByTransferDayId page null throws");
+                     () -> transferListingApi.getTransferListingsByTransferDayId(1L, null));
 
         final List<TransferDay> transferDays = this.transferDayRepository.findAll();
 
-        assertTrue(transferDays.size() > 1,
-                   "TransferListingControllerV2::getTransferListingsByTransferDayId transferDays size > 0");
+        assertTrue(transferDays.size() > 1);
 
         int pendingCount = 0;
         int notPendingCount = 0;
@@ -345,30 +317,25 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
         for (final TransferDay transferDay : transferDays) {
             final TransferListingsResponseBodyDTO transferListingsResponseBodyDTO =
                     transferListingApi.getTransferListingsByTransferDayId(transferDay.getId(), 0);
-            assertNotNull(transferListingsResponseBodyDTO,
-                          "TransferListingControllerV2::getTransferListingsByTransferDayId response not null");
+            assertNotNull(transferListingsResponseBodyDTO);
 
             final List<TransferListingDTO> result = transferListingsResponseBodyDTO.getTransferListings();
 
-            assertNotNull(result, "TransferListingControllerV2::getTransferListingsByTransferDayId not null ");
+            assertNotNull(result);
 
             if (Status.PENDING.equals(transferDay.getStatus())) {
-                assertTrue(result.isEmpty(),
-                           "TransferListingControllerV2::getTransferListingsByTransferDayId pending empty");
-                assertFalse(transferDay.getTransferListings().isEmpty(),
-                           "TransferListingControllerV2::getTransferListingsByTransferDayId test data not empty");
+                assertTrue(result.isEmpty());
+                assertFalse(transferDay.getTransferListings().isEmpty());
                 ++pendingCount;
             } else {
-                assertFalse(result.isEmpty(), "TransferListingControllerV2::getTransferListingsByTransferDayId empty");
-                assertEquals(map(transferDay.getTransferListings(), TransferListingDTO.class), result,
-                             "TransferListingControllerV2::getTransferListingsByTransferDayId equals");
+                assertFalse(result.isEmpty());
+                assertEquals(map(transferDay.getTransferListings(), TransferListingDTO.class), result);
                 ++notPendingCount;
             }
         }
 
         // Make sure that we have both pending and not pending test transfer days
-        assertTrue(pendingCount > 0 && notPendingCount > 0,
-                   "TransferListingControllerV2::getTransferListingsByTransferDayId pending and not pending count > 0");
+        assertTrue(pendingCount > 0 && notPendingCount > 0);
     }
 
     /**
@@ -378,56 +345,31 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
      * @param result The result.
      */
     private void assertResultEquals(final PlayerSeasonStat playerSeasonStat, final TransferListingDTO result) {
-        assertEquals(playerSeasonStat.getPlayer().getId(), result.getPlayer().getId(),
-                     "TransferListingControllerV2::createTransferListing result player equals");
-        assertEquals(playerSeasonStat.getTeam().getId(), result.getTeam().getId(),
-                     "TransferListingControllerV2::createTransferListing result team equals");
-        assertEquals(playerSeasonStat.getD11Team().getId(), result.getD11Team().getId(),
-                     "TransferListingControllerV2::createTransferListing result position equals");
-        assertEquals(playerSeasonStat.getPosition().getId(), result.getPosition().getId(),
-                     "TransferListingControllerV2::createTransferListing result position equals");
-        assertEquals(playerSeasonStat.getFormPoints(), result.getFormPoints(),
-                     "TransferListingControllerV2::createTransferListing result formPoints equals");
-        assertEquals(playerSeasonStat.getFormMatchPoints(), result.getFormMatchPoints(),
-                     "TransferListingControllerV2::createTransferListing result formMatchPoints equals");
-        assertEquals(playerSeasonStat.getRanking(), result.getRanking(),
-                     "TransferListingControllerV2::createTransferListing result ranking equals");
-        assertEquals(playerSeasonStat.getPointsPerAppearance(), result.getPointsPerAppearance(),
-                     "TransferListingControllerV2::createTransferListing result pointsPerAppearance equals");
-        assertEquals(playerSeasonStat.getCleanSheets(), result.getCleanSheets(),
-                     "TransferListingControllerV2::createTransferListing result cleanSheets equals");
-        assertEquals(playerSeasonStat.getYellowCards(), result.getYellowCards(),
-                     "TransferListingControllerV2::createTransferListing result yellowCards equals");
-        assertEquals(playerSeasonStat.getRedCards(), result.getRedCards(),
-                     "TransferListingControllerV2::createTransferListing result redCards equals");
-        assertEquals(playerSeasonStat.getSubstitutionsOn(), result.getSubstitutionsOn(),
-                     "TransferListingControllerV2::createTransferListing result substitutionsOn equals");
-        assertEquals(playerSeasonStat.getSubstitutionsOff(), result.getSubstitutionsOff(),
-                     "TransferListingControllerV2::createTransferListing result substitutionsOff equals");
-        assertEquals(playerSeasonStat.getManOfTheMatch(), result.getManOfTheMatch(),
-                     "TransferListingControllerV2::createTransferListing result manOfTheMatch equals");
-        assertEquals(playerSeasonStat.getSharedManOfTheMatch(), result.getSharedManOfTheMatch(),
-                     "TransferListingControllerV2::createTransferListing result sharedManOfTheMatch equals");
-        assertEquals(playerSeasonStat.getGamesStarted(), result.getGamesStarted(),
-                     "TransferListingControllerV2::createTransferListing result gamesStarted equals");
-        assertEquals(playerSeasonStat.getGamesSubstitute(), result.getGamesSubstitute(),
-                     "TransferListingControllerV2::createTransferListing result gamesSubstitute equals");
-        assertEquals(playerSeasonStat.getGamesDidNotParticipate(), result.getGamesDidNotParticipate(),
-                     "TransferListingControllerV2::createTransferListing result gamesDidNotParticipate equals");
-        assertEquals(playerSeasonStat.getMinutesPlayed(), result.getMinutesPlayed(),
-                     "TransferListingControllerV2::createTransferListing result minutesPlayed equals");
-        assertEquals(playerSeasonStat.getGoals(), result.getGoals(),
-                     "TransferListingControllerV2::createTransferListing result goals equals");
-        assertEquals(playerSeasonStat.getGoalAssists(), result.getGoalAssists(),
-                     "TransferListingControllerV2::createTransferListing result goalAssists equals");
-        assertEquals(playerSeasonStat.getOwnGoals(), result.getOwnGoals(),
-                     "TransferListingControllerV2::createTransferListing result ownGoals equals");
-        assertEquals(playerSeasonStat.getGoalsConceded(), result.getGoalsConceded(),
-                     "TransferListingControllerV2::createTransferListing result goalsConceded equals");
-        assertEquals(playerSeasonStat.getRating(), result.getRating(),
-                     "TransferListingControllerV2::createTransferListing result rating equals");
-        assertEquals(playerSeasonStat.getPoints(), result.getPoints(),
-                     "TransferListingControllerV2::createTransferListing result points equals");
+        assertEquals(playerSeasonStat.getPlayer().getId(), result.getPlayer().getId());
+        assertEquals(playerSeasonStat.getTeam().getId(), result.getTeam().getId());
+        assertEquals(playerSeasonStat.getD11Team().getId(), result.getD11Team().getId());
+        assertEquals(playerSeasonStat.getPosition().getId(), result.getPosition().getId());
+        assertEquals(playerSeasonStat.getFormPoints(), result.getFormPoints());
+        assertEquals(playerSeasonStat.getFormMatchPoints(), result.getFormMatchPoints());
+        assertEquals(playerSeasonStat.getRanking(), result.getRanking());
+        assertEquals(playerSeasonStat.getPointsPerAppearance(), result.getPointsPerAppearance());
+        assertEquals(playerSeasonStat.getCleanSheets(), result.getCleanSheets());
+        assertEquals(playerSeasonStat.getYellowCards(), result.getYellowCards());
+        assertEquals(playerSeasonStat.getRedCards(), result.getRedCards());
+        assertEquals(playerSeasonStat.getSubstitutionsOn(), result.getSubstitutionsOn());
+        assertEquals(playerSeasonStat.getSubstitutionsOff(), result.getSubstitutionsOff());
+        assertEquals(playerSeasonStat.getManOfTheMatch(), result.getManOfTheMatch());
+        assertEquals(playerSeasonStat.getSharedManOfTheMatch(), result.getSharedManOfTheMatch());
+        assertEquals(playerSeasonStat.getGamesStarted(), result.getGamesStarted());
+        assertEquals(playerSeasonStat.getGamesSubstitute(), result.getGamesSubstitute());
+        assertEquals(playerSeasonStat.getGamesDidNotParticipate(), result.getGamesDidNotParticipate());
+        assertEquals(playerSeasonStat.getMinutesPlayed(), result.getMinutesPlayed());
+        assertEquals(playerSeasonStat.getGoals(), result.getGoals());
+        assertEquals(playerSeasonStat.getGoalAssists(), result.getGoalAssists());
+        assertEquals(playerSeasonStat.getOwnGoals(), result.getOwnGoals());
+        assertEquals(playerSeasonStat.getGoalsConceded(), result.getGoalsConceded());
+        assertEquals(playerSeasonStat.getRating(), result.getRating());
+        assertEquals(playerSeasonStat.getPoints(), result.getPoints());
     }
 
 }

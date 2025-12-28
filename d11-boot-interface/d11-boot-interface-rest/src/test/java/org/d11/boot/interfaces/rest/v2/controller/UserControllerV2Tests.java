@@ -63,32 +63,25 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
                 .confirmPassword(PASSWORD)
                 .confirmRegistrationLink(confirmRegistrationLink);
 
-        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO),
-                     "UserController::createUser name missing throws");
+        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO));
 
         createUserRequestBodyDTO.name(name).email(null);
-        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO),
-                     "UserController::createUser email missing throws");
+        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO));
 
         createUserRequestBodyDTO.name(name).email("INVALID_EMAIL");
-        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO),
-                     "UserController::createUser email invalid throws");
+        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO));
 
         createUserRequestBodyDTO.email(email).password(null);
-        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO),
-                     "UserController::createUser password missing throws");
+        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO));
 
         createUserRequestBodyDTO.password(PASSWORD).confirmPassword(null);
-        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO),
-                     "UserController::createUser confirmPassword missing throws");
+        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO));
 
         createUserRequestBodyDTO.confirmPassword(confirmPassword);
-        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO),
-                     "UserController::createUser password/confirmPassword don't match throws");
+        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO));
 
         createUserRequestBodyDTO.confirmPassword(PASSWORD).confirmRegistrationLink(null);
-        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO),
-                     "UserController::createUser confirmRegistrationLink missing throws");
+        assertThrows(FeignException.BadRequest.class, () -> userApi.createUser(createUserRequestBodyDTO));
 
         createUserRequestBodyDTO.confirmRegistrationLink(confirmRegistrationLink);
 
@@ -96,31 +89,27 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
         final User existingUser = this.userRepository.findAll().get(0);
 
         createUserRequestBodyDTO.name(existingUser.getName());
-        assertDoesNotThrow(() -> userApi.createUser(createUserRequestBodyDTO),
-                           "UserController::createUser name unavailable does not throws");
-        assertEquals(count, this.userRepository.count(), "UserController::createUser name unavailable count equals");
+        assertDoesNotThrow(() -> userApi.createUser(createUserRequestBodyDTO));
+        assertEquals(count, this.userRepository.count());
 
         createUserRequestBodyDTO.name(name).email(existingUser.getEmail());
-        assertDoesNotThrow(() -> userApi.createUser(createUserRequestBodyDTO),
-                           "UserController::createUser email unavailable does not throws");
-        assertEquals(count, this.userRepository.count(), "UserController::createUser email unavailable count equals");
+        assertDoesNotThrow(() -> userApi.createUser(createUserRequestBodyDTO));
+        assertEquals(count, this.userRepository.count());
 
         createUserRequestBodyDTO.email(email);
 
         final UserResponseBodyDTO userResponseBodyDTO = userApi.createUser(createUserRequestBodyDTO);
 
-        assertEquals(count + 1, this.userRepository.count(), "UserController::createUser count equals");
+        assertEquals(count + 1, this.userRepository.count());
 
         final User user = this.userRepository.findByName(userResponseBodyDTO.getUser().getName()).orElse(null);
 
-        assertNotNull(user, "UserController::createUser user not null");
-        assertEquals(name, user.getName(), "UserController::createUser user name equals");
-        assertEquals(email, user.getEmail(), "UserController::createUser user email equals");
-        assertTrue(this.passwordEncoder.matches(PASSWORD, user.getEncryptedPassword()),
-                   "UserController::createUser user password matches");
-        assertFalse(user.isAdministrator(), "UserController::createUser user isAdministrator");
-        assertNotNull(user.getConfirmRegistrationToken(),
-                      "UserController::createUser user confirmRegistrationToken not null");
+        assertNotNull(user);
+        assertEquals(name, user.getName());
+        assertEquals(email, user.getEmail());
+        assertTrue(this.passwordEncoder.matches(PASSWORD, user.getEncryptedPassword()));
+        assertFalse(user.isAdministrator());
+        assertNotNull(user.getConfirmRegistrationToken());
     }
 
     /**
@@ -131,30 +120,26 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
         final UserApi userApi = getApi(UserApi.class);
         final User user = this.userRepository.findByName("Unconfirmed").orElse(null);
 
-        assertNotNull(user, "UserController::confirmUser user not null");
-        assertNotNull(user.getConfirmRegistrationToken(),
-                      "UserController::confirmUser user confirmRegistrationToken not null");
+        assertNotNull(user);
+        assertNotNull(user.getConfirmRegistrationToken());
 
         final ConfirmUserRequestBodyDTO confirmUserRequestBodyDTO = new ConfirmUserRequestBodyDTO()
                 .confirmRegistrationToken(UUID.randomUUID());
 
         // Bad Request -------------------------------------------------------------------------------------------------
 
-        assertThrows(FeignException.BadRequest.class, () -> userApi.confirmUser(confirmUserRequestBodyDTO),
-                "UserController::confirmUser email missing throws");
+        assertThrows(FeignException.BadRequest.class, () -> userApi.confirmUser(confirmUserRequestBodyDTO));
 
         confirmUserRequestBodyDTO.setEmail(user.getEmail());
         confirmUserRequestBodyDTO.setConfirmRegistrationToken(null);
 
-        assertThrows(FeignException.BadRequest.class, () -> userApi.confirmUser(confirmUserRequestBodyDTO),
-                     "UserController::confirmUser confirmRegistrationToken missing throws");
+        assertThrows(FeignException.BadRequest.class, () -> userApi.confirmUser(confirmUserRequestBodyDTO));
 
         confirmUserRequestBodyDTO.setConfirmRegistrationToken(UUID.randomUUID());
 
         // Unauthorized ------------------------------------------------------------------------------------------------
 
-        assertThrows(FeignException.Unauthorized.class, () -> userApi.confirmUser(confirmUserRequestBodyDTO),
-                     "UserController::confirmUser invalid confirmRegistrationToken throws");
+        assertThrows(FeignException.Unauthorized.class, () -> userApi.confirmUser(confirmUserRequestBodyDTO));
 
         confirmUserRequestBodyDTO.setConfirmRegistrationToken(user.getConfirmRegistrationToken());
 
@@ -164,12 +149,10 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
 
         final User confirmedUser = this.userRepository.findById(user.getId()).orElse(null);
 
-        assertNotNull(confirmedUser, "UserController::confirmUser confirmedUser not null");
-        assertNull(confirmedUser.getConfirmRegistrationToken(),
-                   "UserController::confirmUser user confirmRegistrationToken null");
+        assertNotNull(confirmedUser);
+        assertNull(confirmedUser.getConfirmRegistrationToken());
 
-        assertThrows(FeignException.Unauthorized.class, () -> userApi.confirmUser(confirmUserRequestBodyDTO),
-                "UserController::confirmUser already confirmed throws");
+        assertThrows(FeignException.Unauthorized.class, () -> userApi.confirmUser(confirmUserRequestBodyDTO));
     }
 
     /**
@@ -180,8 +163,8 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
         final User user = this.userRepository.findByName("User").orElse(null);
         final User admin = this.userRepository.findByName("Administrator").orElse(null);
 
-        assertNotNull(user, "UserController::updateUser user not null");
-        assertNotNull(admin, "UserController::updateUser admin not null");
+        assertNotNull(user);
+        assertNotNull(admin);
 
         final UpdateUserRequestBodyDTO updateUserRequestBodyDTO = new UpdateUserRequestBodyDTO()
                 .currentPassword(PASSWORD)
@@ -193,8 +176,7 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
         final UserApi unauthorizedApi = getApi(UserApi.class);
 
         assertThrows(FeignException.Unauthorized.class,
-                     () -> unauthorizedApi.updateUser(admin.getId(), updateUserRequestBodyDTO),
-                     "UserController::updateUser unauthorized throws");
+                     () -> unauthorizedApi.updateUser(admin.getId(), updateUserRequestBodyDTO));
 
         // Bad Request -------------------------------------------------------------------------------------------------
 
@@ -202,51 +184,38 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
 
         updateUserRequestBodyDTO.setCurrentPassword(null);
 
-        assertThrows(FeignException.BadRequest.class,
-                     () -> userApi.updateUser(user.getId(), updateUserRequestBodyDTO),
-                     "UserController::updateUser currentPassword missing throws");
+        assertThrows(FeignException.BadRequest.class, () -> userApi.updateUser(user.getId(), updateUserRequestBodyDTO));
 
         updateUserRequestBodyDTO.setCurrentPassword(PASSWORD);
         updateUserRequestBodyDTO.setPassword(null);
 
-        assertThrows(FeignException.BadRequest.class,
-                     () -> userApi.updateUser(user.getId(), updateUserRequestBodyDTO),
-                     "UserController::updateUser password missing throws");
+        assertThrows(FeignException.BadRequest.class, () -> userApi.updateUser(user.getId(), updateUserRequestBodyDTO));
 
         updateUserRequestBodyDTO.setPassword(PASSWORD);
         updateUserRequestBodyDTO.setConfirmPassword(null);
 
-        assertThrows(FeignException.BadRequest.class,
-                     () -> userApi.updateUser(user.getId(), updateUserRequestBodyDTO),
-                     "UserController::updateUser confirmPassword missing throws");
+        assertThrows(FeignException.BadRequest.class, () -> userApi.updateUser(user.getId(), updateUserRequestBodyDTO));
 
         updateUserRequestBodyDTO.setConfirmPassword(user.getEncryptedPassword());
 
-        assertThrows(FeignException.BadRequest.class,
-                     () -> userApi.updateUser(user.getId(), updateUserRequestBodyDTO),
-                     "UserController::updateUser password mismatch throws");
+        assertThrows(FeignException.BadRequest.class, () -> userApi.updateUser(user.getId(), updateUserRequestBodyDTO));
 
         updateUserRequestBodyDTO.setConfirmPassword(PASSWORD);
 
         // Forbidden ---------------------------------------------------------------------------------------------------
 
         assertThrows(FeignException.Forbidden.class,
-                     () -> userApi.updateUser(admin.getId(), updateUserRequestBodyDTO),
-                     "UserController::updateUser not current user throws");
+                     () -> userApi.updateUser(admin.getId(), updateUserRequestBodyDTO));
 
         updateUserRequestBodyDTO.currentPassword("INVALID");
 
-        assertThrows(FeignException.Forbidden.class,
-                     () -> userApi.updateUser(user.getId(), updateUserRequestBodyDTO),
-                     "UserController::updateUser invalid current password throws");
+        assertThrows(FeignException.Forbidden.class, () -> userApi.updateUser(user.getId(), updateUserRequestBodyDTO));
 
         updateUserRequestBodyDTO.currentPassword(PASSWORD);
 
         // Not Found ---------------------------------------------------------------------------------------------------
 
-        assertThrows(FeignException.NotFound.class,
-                     () -> unauthorizedApi.updateUser(-1L, updateUserRequestBodyDTO),
-                     "UserController::updateUser not found throws");
+        assertThrows(FeignException.NotFound.class, () -> unauthorizedApi.updateUser(-1L, updateUserRequestBodyDTO));
 
         // OK ----------------------------------------------------------------------------------------------------------
 
@@ -259,10 +228,9 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
         final UserResponseBodyDTO userResponseBodyDTO = userApi.updateUser(user.getId(), updateUserRequestBodyDTO);
         final User result = this.userRepository.findByName(userResponseBodyDTO.getUser().getName()).orElse(null);
 
-        assertNotNull(result, "UserController::updateUser result not null");
-        assertEquals(user.getId(), result.getId(), "UserController::updateUser result id equals");
-        assertTrue(this.passwordEncoder.matches(newPassword, result.getEncryptedPassword()),
-                   "UserController::updateUser new password matches");
+        assertNotNull(result);
+        assertEquals(user.getId(), result.getId());
+        assertTrue(this.passwordEncoder.matches(newPassword, result.getEncryptedPassword()));
 
         // Rollback ----------------------------------------------------------------------------------------------------
 
@@ -285,35 +253,26 @@ class UserControllerV2Tests extends D11BootControllerV2Tests {
 
         final UserApi unauthorizedApi = getApi(UserApi.class);
 
-        assertThrows(FeignException.Unauthorized.class,
-                () -> unauthorizedApi.deleteUser(user.getId()),
-                "UserController::deleteUser unauthorized throws");
+        assertThrows(FeignException.Unauthorized.class, () -> unauthorizedApi.deleteUser(user.getId()));
 
         // Forbidden ---------------------------------------------------------------------------------------------------
 
         final UserApi forbiddenApi = getUserApi(UserApi.class);
 
-        assertThrows(FeignException.Forbidden.class,
-                () -> forbiddenApi.deleteUser(user.getId()),
-                "UserController::deleteUser user throws");
+        assertThrows(FeignException.Forbidden.class, () -> forbiddenApi.deleteUser(user.getId()));
 
         // Not Found ---------------------------------------------------------------------------------------------------
 
         final UserApi administratorApi = getAdministratorApi(UserApi.class);
 
-        assertThrows(FeignException.NotFound.class,
-                () -> administratorApi.deleteUser(-1L),
-                "UserController::deleteUser not found throws");
+        assertThrows(FeignException.NotFound.class, () -> administratorApi.deleteUser(-1L));
 
         // OK ----------------------------------------------------------------------------------------------------------
 
-        assertDoesNotThrow(() -> administratorApi.deleteUser(user.getId()),
-                           "UserController::deleteUser ok does not throw throws");
+        assertDoesNotThrow(() -> administratorApi.deleteUser(user.getId()));
 
-        assertFalse(this.userRepository.findById(user.getId()).isPresent(), "UserController::deleteUser present");
-        assertThrows(FeignException.NotFound.class,
-                () -> administratorApi.deleteUser(user.getId()),
-                "UserController::deleteUser deleted user throws");
+        assertFalse(this.userRepository.findById(user.getId()).isPresent());
+        assertThrows(FeignException.NotFound.class, () -> administratorApi.deleteUser(user.getId()));
     }
 
 }

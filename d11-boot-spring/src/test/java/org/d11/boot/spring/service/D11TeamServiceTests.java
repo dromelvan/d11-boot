@@ -47,12 +47,11 @@ class D11TeamServiceTests extends BaseD11BootServiceTests {
             when(this.d11TeamRepository.findById(d11Team.getId())).thenReturn(Optional.of(d11Team));
 
             final D11Team result = this.d11TeamService.getById(d11Team.getId());
-            assertNotNull(result, "D11TeamService::getById not null");
-            assertEquals(d11Team, result, "D11TeamService::getById");
+            assertNotNull(result);
+            assertEquals(d11Team, result);
         }
 
-        assertThrows(NotFoundException.class, () -> this.d11TeamService.getById(-1L),
-                     "D11TeamService::getById not found");
+        assertThrows(NotFoundException.class, () -> this.d11TeamService.getById(-1L));
     }
 
     /**
@@ -65,9 +64,9 @@ class D11TeamServiceTests extends BaseD11BootServiceTests {
 
         final List<D11Team> result = this.d11TeamService.getD11Teams();
 
-        assertNotNull(result, "D11TeamService::getD11Teams not null");
-        assertFalse(result.isEmpty(), "D11TeamService::getD11Teams isEmpty");
-        assertEquals(d11Teams, result, "D11TeamService::getD11Teams");
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(d11Teams, result);
     }
 
 }

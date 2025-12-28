@@ -31,35 +31,27 @@ class WhoScoredFixturesParserV1Tests {
         final File pendingMatchFile = new File("src/test/resources/whoscored/fixtures/v1/2022-08.html");
         final List<ParsedMatchData> parsedMatchDatas = whoScoredFixturesParserV1.parse(pendingMatchFile);
 
-        assertNotNull(parsedMatchDatas, "WhoScoredFixturesParserV1::parse not null.");
-        assertEquals(matchDataCount, parsedMatchDatas.size(), "WhoScoredFixturesParserV1::parse size");
+        assertNotNull(parsedMatchDatas);
+        assertEquals(matchDataCount, parsedMatchDatas.size());
 
         for (final ParsedMatchData parsedMatchData : parsedMatchDatas) {
-            assertNotNull(parsedMatchData.getSiteId(), "WhoScoredFixturesParserV1::parse site id not null");
-            assertTrue(parsedMatchData.getSiteId() > 0, "WhoScoredFixturesParserV1::parse site id positive");
+            assertNotNull(parsedMatchData.getSiteId());
+            assertTrue(parsedMatchData.getSiteId() > 0);
 
-            assertNotNull(parsedMatchData.getHomeTeamSiteId(),
-                          "WhoScoredFixturesParserV1::parse home team site id not null");
-            assertTrue(parsedMatchData.getHomeTeamSiteId() > 0,
-                       "WhoScoredFixturesParserV1::parse home team site id positive");
+            assertNotNull(parsedMatchData.getHomeTeamSiteId());
+            assertTrue(parsedMatchData.getHomeTeamSiteId() > 0);
 
-            assertTrue(StringUtils.isNotBlank(parsedMatchData.getHomeTeamName()),
-                       "WhoScoredFixturesParserV1::parse home team name blank");
+            assertTrue(StringUtils.isNotBlank(parsedMatchData.getHomeTeamName()));
 
-            assertNotNull(parsedMatchData.getAwayTeamSiteId(),
-                          "WhoScoredFixturesParserV1::parse away team site id not null");
-            assertTrue(parsedMatchData.getAwayTeamSiteId() > 0,
-                       "WhoScoredFixturesParserV1::parse away team site id positive");
+            assertNotNull(parsedMatchData.getAwayTeamSiteId());
+            assertTrue(parsedMatchData.getAwayTeamSiteId() > 0);
 
-            assertTrue(StringUtils.isNotBlank(parsedMatchData.getAwayTeamName()),
-                       "WhoScoredFixturesParserV1::parse away team name blank");
+            assertTrue(StringUtils.isNotBlank(parsedMatchData.getAwayTeamName()));
 
-            assertNotEquals(parsedMatchData.getHomeTeamSiteId(), parsedMatchData.getAwayTeamSiteId(),
-                            "WhoScoredFixturesParserV1::parse home team site id and away team site id not equals");
-            assertNotEquals(parsedMatchData.getHomeTeamName(), parsedMatchData.getAwayTeamName(),
-                            "WhoScoredFixturesParserV1::parse home team name and away team name not equals");
+            assertNotEquals(parsedMatchData.getHomeTeamSiteId(), parsedMatchData.getAwayTeamSiteId());
+            assertNotEquals(parsedMatchData.getHomeTeamName(), parsedMatchData.getAwayTeamName());
 
-            assertNotNull(parsedMatchData.getDatetime(), "WhoScoredFixturesParserV1::parse datetime not null");
+            assertNotNull(parsedMatchData.getDatetime());
         }
     }
 

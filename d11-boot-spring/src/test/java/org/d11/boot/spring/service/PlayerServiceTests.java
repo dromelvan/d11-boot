@@ -68,13 +68,11 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
             when(this.playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
 
             final Player result = this.playerService.getById(player.getId());
-            assertNotNull(result, "PlayerService::getById not null");
-            assertEquals(player, result, "PlayerService::getById");
+            assertNotNull(result);
+            assertEquals(player, result);
         }
 
-        assertThrows(NotFoundException.class,
-                     () -> this.playerService.getById(-1L),
-                     "PlayerService::getById not found");
+        assertThrows(NotFoundException.class, () -> this.playerService.getById(-1L));
     }
 
     /**
@@ -100,8 +98,7 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
                 () -> this.playerService.createPlayer(new PlayerInput(-1, -1, "", null, null, null, -1, 1, true)));
 
         final List<String> properties = Arrays.asList("height", "lastName", "premierLeagueId", "whoscoredId");
-        assertEquals(properties, e.getValidationErrors().stream().map(ValidationError::property).toList(),
-                     "PlayerService::createPlayer validation error properties equals");
+        assertEquals(properties, e.getValidationErrors().stream().map(ValidationError::property).toList());
 
         assertThrows(NotFoundException.class, () -> this.playerService.createPlayer(playerInput));
 
@@ -111,19 +108,15 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
 
         final Player result = this.playerService.createPlayer(playerInput);
 
-        assertEquals(playerInput.whoscoredId(), result.getWhoscoredId(),
-                     "PlayerService::createPlayer whoscoredId equals");
-        assertEquals(playerInput.premierLeagueId(), result.getPremierLeagueId(),
-                     "PlayerService::createPlayer premierLeagueId equals");
-        assertEquals(playerInput.firstName(), result.getFirstName(), "PlayerService::createPlayer firstName equals");
-        assertEquals(playerInput.lastName(), result.getLastName(), "PlayerService::createPlayer lastName equals");
-        assertEquals(playerInput.fullName(), result.getFullName(), "PlayerService::createPlayer fullName equals");
-        assertEquals(playerInput.dateOfBirth(), result.getDateOfBirth(),
-                     "PlayerService::createPlayer dateOfBirth equals");
-        assertEquals(playerInput.height(), result.getHeight(), "PlayerService::createPlayer height equals");
-        assertEquals(playerInput.verified(), result.isVerified(), "PlayerService::createPlayer verified equals");
-        assertEquals(playerInput.countryId(), result.getCountry().getId(),
-                     "PlayerService::createPlayer country equals");
+        assertEquals(playerInput.whoscoredId(), result.getWhoscoredId());
+        assertEquals(playerInput.premierLeagueId(), result.getPremierLeagueId());
+        assertEquals(playerInput.firstName(), result.getFirstName());
+        assertEquals(playerInput.lastName(), result.getLastName());
+        assertEquals(playerInput.fullName(), result.getFullName());
+        assertEquals(playerInput.dateOfBirth(), result.getDateOfBirth());
+        assertEquals(playerInput.height(), result.getHeight());
+        assertEquals(playerInput.verified(), result.isVerified());
+        assertEquals(playerInput.countryId(), result.getCountry().getId());
 
         verify(this.countryRepository, times(2)).findById(eq(country.getId()));
         verify(this.playerRepository, times(1)).save(any(Player.class));
@@ -153,8 +146,7 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
                                                       new PlayerInput(-1, -1, "", null, null, null, -1, 1, true)));
 
         final List<String> properties = Arrays.asList("height", "lastName", "premierLeagueId", "whoscoredId");
-        assertEquals(properties, e.getValidationErrors().stream().map(ValidationError::property).toList(),
-                     "PlayerService::updatePlayer validation error properties equals");
+        assertEquals(properties, e.getValidationErrors().stream().map(ValidationError::property).toList());
 
         when(this.playerRepository.findById(eq(player.getId()))).thenReturn(Optional.empty());
 
@@ -170,25 +162,20 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
 
         final Player result = this.playerService.updatePlayer(player.getId(), playerInput);
 
-        assertEquals(player.getId(), result.getId(), "PlayerService::updatePlayer id equals");
-        assertEquals(player.getWhoscoredId(), result.getWhoscoredId(),
-                     "PlayerService::updatePlayer whoscoredId equals");
-        assertEquals(player.getPremierLeagueId(), result.getPremierLeagueId(),
-                     "PlayerService::updatePlayer premierLeagueId equals");
-        assertEquals(player.getFirstName(), result.getFirstName(), "PlayerService::updatePlayer firstName equals");
-        assertEquals(player.getLastName(), result.getLastName(), "PlayerService::updatePlayer lastName equals");
-        assertEquals(player.getFullName(), result.getFullName(), "PlayerService::updatePlayer fullName equals");
-        assertEquals(player.getParameterizedName(), result.getParameterizedName(),
-                     "PlayerService::updatePlayer parameterizedName equals");
-        assertEquals(player.getDateOfBirth(), result.getDateOfBirth(),
-                     "PlayerService::updatePlayer dateOfBirth equals");
-        assertEquals(player.getHeight(), result.getHeight(), "PlayerService::updatePlayer height equals");
-        assertEquals(player.getPhotoFileName(), result.getPhotoFileName(),
-                     "PlayerService::updatePlayer photoFileName equals");
-        assertEquals(player.isVerified(), result.isVerified(), "PlayerService::updatePlayer verified equals");
-        assertEquals(player.getCountry(), result.getCountry(), "PlayerService::updatePlayer country equals");
-        assertEquals(player.getCreatedAt(), result.getCreatedAt(), "PlayerService::updatePlayer createdAt equals");
-        assertEquals(player.getUpdatedAt(), result.getUpdatedAt(), "PlayerService::updatePlayer updatedAt equals");
+        assertEquals(player.getId(), result.getId());
+        assertEquals(player.getWhoscoredId(), result.getWhoscoredId());
+        assertEquals(player.getPremierLeagueId(), result.getPremierLeagueId());
+        assertEquals(player.getFirstName(), result.getFirstName());
+        assertEquals(player.getLastName(), result.getLastName());
+        assertEquals(player.getFullName(), result.getFullName());
+        assertEquals(player.getParameterizedName(), result.getParameterizedName());
+        assertEquals(player.getDateOfBirth(), result.getDateOfBirth());
+        assertEquals(player.getHeight(), result.getHeight());
+        assertEquals(player.getPhotoFileName(), result.getPhotoFileName());
+        assertEquals(player.isVerified(), result.isVerified());
+        assertEquals(player.getCountry(), result.getCountry());
+        assertEquals(player.getCreatedAt(), result.getCreatedAt());
+        assertEquals(player.getUpdatedAt(), result.getUpdatedAt());
 
         verify(this.countryRepository, times(2)).findById(eq(player.getCountry().getId()));
         verify(this.playerRepository, times(3)).findById(any(Long.class));
@@ -203,16 +190,12 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
         final String nameProperty = "name";
 
         final BadRequestException nullNameException =
-                assertThrows(BadRequestException.class, () -> this.playerService.searchByName(null),
-                             "PlayerService::searchByName null name throws");
-        assertEquals(nameProperty, nullNameException.getParameter(),
-                     "PlayerService::searchByName property equals null");
+                assertThrows(BadRequestException.class, () -> this.playerService.searchByName(null));
+        assertEquals(nameProperty, nullNameException.getParameter());
 
         final BadRequestException emptyNameException =
-                assertThrows(BadRequestException.class, () -> this.playerService.searchByName(null),
-                             "PlayerService::searchByName empty name throws");
-        assertEquals(nameProperty, emptyNameException.getParameter(),
-                     "PlayerService::searchByName property equals empty");
+                assertThrows(BadRequestException.class, () -> this.playerService.searchByName(null));
+        assertEquals(nameProperty, emptyNameException.getParameter());
 
         final List<Player> players = generateList(Player.class);
 
@@ -231,8 +214,8 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
 
             final List<PlayerSearchResult> likeResult = this.playerService.searchByName(player.getName());
 
-            assertEquals(1, likeResult.size(), "PlayerService::searchByName like size equals");
-            assertEquals(playerSearchResult, likeResult.get(0), "PlayerService::searchByName like result equals");
+            assertEquals(1, likeResult.size());
+            assertEquals(playerSearchResult, likeResult.get(0));
 
             // Update mocked parameterized name since it won't be correct otherwise
             player.preUpdate();
@@ -244,8 +227,8 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
             final List<PlayerSearchResult> exactResult =
                     this.playerService.searchByName(exact + player.getName() + exact);
 
-            assertEquals(1, exactResult.size(), "PlayerService::searchByName exact size equals");
-            assertEquals(playerSearchResult, exactResult.get(0), "PlayerService::searchByName exact result equals");
+            assertEquals(1, exactResult.size());
+            assertEquals(playerSearchResult, exactResult.get(0));
 
             verify(this.playerRepository, times(1))
                     .findByParameterizedNameLike(eq(PlayerService.SQL_LIKE + likeName + PlayerService.SQL_LIKE));

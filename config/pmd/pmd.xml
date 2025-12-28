@@ -11,6 +11,7 @@
     <rule ref="category/java/bestpractices.xml">
         <exclude name="JUnitTestContainsTooManyAsserts"/>
         <exclude name="JUnitTestsShouldIncludeAssert"/> <!-- This shows false positive when asserts are in lambdas -->
+        <exclude name="JUnitAssertionsShouldIncludeMessage" /> <!-- This is annoying to do and just adds noise -->
         <exclude name="GuardLogStatement"/> <!-- This shows false positive when logging with parameter substitution,
                                                  at least for info level -->
     </rule>

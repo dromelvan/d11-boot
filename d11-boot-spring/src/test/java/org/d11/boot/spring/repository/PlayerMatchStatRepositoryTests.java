@@ -37,10 +37,8 @@ class PlayerMatchStatRepositoryTests extends AbstractRepositoryTests<PlayerMatch
                 .map(playerMatchStat -> playerMatchStat.getMatch().getMatchWeek().getSeason())
                 .collect(Collectors.toSet());
 
-        assertTrue(players.size() > 1,
-                   "PlayerMatchStatRepository::findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime teams size > 1");
-        assertFalse(seasons.isEmpty(),
-                   "PlayerMatchStatRepository::findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime seasons empty");
+        assertTrue(players.size() > 1);
+        assertFalse(seasons.isEmpty());
 
         for (final Player player : players) {
             for (final Season season : seasons) {
@@ -54,15 +52,11 @@ class PlayerMatchStatRepositoryTests extends AbstractRepositoryTests<PlayerMatch
                                                                      .equals(season))
                         .toList();
 
-                assertTrue(expected.size() > 1,
-                           "PlayerMatchStatRepository::findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime expected size > 1");
+                assertTrue(expected.size() > 1);
 
-                assertNotNull(result,
-                              "PlayerMatchStatRepository::findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime not null");
-                assertFalse(result.isEmpty(),
-                            "PlayerMatchStatRepository::findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime empty");
-                assertEquals(expected, result,
-                             "PlayerMatchStatRepository::findByPlayerIdAndMatchMatchWeekSeasonIdOrderByMatchDatetime equals");
+                assertNotNull(result);
+                assertFalse(result.isEmpty());
+                assertEquals(expected, result);
             }
         }
 
@@ -79,8 +73,7 @@ class PlayerMatchStatRepositoryTests extends AbstractRepositoryTests<PlayerMatch
         final Set<Match> matches = entities.stream()
                 .map(PlayerMatchStat::getMatch).collect(Collectors.toSet());
 
-        assertTrue(matches.size() > 1,
-                   "PlayerMatchStatRepository::findByMatchIdOrderByPositionSortOrder matches size > 1");
+        assertTrue(matches.size() > 1);
 
         for (final Match match : matches) {
             final List<PlayerMatchStat> result = getRepository().findByMatchIdOrderByPositionSortOrder(match.getId());
@@ -89,12 +82,11 @@ class PlayerMatchStatRepositoryTests extends AbstractRepositoryTests<PlayerMatch
                     .filter(playerMatchStat -> playerMatchStat.getMatch().equals(match))
                     .toList();
 
-            assertTrue(expected.size() > 1,
-                       "PlayerMatchStatRepository::findByMatchIdOrderByPositionSortOrder expected size > 1");
+            assertTrue(expected.size() > 1);
 
-            assertNotNull(result, "PlayerMatchStatRepository::findByMatchIdOrderByPositionSortOrder not null ");
-            assertFalse(result.isEmpty(), "PlayerMatchStatRepository::findByMatchIdOrderByPositionSortOrder empty");
-            assertEquals(expected, result, "PlayerMatchStatRepository::findByMatchIdOrderByPositionSortOrder equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(expected, result);
         }
     }
 
@@ -109,8 +101,7 @@ class PlayerMatchStatRepositoryTests extends AbstractRepositoryTests<PlayerMatch
         final Set<D11Match> d11Matches = entities.stream()
                 .map(PlayerMatchStat::getD11Match).collect(Collectors.toSet());
 
-        assertTrue(d11Matches.size() > 1,
-                   "PlayerMatchStatRepository::findByD11MatchIdOrderByPositionSortOrder d11Matches size > 1");
+        assertTrue(d11Matches.size() > 1);
 
         for (final D11Match d11Match : d11Matches) {
             final List<PlayerMatchStat> result =
@@ -120,13 +111,11 @@ class PlayerMatchStatRepositoryTests extends AbstractRepositoryTests<PlayerMatch
                     .filter(playerMatchStat -> playerMatchStat.getD11Match().equals(d11Match))
                     .toList();
 
-            assertTrue(expected.size() > 1,
-                       "PlayerMatchStatRepository::findByD11MatchIdOrderByPositionSortOrder expected size > 1");
+            assertTrue(expected.size() > 1);
 
-            assertNotNull(result, "PlayerMatchStatRepository::findByD11MatchIdOrderByPositionSortOrder not null ");
-            assertFalse(result.isEmpty(), "PlayerMatchStatRepository::findByD11MatchIdOrderByPositionSortOrder empty");
-            assertEquals(expected, result,
-                         "PlayerMatchStatRepository::findByD11MatchIdOrderByPositionSortOrder equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(expected, result);
         }
     }
 

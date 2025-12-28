@@ -149,16 +149,14 @@ class UserServiceTests extends BaseD11BootServiceTests {
         // Name --------------------------------------------------------------------------------------------------------
 
         BadRequestException exception = assertThrows(BadRequestException.class,
-                                                     () -> this.userService.createUser(userRegistration),
-                                                     "UserService::createUser name missing throws");
-        assertEquals(NAME_PROPERTY, exception.getParameter(), "UserService::createUser name missing parameter equals");
+                                                     () -> this.userService.createUser(userRegistration));
+        assertEquals(NAME_PROPERTY, exception.getParameter());
 
         userRegistration.setName("EXISTING_NAME");
         when(this.userRepository.findByName(eq(userRegistration.getName()))).thenReturn(Optional.of(new User()));
 
         assertThrows(ConflictException.class,
-                     () -> this.userService.createUser(userRegistration),
-                     "UserService::createUser name unavailable throws");
+                     () -> this.userService.createUser(userRegistration));
 
         userRegistration.setName(NAME_PROPERTY);
         userRegistration.setEmail(null);
@@ -166,17 +164,14 @@ class UserServiceTests extends BaseD11BootServiceTests {
         // Email -------------------------------------------------------------------------------------------------------
 
         exception = assertThrows(BadRequestException.class,
-                                 () -> this.userService.createUser(userRegistration),
-                                 "UserService::createUser email missing throws");
-        assertEquals(EMAIL_PROPERTY, exception.getParameter(),
-                     "UserService::createUser email missing parameter equals");
+                                 () -> this.userService.createUser(userRegistration));
+        assertEquals(EMAIL_PROPERTY, exception.getParameter());
 
         userRegistration.setEmail("EXISTING_EMAIL");
         when(this.userRepository.findByEmail(eq(userRegistration.getEmail()))).thenReturn(Optional.of(new User()));
 
         assertThrows(ConflictException.class,
-                     () -> this.userService.createUser(userRegistration),
-                     "UserService::createUser email unavailable throws");
+                     () -> this.userService.createUser(userRegistration));
 
         userRegistration.setEmail(EMAIL_PROPERTY);
 
@@ -184,10 +179,8 @@ class UserServiceTests extends BaseD11BootServiceTests {
 
         userRegistration.setConfirmRegistrationLink(null);
         exception = assertThrows(BadRequestException.class,
-                                 () -> this.userService.createUser(userRegistration),
-                                 "UserService::createUser confirmRegistrationLink missing throws");
-        assertEquals(CONFIRM_REGISTRATION_LINK_PROPERTY, exception.getParameter(),
-                     "UserService::createUser confirmRegistrationLink missing parameter equals");
+                                 () -> this.userService.createUser(userRegistration));
+        assertEquals(CONFIRM_REGISTRATION_LINK_PROPERTY, exception.getParameter());
 
         userRegistration.setConfirmRegistrationLink(CONFIRM_REGISTRATION_LINK);
 
@@ -196,10 +189,8 @@ class UserServiceTests extends BaseD11BootServiceTests {
         userRegistration.setPassword(null);
 
         exception = assertThrows(BadRequestException.class,
-                                 () -> this.userService.createUser(userRegistration),
-                                 "UserService::createUser password missing throws");
-        assertEquals(PASSWORD_PROPERTY, exception.getParameter(),
-                     "UserService::createUser password missing parameter equals");
+                                 () -> this.userService.createUser(userRegistration));
+        assertEquals(PASSWORD_PROPERTY, exception.getParameter());
 
         userRegistration.setPassword(PASSWORD_PROPERTY);
 
@@ -208,20 +199,16 @@ class UserServiceTests extends BaseD11BootServiceTests {
         userRegistration.setConfirmPassword(null);
 
         exception = assertThrows(BadRequestException.class,
-                                 () -> this.userService.createUser(userRegistration),
-                                 "UserService::createUser confirmPassword missing throws");
-        assertEquals(CONFIRM_PASSWORD_PROPERTY, exception.getParameter(),
-                     "UserService::createUser confirmPassword missing parameter equals");
+                                 () -> this.userService.createUser(userRegistration));
+        assertEquals(CONFIRM_PASSWORD_PROPERTY, exception.getParameter());
 
         final String encodedPassword = "ENCODED_PASSWORD";
 
         userRegistration.setConfirmPassword(encodedPassword);
 
         exception = assertThrows(BadRequestException.class,
-                                 () -> this.userService.createUser(userRegistration),
-                                 "UserService::createUser confirmPassword invalid throws");
-        assertEquals(CONFIRM_PASSWORD_PROPERTY, exception.getParameter(),
-                     "UserService::createUser confirmPassword invalid parameter equals");
+                                 () -> this.userService.createUser(userRegistration));
+        assertEquals(CONFIRM_PASSWORD_PROPERTY, exception.getParameter());
 
         userRegistration.setConfirmPassword(userRegistration.getPassword());
 
@@ -232,11 +219,11 @@ class UserServiceTests extends BaseD11BootServiceTests {
 
         final User user = this.userService.createUser(userRegistration);
 
-        assertEquals(userRegistration.getName(), user.getName(), "UserService::createUser name equals");
-        assertEquals(userRegistration.getEmail(), user.getEmail(), "UserService::createUser email equals");
-        assertEquals(encodedPassword, user.getEncryptedPassword(), "UserService::createUser encryptedPassword equals");
-        assertFalse(user.isAdministrator(), "UserService::createUser administrator");
-        assertNotNull(user.getConfirmRegistrationToken(), "UserService::createUser confirmRegistrationToken");
+        assertEquals(userRegistration.getName(), user.getName());
+        assertEquals(userRegistration.getEmail(), user.getEmail());
+        assertEquals(encodedPassword, user.getEncryptedPassword());
+        assertFalse(user.isAdministrator());
+        assertNotNull(user.getConfirmRegistrationToken());
 
         verify(this.userRepository, times(1)).save(eq(user));
         verify(this.javaMailSender, times(1)).send(any(ConfirmRegistrationLinkMailMessage.class));
@@ -256,10 +243,8 @@ class UserServiceTests extends BaseD11BootServiceTests {
         // Email -------------------------------------------------------------------------------------------------------
 
         BadRequestException exception = assertThrows(BadRequestException.class,
-                                 () -> this.userService.confirmUser(userConfirmation),
-                                 "UserService::confirmUser email missing throws");
-        assertEquals(EMAIL_PROPERTY, exception.getParameter(),
-                     "UserService::confirmUser email missing parameter equals");
+                                 () -> this.userService.confirmUser(userConfirmation));
+        assertEquals(EMAIL_PROPERTY, exception.getParameter());
 
         userConfirmation.setEmail(EMAIL_PROPERTY);
 
@@ -268,10 +253,8 @@ class UserServiceTests extends BaseD11BootServiceTests {
         userConfirmation.setConfirmRegistrationToken(null);
 
         exception = assertThrows(BadRequestException.class,
-                                 () -> this.userService.confirmUser(userConfirmation),
-                                 "UserService::confirmUser confirmRegistrationToken missing throws");
-        assertEquals(CONFIRM_REGISTRATION_TOKEN_PROPERTY, exception.getParameter(),
-                     "UserService::confirmUser confirmRegistrationToken missing parameter equals");
+                                 () -> this.userService.confirmUser(userConfirmation));
+        assertEquals(CONFIRM_REGISTRATION_TOKEN_PROPERTY, exception.getParameter());
 
         userConfirmation.setConfirmRegistrationToken(confirmRegistrationToken);
 
@@ -282,8 +265,7 @@ class UserServiceTests extends BaseD11BootServiceTests {
                 .thenReturn(Optional.empty());
 
         assertThrows(UnauthorizedException.class,
-                     () -> this.userService.confirmUser(userConfirmation),
-                     "UserService::confirmUser invalid user/token throws");
+                     () -> this.userService.confirmUser(userConfirmation));
 
         // OK ----------------------------------------------------------------------------------------------------------
 
@@ -296,7 +278,7 @@ class UserServiceTests extends BaseD11BootServiceTests {
 
         assertDoesNotThrow(() -> this.userService.confirmUser(userConfirmation));
 
-        assertNull(user.getConfirmRegistrationToken(), "UserService::confirmUser confirmRegistrationToken null");
+        assertNull(user.getConfirmRegistrationToken());
 
         verify(this.userRepository, times(1)).save(eq(user));
     }
@@ -315,10 +297,8 @@ class UserServiceTests extends BaseD11BootServiceTests {
                              () -> this.userService.updateUserPassword(1L,
                                                                        null,
                                                                        PASSWORD_PROPERTY,
-                                                                       CONFIRM_PASSWORD_PROPERTY),
-                             "UserService::updateUserPassword currentPassword missing throws");
-        assertEquals(CURRENT_PASSWORD_PROPERTY, badRequestException.getParameter(),
-                     "UserService::updateUserPassword currentPassword missing parameter equals");
+                                                                       CONFIRM_PASSWORD_PROPERTY));
+        assertEquals(CURRENT_PASSWORD_PROPERTY, badRequestException.getParameter());
 
         // Password-----------------------------------------------------------------------------------------------------
 
@@ -326,10 +306,8 @@ class UserServiceTests extends BaseD11BootServiceTests {
                                  () -> this.userService.updateUserPassword(1L,
                                                                            CURRENT_PASSWORD_PROPERTY,
                                                                            null,
-                                                                           CONFIRM_PASSWORD_PROPERTY),
-                                 "UserService::updateUserPassword password missing throws");
-        assertEquals(PASSWORD_PROPERTY, badRequestException.getParameter(),
-                     "UserService::updateUserPassword password missing parameter equals");
+                                                                           CONFIRM_PASSWORD_PROPERTY));
+        assertEquals(PASSWORD_PROPERTY, badRequestException.getParameter());
 
         // Confirm password --------------------------------------------------------------------------------------------
 
@@ -337,19 +315,15 @@ class UserServiceTests extends BaseD11BootServiceTests {
                                  () -> this.userService.updateUserPassword(1L,
                                                                            CURRENT_PASSWORD_PROPERTY,
                                                                            PASSWORD_PROPERTY,
-                                                                           null),
-                                 "UserService::updateUserPassword confirmPassword missing throws");
-        assertEquals(CONFIRM_PASSWORD_PROPERTY, badRequestException.getParameter(),
-                     "UserService::updateUserPassword confirmPassword missing parameter equals");
+                                                                           null));
+        assertEquals(CONFIRM_PASSWORD_PROPERTY, badRequestException.getParameter());
 
         badRequestException = assertThrows(BadRequestException.class,
                                  () -> this.userService.updateUserPassword(1L,
                                                                            CURRENT_PASSWORD_PROPERTY,
                                                                            PASSWORD_PROPERTY,
-                                                                           CONFIRM_PASSWORD_PROPERTY),
-                                 "UserService::updateUserPassword confirmPassword not matching throws");
-        assertEquals(CONFIRM_PASSWORD_PROPERTY, badRequestException.getParameter(),
-                     "UserService::updateUserPassword confirmPassword not matching parameter equals");
+                                                                           CONFIRM_PASSWORD_PROPERTY));
+        assertEquals(CONFIRM_PASSWORD_PROPERTY, badRequestException.getParameter());
 
         // User not found ----------------------------------------------------------------------------------------------
 
@@ -358,8 +332,7 @@ class UserServiceTests extends BaseD11BootServiceTests {
         assertThrows(NotFoundException.class, () -> this.userService.updateUserPassword(1L,
                                                                                         CURRENT_PASSWORD_PROPERTY,
                                                                                         PASSWORD_PROPERTY,
-                                                                                        PASSWORD_PROPERTY),
-                "UserService::updateUserPassword user not found throws");
+                                                                                        PASSWORD_PROPERTY));
 
         // No current user ---------------------------------------------------------------------------------------------
 
@@ -376,8 +349,7 @@ class UserServiceTests extends BaseD11BootServiceTests {
         assertThrows(UnauthorizedException.class, () -> this.userService.updateUserPassword(1L,
                                                                                             CURRENT_PASSWORD_PROPERTY,
                                                                                             PASSWORD_PROPERTY,
-                                                                                            PASSWORD_PROPERTY),
-                     "UserService::updateUserPassword no current user throws");
+                                                                                            PASSWORD_PROPERTY));
 
         // Wrong user --------------------------------------------------------------------------------------------------
 
@@ -394,8 +366,7 @@ class UserServiceTests extends BaseD11BootServiceTests {
                      () -> this.userService.updateUserPassword(1L,
                                                                CURRENT_PASSWORD_PROPERTY,
                                                                PASSWORD_PROPERTY,
-                                                               PASSWORD_PROPERTY),
-                     "UserService::updateUserPassword wrong user throws");
+                                                               PASSWORD_PROPERTY));
 
         // Wrong current password --------------------------------------------------------------------------------------
 
@@ -406,8 +377,7 @@ class UserServiceTests extends BaseD11BootServiceTests {
                      () -> this.userService.updateUserPassword(1L,
                                                                CURRENT_PASSWORD_PROPERTY,
                                                                PASSWORD_PROPERTY,
-                                                               PASSWORD_PROPERTY),
-                     "UserService::updateUserPassword wrong current password throws");
+                                                               PASSWORD_PROPERTY));
 
         verify(this.passwordEncoder, times(1)).matches(CURRENT_PASSWORD_PROPERTY, user.getEncryptedPassword());
 
@@ -424,10 +394,9 @@ class UserServiceTests extends BaseD11BootServiceTests {
                                                                 PASSWORD_PROPERTY,
                                                                 PASSWORD_PROPERTY);
 
-        assertNotNull(result, "UserService::updateUserPassword result not null");
-        assertEquals(user, result, "UserService::updateUserPassword result equals");
-        assertEquals(PASSWORD_PROPERTY, result.getEncryptedPassword(),
-                     "UserService::updateUserPassword result password equals");
+        assertNotNull(result);
+        assertEquals(user, result);
+        assertEquals(PASSWORD_PROPERTY, result.getEncryptedPassword());
 
         verify(this.passwordEncoder, times(1)).encode(eq(PASSWORD_PROPERTY));
         verify(this.userRepository, times(1)).save(eq(user));
@@ -459,15 +428,13 @@ class UserServiceTests extends BaseD11BootServiceTests {
             when(this.userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
             final UserDetails result = this.userService.loadCachedUserByUsername(user.getEmail());
-            assertNotNull(result, "UserService::loadCachedUserByUsername not null");
-            assertEquals(user.getEmail(), result.getUsername(), "UserService::loadCachedUserByUsername email");
-            assertEquals(user.getEncryptedPassword(), result.getPassword(),
-                         "UserService::loadCachedUserByUsername encrypted password");
+            assertNotNull(result);
+            assertEquals(user.getEmail(), result.getUsername());
+            assertEquals(user.getEncryptedPassword(), result.getPassword());
         });
 
         assertThrows(UsernameNotFoundException.class,
-                     () -> this.userService.loadCachedUserByUsername(INVALID_USER_NAME),
-                     "UserService::loadCachedUserByUsername not found");
+                     () -> this.userService.loadCachedUserByUsername(INVALID_USER_NAME));
     }
 
     /**
@@ -482,15 +449,13 @@ class UserServiceTests extends BaseD11BootServiceTests {
             when(this.userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
             final UserDetails result = this.userService.loadUserByUsername(user.getEmail());
-            assertNotNull(result, "UserService::loadUserByUsername not null");
-            assertEquals(user.getEmail(), result.getUsername(), "UserService::loadUserByUsername email");
-            assertEquals(user.getEncryptedPassword(), result.getPassword(),
-                         "UserService::loadUserByUsername encrypted password");
+            assertNotNull(result);
+            assertEquals(user.getEmail(), result.getUsername());
+            assertEquals(user.getEncryptedPassword(), result.getPassword());
         });
 
         assertThrows(UsernameNotFoundException.class,
-                     () -> this.userService.loadUserByUsername(INVALID_USER_NAME),
-                     "UserService::loadUserByUsername not found");
+                     () -> this.userService.loadUserByUsername(INVALID_USER_NAME));
     }
 
 }

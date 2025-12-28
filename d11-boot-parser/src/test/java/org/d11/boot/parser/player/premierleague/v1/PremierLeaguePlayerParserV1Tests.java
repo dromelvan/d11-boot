@@ -29,20 +29,15 @@ class PremierLeaguePlayerParserV1Tests {
         final File playerFile = new File("src/test/resources/premierleague/player/v1/player.html");
         final ParsedPlayerData parsedPlayerData = premierLeaguePlayerParserV1.parse(playerFile);
 
-        assertNotNull(parsedPlayerData, "PremierLeaguePlayerParserV1::parse player not null");
-        assertNotNull(parsedPlayerData.getSiteId(), "PremierLeaguePlayerParserV1::parse player site id not null");
-        assertFalse(StringUtils.isBlank(parsedPlayerData.getName()),
-                    "PremierLeaguePlayerParserV1::parse player name blank");
-        assertNotNull(parsedPlayerData.getShirtNumber(),
-                      "PremierLeaguePlayerParserV1::parse player shirt number not null");
-        assertFalse(StringUtils.isBlank(parsedPlayerData.getPosition()),
-                    "PremierLeaguePlayerParserV1::parse player position blank");
-        assertFalse(StringUtils.isBlank(parsedPlayerData.getNationality()),
-                    "PremierLeaguePlayerParserV1::parse player nationality blank");
-        assertNotNull(parsedPlayerData.getDateOfBirth(),
-                      "PremierLeaguePlayerParserV1::parse player date of birth not null");
-        assertNotNull(parsedPlayerData.getHeight(), "PremierLeaguePlayerParserV1::parse player height not null");
-        assertTrue(parsedPlayerData.getHeight() > 0, "PremierLeaguePlayerParserV1::parse player height positive");
+        assertNotNull(parsedPlayerData);
+        assertNotNull(parsedPlayerData.getSiteId());
+        assertFalse(StringUtils.isBlank(parsedPlayerData.getName()));
+        assertNotNull(parsedPlayerData.getShirtNumber());
+        assertFalse(StringUtils.isBlank(parsedPlayerData.getPosition()));
+        assertFalse(StringUtils.isBlank(parsedPlayerData.getNationality()));
+        assertNotNull(parsedPlayerData.getDateOfBirth());
+        assertNotNull(parsedPlayerData.getHeight());
+        assertTrue(parsedPlayerData.getHeight() > 0);
     }
 
 }

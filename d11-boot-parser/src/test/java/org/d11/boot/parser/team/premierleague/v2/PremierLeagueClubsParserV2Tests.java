@@ -31,12 +31,11 @@ class PremierLeagueClubsParserV2Tests {
         final File clubsFile = new File("src/test/resources/premierleague/clubs/v2/clubs.html");
         final List<ParsedTeamData> parsedTeamDatas = premierLeagueClubsParserV2.parse(clubsFile);
 
-        assertEquals(teamCount, parsedTeamDatas.size(), "PremierLeagueClubsParserV2::parse size equals");
+        assertEquals(teamCount, parsedTeamDatas.size());
 
         for (final ParsedTeamData parsedTeamData : parsedTeamDatas) {
-            assertNotNull(parsedTeamData.getSiteId(), "PremierLeagueClubsParserV2::parse team site id not null");
-            assertFalse(StringUtils.isBlank(parsedTeamData.getName()),
-                        "PremierLeagueClubsParserV2::parse team name blank");
+            assertNotNull(parsedTeamData.getSiteId());
+            assertFalse(StringUtils.isBlank(parsedTeamData.getName()));
         }
     }
 

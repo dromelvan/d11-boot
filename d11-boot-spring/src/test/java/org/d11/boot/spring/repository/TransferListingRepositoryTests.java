@@ -30,17 +30,15 @@ class TransferListingRepositoryTests extends AbstractRepositoryTests<TransferLis
     void testFindByTransferDayIdAndPlayerId() {
         final List<TransferListing> entities = getEntities();
 
-        assertFalse(entities.isEmpty(), "TransferListingRepository::findByTransferDayIdAndPlayerId empty");
+        assertFalse(entities.isEmpty());
 
         for (final TransferListing transferListing : entities) {
             final Optional<TransferListing> optional =
                     getRepository().findByTransferDayIdAndPlayerId(transferListing.getTransferDay().getId(),
                                                                    transferListing.getPlayer().getId());
 
-            assertTrue(optional.isPresent(), "TransferListingRepository::findByTransferDayIdAndPlayerId present");
-            optional.ifPresent(result ->
-                                   assertEquals(transferListing, result,
-                                                "TransferListingRepository::findByTransferDayIdAndPlayerId equals"));
+            assertTrue(optional.isPresent());
+            optional.ifPresent(result -> assertEquals(transferListing, result));
         }
     }
 
@@ -69,8 +67,8 @@ class TransferListingRepositoryTests extends AbstractRepositoryTests<TransferLis
         final List<TransferListing> result = getRepository().findByTransferDayIdOrderByRanking(transferDay.getId(),
                                                                                                pageable);
 
-        assertNotNull(result, "TransferListingRepository::findByTransferDayIdOrderByRanking not null");
-        assertEquals(expected, result, "TransferListingRepository::findByTransferDayIdOrderByRanking equals");
+        assertNotNull(result);
+        assertEquals(expected, result);
 
         for (final TransferListing transferListing : entities) {
             transferListing.setTransferDay(transferDay);
@@ -79,17 +77,15 @@ class TransferListingRepositoryTests extends AbstractRepositoryTests<TransferLis
 
         final List<TransferListing> page1result = getRepository().findByTransferDayIdOrderByRanking(transferDay.getId(),
                                                                                                     pageable);
-        assertNotNull(page1result, "TransferListingRepository::findByTransferDayIdOrderByRanking page 1 not null");
-        assertEquals(entities.subList(0, pageSize), page1result,
-                     "TransferListingRepository::findByTransferDayIdOrderByRanking page 1 equals");
+        assertNotNull(page1result);
+        assertEquals(entities.subList(0, pageSize), page1result);
 
         pageable = PageRequest.of(1, pageSize, Sort.by(sortBy));
 
         final List<TransferListing> page2result = getRepository().findByTransferDayIdOrderByRanking(transferDay.getId(),
                                                                                                     pageable);
-        assertNotNull(page2result, "TransferListingRepository::findByTransferDayIdOrderByRanking page 2 not null");
-        assertEquals(entities.subList(pageSize, pageSize * 2), page2result,
-                     "TransferListingRepository::findByTransferDayIdOrderByRanking page 2 equals");
+        assertNotNull(page2result);
+        assertEquals(entities.subList(pageSize, pageSize * 2), page2result);
     }
 
     /**
@@ -99,22 +95,19 @@ class TransferListingRepositoryTests extends AbstractRepositoryTests<TransferLis
     void testFindByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId() {
         final List<TransferListing> entities = getEntities();
 
-        assertFalse(entities.isEmpty(),
-                "TransferListingRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId empty");
+        assertFalse(entities.isEmpty());
 
         final List<Season> seasons = entities.stream()
                 .map(transferListing -> transferListing.getTransferDay().getTransferWindow().getMatchWeek().getSeason())
                 .distinct()
                 .toList();
-        assertFalse(seasons.isEmpty(),
-            "TransferListingRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId seasons empty");
+        assertFalse(seasons.isEmpty());
 
         final List<D11Team> d11Teams = entities.stream()
                 .map(TransferListing::getD11Team)
                 .distinct()
                 .toList();
-        assertFalse(d11Teams.isEmpty(),
-            "TransferListingRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId d11Teams empty");
+        assertFalse(d11Teams.isEmpty());
 
         for (final Season season : seasons) {
             for (final D11Team d11Team : d11Teams) {
@@ -130,8 +123,7 @@ class TransferListingRepositoryTests extends AbstractRepositoryTests<TransferLis
                         .sorted(Comparator.comparing(TransferListing::getId))
                         .toList();
 
-                assertEquals(transferListings, result,
-                    "TransferListingRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId equals");
+                assertEquals(transferListings, result);
             }
         }
     }

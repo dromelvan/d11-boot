@@ -15,23 +15,22 @@ class PremierLeagueTests extends EasyRandomTests {
      * Tests PremierLeague::isValid.
      */
     @Test
-    @SuppressWarnings("DataFlowIssue")
     void testIsValid() {
         final PremierLeague premierLeague = generate(PremierLeague.class);
 
-        assertTrue(premierLeague.isValid(), "PremierLeague::isValid");
+        assertTrue(premierLeague.isValid());
 
         premierLeague.setName("");
-        assertFalse(premierLeague.isValid(), "PremierLeague::isValid name empty");
+        assertFalse(premierLeague.isValid());
         premierLeague.setName(null);
-        assertFalse(premierLeague.isValid(), "PremierLeague::isValid name null");
+        assertFalse(premierLeague.isValid());
         premierLeague.setName("Name");
 
         premierLeague.setSeason(null);
-        assertFalse(premierLeague.isValid(), "PremierLeague::isValid season null");
+        assertFalse(premierLeague.isValid());
         premierLeague.setSeason(new Season());
 
-        assertTrue(premierLeague.isValid(), "PremierLeague::isValid valid");
+        assertTrue(premierLeague.isValid());
     }
 
 }

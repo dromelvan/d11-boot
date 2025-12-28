@@ -29,9 +29,8 @@ class TransferDayRepositoryTests extends AbstractRepositoryTests<TransferDay, Tr
 
         final Optional<TransferDay> optional = getRepository().findFirstByOrderByDatetimeDesc();
 
-        assertTrue(optional.isPresent(), "TransferDayRepository::findFirstByOrderByDatetimeDesc present");
-        optional.ifPresent(result -> assertEquals(transferDay, result,
-                                                  "TransferDayRepository::findFirstByOrderByDatetimeDesc equals"));
+        assertTrue(optional.isPresent());
+        optional.ifPresent(result -> assertEquals(transferDay, result));
     }
 
     /**
@@ -53,8 +52,8 @@ class TransferDayRepositoryTests extends AbstractRepositoryTests<TransferDay, Tr
         final List<TransferDay> result =
                 getRepository().findByTransferWindowIdOrderByDatetimeDesc(transferWindow.getId());
 
-        assertNotNull(result, "TransferDayRepository::findByTransferWindowIdOrderByDatetimeDesc not null");
-        assertEquals(expected, result, "TransferDayRepository::findByTransferWindowIdOrderByDatetimeDesc equals");
+        assertNotNull(result);
+        assertEquals(expected, result);
     }
 
 }

@@ -19,16 +19,16 @@ class D11EntityValidatorTests {
     void testIsValid() {
         final D11EntityValidator validator = new D11EntityValidator();
 
-        assertFalse(validator.isValid(null, null), "D11EntityValidator::isValid null");
+        assertFalse(validator.isValid(null, null));
 
         final D11Entity d11Entity = new D11Entity();
         d11Entity.setUpdatedAt(d11Entity.getCreatedAt().minusMinutes(1L));
 
-        assertFalse(validator.isValid(d11Entity, null), "D11EntityValidator::isValid updated at invalid");
+        assertFalse(validator.isValid(d11Entity, null));
 
         d11Entity.setUpdatedAt(d11Entity.getCreatedAt().plusMinutes(1L));
 
-        assertTrue(validator.isValid(d11Entity, null), "D11EntityValidator::isValid valid");
+        assertTrue(validator.isValid(d11Entity, null));
     }
 
 }

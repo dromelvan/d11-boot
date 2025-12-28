@@ -19,7 +19,7 @@ class ParsedMatchDataTests {
 
         for (final Status status : Status.values()) {
             parsedMatchData.setStatus(status);
-            assertEquals(Status.PENDING.equals(status), parsedMatchData.isPending(), "ParsedMatchData::isPending");
+            assertEquals(Status.PENDING.equals(status), parsedMatchData.isPending());
         }
     }
 
@@ -32,7 +32,7 @@ class ParsedMatchDataTests {
 
         for (final Status status : Status.values()) {
             parsedMatchData.setStatus(status);
-            assertEquals(Status.ACTIVE.equals(status), parsedMatchData.isActive(), "ParsedMatchData::isActive");
+            assertEquals(Status.ACTIVE.equals(status), parsedMatchData.isActive());
         }
     }
 
@@ -45,7 +45,7 @@ class ParsedMatchDataTests {
 
         for (final Status status : Status.values()) {
             parsedMatchData.setStatus(status);
-            assertEquals(Status.FULL_TIME.equals(status), parsedMatchData.isFullTime(), "ParsedMatchData::isFullTime");
+            assertEquals(Status.FULL_TIME.equals(status), parsedMatchData.isFullTime());
         }
     }
 
@@ -58,8 +58,7 @@ class ParsedMatchDataTests {
 
         for (final Status status : Status.values()) {
             parsedMatchData.setStatus(status);
-            assertEquals(Status.POSTPONED.equals(status), parsedMatchData.isPostponed(),
-                         "ParsedMatchData::isPostponed");
+            assertEquals(Status.POSTPONED.equals(status), parsedMatchData.isPostponed());
         }
     }
 

@@ -49,17 +49,16 @@ class JwtBuilderTests {
         final JwtBuildResult result = jwtBuilder.build(username);
         final LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(TIME_TO_LIVE).truncatedTo(ChronoUnit.SECONDS);
 
-        assertNotNull(result, "JwtBuilder::build not null");
-        assertTrue(result.jwt().matches(JWT_REGEX), "JwtBuilder::build jwt matches");
-        assertEquals(expiresAt, result.expiresAt(), "JwtBuilder::build expiresAt equals");
+        assertNotNull(result);
+        assertTrue(result.jwt().matches(JWT_REGEX));
+        assertEquals(expiresAt, result.expiresAt());
 
         final DecodedJWT decodedJWT = jwtBuilder.decode(result.jwt());
 
-        assertNotNull(decodedJWT, "JwtBuilder::decode not null");
-        assertEquals(username, decodedJWT.getClaim("username").asString(), "JwtBuilder::decode username equals");
+        assertNotNull(decodedJWT);
+        assertEquals(username, decodedJWT.getClaim("username").asString());
         assertEquals(result.expiresAt().atZone(ZoneId.systemDefault()).toInstant(),
-                     decodedJWT.getExpiresAt().toInstant(),
-                     "JwtBuilder::decode expiresAt equals");
+                     decodedJWT.getExpiresAt().toInstant());
     }
 
 }

@@ -141,13 +141,11 @@ class PlayerTransferContextRepositoryTests {
                 final int feeSum = playerSeasonStats.stream().mapToInt(PlayerSeasonStat::getFee).sum();
 
                 if (playerSeasonStatOptional.isEmpty()) {
-                    assertTrue(contextOptional.isEmpty(),
-                               "PlayerTransferContextRepository::findByPlayerIdAndOwnerId playerSeasonStat empty");
+                    assertTrue(contextOptional.isEmpty());
                 } else {
                     ++contextCount;
 
-                    assertTrue(contextOptional.isPresent(),
-                               "PlayerTransferContextRepository::findByPlayerIdAndOwnerId playerSeasonStat present");
+                    assertTrue(contextOptional.isPresent());
 
                     final PlayerTransferContext context = contextOptional.orElseThrow(InvalidTestSetupException::new);
 
@@ -170,67 +168,45 @@ class PlayerTransferContextRepositoryTests {
                             .filter(pss -> pss.getPosition().equals(playerSeasonStat.getPosition()))
                             .count();
 
-                    assertEquals(player, context.getPlayer(),
-                                 "PlayerTransferContextRepository::findByPlayerIdAndOwnerId player equals");
-                    assertEquals(playerSeasonStat.getPosition(), context.getPosition(),
-                                 "PlayerTransferContextRepository::findByPlayerIdAndOwnerId position equals");
-                    assertEquals(playerSeasonStat.getD11Team(), context.getPlayerD11Team(),
-                                 "PlayerTransferContextRepository::findByPlayerIdAndOwnerId playerD11Team equals");
-                    assertEquals(season, context.getSeason(),
-                                 "PlayerTransferContextRepository::findByPlayerIdAndOwnerId season equals");
-                    assertEquals(transferDay, context.getTransferDay(),
-                                 "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferDay equals");
+                    assertEquals(player, context.getPlayer());
+                    assertEquals(playerSeasonStat.getPosition(), context.getPosition());
+                    assertEquals(playerSeasonStat.getD11Team(), context.getPlayerD11Team());
+                    assertEquals(season, context.getSeason());
+                    assertEquals(transferDay, context.getTransferDay());
                     if (transferListing == null) {
-                        assertNull(context.getTransferListing(),
-                                   "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferListing null");
+                        assertNull(context.getTransferListing());
                     } else {
                         ++transferListingCount;
-                        assertEquals(transferListing, context.getTransferListing(),
-                                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferList equals");
+                        assertEquals(transferListing, context.getTransferListing());
                     }
                     if (transferBid == null) {
-                        assertNull(context.getTransferBid(),
-                                   "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferBid null");
+                        assertNull(context.getTransferBid());
                     } else {
                         ++transferBidCount;
-                        assertEquals(transferBid, context.getTransferBid(),
-                                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferBid equals");
+                        assertEquals(transferBid, context.getTransferBid());
                     }
-                    assertEquals(d11Team, context.getD11Team(),
-                                 "PlayerTransferContextRepository::findByPlayerIdAndOwnerId d11Team equals");
-                    assertEquals(d11Team.getOwner().getId(), context.getOwnerId(),
-                                 "PlayerTransferContextRepository::findByPlayerIdAndOwnerId ownerId equals");
+                    assertEquals(d11Team, context.getD11Team());
+                    assertEquals(d11Team.getOwner().getId(), context.getOwnerId());
                     if (d11Team.getCoOwner() == null) {
-                        assertNull(context.getCoOwnerId(),
-                                   "PlayerTransferContextRepository::findByPlayerIdAndOwnerId coOwnerId null");
+                        assertNull(context.getCoOwnerId());
                     } else {
                         ++coOwnerCount;
-                        assertEquals(d11Team.getCoOwner().getId(), context.getCoOwnerId(),
-                                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId coOwnerId equals");
+                        assertEquals(d11Team.getCoOwner().getId(), context.getCoOwnerId());
                     }
-                    assertEquals(d11TeamSeasonStat.getRanking(), context.getRanking(),
-                                 "PlayerTransferContextRepository::findByPlayerIdAndOwnerId ranking equals");
-                    assertEquals(playerCount, context.getPlayerCount(),
-                                 "PlayerTransferContextRepository::findByPlayerIdAndOwnerId playerCount equals");
-                    assertEquals(feeSum, context.getFeeSum(),
-                                 "PlayerTransferContextRepository::findByPlayerIdAndOwnerId feeSum equals");
-                    assertEquals(transferCount, context.getTransferCount(),
-                                 "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferCount equals");
-                    assertEquals(positionCount, context.getPositionCount(),
-                                 "PlayerTransferContextRepository::findByPlayerIdAndOwnerId positionCount equals");
+                    assertEquals(d11TeamSeasonStat.getRanking(), context.getRanking());
+                    assertEquals(playerCount, context.getPlayerCount());
+                    assertEquals(feeSum, context.getFeeSum());
+                    assertEquals(transferCount, context.getTransferCount());
+                    assertEquals(positionCount, context.getPositionCount());
                 }
             }
         }
 
         // These are only to check that the test data is set up to provide the cases we'd like it to
-        assertNotEquals(0, contextCount,
-                        "PlayerTransferContextRepository::findByPlayerIdAndOwnerId contextCount not equals");
-        assertNotEquals(0, transferListingCount,
-                        "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferListingCount not equals");
-        assertNotEquals(0, transferBidCount,
-                        "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferBudCount not equals");
-        assertNotEquals(0, coOwnerCount,
-                        "PlayerTransferContextRepository::findByPlayerIdAndOwnerId coOwnerCount not equals");
+        assertNotEquals(0, contextCount);
+        assertNotEquals(0, transferListingCount);
+        assertNotEquals(0, transferBidCount);
+        assertNotEquals(0, coOwnerCount);
     }
 
     /**
@@ -245,36 +221,21 @@ class PlayerTransferContextRepositoryTests {
         final PlayerTransferContext context = this.repository.findByPlayerIdAndOwnerId(player.getId(), owner.getId())
                 .orElseThrow(InvalidTestSetupException::new);
 
-        assertEquals(player.getId(), context.getPlayer().getId(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId player id equals");
-        assertEquals(2L, context.getPosition().getId(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId position id equals");
-        assertEquals(3L, context.getPlayerD11Team().getId(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId playerD11Team id equals");
-        assertEquals(2L, context.getSeason().getId(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId season id equals");
-        assertEquals(8L, context.getTransferDay().getId(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferDay id equals");
-        assertNull(context.getTransferListing(),
-                   "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferListing not exists null");
-        assertNull(context.getTransferBid(),
-                   "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferBid not exists null");
-        assertEquals(2L, context.getD11Team().getId(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId d11Team id equals");
-        assertEquals(1L, context.getOwnerId(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId owner id equals");
-        assertEquals(4L, context.getCoOwnerId(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId coOwner id equals");
-        assertEquals(2, context.getRanking(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId ranking value equals");
-        assertEquals(1, context.getPlayerCount(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId playerCount value equals");
-        assertEquals(50, context.getFeeSum(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId feeSum value equals");
-        assertEquals(0, context.getTransferCount(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferCount not exists equals");
-        assertEquals(0, context.getPositionCount(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId positionCount value equals");
+        assertEquals(player.getId(), context.getPlayer().getId());
+        assertEquals(2L, context.getPosition().getId());
+        assertEquals(3L, context.getPlayerD11Team().getId());
+        assertEquals(2L, context.getSeason().getId());
+        assertEquals(8L, context.getTransferDay().getId());
+        assertNull(context.getTransferListing());
+        assertNull(context.getTransferBid());
+        assertEquals(2L, context.getD11Team().getId());
+        assertEquals(1L, context.getOwnerId());
+        assertEquals(4L, context.getCoOwnerId());
+        assertEquals(2, context.getRanking());
+        assertEquals(1, context.getPlayerCount());
+        assertEquals(50, context.getFeeSum());
+        assertEquals(0, context.getTransferCount());
+        assertEquals(0, context.getPositionCount());
 
         final TransferListing transferListing = this.transferListingRepository.findById(4L)
                 .orElseThrow(InvalidTestSetupException::new);
@@ -296,10 +257,8 @@ class PlayerTransferContextRepositoryTests {
                                                                                               owner.getId())
                 .orElseThrow(InvalidTestSetupException::new);
 
-        assertEquals(4L, updatedContext.getTransferListing().getId(),
-                   "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferListing id equals");
-        assertEquals(13L, updatedContext.getTransferBid().getId(),
-                     "PlayerTransferContextRepository::findByPlayerIdAndOwnerId transferBid id equals");
+        assertEquals(4L, updatedContext.getTransferListing().getId());
+        assertEquals(13L, updatedContext.getTransferBid().getId());
     }
 
 }

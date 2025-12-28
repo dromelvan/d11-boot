@@ -23,7 +23,7 @@ class ContextLoadsTest {
      */
     @Test
     void contextLoads(final ApplicationContext applicationContext) {
-        assertNotNull(applicationContext, "ContextLoadsTest applicationContext not null");
+        assertNotNull(applicationContext);
     }
 
 }

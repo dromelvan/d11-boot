@@ -52,28 +52,19 @@ class ControllerExceptionHandlerV2Tests {
         final ResponseEntity<BadRequestResponseBodyDTO> responseEntity =
                 controllerExceptionHandlerV2.handle(e, httpServletRequest);
 
-        assertEquals(responseEntity.getStatusCode(), HttpStatus.BAD_REQUEST,
-                     "ControllerExceptionHandlerV2::handle(BadRequestException) status equals");
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
 
         final BadRequestResponseBodyDTO badRequestResponseBodyDTO = responseEntity.getBody();
 
-        assertNotNull(badRequestResponseBodyDTO,
-                      "ControllerExceptionHandlerV2::handle(BadRequestException) body not null");
-        assertNotNull(badRequestResponseBodyDTO.getTimestamp(),
-                      "ControllerExceptionHandlerV2::handle(BadRequestException) timestamp not null");
-        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), badRequestResponseBodyDTO.getError(),
-                     "ControllerExceptionHandlerV2::handle(BadRequestException) error equals");
-        assertEquals(httpServletRequest.getMethod(), badRequestResponseBodyDTO.getMethod(),
-                     "ControllerExceptionHandlerV2::handle(BadRequestException) method equals");
-        assertEquals(httpServletRequest.getRequestURI(), badRequestResponseBodyDTO.getPath(),
-                     "ControllerExceptionHandlerV2::handle(BadRequestException) path equals");
+        assertNotNull(badRequestResponseBodyDTO);
+        assertNotNull(badRequestResponseBodyDTO.getTimestamp());
+        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), badRequestResponseBodyDTO.getError());
+        assertEquals(httpServletRequest.getMethod(), badRequestResponseBodyDTO.getMethod());
+        assertEquals(httpServletRequest.getRequestURI(), badRequestResponseBodyDTO.getPath());
 
-        assertEquals(1, badRequestResponseBodyDTO.getValidationErrors().size(),
-                     "ControllerExceptionHandlerV2::handle(BadRequestException) validationErrors size equals");
-        assertEquals(e.getParameter(), badRequestResponseBodyDTO.getValidationErrors().get(0).getProperty(),
-                     "ControllerExceptionHandlerV2::handle(BadRequestException) validationError property equals");
-        assertEquals(e.getMessage(), badRequestResponseBodyDTO.getValidationErrors().get(0).getError(),
-                     "ControllerExceptionHandlerV2::handle(BadRequestException) validationError error equals");
+        assertEquals(1, badRequestResponseBodyDTO.getValidationErrors().size());
+        assertEquals(e.getParameter(), badRequestResponseBodyDTO.getValidationErrors().get(0).getProperty());
+        assertEquals(e.getMessage(), badRequestResponseBodyDTO.getValidationErrors().get(0).getError());
     }
 
     /**
@@ -91,9 +82,8 @@ class ControllerExceptionHandlerV2Tests {
 
         final ResponseEntity<?> responseEntity = controllerExceptionHandlerV2.handle(e, httpServletRequest);
 
-        assertEquals(responseEntity.getStatusCode(), HttpStatus.UNAUTHORIZED,
-                     "ControllerExceptionHandlerV2::handle(UnauthorizedException) status equals");
-        assertNull(responseEntity.getBody(), "ControllerExceptionHandlerV2::handle(UnauthorizedException) body null");
+        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+        assertNull(responseEntity.getBody());
     }
 
     /**
@@ -111,9 +101,8 @@ class ControllerExceptionHandlerV2Tests {
 
         final ResponseEntity<?> responseEntity = controllerExceptionHandlerV2.handle(e, httpServletRequest);
 
-        assertEquals(responseEntity.getStatusCode(), HttpStatus.FORBIDDEN,
-                     "ControllerExceptionHandlerV2::handle(ForbiddenException) status equals");
-        assertNull(responseEntity.getBody(), "ControllerExceptionHandlerV2::handle(ForbiddenException) body null");
+        assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
+        assertNull(responseEntity.getBody());
     }
 
     /**
@@ -132,25 +121,18 @@ class ControllerExceptionHandlerV2Tests {
         final ResponseEntity<NotFoundResponseBodyDTO> responseEntity =
                 controllerExceptionHandlerV2.handle(e, httpServletRequest);
 
-        assertEquals(responseEntity.getStatusCode(), HttpStatus.NOT_FOUND,
-                     "ControllerExceptionHandlerV2::handle(NotFoundException) status equals");
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
 
         final NotFoundResponseBodyDTO notFoundResponseBodyDTO = responseEntity.getBody();
 
-        assertNotNull(notFoundResponseBodyDTO, "ControllerExceptionHandlerV2::handle(NotFoundException) body null");
+        assertNotNull(notFoundResponseBodyDTO);
 
-        assertNotNull(notFoundResponseBodyDTO.getTimestamp(),
-                      "ControllerExceptionHandlerV2::handle(NotFoundException) timestamp not null");
-        assertEquals(HttpStatus.NOT_FOUND.getReasonPhrase(), notFoundResponseBodyDTO.getError(),
-                     "ControllerExceptionHandlerV2::handle(NotFoundException) error equals");
-        assertEquals(e.getResource(), notFoundResponseBodyDTO.getResource(),
-                     "ControllerExceptionHandlerV2::handle(NotFoundException) resource equals");
-        assertEquals(e.getId(), notFoundResponseBodyDTO.getId(),
-                     "ControllerExceptionHandlerV2::handle(NotFoundException) id equals");
-        assertEquals(httpServletRequest.getMethod(), notFoundResponseBodyDTO.getMethod(),
-                     "ControllerExceptionHandlerV2::handle(NotFoundException) method equals");
-        assertEquals(httpServletRequest.getRequestURI(), notFoundResponseBodyDTO.getPath(),
-                     "ControllerExceptionHandlerV2::handle(NotFoundException) path equals");
+        assertNotNull(notFoundResponseBodyDTO.getTimestamp());
+        assertEquals(HttpStatus.NOT_FOUND.getReasonPhrase(), notFoundResponseBodyDTO.getError());
+        assertEquals(e.getResource(), notFoundResponseBodyDTO.getResource());
+        assertEquals(e.getId(), notFoundResponseBodyDTO.getId());
+        assertEquals(httpServletRequest.getMethod(), notFoundResponseBodyDTO.getMethod());
+        assertEquals(httpServletRequest.getRequestURI(), notFoundResponseBodyDTO.getPath());
     }
 
     /**
@@ -169,23 +151,17 @@ class ControllerExceptionHandlerV2Tests {
         final ResponseEntity<ConflictResponseBodyDTO> responseEntity =
                 controllerExceptionHandlerV2.handle(e, httpServletRequest);
 
-        assertEquals(responseEntity.getStatusCode(), HttpStatus.CONFLICT,
-                     "ControllerExceptionHandlerV2::handle(ConflictException) status equals");
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
 
         final ConflictResponseBodyDTO conflictResponseBodyDTO = responseEntity.getBody();
 
-        assertNotNull(conflictResponseBodyDTO, "ControllerExceptionHandlerV2::handle(ConflictException) body null");
+        assertNotNull(conflictResponseBodyDTO);
 
-        assertNotNull(conflictResponseBodyDTO.getTimestamp(),
-                      "ControllerExceptionHandlerV2::handle(ConflictException) timestamp not null");
-        assertEquals(HttpStatus.CONFLICT.getReasonPhrase(), conflictResponseBodyDTO.getError(),
-                     "ControllerExceptionHandlerV2::handle(ConflictException) error equals");
-        assertEquals(e.getMessage(), conflictResponseBodyDTO.getMessage(),
-                     "ControllerExceptionHandlerV2::handle(ConflictException) message equals");
-        assertEquals(httpServletRequest.getMethod(), conflictResponseBodyDTO.getMethod(),
-                     "ControllerExceptionHandlerV2::handle(ConflictException) method equals");
-        assertEquals(httpServletRequest.getRequestURI(), conflictResponseBodyDTO.getPath(),
-                     "ControllerExceptionHandlerV2::handle(ConflictException) path equals");
+        assertNotNull(conflictResponseBodyDTO.getTimestamp());
+        assertEquals(HttpStatus.CONFLICT.getReasonPhrase(), conflictResponseBodyDTO.getError());
+        assertEquals(e.getMessage(), conflictResponseBodyDTO.getMessage());
+        assertEquals(httpServletRequest.getMethod(), conflictResponseBodyDTO.getMethod());
+        assertEquals(httpServletRequest.getRequestURI(), conflictResponseBodyDTO.getPath());
     }
 
     /**
@@ -209,53 +185,27 @@ class ControllerExceptionHandlerV2Tests {
         ResponseEntity<BadRequestResponseBodyDTO> responseEntity =
                 controllerExceptionHandlerV2.handle(e, httpServletRequest);
 
-        assertEquals(responseEntity.getStatusCode(), HttpStatus.BAD_REQUEST,
-                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) status equals");
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
 
         final BadRequestResponseBodyDTO badRequestResponseBodyDTO = responseEntity.getBody();
 
-        assertNotNull(badRequestResponseBodyDTO,
-                      "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) body null");
+        assertNotNull(badRequestResponseBodyDTO);
 
-        assertNotNull(badRequestResponseBodyDTO.getTimestamp(),
-                      "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) timestamp not null");
-        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), badRequestResponseBodyDTO.getError(),
-                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) error equals");
-        assertEquals(httpServletRequest.getMethod(), badRequestResponseBodyDTO.getMethod(),
-                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) method equals");
-        assertEquals(httpServletRequest.getRequestURI(), badRequestResponseBodyDTO.getPath(),
-                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) path equals");
+        assertNotNull(badRequestResponseBodyDTO.getTimestamp());
+        assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), badRequestResponseBodyDTO.getError());
+        assertEquals(httpServletRequest.getMethod(), badRequestResponseBodyDTO.getMethod());
+        assertEquals(httpServletRequest.getRequestURI(), badRequestResponseBodyDTO.getPath());
 
-        assertEquals(1, badRequestResponseBodyDTO.getValidationErrors().size(),
-                     """
-                     ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) validationErrors
-                     size equals
-                     """);
-        assertEquals(e.getPropertyName(), badRequestResponseBodyDTO.getValidationErrors().get(0).getProperty(),
-                     """
-                     ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) validationError
-                     property equals
-                     """);
-        assertEquals(e.getMessage(), badRequestResponseBodyDTO.getValidationErrors().get(0).getError(),
-                     """
-                     ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) validationError
-                     error equals
-                     """);
+        assertEquals(1, badRequestResponseBodyDTO.getValidationErrors().size());
+        assertEquals(e.getPropertyName(), badRequestResponseBodyDTO.getValidationErrors().get(0).getProperty());
+        assertEquals(e.getMessage(), badRequestResponseBodyDTO.getValidationErrors().get(0).getError());
 
         when(e.getCause()).thenReturn(new NumberFormatException());
 
         responseEntity = controllerExceptionHandlerV2.handle(e, httpServletRequest);
 
-        assertNotNull(responseEntity.getBody(),
-                      """
-                      ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) NumberFormatException
-                      body null
-                      """);
-        assertEquals("is invalid", responseEntity.getBody().getValidationErrors().get(0).getError(),
-                     """
-                     ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) NumberFormatException
-                     error equals
-                     """);
+        assertNotNull(responseEntity.getBody());
+        assertEquals("is invalid", responseEntity.getBody().getValidationErrors().get(0).getError());
 
         final NullPointerException nullPointerException = mock(NullPointerException.class);
 
@@ -264,11 +214,9 @@ class ControllerExceptionHandlerV2Tests {
 
         responseEntity = controllerExceptionHandlerV2.handle(e, httpServletRequest);
 
-        assertNotNull(responseEntity.getBody(),
-                      "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) other body null");
+        assertNotNull(responseEntity.getBody());
         assertEquals(nullPointerException.getMessage(),
-                     responseEntity.getBody().getValidationErrors().get(0).getError(),
-                     "ControllerExceptionHandlerV2::handle(MethodArgumentTypeMismatchException) other error equals");
+                     responseEntity.getBody().getValidationErrors().get(0).getError());
     }
 
 }

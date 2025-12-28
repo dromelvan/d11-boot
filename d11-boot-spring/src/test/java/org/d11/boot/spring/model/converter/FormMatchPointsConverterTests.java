@@ -33,11 +33,9 @@ class FormMatchPointsConverterTests {
 
         final String result = converter.convertToDatabaseColumn(ENTITY_ATTRIBUTE);
 
-        assertEquals(DATABASE_COLUMN, result, "FormMatchPointsConverter::convertToDatabaseColumn equals");
-        assertEquals(StringUtils.EMPTY, converter.convertToDatabaseColumn(null),
-                     "FormMatchPointsConverter::convertToDatabaseColumn null");
-        assertEquals(StringUtils.EMPTY, converter.convertToDatabaseColumn(new ArrayList<>()),
-                     "FormMatchPointsConverter::convertToDatabaseColumn empty");
+        assertEquals(DATABASE_COLUMN, result);
+        assertEquals(StringUtils.EMPTY, converter.convertToDatabaseColumn(null));
+        assertEquals(StringUtils.EMPTY, converter.convertToDatabaseColumn(new ArrayList<>()));
     }
 
     /**
@@ -49,11 +47,9 @@ class FormMatchPointsConverterTests {
 
         final List<Integer> result = converter.convertToEntityAttribute(DATABASE_COLUMN);
 
-        assertEquals(ENTITY_ATTRIBUTE, result, "FormMatchPointsConverter::convertToEntityAttribute equals");
-        assertEquals(new ArrayList<>(), converter.convertToEntityAttribute(null),
-                     "FormMatchPointsConverter::convertToEntityAttribute null");
-        assertEquals(new ArrayList<>(), converter.convertToEntityAttribute(StringUtils.EMPTY),
-                     "FormMatchPointsConverter::convertToEntityAttribute empty");
+        assertEquals(ENTITY_ATTRIBUTE, result);
+        assertEquals(new ArrayList<>(), converter.convertToEntityAttribute(null));
+        assertEquals(new ArrayList<>(), converter.convertToEntityAttribute(StringUtils.EMPTY));
     }
 
 }

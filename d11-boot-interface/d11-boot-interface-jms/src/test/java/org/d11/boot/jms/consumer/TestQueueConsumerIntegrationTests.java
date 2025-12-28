@@ -44,9 +44,9 @@ class TestQueueConsumerIntegrationTests extends JmsComponentIntegrationTests {
 
         final TextMessage received = listener.getJmsMessage();
 
-        assertNotNull(received, "TestQueueConsumer received not null");
-        assertEquals(sent.getText(), received.getText(), "TestQueueConsumer received text equals");
-        assertEquals(sent.getDatetime(), received.getDatetime(), "TestQueueConsumer received datetime equals");
+        assertNotNull(received);
+        assertEquals(sent.getText(), received.getText());
+        assertEquals(sent.getDatetime(), received.getDatetime());
     }
 
 }

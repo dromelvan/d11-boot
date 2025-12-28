@@ -18,31 +18,31 @@ class UserTests extends EasyRandomTests {
     void testIsValid() {
         final User user = generate(User.class);
 
-        assertTrue(user.isValid(), "User::isValid");
+        assertTrue(user.isValid());
 
         user.setName("");
-        assertFalse(user.isValid(), "User::isValid name empty");
+        assertFalse(user.isValid());
         user.setName(null);
-        assertFalse(user.isValid(), "User::isValid name null");
+        assertFalse(user.isValid());
         user.setName("Name");
-        assertTrue(user.isValid(), "User::isValid name valid");
+        assertTrue(user.isValid());
 
         user.setEmail("");
-        assertFalse(user.isValid(), "User::isValid email empty");
+        assertFalse(user.isValid());
         user.setEmail(null);
-        assertFalse(user.isValid(), "User::isValid email null");
+        assertFalse(user.isValid());
         user.setEmail("invalid email");
-        assertFalse(user.isValid(), "User::isValid email invalid");
+        assertFalse(user.isValid());
         user.setEmail("email@email.com");
-        assertTrue(user.isValid(), "User::isValid email valid");
+        assertTrue(user.isValid());
 
         user.setEncryptedPassword("");
-        assertFalse(user.isValid(), "User::isValid encrypted password empty");
+        assertFalse(user.isValid());
         user.setEncryptedPassword(null);
-        assertFalse(user.isValid(), "User::isValid encrypted password null");
+        assertFalse(user.isValid());
         user.setEncryptedPassword("EncryptedPassword");
 
-        assertTrue(user.isValid(), "User::isValid valid");
+        assertTrue(user.isValid());
     }
 
 }

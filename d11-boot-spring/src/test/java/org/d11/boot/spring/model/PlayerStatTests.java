@@ -23,29 +23,29 @@ class PlayerStatTests extends EasyRandomTests {
     void isValid() {
         final PlayerStat playerStat = generate(PlayerStat.class);
 
-        assertTrue(playerStat.isValid(), "PlayerStat::isValid");
+        assertTrue(playerStat.isValid());
 
         playerStat.setGoals(-1);
-        assertFalse(playerStat.isValid(), "PlayerStat::isValid goals negative");
+        assertFalse(playerStat.isValid());
         playerStat.setGoals(1);
 
         playerStat.setGoalAssists(-1);
-        assertFalse(playerStat.isValid(), "PlayerStat::isValid goal assists negative");
+        assertFalse(playerStat.isValid());
         playerStat.setGoalAssists(1);
 
         playerStat.setOwnGoals(-1);
-        assertFalse(playerStat.isValid(), "PlayerStat::isValid own goals negative");
+        assertFalse(playerStat.isValid());
         playerStat.setOwnGoals(1);
 
         playerStat.setGoalsConceded(-1);
-        assertFalse(playerStat.isValid(), "PlayerStat::isValid goals conceded negative");
+        assertFalse(playerStat.isValid());
         playerStat.setGoalsConceded(1);
 
         playerStat.setRating(-1);
-        assertFalse(playerStat.isValid(), "PlayerStat::isValid rating negative");
+        assertFalse(playerStat.isValid());
         playerStat.setRating(1);
 
-        assertTrue(playerStat.isValid(), "PlayerStat::isValid valid");
+        assertTrue(playerStat.isValid());
     }
 
     /**
@@ -57,12 +57,12 @@ class PlayerStatTests extends EasyRandomTests {
 
         playerStat.reset();
 
-        assertEquals(0, playerStat.getGoals(), "PlayerStat::reset goals equals");
-        assertEquals(0, playerStat.getGoalAssists(), "PlayerStat::reset goal assists equals");
-        assertEquals(0, playerStat.getOwnGoals(), "PlayerStat::reset own goals equals");
-        assertEquals(0, playerStat.getGoalsConceded(), "PlayerStat::reset goals conceded equals");
-        assertEquals(0, playerStat.getRating(), "PlayerStat::reset rating equals");
-        assertEquals(0, playerStat.getPoints(), "PlayerStat::reset points equals");
+        assertEquals(0, playerStat.getGoals());
+        assertEquals(0, playerStat.getGoalAssists());
+        assertEquals(0, playerStat.getOwnGoals());
+        assertEquals(0, playerStat.getGoalsConceded());
+        assertEquals(0, playerStat.getRating());
+        assertEquals(0, playerStat.getPoints());
     }
 
     /**
@@ -75,13 +75,12 @@ class PlayerStatTests extends EasyRandomTests {
 
         destination.init(source);
 
-        assertEquals(source.getGoals(), destination.getGoals(), "PlayerStat::init goals equals");
-        assertEquals(source.getGoalAssists(), destination.getGoalAssists(), "PlayerStat::init goal assists equals");
-        assertEquals(source.getOwnGoals(), destination.getOwnGoals(), "PlayerStat::init own goals equals");
-        assertEquals(source.getGoalsConceded(), destination.getGoalsConceded(),
-                     "PlayerStat::init goals conceded equals");
-        assertEquals(source.getRating(), destination.getRating(), "PlayerStat::init rating equals");
-        assertEquals(source.getPoints(), destination.getPoints(), "PlayerStat::init points equals");
+        assertEquals(source.getGoals(), destination.getGoals());
+        assertEquals(source.getGoalAssists(), destination.getGoalAssists());
+        assertEquals(source.getOwnGoals(), destination.getOwnGoals());
+        assertEquals(source.getGoalsConceded(), destination.getGoalsConceded());
+        assertEquals(source.getRating(), destination.getRating());
+        assertEquals(source.getPoints(), destination.getPoints());
     }
 
     /**
@@ -101,12 +100,12 @@ class PlayerStatTests extends EasyRandomTests {
 
         destination.addStats(source);
 
-        assertEquals(goals, destination.getGoals(), "PlayerStat::addStats goals equals");
-        assertEquals(goalAssists, destination.getGoalAssists(), "PlayerStat::addStats goal assists equals");
-        assertEquals(ownGoals, destination.getOwnGoals(), "PlayerStat::addStats own goals equals");
-        assertEquals(goalsConceded, destination.getGoalsConceded(), "PlayerStat::addStats goals conceded equals");
-        assertEquals(rating, destination.getRating(), "PlayerStat::addStats rating equals");
-        assertEquals(points, destination.getPoints(), "PlayerStat::addStats points equals");
+        assertEquals(goals, destination.getGoals());
+        assertEquals(goalAssists, destination.getGoalAssists());
+        assertEquals(ownGoals, destination.getOwnGoals());
+        assertEquals(goalsConceded, destination.getGoalsConceded());
+        assertEquals(rating, destination.getRating());
+        assertEquals(points, destination.getPoints());
     }
 
     /**
@@ -132,7 +131,7 @@ class PlayerStatTests extends EasyRandomTests {
 
         Collections.sort(unsorted);
 
-        assertEquals(sorted, unsorted, "PlayerStat::compareTo equals");
+        assertEquals(sorted, unsorted);
     }
 
 }

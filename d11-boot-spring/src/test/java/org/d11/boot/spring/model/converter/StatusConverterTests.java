@@ -19,7 +19,7 @@ class StatusConverterTests {
 
         for (final Status status : Status.values()) {
             final Integer result = converter.convertToDatabaseColumn(status);
-            assertEquals(status.getId(), result, "StatusConverter::convertToDatabaseColumn equals");
+            assertEquals(status.getId(), result);
         }
     }
 
@@ -32,7 +32,7 @@ class StatusConverterTests {
 
         for (final Status status : Status.values()) {
             final Status result = converter.convertToEntityAttribute(status.getId());
-            assertEquals(status, result, "StatusConverter::convertToEntityAttribute equals");
+            assertEquals(status, result);
         }
     }
 

@@ -33,12 +33,8 @@ class TeamMatchWeekStatRepositoryTests extends AbstractRepositoryTests<TeamMatch
         final Set<Season> seasons = entities.stream()
                 .map(teamMatchWeekStat -> teamMatchWeekStat.getMatchWeek().getSeason()).collect(Collectors.toSet());
 
-        assertTrue(teams.size() > 1,
-                   "TeamMatchWeekStatRepository::findByTeamIdAndMatchWeekSeasonIdOrderByMatchWeekDate teams size > 1");
-        assertTrue(seasons.size() > 1,
-                   """
-                   TeamMatchWeekStatRepository::findByTeamIdAndMatchWeekSeasonIdOrderByMatchWeekDate seasons size > 1
-                   """);
+        assertTrue(teams.size() > 1);
+        assertTrue(seasons.size() > 1);
 
         for (final Team team : teams) {
             for (final Season season : seasons) {
@@ -51,23 +47,11 @@ class TeamMatchWeekStatRepositoryTests extends AbstractRepositoryTests<TeamMatch
                                                      && teamMatchWeekStat.getMatchWeek().getSeason().equals(season))
                         .toList();
 
-                assertTrue(expected.size() > 1,
-                           """
-                           TeamMatchWeekStatRepository::findByTeamIdAndMatchWeekSeasonIdOrderByMatchWeekDate
-                           expected size > 1
-                           """);
+                assertTrue(expected.size() > 1);
 
-                assertNotNull(result,
-                              """
-                              TeamMatchWeekStatRepository::findByTeamIdAndMatchWeekSeasonIdOrderByMatchWeekDate 
-                              not null
-                              """);
-                assertFalse(result.isEmpty(),
-                            "TeamMatchWeekStatRepository::findByTeamIdAndMatchWeekSeasonIdOrderByMatchWeekDate empty");
-                assertEquals(expected, result,
-                             """
-                             TeamMatchWeekStatRepository::findByTeamIdAndMatchWeekSeasonIdOrderByMatchWeekDate equals
-                             """);
+                assertNotNull(result);
+                assertFalse(result.isEmpty());
+                assertEquals(expected, result);
             }
         }
     }

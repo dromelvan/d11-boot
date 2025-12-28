@@ -15,37 +15,36 @@ class PositionTests extends EasyRandomTests {
      * Tests Position::isValid.
      */
     @Test
-    @SuppressWarnings("DataFlowIssue")
     void testIsValid() {
         final Position position = generate(Position.class);
 
-        assertTrue(position.isValid(), "Position::isValid");
+        assertTrue(position.isValid());
 
         position.setName(null);
-        assertFalse(position.isValid(), "Position::isValid name null");
+        assertFalse(position.isValid());
         position.setName("");
-        assertFalse(position.isValid(), "Position::isValid name empty");
+        assertFalse(position.isValid());
         position.setName("Position");
 
         position.setCode(null);
-        assertFalse(position.isValid(), "Position::isValid code null");
+        assertFalse(position.isValid());
         position.setCode("");
-        assertFalse(position.isValid(), "Position::isValid code empty");
+        assertFalse(position.isValid());
         position.setCode("PPPP");
-        assertFalse(position.isValid(), "Position::isValid code too long");
+        assertFalse(position.isValid());
         position.setCode("P");
 
         position.setMaxCount(-1);
-        assertFalse(position.isValid(), "Position::isValid max count negative");
+        assertFalse(position.isValid());
         position.setMaxCount(Position.MAX_MAX_COUNT + 1);
-        assertFalse(position.isValid(), "Position::isValid max count too high");
+        assertFalse(position.isValid());
         position.setMaxCount(1);
 
         position.setSortOrder(-1);
-        assertFalse(position.isValid(), "Position::isValid sort order negative");
+        assertFalse(position.isValid());
         position.setSortOrder(1);
 
-        assertTrue(position.isValid(), "Position::isValid valid");
+        assertTrue(position.isValid());
     }
 
 }

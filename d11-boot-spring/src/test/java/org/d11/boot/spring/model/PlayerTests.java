@@ -19,44 +19,43 @@ class PlayerTests extends EasyRandomTests {
      * Tests Player::isValid.
      */
     @Test
-    @SuppressWarnings("DataFlowIssue")
     void testIsValid() {
         final Player player = generate(Player.class);
 
         player.prePersist();
 
-        assertTrue(player.isValid(), "Player::isValid");
+        assertTrue(player.isValid());
 
         player.setCountry(null);
-        assertFalse(player.isValid(), "Player::isValid country null");
+        assertFalse(player.isValid());
         player.setCountry(new Country());
 
         player.setWhoscoredId(-1);
-        assertFalse(player.isValid(), "Player::isValid WhoScored id negative");
+        assertFalse(player.isValid());
         player.setWhoscoredId(1);
 
         player.setPremierLeagueId(-1);
-        assertFalse(player.isValid(), "Player::isValid Premier League id negative");
+        assertFalse(player.isValid());
         player.setPremierLeagueId(1);
 
         player.setFirstName(null);
-        assertFalse(player.isValid(), "Player::isValid first name null");
+        assertFalse(player.isValid());
         player.setFirstName("");
-        assertTrue(player.isValid(), "Player::isValid first name empty");
+        assertTrue(player.isValid());
         player.setFirstName("Firstname");
 
         player.setLastName(null);
-        assertFalse(player.isValid(), "Player::isValid last name null");
+        assertFalse(player.isValid());
         player.setLastName("");
-        assertFalse(player.isValid(), "Player::isValid last name empty");
+        assertFalse(player.isValid());
         player.setLastName("Lastname");
 
         player.setHeight(-1);
-        assertFalse(player.isValid(), "Player::isValid height negative");
+        assertFalse(player.isValid());
         player.setHeight(1);
 
         player.prePersist();
-        assertTrue(player.isValid(), "Player::isValid valid");
+        assertTrue(player.isValid());
     }
 
     /**
@@ -67,8 +66,7 @@ class PlayerTests extends EasyRandomTests {
         final Player player = generate(Player.class);
 
         assertEquals(String.format("%s %s", player.getFirstName().trim(), player.getLastName()).trim(),
-                     player.getName(),
-                     "Player::testGetName equals");
+                     player.getName());
     }
 
     /**
@@ -79,12 +77,11 @@ class PlayerTests extends EasyRandomTests {
         final Player player = generate(Player.class);
 
         assertEquals(String.format("%s %c", player.getLastName(), player.getFirstName().charAt(0)).trim(),
-                     player.getShortName(),
-                    "Player::testGetShortName first name not empty equals");
+                     player.getShortName());
 
         player.setFirstName(StringUtils.EMPTY);
 
-        assertEquals(player.getLastName(), player.getShortName(), "Player::testGetShortName first name empty equals");
+        assertEquals(player.getLastName(), player.getShortName());
     }
 
     /**
@@ -97,10 +94,8 @@ class PlayerTests extends EasyRandomTests {
 
         player.prePersist();
 
-        assertNotNull(player.getParameterizedName(), "Player::prePersist parameterized name not null");
-        assertEquals(Parameterizer.parameterize(player.getName()),
-                     player.getParameterizedName(),
-                     "Player::prePersist parameterized name equals");
+        assertNotNull(player.getParameterizedName());
+        assertEquals(Parameterizer.parameterize(player.getName()), player.getParameterizedName());
     }
 
     /**
@@ -113,10 +108,8 @@ class PlayerTests extends EasyRandomTests {
 
         player.preUpdate();
 
-        assertNotNull(player.getParameterizedName(), "Player::preUpdate parameterized name not null");
-        assertEquals(Parameterizer.parameterize(player.getName()),
-                player.getParameterizedName(),
-                "Player::preUpdate parameterized name equals");
+        assertNotNull(player.getParameterizedName());
+        assertEquals(Parameterizer.parameterize(player.getName()), player.getParameterizedName());
     }
 
 }

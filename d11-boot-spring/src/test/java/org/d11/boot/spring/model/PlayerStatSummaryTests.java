@@ -25,57 +25,57 @@ class PlayerStatSummaryTests extends EasyRandomTests {
     void isValid() {
         final PlayerStatSummary playerStatSummary = generate(PlayerStatSummary.class);
 
-        assertTrue(playerStatSummary.isValid(), "PlayerStatSummary::isValid");
+        assertTrue(playerStatSummary.isValid());
 
         playerStatSummary.setRanking(-1);
-        assertFalse(playerStatSummary.isValid(), "PlayerStatSummary::isValid ranking negative");
+        assertFalse(playerStatSummary.isValid());
         playerStatSummary.setRanking(1);
 
         playerStatSummary.setCleanSheets(-1);
-        assertFalse(playerStatSummary.isValid(), "PlayerStatSummary::isValid clean sheets negative");
+        assertFalse(playerStatSummary.isValid());
         playerStatSummary.setCleanSheets(1);
 
         playerStatSummary.setYellowCards(-1);
-        assertFalse(playerStatSummary.isValid(), "PlayerStatSummary::isValid yellow cards negative");
+        assertFalse(playerStatSummary.isValid());
         playerStatSummary.setYellowCards(1);
 
         playerStatSummary.setRedCards(-1);
-        assertFalse(playerStatSummary.isValid(), "PlayerStatSummary::isValid red cards negative");
+        assertFalse(playerStatSummary.isValid());
         playerStatSummary.setRedCards(1);
 
         playerStatSummary.setSubstitutionsOn(-1);
-        assertFalse(playerStatSummary.isValid(), "PlayerStatSummary::isValid substitutions on negative");
+        assertFalse(playerStatSummary.isValid());
         playerStatSummary.setSubstitutionsOn(1);
 
         playerStatSummary.setSubstitutionsOff(-1);
-        assertFalse(playerStatSummary.isValid(), "PlayerStatSummary::isValid substitutions off negative");
+        assertFalse(playerStatSummary.isValid());
         playerStatSummary.setSubstitutionsOff(1);
 
         playerStatSummary.setManOfTheMatch(-1);
-        assertFalse(playerStatSummary.isValid(), "PlayerStatSummary::isValid man of the match negative");
+        assertFalse(playerStatSummary.isValid());
         playerStatSummary.setManOfTheMatch(1);
 
         playerStatSummary.setSharedManOfTheMatch(-1);
-        assertFalse(playerStatSummary.isValid(), "PlayerStatSummary::isValid shared man of the match negative");
+        assertFalse(playerStatSummary.isValid());
         playerStatSummary.setSharedManOfTheMatch(1);
 
         playerStatSummary.setGamesStarted(-1);
-        assertFalse(playerStatSummary.isValid(), "PlayerStatSummary::isValid games started negative");
+        assertFalse(playerStatSummary.isValid());
         playerStatSummary.setGamesStarted(1);
 
         playerStatSummary.setGamesSubstitute(-1);
-        assertFalse(playerStatSummary.isValid(), "PlayerStatSummary::isValid games substitute negative");
+        assertFalse(playerStatSummary.isValid());
         playerStatSummary.setGamesSubstitute(1);
 
         playerStatSummary.setGamesDidNotParticipate(-1);
-        assertFalse(playerStatSummary.isValid(), "PlayerStatSummary::isValid games did not participate negative");
+        assertFalse(playerStatSummary.isValid());
         playerStatSummary.setGamesDidNotParticipate(1);
 
         playerStatSummary.setMinutesPlayed(-1);
-        assertFalse(playerStatSummary.isValid(), "PlayerStatSummary::isValid minutes played negative");
+        assertFalse(playerStatSummary.isValid());
         playerStatSummary.setMinutesPlayed(1);
 
-        assertTrue(playerStatSummary.isValid(), "PlayerStatSummary::isValid valid");
+        assertTrue(playerStatSummary.isValid());
 
     }
 
@@ -88,22 +88,19 @@ class PlayerStatSummaryTests extends EasyRandomTests {
 
         playerStatSummary.reset();
 
-        assertEquals(0, playerStatSummary.getRanking(), "PlayerStatSummary::reset ranking equals");
-        assertEquals(0, playerStatSummary.getPointsPerAppearance(),
-                     "PlayerStatSummary::reset points per appearance equals");
-        assertEquals(0, playerStatSummary.getCleanSheets(), "PlayerStatSummary::reset clean sheets equals");
-        assertEquals(0, playerStatSummary.getYellowCards(), "PlayerStatSummary::reset yellow cards equals");
-        assertEquals(0, playerStatSummary.getRedCards(), "PlayerStatSummary::reset red cards equals");
-        assertEquals(0, playerStatSummary.getSubstitutionsOn(), "PlayerStatSummary::reset substitutions on equals");
-        assertEquals(0, playerStatSummary.getSubstitutionsOff(), "PlayerStatSummary::reset substitutions off equals");
-        assertEquals(0, playerStatSummary.getManOfTheMatch(), "PlayerStatSummary::reset man of the match equals");
-        assertEquals(0, playerStatSummary.getSharedManOfTheMatch(),
-                     "PlayerStatSummary::reset shared man of the match equals");
-        assertEquals(0, playerStatSummary.getGamesStarted(), "PlayerStatSummary::reset games started equals");
-        assertEquals(0, playerStatSummary.getGamesSubstitute(), "PlayerStatSummary::reset games substitute equals");
-        assertEquals(0, playerStatSummary.getGamesDidNotParticipate(),
-                     "PlayerStatSummary::reset games did not participate equals");
-        assertEquals(0, playerStatSummary.getMinutesPlayed(), "PlayerStatSummary::reset minutes played equals");
+        assertEquals(0, playerStatSummary.getRanking());
+        assertEquals(0, playerStatSummary.getPointsPerAppearance());
+        assertEquals(0, playerStatSummary.getCleanSheets());
+        assertEquals(0, playerStatSummary.getYellowCards());
+        assertEquals(0, playerStatSummary.getRedCards());
+        assertEquals(0, playerStatSummary.getSubstitutionsOn());
+        assertEquals(0, playerStatSummary.getSubstitutionsOff());
+        assertEquals(0, playerStatSummary.getManOfTheMatch());
+        assertEquals(0, playerStatSummary.getSharedManOfTheMatch());
+        assertEquals(0, playerStatSummary.getGamesStarted());
+        assertEquals(0, playerStatSummary.getGamesSubstitute());
+        assertEquals(0, playerStatSummary.getGamesDidNotParticipate());
+        assertEquals(0, playerStatSummary.getMinutesPlayed());
     }
 
     /**
@@ -118,30 +115,19 @@ class PlayerStatSummaryTests extends EasyRandomTests {
 
         destination.init(source);
 
-        assertEquals(source.getRanking(), destination.getRanking(), "PlayerStatSummary::init ranking equals");
-        assertEquals(source.getPointsPerAppearance(), destination.getPointsPerAppearance(),
-                     "PlayerStatSummary::init points per appearance equals");
-        assertEquals(source.getCleanSheets(), destination.getCleanSheets(),
-                     "PlayerStatSummary::init clean sheets equals");
-        assertEquals(source.getYellowCards(), destination.getYellowCards(),
-                     "PlayerStatSummary::init yellow cards equals");
-        assertEquals(source.getRedCards(), destination.getRedCards(), "PlayerStatSummary::init red cards equals");
-        assertEquals(source.getSubstitutionsOn(), destination.getSubstitutionsOn(),
-                     "PlayerStatSummary::init substitutions on equals");
-        assertEquals(source.getSubstitutionsOff(), destination.getSubstitutionsOff(),
-                     "PlayerStatSummary::init substitutions off equals");
-        assertEquals(source.getManOfTheMatch(), destination.getManOfTheMatch(),
-                     "PlayerStatSummary::init man of the match equals");
-        assertEquals(source.getSharedManOfTheMatch(), destination.getSharedManOfTheMatch(),
-                     "PlayerStatSummary::init shared man of the match equals");
-        assertEquals(source.getGamesStarted(), destination.getGamesStarted(),
-                     "PlayerStatSummary::init games started equals");
-        assertEquals(source.getGamesSubstitute(), destination.getGamesSubstitute(),
-                     "PlayerStatSummary::init games substitute equals");
-        assertEquals(source.getGamesDidNotParticipate(), destination.getGamesDidNotParticipate(),
-                     "PlayerStatSummary::init games did not participate equals");
-        assertEquals(source.getMinutesPlayed(), destination.getMinutesPlayed(),
-                     "PlayerStatSummary::init minutes played equals");
+        assertEquals(source.getRanking(), destination.getRanking());
+        assertEquals(source.getPointsPerAppearance(), destination.getPointsPerAppearance());
+        assertEquals(source.getCleanSheets(), destination.getCleanSheets());
+        assertEquals(source.getYellowCards(), destination.getYellowCards());
+        assertEquals(source.getRedCards(), destination.getRedCards());
+        assertEquals(source.getSubstitutionsOn(), destination.getSubstitutionsOn());
+        assertEquals(source.getSubstitutionsOff(), destination.getSubstitutionsOff());
+        assertEquals(source.getManOfTheMatch(), destination.getManOfTheMatch());
+        assertEquals(source.getSharedManOfTheMatch(), destination.getSharedManOfTheMatch());
+        assertEquals(source.getGamesStarted(), destination.getGamesStarted());
+        assertEquals(source.getGamesSubstitute(), destination.getGamesSubstitute());
+        assertEquals(source.getGamesDidNotParticipate(), destination.getGamesDidNotParticipate());
+        assertEquals(source.getMinutesPlayed(), destination.getMinutesPlayed());
     }
 
     /**
@@ -171,24 +157,17 @@ class PlayerStatSummaryTests extends EasyRandomTests {
 
         destination.addStats(source);
 
-        assertEquals(cleanSheets, destination.getCleanSheets(), "PlayerStatSummary::addStats clean sheets equals");
-        assertEquals(yellowCards, destination.getYellowCards(), "PlayerStatSummary::addStats yellow cards equals");
-        assertEquals(redCards, destination.getRedCards(), "PlayerStatSummary::addStats red cards equals");
-        assertEquals(substitutionsOn, destination.getSubstitutionsOn(),
-                     "PlayerStatSummary::addStats substitutions on equals");
-        assertEquals(substitutionsOff, destination.getSubstitutionsOff(),
-                     "PlayerStatSummary::addStats substitutions off equals");
-        assertEquals(manOfTheMatch, destination.getManOfTheMatch(),
-                     "PlayerStatSummary::addStats man of the match equals");
-        assertEquals(sharedManOfTheMatch, destination.getSharedManOfTheMatch(),
-                     "PlayerStatSummary::addStats shared man of the match equals");
-        assertEquals(gamesStarted, destination.getGamesStarted(), "PlayerStatSummary::addStats games started equals");
-        assertEquals(gamesSubstitute, destination.getGamesSubstitute(),
-                     "PlayerStatSummary::addStats games substitute equals");
-        assertEquals(gamesDidNotParticipate, destination.getGamesDidNotParticipate(),
-                     "PlayerStatSummary::addStats games did not participate equals");
-        assertEquals(minutesPlayed, destination.getMinutesPlayed(),
-                     "PlayerStatSummary::addStats minutes played equals");
+        assertEquals(cleanSheets, destination.getCleanSheets());
+        assertEquals(yellowCards, destination.getYellowCards());
+        assertEquals(redCards, destination.getRedCards());
+        assertEquals(substitutionsOn, destination.getSubstitutionsOn());
+        assertEquals(substitutionsOff, destination.getSubstitutionsOff());
+        assertEquals(manOfTheMatch, destination.getManOfTheMatch());
+        assertEquals(sharedManOfTheMatch, destination.getSharedManOfTheMatch());
+        assertEquals(gamesStarted, destination.getGamesStarted());
+        assertEquals(gamesSubstitute, destination.getGamesSubstitute());
+        assertEquals(gamesDidNotParticipate, destination.getGamesDidNotParticipate());
+        assertEquals(minutesPlayed, destination.getMinutesPlayed());
     }
 
     /**
@@ -214,7 +193,7 @@ class PlayerStatSummaryTests extends EasyRandomTests {
 
         Collections.sort(unsorted);
 
-        assertEquals(sorted, unsorted, "PlayerStat::compareTo equals");
+        assertEquals(sorted, unsorted);
     }
 
 }

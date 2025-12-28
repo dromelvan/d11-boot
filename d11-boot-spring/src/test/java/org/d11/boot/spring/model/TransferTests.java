@@ -15,7 +15,6 @@ class TransferTests extends EasyRandomTests {
      * Tests Transfer::isValid.
      */
     @Test
-    @SuppressWarnings("DataFlowIssue")
     void isValid() {
         final Transfer transferBid = generate(Transfer.class);
 
@@ -24,27 +23,27 @@ class TransferTests extends EasyRandomTests {
 
         transferBid.setFee(validFee);
 
-        assertTrue(transferBid.isValid(), "Transfer::isValid");
+        assertTrue(transferBid.isValid());
 
         transferBid.setFee(validFee * -1);
-        assertFalse(transferBid.isValid(), "Transfer::isValid fee negative");
+        assertFalse(transferBid.isValid());
         transferBid.setFee(invalidFee);
-        assertFalse(transferBid.isValid(), "Transfer::isValid fee non divisible by 5");
+        assertFalse(transferBid.isValid());
         transferBid.setFee(validFee);
 
         transferBid.setTransferDay(null);
-        assertFalse(transferBid.isValid(), "Transfer::isValid transfer day null");
+        assertFalse(transferBid.isValid());
         transferBid.setTransferDay(new TransferDay());
 
         transferBid.setPlayer(null);
-        assertFalse(transferBid.isValid(), "Transfer::isValid player null");
+        assertFalse(transferBid.isValid());
         transferBid.setPlayer(new Player());
 
         transferBid.setD11Team(null);
-        assertFalse(transferBid.isValid(), "Transfer::isValid D11 team null");
+        assertFalse(transferBid.isValid());
         transferBid.setD11Team(new D11Team());
 
-        assertTrue(transferBid.isValid(), "Transfer::isValid valid");
+        assertTrue(transferBid.isValid());
     }
 
 }

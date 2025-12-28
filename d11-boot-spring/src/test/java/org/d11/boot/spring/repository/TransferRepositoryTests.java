@@ -51,8 +51,7 @@ class TransferRepositoryTests extends AbstractRepositoryTests<Transfer, Transfer
                         .findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId(season.getId(), d11Team.getId());
                 result.sort(Comparator.comparing(Transfer::getId));
 
-                assertEquals(expected, result,
-                             "TransferRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId equals");
+                assertEquals(expected, result);
             }
         }
     }
@@ -70,8 +69,7 @@ class TransferRepositoryTests extends AbstractRepositoryTests<Transfer, Transfer
         final Set<TransferDay> transferDays = entities.stream()
                 .map(Transfer::getTransferDay).collect(Collectors.toSet());
 
-        assertTrue(transferDays.size() > 1,
-                   "TransferRepository::findByTransferDayIdOrderByD11TeamNameAscFeeDesc transferDays size > 1");
+        assertTrue(transferDays.size() > 1);
 
         for (final TransferDay transferDay :transferDays) {
             final List<Transfer> result =
@@ -81,14 +79,11 @@ class TransferRepositoryTests extends AbstractRepositoryTests<Transfer, Transfer
                     .filter(transfer -> transfer.getTransferDay().equals(transferDay))
                     .toList();
 
-            assertTrue(expected.size() > 1,
-                       "TransferRepository::findByTransferDayIdOrderByD11TeamNameAscFeeDesc expected size > 1");
+            assertTrue(expected.size() > 1);
 
-            assertNotNull(result, "TransferRepository::findByTransferDayIdOrderByD11TeamNameAscFeeDesc not null");
-            assertFalse(result.isEmpty(),
-                        "TransferRepository::findByTransferDayIdOrderByD11TeamNameAscFeeDesc empty");
-            assertEquals(expected, result,
-                         "TransferRepository::findByTransferDayIdOrderByD11TeamNameAscFeeDesc equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(expected, result);
         }
     }
 
@@ -105,8 +100,7 @@ class TransferRepositoryTests extends AbstractRepositoryTests<Transfer, Transfer
         final Set<Player> players = entities.stream()
                 .map(Transfer::getPlayer).collect(Collectors.toSet());
 
-        assertTrue(players.size() > 1,
-                   "TransferRepository::findByPlayerIdOrderByTransferDayDatetimeDesc players size > 1");
+        assertTrue(players.size() > 1);
 
         for (final Player player : players) {
             final List<Transfer> result = getRepository().findByPlayerIdOrderByTransferDayDatetimeDesc(player.getId());
@@ -115,14 +109,11 @@ class TransferRepositoryTests extends AbstractRepositoryTests<Transfer, Transfer
                     .filter(transfer -> transfer.getPlayer().equals(player))
                     .toList();
 
-            assertTrue(expected.size() > 1,
-                       "TransferRepository::findByPlayerIdOrderByTransferDayDatetimeDesc expected size > 1");
+            assertTrue(expected.size() > 1);
 
-            assertNotNull(result, "TransferRepository::findByPlayerIdOrderByTransferDayDatetimeDesc not null");
-            assertFalse(result.isEmpty(),
-                        "TransferRepository::findByPlayerIdOrderByTransferDayDatetimeDesc empty");
-            assertEquals(expected, result,
-                         "TransferRepository::findByPlayerIdOrderByTransferDayDatetimeDesc equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(expected, result);
         }
     }
 
@@ -138,9 +129,8 @@ class TransferRepositoryTests extends AbstractRepositoryTests<Transfer, Transfer
                     getRepository().findByPlayerIdAndTransferDayId(transfer.getPlayer().getId(),
                                                                    transfer.getTransferDay().getId());
 
-            assertTrue(optional.isPresent(), "TransferRepository::findByPlayerIdAndTransferDayId present");
-            optional.ifPresent(result -> assertEquals(transfer, result,
-                                                      "TransferRepository::findByPlayerIdAndTransferDayId"));
+            assertTrue(optional.isPresent());
+            optional.ifPresent(result -> assertEquals(transfer, result));
         }
     }
 

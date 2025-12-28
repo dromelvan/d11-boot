@@ -111,7 +111,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
     public void beforeAll() {
         getApiClient().getFeignBuilder()
             .errorDecoder(new CookieErrorDecoder(this.refreshTokenCookieDecoder))
-            .decoder(new CookieDecoderV2(getApiClient().getObjectMapper(), this.refreshTokenCookieDecoder))
+            .decoder(new CookieDecoderV2Tests(getApiClient().getObjectMapper(), this.refreshTokenCookieDecoder))
             .requestInterceptor(this.cookieRequestInterceptor);
     }
 
@@ -126,60 +126,49 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                 .filter(user -> user.getConfirmRegistrationToken() == null)
                 .toList();
 
-        assertFalse(users.isEmpty(),
-                    "SecurityController::authenticate non persistent users empty");
+        assertFalse(users.isEmpty());
 
         users.forEach(user -> {
             final AuthenticationResponseBodyDTO result = authenticate(user, false);
             final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
-            assertNotNull(result, "SecurityController::authenticate non persistent not null");
+            assertNotNull(result);
 
             // Check result --------------------------------------------------------------------------------------------
 
-            assertNotNull(result.getUser(), "SecurityController::authenticate non persistent user not null");
-            assertEquals(user.getName(), result.getUser().getName(),
-                         "SecurityController::authenticate non persistent user name equals");
-            assertEquals(user.isAdministrator(), result.getUser().isAdministrator(),
-                         "SecurityController::authenticate non persistent user administrator equals");
+            assertNotNull(result.getUser());
+            assertEquals(user.getName(), result.getUser().getName());
+            assertEquals(user.isAdministrator(), result.getUser().isAdministrator());
 
-            assertNotNull(result.getJwt(), "SecurityController::authenticate non persistent jwt not null");
+            assertNotNull(result.getJwt());
             final DecodedJWT decodedJWT = this.jwtBuilder.decode(result.getJwt());
 
-            assertEquals(user.getEmail(), decodedJWT.getClaim(USERNAME_CLAIM).asString(),
-                         "SecurityController::authenticate non persistent user email");
+            assertEquals(user.getEmail(), decodedJWT.getClaim(USERNAME_CLAIM).asString());
             assertEquals(result.getExpiresAt(),
-                         LocalDateTime.ofInstant(decodedJWT.getExpiresAtAsInstant(), ZoneId.systemDefault()),
-                         "SecurityController::authenticate non persistent jwt expires at");
+                         LocalDateTime.ofInstant(decodedJWT.getExpiresAtAsInstant(), ZoneId.systemDefault()));
 
             // It's tricky to calculate what the exact expires at should be down to the millisecond so check that it is
             // within five seconds of what we expect it to be.
-            assertTrue(result.getExpiresAt().isBefore(now.plusSeconds(TIME_TO_LIVE).plusSeconds(5)),
-                       "SecurityController::authenticate non persistent expires at before");
-            assertTrue(result.getExpiresAt().isAfter(now.plusSeconds(TIME_TO_LIVE).minusSeconds(5)),
-                       "SecurityController::authenticate non persistent expires at after");
+            assertTrue(result.getExpiresAt().isBefore(now.plusSeconds(TIME_TO_LIVE).plusSeconds(5)));
+            assertTrue(result.getExpiresAt().isAfter(now.plusSeconds(TIME_TO_LIVE).minusSeconds(5)));
 
-            assertFalse(result.isPersistent(),
-                        "SecurityController::authenticate non persistent persistent");
+            assertFalse(result.isPersistent());
 
             // Check cookie --------------------------------------------------------------------------------------------
 
             final UUID uuid = this.refreshTokenCookieDecoder.getCookieValue();
-            assertNotNull(uuid, "SecurityController::authenticate non persistent cookie value not null");
+            assertNotNull(uuid);
 
             final Long maxAge = this.refreshTokenCookieDecoder.getCookieMaxAge();
-            assertEquals(COOKIE_MAX_AGE, maxAge, "SecurityController::authenticate non persistent cookie max age");
+            assertEquals(COOKIE_MAX_AGE, maxAge);
 
             // Check refresh token -------------------------------------------------------------------------------------
 
             final RefreshToken refreshToken = this.refreshTokenRepository.findByUuid(uuid).orElse(null);
-            assertNotNull(refreshToken, "SecurityController::authenticate non persistent refresh token not null");
-            assertEquals(uuid, refreshToken.getUuid(),
-                         "SecurityController::authenticate non persistent refresh token uuid");
-            assertEquals(user, refreshToken.getUser(),
-                         "SecurityController::authenticate non persistent refresh token user");
-            assertEquals(now.plusSeconds(COOKIE_MAX_AGE), refreshToken.getExpiresAt(),
-                         "SecurityController::authenticate non persistent refresh token expires at");
+            assertNotNull(refreshToken);
+            assertEquals(uuid, refreshToken.getUuid());
+            assertEquals(user, refreshToken.getUser());
+            assertEquals(now.plusSeconds(COOKIE_MAX_AGE), refreshToken.getExpiresAt());
         });
     }
 
@@ -192,59 +181,47 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                 .filter(user -> user.getConfirmRegistrationToken() == null)
                 .toList();
 
-        assertFalse(users.isEmpty(),
-                    "SecurityController::authenticate persistent users empty");
+        assertFalse(users.isEmpty());
 
         users.forEach(user -> {
             final AuthenticationResponseBodyDTO result = authenticate(user, true);
             final LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
-            assertNotNull(result, "SecurityController::authenticate persistent not null");
+            assertNotNull(result);
 
             // Check result --------------------------------------------------------------------------------------------
 
-            assertNotNull(result.getUser(), "SecurityController::authenticate persistent user not null");
-            assertEquals(user.getName(), result.getUser().getName(),
-                         "SecurityController::authenticate persistent user name equals");
-            assertEquals(user.isAdministrator(), result.getUser().isAdministrator(),
-                         "SecurityController::authenticate persistent user administrator equals");
+            assertNotNull(result.getUser());
+            assertEquals(user.getName(), result.getUser().getName());
+            assertEquals(user.isAdministrator(), result.getUser().isAdministrator());
 
-            assertNotNull(result.getJwt(), "SecurityController::authenticate persistent jwt not null");
+            assertNotNull(result.getJwt());
             final DecodedJWT decodedJWT = this.jwtBuilder.decode(result.getJwt());
 
-            assertEquals(user.getEmail(), decodedJWT.getClaim(USERNAME_CLAIM).asString(),
-                         "SecurityController::authenticate persistent user email");
+            assertEquals(user.getEmail(), decodedJWT.getClaim(USERNAME_CLAIM).asString());
             assertEquals(result.getExpiresAt(),
-                         LocalDateTime.ofInstant(decodedJWT.getExpiresAtAsInstant(), ZoneId.systemDefault()),
-                         "SecurityController::authenticate persistent jwt expires at");
+                         LocalDateTime.ofInstant(decodedJWT.getExpiresAtAsInstant(), ZoneId.systemDefault()));
 
-            assertTrue(result.getExpiresAt().isBefore(now.plusSeconds(TIME_TO_LIVE).plusSeconds(5)),
-                       "SecurityController::authenticate persistent expires at before");
-            assertTrue(result.getExpiresAt().isAfter(now.plusSeconds(TIME_TO_LIVE).minusSeconds(5)),
-                       "SecurityController::authenticate persistent expires at after");
+            assertTrue(result.getExpiresAt().isBefore(now.plusSeconds(TIME_TO_LIVE).plusSeconds(5)));
+            assertTrue(result.getExpiresAt().isAfter(now.plusSeconds(TIME_TO_LIVE).minusSeconds(5)));
 
-            assertTrue(result.isPersistent(),
-                        "SecurityController::authenticate persistent persistent");
+            assertTrue(result.isPersistent());
 
             // Check cookie --------------------------------------------------------------------------------------------
 
             final UUID uuid = this.refreshTokenCookieDecoder.getCookieValue();
-            assertNotNull(uuid, "SecurityController::authenticate persistent cookie value not null");
+            assertNotNull(uuid);
 
             final Long maxAge = this.refreshTokenCookieDecoder.getCookieMaxAge();
-            assertEquals(PERSISTENT_COOKIE_MAX_AGE, maxAge,
-                         "SecurityController::authenticate persistent cookie max age");
+            assertEquals(PERSISTENT_COOKIE_MAX_AGE, maxAge);
 
             // Check refresh token -------------------------------------------------------------------------------------
 
             final RefreshToken refreshToken = this.refreshTokenRepository.findByUuid(uuid).orElse(null);
-            assertNotNull(refreshToken, "SecurityController::authenticate persistent refresh token not null");
-            assertEquals(uuid, refreshToken.getUuid(),
-                         "SecurityController::authenticate persistent refresh token uuid");
-            assertEquals(user, refreshToken.getUser(),
-                         "SecurityController::authenticate persistent refresh token user");
-            assertEquals(now.plusSeconds(PERSISTENT_COOKIE_MAX_AGE), refreshToken.getExpiresAt(),
-                         "SecurityController::authenticate persistent refresh token expires at");
+            assertNotNull(refreshToken);
+            assertEquals(uuid, refreshToken.getUuid());
+            assertEquals(user, refreshToken.getUser());
+            assertEquals(now.plusSeconds(PERSISTENT_COOKIE_MAX_AGE), refreshToken.getExpiresAt());
         });
     }
 
@@ -258,42 +235,35 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                 .filter(user -> user.getConfirmRegistrationToken() == null)
                 .toList();
 
-        assertFalse(users.isEmpty(),
-                    "SecurityController::authenticate refreshToken users empty");
+        assertFalse(users.isEmpty());
 
         users.forEach(user -> {
-            assertDoesNotThrow(() -> authenticate(user, true),
-                               "SecurityController::authenticate refreshToken authenticate does not throw");
+            assertDoesNotThrow(() -> authenticate(user, true));
 
             final UUID uuid = this.refreshTokenCookieDecoder.getCookieValue();
-            assertNotNull(uuid, "SecurityController::authenticate refreshToken cookie value not null");
+            assertNotNull(uuid);
 
             final RefreshToken refreshToken = this.refreshTokenRepository.findByUuid(uuid).orElse(null);
-            assertNotNull(refreshToken, "SecurityController::authenticate refreshToken refresh token not null");
+            assertNotNull(refreshToken);
 
             this.cookieRequestInterceptor.setRefreshToken(uuid);
-            assertDoesNotThrow(() -> authenticate(user, true),
-                               "SecurityController::authenticate refreshToken reauthenticate does not throw");
+            assertDoesNotThrow(() -> authenticate(user, true));
             final LocalDateTime expiresAt =
                     LocalDateTime.now().plusSeconds(PERSISTENT_COOKIE_MAX_AGE).truncatedTo(ChronoUnit.SECONDS);
 
             final UUID newUuid = this.refreshTokenCookieDecoder.getCookieValue();
-            assertNotNull(newUuid, "SecurityController::authenticate refreshToken new cookie value not null");
-            assertNotEquals(uuid, newUuid, "SecurityController::authenticate refreshToken new cookie value not equals");
+            assertNotNull(newUuid);
+            assertNotEquals(uuid, newUuid);
 
             final RefreshToken newRefreshToken = this.refreshTokenRepository.findByUuid(newUuid).orElse(null);
-            assertNotNull(newRefreshToken, "SecurityController::authenticate refreshToken new refresh token not null");
-            assertNotEquals(refreshToken, newRefreshToken,
-                            "SecurityController::authenticate refreshToken new refresh token equals");
-            assertEquals(expiresAt, newRefreshToken.getExpiresAt(),
-                         "SecurityController::authenticate refreshToken new expiresAt equals");
+            assertNotNull(newRefreshToken);
+            assertNotEquals(refreshToken, newRefreshToken);
+            assertEquals(expiresAt, newRefreshToken.getExpiresAt());
 
-            assertTrue(this.refreshTokenRepository.findByUuid(uuid).isEmpty(),
-                       "SecurityController::authenticate refreshToken refresh token empty");
+            assertTrue(this.refreshTokenRepository.findByUuid(uuid).isEmpty());
 
             // Check we don't get an exception when authenticating with an already deleted refresh token
-            assertDoesNotThrow(() -> authenticate(user, true),
-                               "SecurityController::authenticate refreshToken deleted does not throw");
+            assertDoesNotThrow(() -> authenticate(user, true));
         });
     }
 
@@ -306,12 +276,9 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                 .filter(user -> user.getConfirmRegistrationToken() != null)
                 .toList();
 
-        assertFalse(users.isEmpty(),
-                    "SecurityController::authenticate unconfirmed users empty");
+        assertFalse(users.isEmpty());
 
-        users.forEach(user -> assertThrows(FeignException.Unauthorized.class,
-                                           () -> authenticate(user, true),
-                                           "SecurityController::authenticate unconfirmed bad request"));
+        users.forEach(user -> assertThrows(FeignException.Unauthorized.class, () -> authenticate(user, true)));
     }
 
     /**
@@ -322,12 +289,9 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
         final SecurityApi securityApi = getApi(SecurityApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> securityApi.authenticate(new AuthenticationRequestBodyDTO()),
-                     "SecurityController::authenticate bad request");
-        assertNull(this.refreshTokenCookieDecoder.getCookieValue(),
-                   "SecurityController::authenticate bad request cookie value null");
-        assertNull(this.refreshTokenCookieDecoder.getCookieMaxAge(),
-                   "SecurityController::authenticate bad request cookie max age null");
+                     () -> securityApi.authenticate(new AuthenticationRequestBodyDTO()));
+        assertNull(this.refreshTokenCookieDecoder.getCookieValue());
+        assertNull(this.refreshTokenCookieDecoder.getCookieMaxAge());
     }
 
     /**
@@ -341,13 +305,10 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
             .username(PASSWORD)
             .password(PASSWORD);
 
-        assertThrows(FeignException.Unauthorized.class, () -> securityApi.authenticate(authenticationRequestBodyDTO),
-                     "SecurityController::authenticate unauthorized");
+        assertThrows(FeignException.Unauthorized.class, () -> securityApi.authenticate(authenticationRequestBodyDTO));
         assertEquals(UUID.fromString(RefreshTokenCookieBuilder.REFRESH_TOKEN_DUMMY_UUID),
-                     this.refreshTokenCookieDecoder.getCookieValue(),
-                     "SecurityController::authenticate unauthorized cookie value");
-        assertEquals(0L, this.refreshTokenCookieDecoder.getCookieMaxAge(),
-                     "SecurityController::authenticate unauthorized cookie max age");
+                     this.refreshTokenCookieDecoder.getCookieValue());
+        assertEquals(0L, this.refreshTokenCookieDecoder.getCookieMaxAge());
     }
 
     // Authorization ---------------------------------------------------------------------------------------------------
@@ -363,8 +324,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                 .filter(user -> user.getConfirmRegistrationToken() == null)
                 .toList();
 
-        assertFalse(users.isEmpty(),
-                    "SecurityController::authorize non persistent users empty");
+        assertFalse(users.isEmpty());
 
         users.forEach(user -> {
             authenticate(user, false);
@@ -374,55 +334,44 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
             final RefreshToken authenticationRefreshToken
                 = this.refreshTokenRepository.findByUuid(authenticationUuid).orElse(null);
-            assertNotNull(authenticationRefreshToken,
-                          "SecurityController::authorize non persistent authentication refresh token not null");
+            assertNotNull(authenticationRefreshToken);
 
             this.cookieRequestInterceptor.setRefreshToken(authenticationUuid);
             final AuthorizationResponseBodyDTO result = securityApi.authorize(authenticationUuid);
 
             // Check result --------------------------------------------------------------------------------------------
 
-            assertNotNull(result.getUser(), "SecurityController::authorize non persistent user not null");
-            assertEquals(user.getName(), result.getUser().getName(),
-                         "SecurityController::authorize non persistent user name equals");
-            assertEquals(user.isAdministrator(), result.getUser().isAdministrator(),
-                         "SecurityController::authorize non persistent user administrator equals");
+            assertNotNull(result.getUser());
+            assertEquals(user.getName(), result.getUser().getName());
+            assertEquals(user.isAdministrator(), result.getUser().isAdministrator());
 
-            assertNotNull(result.getJwt(), "SecurityController::authorize non persistent jwt not null");
+            assertNotNull(result.getJwt());
             final DecodedJWT decodedJWT = this.jwtBuilder.decode(result.getJwt());
 
-            assertEquals(user.getEmail(), decodedJWT.getClaim(USERNAME_CLAIM).asString(),
-                         "SecurityController::authorize non persistent user email");
+            assertEquals(user.getEmail(), decodedJWT.getClaim(USERNAME_CLAIM).asString());
             assertEquals(result.getExpiresAt(),
-                         LocalDateTime.ofInstant(decodedJWT.getExpiresAtAsInstant(), ZoneId.systemDefault()),
-                         "SecurityController::authorize non persistent jwt expires at");
+                         LocalDateTime.ofInstant(decodedJWT.getExpiresAtAsInstant(), ZoneId.systemDefault()));
 
-            assertTrue(result.getExpiresAt().isBefore(expiresAt.plusSeconds(5)),
-                       "SecurityController::authorize non persistent expires at before");
-            assertTrue(result.getExpiresAt().isAfter(expiresAt.minusSeconds(5)),
-                       "SecurityController::authorize non persistent expires at after");
+            assertTrue(result.getExpiresAt().isBefore(expiresAt.plusSeconds(5)));
+            assertTrue(result.getExpiresAt().isAfter(expiresAt.minusSeconds(5)));
 
-            assertFalse(result.isPersistent(),
-                       "SecurityController::authorize non persistent persistent");
+            assertFalse(result.isPersistent());
 
             // Check cookie --------------------------------------------------------------------------------------------
 
             final UUID uuid = this.refreshTokenCookieDecoder.getCookieValue();
-            assertNotEquals(authenticationUuid, uuid, "SecurityController::authorize non persistent cookie value");
+            assertNotEquals(authenticationUuid, uuid);
 
             final Long maxAge = this.refreshTokenCookieDecoder.getCookieMaxAge();
-            assertEquals(COOKIE_MAX_AGE, maxAge, "SecurityController::authorize non persistent cookie max age");
+            assertEquals(COOKIE_MAX_AGE, maxAge);
 
             // Check refresh token -------------------------------------------------------------------------------------
 
             final RefreshToken refreshToken = this.refreshTokenRepository.findByUuid(uuid).orElse(null);
-            assertNotNull(refreshToken, "SecurityController::authorize non persistent refresh token not null");
-            assertEquals(uuid, refreshToken.getUuid(),
-                         "SecurityController::authorize non persistent refresh token uuid");
-            assertEquals(authenticationRefreshToken.getUser(), refreshToken.getUser(),
-                         "SecurityController::authorize non persistent refresh token user");
-            assertEquals(authenticationRefreshToken.getExpiresAt(), refreshToken.getExpiresAt(),
-                         "SecurityController::authorize non persistent refresh token expires at");
+            assertNotNull(refreshToken);
+            assertEquals(uuid, refreshToken.getUuid());
+            assertEquals(authenticationRefreshToken.getUser(), refreshToken.getUser());
+            assertEquals(authenticationRefreshToken.getExpiresAt(), refreshToken.getExpiresAt());
         });
     }
 
@@ -436,8 +385,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                 .filter(user -> user.getConfirmRegistrationToken() == null)
                 .toList();
 
-        assertFalse(users.isEmpty(),
-                    "SecurityController::authorize persistent users empty");
+        assertFalse(users.isEmpty());
 
         users.forEach(user -> {
             authenticate(user, true);
@@ -447,55 +395,44 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
             final RefreshToken authenticationRefreshToken
                 = this.refreshTokenRepository.findByUuid(authenticationUuid).orElse(null);
-            assertNotNull(authenticationRefreshToken,
-                          "SecurityController::authorize persistent authentication refresh token not null");
+            assertNotNull(authenticationRefreshToken);
 
             this.cookieRequestInterceptor.setRefreshToken(authenticationUuid);
             final AuthorizationResponseBodyDTO result = securityApi.authorize(authenticationUuid);
 
             // Check result --------------------------------------------------------------------------------------------
 
-            assertNotNull(result.getUser(), "SecurityController::authorize persistent user not null");
-            assertEquals(user.getName(), result.getUser().getName(),
-                         "SecurityController::authorize persistent user name equals");
-            assertEquals(user.isAdministrator(), result.getUser().isAdministrator(),
-                         "SecurityController::authorize persistent user administrator equals");
+            assertNotNull(result.getUser());
+            assertEquals(user.getName(), result.getUser().getName());
+            assertEquals(user.isAdministrator(), result.getUser().isAdministrator());
 
-            assertNotNull(result.getJwt(), "SecurityController::authorize persistent jwt not null");
+            assertNotNull(result.getJwt());
             final DecodedJWT decodedJWT = this.jwtBuilder.decode(result.getJwt());
 
-            assertEquals(user.getEmail(), decodedJWT.getClaim(USERNAME_CLAIM).asString(),
-                         "SecurityController::authorize persistent user email");
+            assertEquals(user.getEmail(), decodedJWT.getClaim(USERNAME_CLAIM).asString());
             assertEquals(result.getExpiresAt(),
-                         LocalDateTime.ofInstant(decodedJWT.getExpiresAtAsInstant(), ZoneId.systemDefault()),
-                         "SecurityController::authorize persistent jwt expires at");
+                         LocalDateTime.ofInstant(decodedJWT.getExpiresAtAsInstant(), ZoneId.systemDefault()));
 
-            assertTrue(result.getExpiresAt().isBefore(expiresAt.plusSeconds(5)),
-                       "SecurityController::authorize persistent expires at before");
-            assertTrue(result.getExpiresAt().isAfter(expiresAt.minusSeconds(5)),
-                       "SecurityController::authorize persistent expires at after");
+            assertTrue(result.getExpiresAt().isBefore(expiresAt.plusSeconds(5)));
+            assertTrue(result.getExpiresAt().isAfter(expiresAt.minusSeconds(5)));
 
-            assertTrue(result.isPersistent(),
-                       "SecurityController::authorize persistent persistent");
+            assertTrue(result.isPersistent());
 
             // Check cookie --------------------------------------------------------------------------------------------
 
             final UUID uuid = this.refreshTokenCookieDecoder.getCookieValue();
-            assertNotEquals(authenticationUuid, uuid, "SecurityController::authorize persistent cookie value");
+            assertNotEquals(authenticationUuid, uuid);
 
             final Long maxAge = this.refreshTokenCookieDecoder.getCookieMaxAge();
-            assertEquals(PERSISTENT_COOKIE_MAX_AGE, maxAge, "SecurityController::authorize persistent cookie max age");
+            assertEquals(PERSISTENT_COOKIE_MAX_AGE, maxAge);
 
             // Check refresh token -------------------------------------------------------------------------------------
 
             final RefreshToken refreshToken = this.refreshTokenRepository.findByUuid(uuid).orElse(null);
-            assertNotNull(refreshToken, "SecurityController::authorize persistent refresh token not null");
-            assertEquals(uuid, refreshToken.getUuid(),
-                         "SecurityController::authorize persistent refresh token uuid");
-            assertEquals(authenticationRefreshToken.getUser(), refreshToken.getUser(),
-                         "SecurityController::authorize persistent refresh token user");
-            assertEquals(authenticationRefreshToken.getExpiresAt(), refreshToken.getExpiresAt(),
-                         "SecurityController::authorize persistent refresh token expires at equals");
+            assertNotNull(refreshToken);
+            assertEquals(uuid, refreshToken.getUuid());
+            assertEquals(authenticationRefreshToken.getUser(), refreshToken.getUser());
+            assertEquals(authenticationRefreshToken.getExpiresAt(), refreshToken.getExpiresAt());
         });
     }
 
@@ -509,8 +446,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
             .filter(user -> user.getConfirmRegistrationToken() == null)
             .toList();
 
-        assertFalse(users.isEmpty(),
-                    "SecurityController::authorize reauthorize users empty");
+        assertFalse(users.isEmpty());
 
         users.forEach(user -> {
             authenticate(user, true);
@@ -519,8 +455,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
             final RefreshToken authenticationRefreshToken
                 = this.refreshTokenRepository.findByUuid(authenticationUuid).orElse(null);
-            assertNotNull(authenticationRefreshToken,
-                          "SecurityController::authorize reauthorize authentication refresh token not null");
+            assertNotNull(authenticationRefreshToken);
 
             // Authorize -----------------------------------------------------------------------------------------------
 
@@ -529,26 +464,22 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
             final RefreshToken refreshToken =
                 this.refreshTokenRepository.findByUuid(this.refreshTokenCookieDecoder.getCookieValue()).orElse(null);
-            assertNotNull(refreshToken, "SecurityController::authorize reauthorize refresh token not null");
+            assertNotNull(refreshToken);
 
             // Reauthorize ---------------------------------------------------------------------------------------------
 
             final long count = this.refreshTokenRepository.count();
 
             this.cookieRequestInterceptor.setRefreshToken(authenticationUuid);
-            assertThrows(FeignException.Unauthorized.class, () -> securityApi.authorize(authenticationUuid),
-                         "SecurityController::authorize reauthorize unauthorized");
+            assertThrows(FeignException.Unauthorized.class, () -> securityApi.authorize(authenticationUuid));
 
             final UUID uuid = this.refreshTokenCookieDecoder.getCookieValue();
-            assertEquals(UUID.fromString(RefreshTokenCookieBuilder.REFRESH_TOKEN_DUMMY_UUID), uuid,
-                         "SecurityController::authorize reauthorize cookie value");
+            assertEquals(UUID.fromString(RefreshTokenCookieBuilder.REFRESH_TOKEN_DUMMY_UUID), uuid);
 
             final Long maxAge = this.refreshTokenCookieDecoder.getCookieMaxAge();
-            assertEquals(0L, maxAge,
-                         "SecurityController::authorize reauthorize cookie max age");
+            assertEquals(0L, maxAge);
 
-            assertEquals(count, this.refreshTokenRepository.count(),
-                         "SecurityController::authorize reauthorize refresh token count");
+            assertEquals(count, this.refreshTokenRepository.count());
         });
     }
 
@@ -561,12 +492,9 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
         this.cookieRequestInterceptor.setRefreshToken(null);
 
-        assertThrows(FeignException.Unauthorized.class, () -> securityApi.authorize(UUID.randomUUID()),
-                     "SecurityController::authorize no cookie unauthorized");
-        assertNull(this.refreshTokenCookieDecoder.getCookieValue(),
-                   "SecurityController::authorize no cookie cookie value null");
-        assertNull(this.refreshTokenCookieDecoder.getCookieMaxAge(),
-                   "SecurityController::authorize no cookie cookie max age null");
+        assertThrows(FeignException.Unauthorized.class, () -> securityApi.authorize(UUID.randomUUID()));
+        assertNull(this.refreshTokenCookieDecoder.getCookieValue());
+        assertNull(this.refreshTokenCookieDecoder.getCookieMaxAge());
     }
 
     /**
@@ -578,13 +506,10 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
         this.cookieRequestInterceptor.setRefreshToken(UUID.randomUUID());
 
-        assertThrows(FeignException.Unauthorized.class, () -> securityApi.authorize(UUID.randomUUID()),
-                     "SecurityController::authorize invalid cookie unauthorized");
+        assertThrows(FeignException.Unauthorized.class, () -> securityApi.authorize(UUID.randomUUID()));
         assertEquals(UUID.fromString(RefreshTokenCookieBuilder.REFRESH_TOKEN_DUMMY_UUID),
-                     this.refreshTokenCookieDecoder.getCookieValue(),
-                     "SecurityController::authorize invalid cookie cookie value");
-        assertEquals(0L, this.refreshTokenCookieDecoder.getCookieMaxAge(),
-                     "SecurityController::authorize invalid cookie cookie max age");
+                     this.refreshTokenCookieDecoder.getCookieValue());
+        assertEquals(0L, this.refreshTokenCookieDecoder.getCookieMaxAge());
     }
 
     // Unauthorization -------------------------------------------------------------------------------------------------
@@ -599,8 +524,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                 .filter(user -> user.getConfirmRegistrationToken() == null)
                 .toList();
 
-        assertFalse(users.isEmpty(),
-                    "SecurityController::unauthorize users empty");
+        assertFalse(users.isEmpty());
 
         users.forEach(user -> {
             authenticate(user, true);
@@ -609,28 +533,27 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
             final RefreshToken authenticationRefreshToken
                 = this.refreshTokenRepository.findByUuid(authenticationUuid).orElse(null);
-            assertNotNull(authenticationRefreshToken,
-                          "SecurityController::unauthorize authentication refresh token not null");
+            assertNotNull(authenticationRefreshToken);
 
             this.cookieRequestInterceptor.setRefreshToken(authenticationUuid);
             final UnauthorizationResponseBodyDTO result = securityApi.unauthorize(authenticationUuid);
 
             // Check result --------------------------------------------------------------------------------------------
 
-            assertTrue(result.isLoggedOut(), "SecurityController::unauthorize logged out");
+            assertTrue(result.isLoggedOut());
 
             // Check cookie --------------------------------------------------------------------------------------------
 
             final UUID uuid = this.refreshTokenCookieDecoder.getCookieValue();
-            assertEquals(authenticationUuid, uuid, "SecurityController::unauthorize cookie value");
+            assertEquals(authenticationUuid, uuid);
 
             final Long maxAge = this.refreshTokenCookieDecoder.getCookieMaxAge();
-            assertEquals(0L, maxAge, "SecurityController::unauthorize cookie max age");
+            assertEquals(0L, maxAge);
 
             // Check refresh token -------------------------------------------------------------------------------------
 
             final Optional<RefreshToken> optional = this.refreshTokenRepository.findByUuid(authenticationUuid);
-            assertFalse(optional.isPresent(), "SecurityController::unauthorize refresh token present");
+            assertFalse(optional.isPresent());
         });
     }
 
@@ -644,8 +567,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                 .filter(user -> user.getConfirmRegistrationToken() == null)
                 .toList();
 
-        assertFalse(users.isEmpty(),
-                    "SecurityController::unauthorize reunauthorize users empty");
+        assertFalse(users.isEmpty());
 
         users.forEach(user -> {
             authenticate(user, true);
@@ -654,16 +576,14 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
             final RefreshToken authenticationRefreshToken
                 = this.refreshTokenRepository.findByUuid(authenticationUuid).orElse(null);
-            assertNotNull(authenticationRefreshToken,
-                          "SecurityController::authorize reunauthorize authentication refresh token not null");
+            assertNotNull(authenticationRefreshToken);
 
             // Unauthorize ---------------------------------------------------------------------------------------------
 
             this.cookieRequestInterceptor.setRefreshToken(authenticationUuid);
             securityApi.unauthorize(authenticationUuid);
 
-            assertTrue(securityApi.unauthorize(authenticationUuid).isLoggedOut(),
-                       "SecurityController::unauthorize reunauthorize logged out");
+            assertTrue(securityApi.unauthorize(authenticationUuid).isLoggedOut());
 
             // Reunauthorize -------------------------------------------------------------------------------------------
 
@@ -672,17 +592,15 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
             this.cookieRequestInterceptor.setRefreshToken(authenticationUuid);
             final UnauthorizationResponseBodyDTO result = securityApi.unauthorize(authenticationUuid);
 
-            assertTrue(result.isLoggedOut(), "SecurityController::unauthorize reunauthorize reunauthorize logged out");
+            assertTrue(result.isLoggedOut());
 
             final UUID uuid = this.refreshTokenCookieDecoder.getCookieValue();
-            assertEquals(authenticationUuid, uuid, "SecurityController::unauthorize reunauthorize cookie value");
+            assertEquals(authenticationUuid, uuid);
 
             final Long maxAge = this.refreshTokenCookieDecoder.getCookieMaxAge();
-            assertEquals(0L, maxAge,
-                         "SecurityController::authorize reunauthorize cookie max age");
+            assertEquals(0L, maxAge);
 
-            assertEquals(count, this.refreshTokenRepository.count(),
-                         "SecurityController::authorize reunauthorize refresh token count");
+            assertEquals(count, this.refreshTokenRepository.count());
         });
     }
 
@@ -695,12 +613,9 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
         this.cookieRequestInterceptor.setRefreshToken(null);
 
-        assertThrows(FeignException.Unauthorized.class, () -> securityApi.unauthorize(UUID.randomUUID()),
-                     "SecurityController::unauthorize no cookie unauthorized");
-        assertNull(this.refreshTokenCookieDecoder.getCookieValue(),
-                   "SecurityController::unauthorize no cookie cookie value null");
-        assertNull(this.refreshTokenCookieDecoder.getCookieMaxAge(),
-                   "SecurityController::unauthorize no cookie cookie max age null");
+        assertThrows(FeignException.Unauthorized.class, () -> securityApi.unauthorize(UUID.randomUUID()));
+        assertNull(this.refreshTokenCookieDecoder.getCookieValue());
+        assertNull(this.refreshTokenCookieDecoder.getCookieMaxAge());
     }
 
     /**
@@ -714,12 +629,10 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
         this.cookieRequestInterceptor.setRefreshToken(uuid);
 
         final UnauthorizationResponseBodyDTO result = securityApi.unauthorize(uuid);
-        assertTrue(result.isLoggedOut(), "SecurityController::unauthorize invalid cookie logged out");
+        assertTrue(result.isLoggedOut());
 
-        assertEquals(uuid, this.refreshTokenCookieDecoder.getCookieValue(),
-                     "SecurityController::unauthorize invalid cookie cookie value");
-        assertEquals(0L, this.refreshTokenCookieDecoder.getCookieMaxAge(),
-                     "SecurityController::unauthorize invalid cookie cookie max age");
+        assertEquals(uuid, this.refreshTokenCookieDecoder.getCookieValue());
+        assertEquals(0L, this.refreshTokenCookieDecoder.getCookieMaxAge());
     }
 
     // Request password reset ------------------------------------------------------------------------------------------
@@ -738,9 +651,8 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
             final User updatedUser = this.userRepository.findById(user.getId()).orElse(null);
 
-            assertNotNull(updatedUser, "SecurityController::requestPasswordReset updatedUser not null");
-            assertNotNull(updatedUser.getResetPasswordToken(),
-                          "SecurityController::requestPasswordReset resetPasswordToken not null");
+            assertNotNull(updatedUser);
+            assertNotNull(updatedUser.getResetPasswordToken());
 
             // Clean up to not break other tests, this will be quicker than @DirtiesContext
             updatedUser.setResetPasswordToken(null);
@@ -756,8 +668,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
         final SecurityApi securityApi = getApi(SecurityApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> securityApi.requestPasswordReset(new RequestPasswordResetRequestBodyDTO()),
-                     "SecurityController::requestPasswordReset bad request");
+                     () -> securityApi.requestPasswordReset(new RequestPasswordResetRequestBodyDTO()));
     }
 
     /**
@@ -771,9 +682,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                                                                 .email("not.found@email.com")
                                                                 .link(EXAMPLE_URL));
 
-        this.userRepository.findAll().forEach(user ->
-                assertNull(user.getResetPasswordToken(),
-                           "SecurityController::requestPasswordReset not found resetPasswordToken null"));
+        this.userRepository.findAll().forEach(user -> assertNull(user.getResetPasswordToken()));
     }
 
     // Reset password --------------------------------------------------------------------------------------------------
@@ -794,7 +703,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                                                  .link(EXAMPLE_URL));
 
             User updatedUser = this.userRepository.findById(user.getId()).orElse(null);
-            assertNotNull(updatedUser, "SecurityController::resetPassword updatedUser not null");
+            assertNotNull(updatedUser);
 
             securityApi.resetPassword(new ResetPasswordRequestBodyDTO()
                                           .email(updatedUser.getEmail())
@@ -802,12 +711,10 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                                           .resetPasswordToken(updatedUser.getResetPasswordToken()));
 
             updatedUser = this.userRepository.findById(user.getId()).orElse(null);
-            assertNotNull(updatedUser, "SecurityController::resetPassword updatedUser x2 not null");
+            assertNotNull(updatedUser);
 
-            assertTrue(this.passwordEncoder.matches(newPassword, updatedUser.getEncryptedPassword()),
-                       "SecurityController::resetPassword encryptedPassword matches");
-            assertNull(updatedUser.getResetPasswordToken(),
-                       "SecurityController::resetPassword resetPasswordToken null");
+            assertTrue(this.passwordEncoder.matches(newPassword, updatedUser.getEncryptedPassword()));
+            assertNull(updatedUser.getResetPasswordToken());
 
             updatedUser.setEncryptedPassword(encryptedPassword);
             this.userRepository.save(updatedUser);
@@ -822,8 +729,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
         final SecurityApi securityApi = getApi(SecurityApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> securityApi.resetPassword(new ResetPasswordRequestBodyDTO()),
-                     "SecurityController::resetPassword bad request");
+                     () -> securityApi.resetPassword(new ResetPasswordRequestBodyDTO()));
     }
 
     /**
@@ -837,8 +743,7 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
                      () -> securityApi.resetPassword(new ResetPasswordRequestBodyDTO()
                                                          .email("unauthorized@email.com")
                                                          .password("invalid")
-                                                         .resetPasswordToken(UUID.randomUUID())),
-                     "SecurityController::resetPassword unauthorized");
+                                                         .resetPasswordToken(UUID.randomUUID())));
     }
 
     // Helper methods --------------------------------------------------------------------------------------------------

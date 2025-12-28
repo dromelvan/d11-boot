@@ -25,7 +25,7 @@ class HtmlUnitBrowserTests {
         final TestDownloader<HtmlUnitBrowser> testDownloader = new TestDownloader<>(callable);
         final WebPage webPage = testDownloader.download();
 
-        assertNotNull(webPage, "TestDownloader::download HTMLUnit is null");
+        assertNotNull(webPage);
     }
 
 }

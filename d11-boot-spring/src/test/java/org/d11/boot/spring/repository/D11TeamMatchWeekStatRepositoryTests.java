@@ -35,16 +35,8 @@ class D11TeamMatchWeekStatRepositoryTests extends AbstractRepositoryTests<D11Tea
                 .map(d11TeamMatchWeekStat -> d11TeamMatchWeekStat.getMatchWeek().getSeason())
                 .collect(Collectors.toSet());
 
-        assertTrue(d11Teams.size() > 1,
-                   """
-                   D11TeamMatchWeekStatRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByMatchWeekDate
-                   d11Teams size > 1
-                   """);
-        assertTrue(seasons.size() > 1,
-                   """
-                   D11TeamMatchWeekStatRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByMatchWeekDate
-                   seasons size > 1
-                   """);
+        assertTrue(d11Teams.size() > 1);
+        assertTrue(seasons.size() > 1);
 
         for (final D11Team d11Team : d11Teams) {
             for (final Season season : seasons) {
@@ -58,27 +50,11 @@ class D11TeamMatchWeekStatRepositoryTests extends AbstractRepositoryTests<D11Tea
                                                                 .equals(season))
                         .toList();
 
-                assertTrue(expected.size() > 1,
-                           """
-                           D11TeamMatchWeekStatRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByMatchWeekDate
-                           expected size > 1
-                           """);
+                assertTrue(expected.size() > 1);
 
-                assertNotNull(result,
-                              """
-                              D11TeamMatchWeekStatRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByMatchWeekDate
-                              not null
-                              """);
-                assertFalse(result.isEmpty(),
-                            """
-                            D11TeamMatchWeekStatRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByMatchWeekDate 
-                            empty
-                            """);
-                assertEquals(expected, result,
-                             """
-                             D11TeamMatchWeekStatRepository::findByD11TeamIdAndMatchWeekSeasonIdOrderByMatchWeekDate 
-                             equals
-                             """);
+                assertNotNull(result);
+                assertFalse(result.isEmpty());
+                assertEquals(expected, result);
             }
         }
     }

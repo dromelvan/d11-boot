@@ -40,9 +40,9 @@ class PositionServiceTests extends BaseD11BootServiceTests {
 
         final List<Position> result = this.positionService.getPositions();
 
-        assertNotNull(result, "PositionService::getPositions not null");
-        assertFalse(result.isEmpty(), "PositionService::getPositions isEmpty");
-        assertEquals(positions, result, "PositionService::getPositions");
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(positions, result);
     }
 
 }

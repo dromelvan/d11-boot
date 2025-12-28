@@ -33,21 +33,21 @@ class PositionControllerV2Tests extends D11BootControllerV2Tests {
         final PositionApi positionApi = getApi(PositionApi.class);
 
         final List<Position> positions = this.positionRepository.findByOrderBySortOrder();
-        assertFalse(positions.isEmpty(), "PositionController::getPositions not empty");
+        assertFalse(positions.isEmpty());
 
         final PositionsResponseBodyDTO positionsResponseBodyDTO = positionApi.getPositions();
 
-        assertNotNull(positionsResponseBodyDTO, "PositionController::getPositions not null");
+        assertNotNull(positionsResponseBodyDTO);
 
         final List<PositionDTO> result = positionsResponseBodyDTO.getPositions();
 
-        assertEquals(positions.size(), result.size(), "PositionController::getPositions size");
+        assertEquals(positions.size(), result.size());
 
         for (int i = 0; i < positions.size(); ++i) {
             final Position position = positions.get(i);
             final PositionDTO positionDTO = result.get(i);
 
-            assertEquals(map(position, PositionDTO.class), positionDTO, "PositionController::getPositions equals");
+            assertEquals(map(position, PositionDTO.class), positionDTO);
         }
     }
 

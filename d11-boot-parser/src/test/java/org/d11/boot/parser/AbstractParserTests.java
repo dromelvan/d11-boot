@@ -44,8 +44,8 @@ class AbstractParserTests {
         final JacksonObjectParser jacksonObjectParser = new JacksonObjectParser();
         final String result = jacksonObjectParser.serialize(this.jacksonObject);
 
-        assertFalse(StringUtils.isBlank(result), "AbstractParser::serialize blank");
-        assertEquals(JSON_STRING, result, "AbstractParser::serialize equals");
+        assertFalse(StringUtils.isBlank(result));
+        assertEquals(JSON_STRING, result);
     }
 
     /**
@@ -56,17 +56,12 @@ class AbstractParserTests {
         final JacksonObjectParser jacksonObjectParser = new JacksonObjectParser();
         final JacksonObject result = jacksonObjectParser.deserialize(JSON_STRING, JacksonObject.class);
 
-        assertNotNull(result, "AbstractParser::deserialize not null");
-        assertEquals(this.jacksonObject.getStringValue(), result.getStringValue(),
-                     "AbstractParser::serialize stringValue equals");
-        assertEquals(this.jacksonObject.getIntValue(), result.getIntValue(),
-                     "AbstractParser::serialize intValue equals");
-        assertEquals(this.jacksonObject.isBooleanValue(), result.isBooleanValue(),
-                     "AbstractParser::serialize booleanValue equals");
-        assertEquals(this.jacksonObject.getDateTime(), result.getDateTime(),
-                     "AbstractParser::serialize datetime equals");
-        assertEquals(this.jacksonObject.getListValue(), result.getListValue(),
-                     "AbstractParser::serialize listValue equals");
+        assertNotNull(result);
+        assertEquals(this.jacksonObject.getStringValue(), result.getStringValue());
+        assertEquals(this.jacksonObject.getIntValue(), result.getIntValue());
+        assertEquals(this.jacksonObject.isBooleanValue(), result.isBooleanValue());
+        assertEquals(this.jacksonObject.getDateTime(), result.getDateTime());
+        assertEquals(this.jacksonObject.getListValue(), result.getListValue());
     }
 
 }

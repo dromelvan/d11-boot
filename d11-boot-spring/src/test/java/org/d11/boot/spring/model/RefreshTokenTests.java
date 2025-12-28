@@ -20,10 +20,10 @@ class RefreshTokenTests extends EasyRandomTests {
     void testIsValid() {
         final RefreshToken refreshToken = generate(RefreshToken.class);
 
-        assertTrue(refreshToken.isValid(), "RefreshToken::isValid");
+        assertTrue(refreshToken.isValid());
 
-        assertFalse(new RefreshToken(null, LocalDateTime.now()).isValid(), "RefreshToken::isValid user null");
-        assertFalse(new RefreshToken(new User(), null).isValid(), "RefreshToken::isValid expiresAt null");
+        assertFalse(new RefreshToken(null, LocalDateTime.now()).isValid());
+        assertFalse(new RefreshToken(new User(), null).isValid());
     }
 
 }

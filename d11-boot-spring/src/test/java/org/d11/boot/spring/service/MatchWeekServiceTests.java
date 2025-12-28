@@ -53,12 +53,11 @@ class MatchWeekServiceTests extends BaseD11BootServiceTests {
             when(this.matchWeekRepository.findById(matchWeek.getId())).thenReturn(Optional.of(matchWeek));
 
             final MatchWeek result = this.matchWeekService.getById(matchWeek.getId());
-            assertNotNull(result, "MatchWeekService::getById not null");
-            assertEquals(matchWeek, result, "MatchWeekService::getById");
+            assertNotNull(result);
+            assertEquals(matchWeek, result);
         }
 
-        assertThrows(NotFoundException.class, () -> this.matchWeekService.getById(-1L),
-                     "MatchWeekService::getById not found");
+        assertThrows(NotFoundException.class, () -> this.matchWeekService.getById(-1L));
     }
 
     /**
@@ -74,20 +73,17 @@ class MatchWeekServiceTests extends BaseD11BootServiceTests {
         when(this.matchWeekRepository.findFirstBySeasonStatusOrderByDateAsc(Status.PENDING))
                 .thenReturn(Optional.empty());
 
-        assertThrows(ConflictException.class, () -> this.matchWeekService.getCurrentMatchWeek(),
-                     "MatchWeekService::getCurrentMatchWeek conflict");
+        assertThrows(ConflictException.class, () -> this.matchWeekService.getCurrentMatchWeek());
 
         when(this.matchWeekRepository.findFirstByDateLessThanEqualOrderByDateDesc(any(LocalDate.class)))
                 .thenReturn(Optional.of(current));
 
-        assertEquals(current, this.matchWeekService.getCurrentMatchWeek(),
-                     "MatchWeekService::getCurrentMatchWeek current");
+        assertEquals(current, this.matchWeekService.getCurrentMatchWeek());
 
         when(this.matchWeekRepository.findFirstBySeasonStatusOrderByDateAsc(Status.PENDING))
                 .thenReturn(Optional.of(pending));
 
-        assertEquals(pending, this.matchWeekService.getCurrentMatchWeek(),
-                     "MatchWeekService::getCurrentMatchWeek pending");
+        assertEquals(pending, this.matchWeekService.getCurrentMatchWeek());
 
         verify(this.matchWeekRepository, times(3)).findFirstBySeasonStatusOrderByDateAsc(eq(Status.PENDING));
         verify(this.matchWeekRepository, times(2)).findFirstByDateLessThanEqualOrderByDateDesc(any(LocalDate.class));
@@ -103,9 +99,9 @@ class MatchWeekServiceTests extends BaseD11BootServiceTests {
 
         final List<MatchWeek> result = this.matchWeekService.getBySeasonId(1L);
 
-        assertNotNull(result, "MatchWeekService::getBySeasonId not null");
-        assertFalse(result.isEmpty(), "MatchWeekService::getBySeasonId isEmpty");
-        assertEquals(matchWeeks, result, "MatchWeekService::getBySeasonId equals");
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(matchWeeks, result);
     }
 
 }

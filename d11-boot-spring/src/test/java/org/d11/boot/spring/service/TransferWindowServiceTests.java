@@ -69,14 +69,12 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
 
         when(this.transferWindowRepository.findCurrentTransferWindow()).thenReturn(Optional.empty());
 
-        assertThrows(ConflictException.class, () -> this.transferWindowService.getCurrentTransferWindow(),
-                     "TransferWindowService::getCurrentTransferWindow conflict");
+        assertThrows(ConflictException.class, () -> this.transferWindowService.getCurrentTransferWindow());
 
         when(this.transferWindowRepository.findCurrentTransferWindow())
                 .thenReturn(Optional.of(current));
 
-        assertEquals(current, this.transferWindowService.getCurrentTransferWindow(),
-                     "TransferWindowService::getCurrentTransferWindow current");
+        assertEquals(current, this.transferWindowService.getCurrentTransferWindow());
     }
 
     /**
@@ -90,9 +88,9 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
 
         final List<TransferWindow> result = this.transferWindowService.getBySeasonId(1L);
 
-        assertNotNull(result, "TransferWindowService::getBySeasonId not null");
-        assertFalse(result.isEmpty(), "TransferWindowService::getBySeasonId isEmpty");
-        assertEquals(transferWindows, result, "TransferWindowService::getBySeasonId equals");
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(transferWindows, result);
     }
 
     /**
@@ -106,26 +104,21 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
         final String datetimeProperty = "datetime";
 
         final BadRequestException nullDatetimeException =
-                assertThrows(BadRequestException.class, () -> this.transferWindowService.createTransferWindow(null, 1),
-                             "TransferWindowService::createTransferWindow null datetime throws");
-        assertEquals(datetimeProperty, nullDatetimeException.getParameter(),
-                     "TransferWindowService::createTransferWindow property equals null datetime");
+                assertThrows(BadRequestException.class, () -> this.transferWindowService.createTransferWindow(null, 1));
+        assertEquals(datetimeProperty, nullDatetimeException.getParameter());
 
         final BadRequestException invalidDatetimeException =
                 assertThrows(BadRequestException.class,
-                             () -> this.transferWindowService.createTransferWindow(LocalDateTime.now().minusDays(1), 1),
-                             "TransferWindowService::createTransferWindow invalid datetime throws");
-        assertEquals(datetimeProperty, invalidDatetimeException.getParameter(),
-                     "TransferWindowService::createTransferWindow property equals invalid datetime");
+                             () -> this.transferWindowService.createTransferWindow(LocalDateTime.now().minusDays(1),
+                                                                                   1));
+        assertEquals(datetimeProperty, invalidDatetimeException.getParameter());
 
         final LocalDateTime datetime = LocalDateTime.now().plusDays(1);
 
         final BadRequestException invalidTransferDayDelay =
                 assertThrows(BadRequestException.class,
-                             () -> this.transferWindowService.createTransferWindow(datetime, 0),
-                             "TransferWindowService::createTransferWindow invalid transferDayDelay throws");
-        assertEquals("transferDayDelay", invalidTransferDayDelay.getParameter(),
-                     "TransferWindowService::createTransferWindow property equals invalid transferDayDelay");
+                             () -> this.transferWindowService.createTransferWindow(datetime, 0));
+        assertEquals("transferDayDelay", invalidTransferDayDelay.getParameter());
 
         final TransferWindow currentTransferWindow = new TransferWindow();
         currentTransferWindow.setStatus(Status.PENDING);
@@ -134,8 +127,7 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
                 .thenReturn(Optional.of(currentTransferWindow));
 
         assertThrows(ConflictException.class,
-                     () -> this.transferWindowService.createTransferWindow(datetime, 1),
-                     "TransferWindowService::createTransferWindow current transferWindow invalid status throws");
+                     () -> this.transferWindowService.createTransferWindow(datetime, 1));
 
         // Success -----------------------------------------------------------------------------------------------------
 
@@ -151,30 +143,21 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
         final TransferWindow transferWindow = this.transferWindowService.createTransferWindow(datetime,
                                                                                               transferDayDelay);
 
-        assertNotNull(transferWindow, "TransferWindowService::createTransferWindow not null");
-        assertEquals(currentTransferWindow.getTransferWindowNumber() + 1, transferWindow.getTransferWindowNumber(),
-                     "TransferWindowService::createTransferWindow transferWindowNumber equals");
-        assertFalse(transferWindow.isDraft(), "TransferWindowService::createTransferWindow draft");
-        assertEquals(Status.PENDING, transferWindow.getStatus(),
-                     "TransferWindowService::createTransferWindow status equals");
-        assertEquals(datetime, transferWindow.getDatetime(),
-                     "TransferWindowService::createTransferWindow datetime equals");
-        assertEquals(matchWeek, transferWindow.getMatchWeek(),
-                     "TransferWindowService::createTransferWindow matchWeek equals");
+        assertNotNull(transferWindow);
+        assertEquals(currentTransferWindow.getTransferWindowNumber() + 1, transferWindow.getTransferWindowNumber());
+        assertFalse(transferWindow.isDraft());
+        assertEquals(Status.PENDING, transferWindow.getStatus());
+        assertEquals(datetime, transferWindow.getDatetime());
+        assertEquals(matchWeek, transferWindow.getMatchWeek());
 
-        assertEquals(1, transferWindow.getTransferDays().size(),
-                     "TransferWindowService::createTransferWindow transferDays size equals");
+        assertEquals(1, transferWindow.getTransferDays().size());
 
         final TransferDay transferDay = transferWindow.getTransferDays().get(0);
 
-        assertEquals(1, transferDay.getTransferDayNumber(),
-                     "TransferWindowService::createTransferWindow transferDay transferDayNumber equals");
-        assertEquals(Status.PENDING, transferWindow.getStatus(),
-                     "TransferWindowService::createTransferWindow transferDay status equals");
-        assertEquals(datetime.plusDays(transferDayDelay), transferDay.getDatetime(),
-                     "TransferWindowService::createTransferWindow transferDay datetime equals");
-        assertEquals(transferWindow, transferDay.getTransferWindow(),
-                     "TransferWindowService::createTransferWindow transferDay transferWindow equals");
+        assertEquals(1, transferDay.getTransferDayNumber());
+        assertEquals(Status.PENDING, transferWindow.getStatus());
+        assertEquals(datetime.plusDays(transferDayDelay), transferDay.getDatetime());
+        assertEquals(transferWindow, transferDay.getTransferWindow());
     }
 
     // updateTransferDay -----------------------------------------------------------------------------------------------
@@ -188,8 +171,7 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
                 new TransferWindowInput(1, false, Status.FULL_TIME, LocalDateTime.now(), 1L);
 
         assertThrows(BadRequestException.class,
-                     () -> this.transferWindowService.updateTransferWindow(1L, transferWindowInput),
-                     "TransferWindowService::updateTransferWindow status FULL_TIME throws");
+                     () -> this.transferWindowService.updateTransferWindow(1L, transferWindowInput));
     }
 
     /**
@@ -203,13 +185,10 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
         when(this.transferWindowRepository.findById(eq(1L))).thenReturn(Optional.empty());
 
         final NotFoundException e = assertThrows(NotFoundException.class,
-                     () -> this.transferWindowService.updateTransferWindow(1L, transferWindowInput),
-                     "TransferWindowService::updateTransferWindow transfer window not found throws");
+                     () -> this.transferWindowService.updateTransferWindow(1L, transferWindowInput));
 
-        assertEquals(e.getResource(), TransferWindow.class.getSimpleName(),
-                     "TransferWindowService::updateTransferWindow transfer window not found error resource equals");
-        assertEquals(e.getId(), 1L,
-                     "TransferWindowService::updateTransferWindow transfer window not found error id equals");
+        assertEquals(e.getResource(), TransferWindow.class.getSimpleName());
+        assertEquals(1L, e.getId());
     }
 
     /**
@@ -226,13 +205,10 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
         when(this.applicationContext.getBean(eq(MatchWeekRepository.class))).thenReturn(this.matchWeekRepository);
 
         final NotFoundException e = assertThrows(NotFoundException.class,
-                     () -> this.transferWindowService.updateTransferWindow(1L, transferWindowInput),
-                     "TransferWindowService::updateTransferWindow match week not found throws");
+                     () -> this.transferWindowService.updateTransferWindow(1L, transferWindowInput));
 
-        assertEquals(e.getResource(), MatchWeek.class.getSimpleName(),
-                     "TransferWindowService::updateTransferWindow match week not found error resource equals");
-        assertEquals(e.getId(), transferWindowInput.matchWeekId(),
-                     "TransferWindowService::updateTransferWindow match week not found error id equals");
+        assertEquals(e.getResource(), MatchWeek.class.getSimpleName());
+        assertEquals(e.getId(), transferWindowInput.matchWeekId());
     }
 
     /**
@@ -253,16 +229,11 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
 
         final TransferWindow transferWindow = this.transferWindowService.updateTransferWindow(1L, transferWindowInput);
 
-        assertEquals(transferWindowInput.transferWindowNumber(), transferWindow.getTransferWindowNumber(),
-                     "TransferWindowService::updateTransferWindow result transferWindowNumber equals");
-        assertEquals(transferWindowInput.draft(), transferWindow.isDraft(),
-                     "TransferWindowService::updateTransferWindow result draft equals");
-        assertEquals(transferWindowInput.status(), transferWindow.getStatus(),
-                     "TransferWindowService::updateTransferWindow result status equals");
-        assertEquals(transferWindowInput.datetime(), transferWindow.getDatetime(),
-                     "TransferWindowService::updateTransferWindow result datetime equals");
-        assertEquals(matchWeek, transferWindow.getMatchWeek(),
-                     "TransferWindowService::updateTransferWindow result matchWeek equals");
+        assertEquals(transferWindowInput.transferWindowNumber(), transferWindow.getTransferWindowNumber());
+        assertEquals(transferWindowInput.draft(), transferWindow.isDraft());
+        assertEquals(transferWindowInput.status(), transferWindow.getStatus());
+        assertEquals(transferWindowInput.datetime(), transferWindow.getDatetime());
+        assertEquals(matchWeek, transferWindow.getMatchWeek());
     }
 
     // deleteTransferDay -----------------------------------------------------------------------------------------------
@@ -278,25 +249,21 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
         when(this.transferWindowRepository.findById(eq(transferWindow.getId()))).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class,
-                     () -> this.transferWindowService.deleteTransferWindow(transferWindow.getId()),
-                     "TransferWindowService::deleteTransferWindow not found throws");
+                     () -> this.transferWindowService.deleteTransferWindow(transferWindow.getId()));
 
         when(this.transferWindowRepository.findById(eq(transferWindow.getId())))
                 .thenReturn(Optional.of(transferWindow));
 
         transferWindow.setStatus(Status.FINISHED);
         assertThrows(ConflictException.class,
-                     () -> this.transferWindowService.deleteTransferWindow(transferWindow.getId()),
-                     "TransferWindowService::deleteTransferWindow status FINISHED throws");
+                     () -> this.transferWindowService.deleteTransferWindow(transferWindow.getId()));
 
         transferWindow.setStatus(Status.ACTIVE);
         assertThrows(ConflictException.class,
-                     () -> this.transferWindowService.deleteTransferWindow(transferWindow.getId()),
-                     "TransferWindowService::deleteTransferWindow status ACTIVE throws");
+                     () -> this.transferWindowService.deleteTransferWindow(transferWindow.getId()));
 
         transferWindow.setStatus(Status.PENDING);
-        assertDoesNotThrow(() -> this.transferWindowService.deleteTransferWindow(transferWindow.getId()),
-                           "TransferWindowService::deleteTransferWindow status PENDING does not throw");
+        assertDoesNotThrow(() -> this.transferWindowService.deleteTransferWindow(transferWindow.getId()));
 
         verify(this.transferWindowRepository, times(1)).delete(eq(transferWindow));
     }

@@ -58,9 +58,9 @@ class TestQueueProducerIntegrationTests extends JmsComponentIntegrationTests {
         final TextMessage received =
                 (TextMessage) this.jmsTemplate.receiveAndConvert(JmsQueueComponent.TEST_QUEUE_DESTINATION);
 
-        assertNotNull(received, "TestQueueProducer received not null");
-        assertEquals(sent.getText(), received.getText(), "TestQueueProducer received text equals");
-        assertEquals(sent.getDatetime(), received.getDatetime(), "TestQueueProducer received datetime equals");
+        assertNotNull(received);
+        assertEquals(sent.getText(), received.getText());
+        assertEquals(sent.getDatetime(), received.getDatetime());
     }
 
 }

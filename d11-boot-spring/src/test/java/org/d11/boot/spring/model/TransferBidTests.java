@@ -16,7 +16,6 @@ class TransferBidTests extends EasyRandomTests {
      * Tests TransferBid::isValid.
      */
     @Test
-    @SuppressWarnings("DataFlowIssue")
     void isValid() {
         final TransferBid transferBid = generate(TransferBid.class);
 
@@ -26,41 +25,41 @@ class TransferBidTests extends EasyRandomTests {
         transferBid.setFee(validFee);
         transferBid.setActiveFee(validFee);
 
-        assertTrue(transferBid.isValid(), "TransferBid::isValid");
+        assertTrue(transferBid.isValid());
 
         transferBid.setPlayerRanking(0);
-        assertFalse(transferBid.isValid(), "TransferBid::isValid player ranking non positive");
+        assertFalse(transferBid.isValid());
         transferBid.setPlayerRanking(1);
 
         transferBid.setD11TeamRanking(0);
-        assertFalse(transferBid.isValid(), "TransferBid::isValid team ranking non positive");
+        assertFalse(transferBid.isValid());
         transferBid.setD11TeamRanking(1);
 
         transferBid.setFee(validFee * -1);
-        assertFalse(transferBid.isValid(), "TransferBid::isValid fee negative");
+        assertFalse(transferBid.isValid());
         transferBid.setFee(invalidFee);
-        assertFalse(transferBid.isValid(), "TransferBid::isValid fee non divisible by 5");
+        assertFalse(transferBid.isValid());
         transferBid.setFee(validFee);
 
         transferBid.setActiveFee(validFee * -1);
-        assertFalse(transferBid.isValid(), "TransferBid::isValid active fee negative");
+        assertFalse(transferBid.isValid());
         transferBid.setActiveFee(invalidFee);
-        assertFalse(transferBid.isValid(), "TransferBid::isValid active fee non divisible by 5");
+        assertFalse(transferBid.isValid());
         transferBid.setActiveFee(validFee);
 
         transferBid.setTransferDay(null);
-        assertFalse(transferBid.isValid(), "TransferBid::isValid transfer day null");
+        assertFalse(transferBid.isValid());
         transferBid.setTransferDay(new TransferDay());
 
         transferBid.setPlayer(null);
-        assertFalse(transferBid.isValid(), "TransferBid::isValid player null");
+        assertFalse(transferBid.isValid());
         transferBid.setPlayer(new Player());
 
         transferBid.setD11Team(null);
-        assertFalse(transferBid.isValid(), "TransferBid::isValid D11 team null");
+        assertFalse(transferBid.isValid());
         transferBid.setD11Team(new D11Team());
 
-        assertTrue(transferBid.isValid(), "TransferBid::isValid valid");
+        assertTrue(transferBid.isValid());
     }
 
     /**
@@ -73,7 +72,7 @@ class TransferBidTests extends EasyRandomTests {
 
         transferBid.prePersist();
 
-        assertEquals(transferBid.getFee(), transferBid.getActiveFee(), "TransferBid::prePersist");
+        assertEquals(transferBid.getFee(), transferBid.getActiveFee());
     }
 
 }

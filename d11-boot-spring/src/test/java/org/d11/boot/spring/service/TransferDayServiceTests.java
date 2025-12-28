@@ -59,12 +59,11 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
             when(this.transferDayRepository.findById(transferDay.getId())).thenReturn(Optional.of(transferDay));
 
             final TransferDay result = this.transferDayService.getById(transferDay.getId());
-            assertNotNull(result, "TransferDayService::getById not null");
-            assertEquals(transferDay, result, "TransferDayService::getById equals");
+            assertNotNull(result);
+            assertEquals(transferDay, result);
         }
 
-        assertThrows(NotFoundException.class, () -> this.transferDayService.getById(-1L),
-                     "TransferDayService::getById not found");
+        assertThrows(NotFoundException.class, () -> this.transferDayService.getById(-1L));
     }
 
     /**
@@ -75,13 +74,11 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
         final TransferDay current = generate(TransferDay.class);
 
         when(this.transferDayRepository.findFirstByOrderByDatetimeDesc()).thenReturn(Optional.empty());
-        assertThrows(ConflictException.class, () -> this.transferDayService.getCurrentTransferDay(),
-                     "TransferDayService::getCurrentTransferDay conflict");
+        assertThrows(ConflictException.class, () -> this.transferDayService.getCurrentTransferDay());
 
         when(this.transferDayRepository.findFirstByOrderByDatetimeDesc()).thenReturn(Optional.of(current));
 
-        assertEquals(current, this.transferDayService.getCurrentTransferDay(),
-                     "TransferDayService::getCurrentTransferDay current");
+        assertEquals(current, this.transferDayService.getCurrentTransferDay());
 
         verify(this.transferDayRepository, times(2)).findFirstByOrderByDatetimeDesc();
     }
@@ -93,10 +90,8 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
     void testGetByTransferWindowId() {
         final List<TransferDay> transferDays = generateList(TransferDay.class);
 
-        assertThrows(BadRequestException.class, () -> this.transferDayService.getByTransferWindowId(-1L),
-                     "TransferDayService::getByTransferWindowId transferWindowId negative throws");
-        assertThrows(BadRequestException.class, () -> this.transferDayService.getByTransferWindowId(null),
-                     "TransferDayService::getByTransferWindowId transferWindowId missing throws");
+        assertThrows(BadRequestException.class, () -> this.transferDayService.getByTransferWindowId(-1L));
+        assertThrows(BadRequestException.class, () -> this.transferDayService.getByTransferWindowId(null));
 
         final TransferWindow transferWindow = generate(TransferWindow.class);
         when(this.transferDayRepository.findByTransferWindowIdOrderByDatetimeDesc(eq(transferWindow.getId())))
@@ -104,9 +99,9 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
 
         final List<TransferDay> result = this.transferDayService.getByTransferWindowId(transferWindow.getId());
 
-        assertNotNull(result, "TransferDayService::getByTransferWindowId not null");
-        assertFalse(result.isEmpty(), "TransferDayService::getByTransferWindowId isEmpty");
-        assertEquals(transferDays, result, "TransferDayService::getByTransferWindowId equals");
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(transferDays, result);
 
         verify(this.transferDayRepository, times(1))
                 .findByTransferWindowIdOrderByDatetimeDesc(eq(transferWindow.getId()));
@@ -122,8 +117,7 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
         final TransferDayInput transferDayInput = new TransferDayInput(1, Status.FULL_TIME, LocalDateTime.now());
 
         assertThrows(BadRequestException.class,
-                     () -> this.transferDayService.updateTransferDay(1L, transferDayInput),
-                     "TransferDayService::updateTransferDay status FULL_TIME throws");
+                     () -> this.transferDayService.updateTransferDay(1L, transferDayInput));
     }
 
     /**
@@ -136,8 +130,7 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
         when(this.transferDayRepository.findById(eq(1L))).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class,
-                     () -> this.transferDayService.updateTransferDay(1L, transferDayInput),
-                     "TransferDayService::updateTransferDay not found throws");
+                     () -> this.transferDayService.updateTransferDay(1L, transferDayInput));
     }
 
     /**
@@ -157,12 +150,9 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
 
         final TransferDay result = this.transferDayService.updateTransferDay(transferDay.getId(), transferDayInput);
 
-        assertEquals(transferDayInput.transferDayNumber(), result.getTransferDayNumber(),
-                     "TransferDayService::updateTransferDay result transferDayNumber equals");
-        assertEquals(transferDayInput.status(), result.getStatus(),
-                     "TransferDayService::updateTransferDay result status equals");
-        assertEquals(transferDayInput.datetime(), result.getDatetime(),
-                     "TransferDayService::updateTransferDay result datetime equals");
+        assertEquals(transferDayInput.transferDayNumber(), result.getTransferDayNumber());
+        assertEquals(transferDayInput.status(), result.getStatus());
+        assertEquals(transferDayInput.datetime(), result.getDatetime());
 
         verify(this.transferDayRepository, times(1)).save(eq(transferDay));
     }
@@ -178,10 +168,8 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
 
         final BadRequestException e =
                 assertThrows(BadRequestException.class,
-                             () -> this.transferDayService.updateTransferDayStatus(1L, transferDayStatusInput),
-                             "TransferDayService::updateTransferDayStatus invalid status throws");
-        assertEquals("transferDay.status", e.getParameter(),
-                     "TransferListingService::createTransferListing invalid status property equals");
+                             () -> this.transferDayService.updateTransferDayStatus(1L, transferDayStatusInput));
+        assertEquals("transferDay.status", e.getParameter());
     }
 
     /**
@@ -194,8 +182,7 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
         when(this.transferDayRepository.findById(eq(1L))).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class,
-                     () -> this.transferDayService.updateTransferDayStatus(1L, transferDayStatusInput),
-                     "TransferDayService::updateTransferDayStatus not found throws");
+                     () -> this.transferDayService.updateTransferDayStatus(1L, transferDayStatusInput));
     }
 
     /**
@@ -212,10 +199,8 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
 
         final ConflictException e =
                 assertThrows(ConflictException.class,
-                             () -> this.transferDayService.updateTransferDayStatus(1L, transferDayStatusInput),
-                             "TransferDayService::updateTransferDayStatus invalid status transition throws");
-        assertEquals(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS, e.getErrorCode(),
-                 "TransferDayService::updateTransferDayStatus transfer day invalid status transition message equals");
+                             () -> this.transferDayService.updateTransferDayStatus(1L, transferDayStatusInput));
+        assertEquals(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS, e.getErrorCode());
     }
 
     /**
@@ -234,8 +219,7 @@ class TransferDayServiceTests extends BaseD11BootServiceTests {
         final TransferDay result = this.transferDayService.updateTransferDayStatus(transferDay.getId(),
                                                                                    transferDayStatusInput);
 
-        assertEquals(transferDayStatusInput.status(), result.getStatus(),
-                     "TransferDayService::updateTransferDayStatus result status equals");
+        assertEquals(transferDayStatusInput.status(), result.getStatus());
 
         verify(this.transferDayRepository, times(1)).save(eq(transferDay));
     }

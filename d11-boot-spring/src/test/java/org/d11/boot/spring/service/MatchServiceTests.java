@@ -53,30 +53,22 @@ class MatchServiceTests extends BaseD11BootServiceTests {
         final String teamIdProperty = "teamId";
 
         final BadRequestException nullTeamIdException =
-                assertThrows(BadRequestException.class, () -> this.matchService.getByTeamIdAndSeasonId(null, 1L),
-                             "MatchService::getByTeamIdAmdSeasonId null teamId throws");
-        assertEquals(teamIdProperty, nullTeamIdException.getParameter(),
-                     "MatchService::getByTeamIdAmdSeasonId property equals null teamId");
+                assertThrows(BadRequestException.class, () -> this.matchService.getByTeamIdAndSeasonId(null, 1L));
+        assertEquals(teamIdProperty, nullTeamIdException.getParameter());
 
         final BadRequestException invalidTeamIdException =
-                assertThrows(BadRequestException.class, () -> this.matchService.getByTeamIdAndSeasonId(-1L, 1L),
-                             "MatchService::getByTeamIdAmdSeasonId invalid teamId throws");
-        assertEquals(teamIdProperty, invalidTeamIdException.getParameter(),
-                     "MatchService::getByTeamIdAmdSeasonId property equals invalid teamId");
+                assertThrows(BadRequestException.class, () -> this.matchService.getByTeamIdAndSeasonId(-1L, 1L));
+        assertEquals(teamIdProperty, invalidTeamIdException.getParameter());
 
         final String seasonIdProperty = "seasonId";
 
         final BadRequestException nullSeasonIdException =
-                assertThrows(BadRequestException.class, () -> this.matchService.getByTeamIdAndSeasonId(1L, null),
-                             "MatchService::getByTeamIdAmdSeasonId null seasonId throws");
-        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter(),
-                     "MatchService::getByTeamIdAmdSeasonId property equals null seasonId");
+                assertThrows(BadRequestException.class, () -> this.matchService.getByTeamIdAndSeasonId(1L, null));
+        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter());
 
         final BadRequestException invalidSeasonIdException =
-                assertThrows(BadRequestException.class, () -> this.matchService.getByTeamIdAndSeasonId(1L, -1L),
-                             "MatchService::getByTeamIdAmdSeasonId invalid seasonId throws");
-        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter(),
-                     "MatchService::getByTeamIdAmdSeasonId property equals invalid seasonId");
+                assertThrows(BadRequestException.class, () -> this.matchService.getByTeamIdAndSeasonId(1L, -1L));
+        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter());
 
         // Success -----------------------------------------------------------------------------------------------------
 
@@ -86,9 +78,9 @@ class MatchServiceTests extends BaseD11BootServiceTests {
 
         final List<Match> result = this.matchService.getByTeamIdAndSeasonId(1L, 1L);
 
-        assertNotNull(result, "MatchService::getByTeamIdAmdSeasonId not null");
-        assertFalse(result.isEmpty(), "MatchService::getByTeamIdAmdSeasonId isEmpty");
-        assertEquals(matches, result, "MatchService::getByTeamIdAmdSeasonId equals");
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(matches, result);
     }
 
     /**
@@ -101,16 +93,12 @@ class MatchServiceTests extends BaseD11BootServiceTests {
         final String matchWeekIdProperty = "matchWeekId";
 
         final BadRequestException nullMatchWeekIdException =
-                assertThrows(BadRequestException.class, () -> this.matchService.getByMatchWeekId(null),
-                        "MatchService::getByMatchWeekId null matchWeekId throws");
-        assertEquals(matchWeekIdProperty, nullMatchWeekIdException.getParameter(),
-                "MatchService::getByMatchWeekId property equals null matchWeekId");
+                assertThrows(BadRequestException.class, () -> this.matchService.getByMatchWeekId(null));
+        assertEquals(matchWeekIdProperty, nullMatchWeekIdException.getParameter());
 
         final BadRequestException invalidMatchWeekIdException =
-                assertThrows(BadRequestException.class, () -> this.matchService.getByMatchWeekId(-1L),
-                        "MatchService::getByMatchWeekId invalid matchWeekId throws");
-        assertEquals(matchWeekIdProperty, invalidMatchWeekIdException.getParameter(),
-                "MatchService::getByMatchWeekId property equals invalid matchWeekId");
+                assertThrows(BadRequestException.class, () -> this.matchService.getByMatchWeekId(-1L));
+        assertEquals(matchWeekIdProperty, invalidMatchWeekIdException.getParameter());
 
         // Success -----------------------------------------------------------------------------------------------------
 
@@ -121,9 +109,9 @@ class MatchServiceTests extends BaseD11BootServiceTests {
 
         final List<Match> result = this.matchService.getByMatchWeekId(1L);
 
-        assertNotNull(result, "MatchService::getByMatchWeekId not null");
-        assertFalse(result.isEmpty(), "MatchService::getByMatchWeekId isEmpty");
-        assertEquals(matches, result, "MatchService::getByMatchWeekId equals");
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(matches, result);
     }
 
     /**
@@ -142,9 +130,9 @@ class MatchServiceTests extends BaseD11BootServiceTests {
 
         final List<Match> result = this.matchService.getCurrentMatches();
 
-        assertNotNull(result, "MatchService::getCurrentMatches not null");
-        assertFalse(result.isEmpty(), "MatchService::getCurrentMatches isEmpty");
-        assertEquals(matches, result, "MatchService::getCurrentMatches equals");
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(matches, result);
     }
 
 }

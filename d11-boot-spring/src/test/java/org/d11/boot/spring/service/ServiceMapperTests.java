@@ -48,22 +48,14 @@ class ServiceMapperTests extends EasyRandomTests {
 
         final Player destination = this.mapper.mapToPlayer(source);
 
-        assertEquals(source.whoscoredId(), destination.getWhoscoredId(),
-                     "ServiceMapper::mapToPlayer(PlayerInput) destination whoscoredId equals");
-        assertEquals(source.premierLeagueId(), destination.getPremierLeagueId(),
-                     "ServiceMapper::mapToPlayer(PlayerInput) destination premierLeagueId equals");
-        assertEquals(source.firstName(), destination.getFirstName(),
-                     "ServiceMapper::mapToPlayer(PlayerInput) destination firstName equals");
-        assertEquals(source.lastName(), destination.getLastName(),
-                     "ServiceMapper::mapToPlayer(PlayerInput) destination lastName equals");
-        assertEquals(source.fullName(), destination.getFullName(),
-                     "ServiceMapper::mapToPlayer(PlayerInput) destination fullName equals");
-        assertEquals(source.dateOfBirth(), destination.getDateOfBirth(),
-                     "ServiceMapper::mapToPlayer(PlayerInput) destination dateOfBirth equals");
-        assertEquals(source.height(), destination.getHeight(),
-                     "ServiceMapper::mapToPlayer(PlayerInput) destination height equals");
-        assertEquals(source.verified(), destination.isVerified(),
-                     "ServiceMapper::mapToPlayer(PlayerInput) destination verified equals");
+        assertEquals(source.whoscoredId(), destination.getWhoscoredId());
+        assertEquals(source.premierLeagueId(), destination.getPremierLeagueId());
+        assertEquals(source.firstName(), destination.getFirstName());
+        assertEquals(source.lastName(), destination.getLastName());
+        assertEquals(source.fullName(), destination.getFullName());
+        assertEquals(source.dateOfBirth(), destination.getDateOfBirth());
+        assertEquals(source.height(), destination.getHeight());
+        assertEquals(source.verified(), destination.isVerified());
     }
 
     /**
@@ -85,24 +77,15 @@ class ServiceMapperTests extends EasyRandomTests {
 
         final Player destination = this.mapper.mapToPlayer(source, generate(Player.class));
 
-        assertEquals(source.whoscoredId(), destination.getWhoscoredId(),
-                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination whoscoredId equals");
-        assertEquals(source.premierLeagueId(), destination.getPremierLeagueId(),
-                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination premierLeagueId equals");
-        assertEquals(source.firstName(), destination.getFirstName(),
-                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination firstName equals");
-        assertEquals(source.lastName(), destination.getLastName(),
-                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination lastName equals");
-        assertEquals(source.fullName(), destination.getFullName(),
-                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination fullName equals");
-        assertEquals(source.dateOfBirth(), destination.getDateOfBirth(),
-                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination dateOfBirth equals");
-        assertEquals(source.height(), destination.getHeight(),
-                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination height equals");
-        assertNotEquals(source.countryId(), destination.getCountry().getId(),
-                        "ServiceMapper::mapToPlayerInput(PlayerInput,Player) destination countryId not equals");
-        assertEquals(source.verified(), destination.isVerified(),
-                     "ServiceMapper::mapToPlayer(PlayerInput,Player) destination verified equals");
+        assertEquals(source.whoscoredId(), destination.getWhoscoredId());
+        assertEquals(source.premierLeagueId(), destination.getPremierLeagueId());
+        assertEquals(source.firstName(), destination.getFirstName());
+        assertEquals(source.lastName(), destination.getLastName());
+        assertEquals(source.fullName(), destination.getFullName());
+        assertEquals(source.dateOfBirth(), destination.getDateOfBirth());
+        assertEquals(source.height(), destination.getHeight());
+        assertNotEquals(source.countryId(), destination.getCountry().getId());
+        assertEquals(source.verified(), destination.isVerified());
     }
 
     /**
@@ -114,12 +97,9 @@ class ServiceMapperTests extends EasyRandomTests {
 
         final TransferDay destination = this.mapper.mapToTransferDay(source, new TransferDay());
 
-        assertEquals(source.transferDayNumber(), destination.getTransferDayNumber(),
-                "ServiceMapper::mapToTransferDay destination transfer day number equals");
-        assertEquals(source.status(), destination.getStatus(),
-                     "ServiceMapper::mapToTransferDay destination status equals");
-        assertEquals(source.datetime(), destination.getDatetime(),
-                     "ServiceMapper::mapToTransferDay destination datetime equals");
+        assertEquals(source.transferDayNumber(), destination.getTransferDayNumber());
+        assertEquals(source.status(), destination.getStatus());
+        assertEquals(source.datetime(), destination.getDatetime());
     }
 
     /**
@@ -131,14 +111,10 @@ class ServiceMapperTests extends EasyRandomTests {
 
         final TransferWindow destination = this.mapper.mapToTransferWindow(source, new TransferWindow());
 
-        assertEquals(source.transferWindowNumber(), destination.getTransferWindowNumber(),
-                     "ServiceMapper::mapToTransferWindow destination transfer window number equals");
-        assertEquals(source.draft(), destination.isDraft(),
-                     "ServiceMapper::mapToTransferWindow destination draft equals");
-        assertEquals(source.status(), destination.getStatus(),
-                     "ServiceMapper::mapToTransferWindow destination status equals");
-        assertEquals(source.datetime(), destination.getDatetime(),
-                     "ServiceMapper::mapToTransferWindow destination datetime equals");
+        assertEquals(source.transferWindowNumber(), destination.getTransferWindowNumber());
+        assertEquals(source.draft(), destination.isDraft());
+        assertEquals(source.status(), destination.getStatus());
+        assertEquals(source.datetime(), destination.getDatetime());
     }
 
     /**
@@ -150,7 +126,7 @@ class ServiceMapperTests extends EasyRandomTests {
 
         final Transfer destination = this.mapper.mapToTransfer(source);
 
-        assertEquals(source.fee(), destination.getFee(), "ServiceMapper::mapToTransfer destination fee equals");
+        assertEquals(source.fee(), destination.getFee());
     }
 
 }

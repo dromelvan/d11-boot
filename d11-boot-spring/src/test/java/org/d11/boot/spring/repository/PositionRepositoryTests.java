@@ -26,11 +26,9 @@ class PositionRepositoryTests extends AbstractRepositoryTests<Position, Position
         for (final Position position : positions) {
             final Optional<Position> optional = getRepository().findByCode(position.getCode());
 
-            assertTrue(optional.isPresent(), "PositionRepository::findByCode present");
+            assertTrue(optional.isPresent());
 
-            optional.ifPresent(result -> {
-                assertEquals(position, result, "PositionRepository::findByCode equals");
-            });
+            optional.ifPresent(result -> assertEquals(position, result));
         }
     }
 
@@ -44,8 +42,8 @@ class PositionRepositoryTests extends AbstractRepositoryTests<Position, Position
 
         final List<Position> result = getRepository().findByOrderBySortOrder();
 
-        assertNotNull(result, "PositionRepository::findByOrderBySortOrder not null");
-        assertEquals(positions, result, "PositionRepository::findByOrderBySortOrder");
+        assertNotNull(result);
+        assertEquals(positions, result);
     }
 
 }

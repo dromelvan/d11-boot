@@ -46,16 +46,12 @@ class TeamSeasonStatServiceTests extends BaseD11BootServiceTests {
         final String seasonIdProperty = "seasonId";
 
         final BadRequestException nullSeasonIdException =
-                assertThrows(BadRequestException.class, () -> this.teamSeasonStatService.getBySeasonId(null),
-                             "TeamSeasonStatService::getBySeasonId null seasonId throws");
-        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter(),
-                     "TeamSeasonStatService::getBySeasonId property equals null seasonId");
+                assertThrows(BadRequestException.class, () -> this.teamSeasonStatService.getBySeasonId(null));
+        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter());
 
         final BadRequestException invalidSeasonIdException =
-                assertThrows(BadRequestException.class, () -> this.teamSeasonStatService.getBySeasonId(-1L),
-                             "TeamSeasonStatService::getBySeasonId invalid seasonId throws");
-        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter(),
-                     "TeamSeasonStatService::getBySeasonId property equals invalid seasonId");
+                assertThrows(BadRequestException.class, () -> this.teamSeasonStatService.getBySeasonId(-1L));
+        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter());
 
         // Success -----------------------------------------------------------------------------------------------------
 
@@ -66,7 +62,7 @@ class TeamSeasonStatServiceTests extends BaseD11BootServiceTests {
 
         final List<TeamSeasonStat> result = this.teamSeasonStatService.getBySeasonId(seasonId);
 
-        assertEquals(teamSeasonStats, result, "TeamSeasonStatService::getBySeasonId result equals");
+        assertEquals(teamSeasonStats, result);
 
         verify(this.teamSeasonStatRepository, times(1)).findBySeasonIdOrderByRanking(eq(seasonId));
     }
@@ -83,33 +79,25 @@ class TeamSeasonStatServiceTests extends BaseD11BootServiceTests {
 
         final BadRequestException nullTeamIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.teamSeasonStatService.getByTeamIdAndSeasonId(null, 1L),
-                             "TeamSeasonStatService::getByTeamIdAndSeasonId null teamId throws");
-        assertEquals(teamIdProperty, nullTeamIdException.getParameter(),
-                     "TeamSeasonStatService::getByTeamIdAndSeasonId property equals null teamId");
+                             () -> this.teamSeasonStatService.getByTeamIdAndSeasonId(null, 1L));
+        assertEquals(teamIdProperty, nullTeamIdException.getParameter());
 
         final BadRequestException invalidTeamIdIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.teamSeasonStatService.getByTeamIdAndSeasonId(-1L, 1L),
-                             "TeamSeasonStatService::getByTeamIdAndSeasonId invalid teamId throws");
-        assertEquals(teamIdProperty, invalidTeamIdIdException.getParameter(),
-                     "TeamSeasonStatService::getByTeamIdAndSeasonId property equals invalid teamId");
+                             () -> this.teamSeasonStatService.getByTeamIdAndSeasonId(-1L, 1L));
+        assertEquals(teamIdProperty, invalidTeamIdIdException.getParameter());
 
         final String seasonIdProperty = "seasonId";
 
         final BadRequestException nullSeasonIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.teamSeasonStatService.getByTeamIdAndSeasonId(1L, null),
-                             "TeamSeasonStatService::getByTeamIdAndSeasonId null seasonId throws");
-        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter(),
-                     "TeamSeasonStatService::getByTeamIdAndSeasonId property equals null seasonId");
+                             () -> this.teamSeasonStatService.getByTeamIdAndSeasonId(1L, null));
+        assertEquals(seasonIdProperty, nullSeasonIdException.getParameter());
 
         final BadRequestException invalidSeasonIdException =
                 assertThrows(BadRequestException.class,
-                             () -> this.teamSeasonStatService.getByTeamIdAndSeasonId(1L, -1L),
-                             "TeamSeasonStatService::getByTeamIdAndSeasonId invalid seasonId throws");
-        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter(),
-                     "TeamSeasonStatService::getByTeamIdAndSeasonId property equals invalid seasonId");
+                             () -> this.teamSeasonStatService.getByTeamIdAndSeasonId(1L, -1L));
+        assertEquals(seasonIdProperty, invalidSeasonIdException.getParameter());
 
         // Success -----------------------------------------------------------------------------------------------------
 
@@ -128,7 +116,7 @@ class TeamSeasonStatServiceTests extends BaseD11BootServiceTests {
 
         final TeamSeasonStat result = this.teamSeasonStatService.getByTeamIdAndSeasonId(teamId, seasonId);
 
-        assertEquals(teamSeasonStat, result, "TeamSeasonStatService::getByTeamIdAndSeasonId result equals");
+        assertEquals(teamSeasonStat, result);
 
         verify(this.teamSeasonStatRepository, times(2)).findByTeamIdAndSeasonId(eq(teamId), eq(seasonId));
     }

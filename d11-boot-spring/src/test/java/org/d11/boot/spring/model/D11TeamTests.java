@@ -15,39 +15,38 @@ class D11TeamTests extends EasyRandomTests {
      * Tests D11Team::isValid.
      */
     @Test
-    @SuppressWarnings("DataFlowIssue")
     void testIsValid() {
         final D11Team d11Team = generate(D11Team.class);
 
-        assertTrue(d11Team.isValid(), "D11Team::isValid");
+        assertTrue(d11Team.isValid());
 
         d11Team.setName("");
-        assertFalse(d11Team.isValid(), "D11Team::isValid name empty");
+        assertFalse(d11Team.isValid());
         d11Team.setName(null);
-        assertFalse(d11Team.isValid(), "D11Team::isValid name null");
+        assertFalse(d11Team.isValid());
         d11Team.setName("Name");
 
         d11Team.setShortName("");
-        assertFalse(d11Team.isValid(), "D11Team::isValid short name empty");
+        assertFalse(d11Team.isValid());
         d11Team.setShortName(null);
-        assertFalse(d11Team.isValid(), "D11Team::isValid short name null");
+        assertFalse(d11Team.isValid());
         d11Team.setShortName("ShortName");
 
         d11Team.setCode("");
-        assertFalse(d11Team.isValid(), "D11Team::isValid code empty");
+        assertFalse(d11Team.isValid());
         d11Team.setCode(null);
-        assertFalse(d11Team.isValid(), "D11Team::isValid code null");
+        assertFalse(d11Team.isValid());
         d11Team.setCode("ABCD");
-        assertFalse(d11Team.isValid(), "D11Team::isValid code too long");
+        assertFalse(d11Team.isValid());
         d11Team.setCode("AB");
-        assertFalse(d11Team.isValid(), "D11Team::isValid code too short");
+        assertFalse(d11Team.isValid());
         d11Team.setCode("ABC");
 
         d11Team.setCoOwner(null);
-        assertTrue(d11Team.isValid(), "D11Team::isValid null co-owner");
+        assertTrue(d11Team.isValid());
         d11Team.setOwner(new User());
 
-        assertTrue(d11Team.isValid(), "D11Team::isValid valid");
+        assertTrue(d11Team.isValid());
     }
 
     /**
@@ -65,10 +64,10 @@ class D11TeamTests extends EasyRandomTests {
         final User administrator = new User()
                 .setAdministrator(true);
 
-        assertTrue(d11Team.isAdministratedBy(owner), "D11Team::isAdministratedBy owner");
-        assertTrue(d11Team.isAdministratedBy(coOwner), "D11Team::isAdministratedBy co-owner");
-        assertFalse(d11Team.isAdministratedBy(user), "D11Team::isAdministratedBy user");
-        assertTrue(d11Team.isAdministratedBy(administrator), "D11Team::isAdministratedBy administrator");
+        assertTrue(d11Team.isAdministratedBy(owner));
+        assertTrue(d11Team.isAdministratedBy(coOwner));
+        assertFalse(d11Team.isAdministratedBy(user));
+        assertTrue(d11Team.isAdministratedBy(administrator));
     }
 
 }

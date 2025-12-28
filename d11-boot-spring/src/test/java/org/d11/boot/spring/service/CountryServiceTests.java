@@ -40,9 +40,9 @@ class CountryServiceTests extends BaseD11BootServiceTests {
 
         final List<Country> result = this.countryService.getCountries();
 
-        assertNotNull(result, "CountryService::getCountries not null");
-        assertTrue(result.size() >= 2, "CountryService::getCountries size");
-        assertEquals(countries, result, "CountryService::getCountries");
+        assertNotNull(result);
+        assertTrue(result.size() >= 2);
+        assertEquals(countries, result);
     }
 
 }

@@ -42,13 +42,9 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
     void testGetPlayerMatchStatsByMatchId() {
         final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
 
-        assertThrows(FeignException.BadRequest.class,
-                     () -> playerMatchStatApi.getPlayerMatchStatsByMatchId(null),
-                     "PlayerMatchStatController::getPlayerMatchStatsByMatchId matchId null throws");
+        assertThrows(FeignException.BadRequest.class, () -> playerMatchStatApi.getPlayerMatchStatsByMatchId(null));
 
-        assertThrows(FeignException.BadRequest.class,
-                     () -> playerMatchStatApi.getPlayerMatchStatsByMatchId(-1L),
-                     "PlayerMatchStatController::getPlayerMatchStatsByMatchId matchId negative throws");
+        assertThrows(FeignException.BadRequest.class, () -> playerMatchStatApi.getPlayerMatchStatsByMatchId(-1L));
 
         final List<PlayerMatchStat> playerMatchStats = this.playerMatchStatRepository.findAll();
         playerMatchStats.sort(Comparator.comparing(PlayerMatchStat::getPosition));
@@ -57,27 +53,24 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
                 .map(PlayerMatchStat::getMatch)
                 .collect(Collectors.toSet());
 
-        assertTrue(matches.size() > 1, "PlayerMatchStatController::getPlayerMatchStatsByMatchId matches size > 0");
+        assertTrue(matches.size() > 1);
 
         for (final Match match : matches) {
             final PlayerMatchStatsResponseBodyDTO response =
                     playerMatchStatApi.getPlayerMatchStatsByMatchId(match.getId());
-            assertNotNull(response,
-                          "PlayerMatchStatController::getPlayerMatchStatsByMatchId response not null");
+            assertNotNull(response);
 
             final List<PlayerMatchStat> expected = playerMatchStats.stream()
                     .filter(playerMatchStat -> playerMatchStat.getMatch().equals(match))
                     .toList();
 
-            assertTrue(expected.size() > 1,
-                       "PlayerMatchStatController::getPlayerMatchStatsByMatchId expected size > 1");
+            assertTrue(expected.size() > 1);
 
             final List<PlayerMatchStatDTO> result = response.getPlayerMatchStats();
 
-            assertNotNull(result, "PlayerMatchStatController::getPlayerMatchStatsByMatchId not null");
-            assertFalse(result.isEmpty(), "PlayerMatchStatController::getPlayerMatchStatsByMatchId empty");
-            assertEquals(map(expected, PlayerMatchStatDTO.class), result,
-                         "PlayerMatchStatController::getPlayerMatchStatsByMatchId equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(map(expected, PlayerMatchStatDTO.class), result);
         }
     }
 
@@ -89,12 +82,10 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
         final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerMatchStatApi.getPlayerMatchStatsByD11MatchId(null),
-                     "PlayerMatchStatController::getPlayerMatchStatsByD11MatchId d11MatchId null throws");
+                     () -> playerMatchStatApi.getPlayerMatchStatsByD11MatchId(null));
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerMatchStatApi.getPlayerMatchStatsByD11MatchId(-1L),
-                     "PlayerMatchStatController::getPlayerMatchStatsByD11MatchId d11MatchId negative throws");
+                     () -> playerMatchStatApi.getPlayerMatchStatsByD11MatchId(-1L));
 
         final List<PlayerMatchStat> playerMatchStats = this.playerMatchStatRepository.findAll();
         playerMatchStats.sort(Comparator.comparing(PlayerMatchStat::getPosition));
@@ -103,28 +94,24 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
                 .map(PlayerMatchStat::getD11Match)
                 .collect(Collectors.toSet());
 
-        assertTrue(d11Matches.size() > 1,
-                   "PlayerMatchStatController::getPlayerMatchStatsByD11MatchId D11 matches size > 0");
+        assertTrue(d11Matches.size() > 1);
 
         for (final D11Match d11Match : d11Matches) {
             final PlayerMatchStatsResponseBodyDTO response =
                     playerMatchStatApi.getPlayerMatchStatsByD11MatchId(d11Match.getId());
-            assertNotNull(response,
-                          "PlayerMatchStatController::getPlayerMatchStatsByD11MatchId response not null");
+            assertNotNull(response);
 
             final List<PlayerMatchStat> expected = playerMatchStats.stream()
                     .filter(playerMatchStat -> playerMatchStat.getD11Match().equals(d11Match))
                     .toList();
 
-            assertTrue(expected.size() > 1,
-                       "PlayerMatchStatController::getPlayerMatchStatsByD11MatchId expected size > 1");
+            assertTrue(expected.size() > 1);
 
             final List<PlayerMatchStatDTO> result = response.getPlayerMatchStats();
 
-            assertNotNull(result, "PlayerMatchStatController::getPlayerMatchStatsByD11MatchId not null");
-            assertFalse(result.isEmpty(), "PlayerMatchStatController::getPlayerMatchStatsByD11MatchId empty");
-            assertEquals(map(expected, PlayerMatchStatDTO.class), result,
-                         "PlayerMatchStatController::getPlayerMatchStatsByD11MatchId equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(map(expected, PlayerMatchStatDTO.class), result);
         }
     }
 
@@ -136,12 +123,10 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
         final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerMatchStatApi.getPlayerMatchStatsByPlayerIdAndSeasonId(null, 1L),
-                     "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId playerId null throws");
+                     () -> playerMatchStatApi.getPlayerMatchStatsByPlayerIdAndSeasonId(null, 1L));
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerMatchStatApi.getPlayerMatchStatsByPlayerIdAndSeasonId(-1L, 1L),
-                     "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId playerId negative throws");
+                     () -> playerMatchStatApi.getPlayerMatchStatsByPlayerIdAndSeasonId(-1L, 1L));
 
         final List<PlayerMatchStat> playerMatchStats = this.playerMatchStatRepository.findAll();
         playerMatchStats.sort(Comparator.comparing(playerMatchStat -> playerMatchStat.getMatch().getDatetime()));
@@ -153,17 +138,14 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
                 .map(playerMatchStat -> playerMatchStat.getMatch().getMatchWeek().getSeason())
                 .collect(Collectors.toSet());
 
-        assertTrue(players.size() > 1,
-                   "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId players size > 1");
-        assertFalse(seasons.isEmpty(),
-                   "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId seasons empty");
+        assertTrue(players.size() > 1);
+        assertFalse(seasons.isEmpty());
 
         for (final Player player : players) {
             for (final Season season : seasons) {
                 final PlayerMatchStatsResponseBodyDTO response =
                         playerMatchStatApi.getPlayerMatchStatsByPlayerIdAndSeasonId(player.getId(), season.getId());
-                assertNotNull(response,
-                              "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId response not null");
+                assertNotNull(response);
 
                 final List<PlayerMatchStat> expected = playerMatchStats.stream()
                         .filter(playerMatchStat -> playerMatchStat.getPlayer().equals(player)
@@ -171,16 +153,13 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
                                                                      .equals(season))
                         .toList();
 
-                assertTrue(expected.size() > 1,
-                           "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId expected size > 1");
+                assertTrue(expected.size() > 1);
 
                 final List<PlayerMatchStatDTO> result = response.getPlayerMatchStats();
 
-                assertNotNull(result, "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId not null");
-                assertFalse(result.isEmpty(),
-                            "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId empty");
-                assertEquals(map(expected, PlayerMatchStatDTO.class), result,
-                             "PlayerMatchStatController::getPlayerMatchStatsByPlayerIdAndSeasonId equals");
+                assertNotNull(result);
+                assertFalse(result.isEmpty());
+                assertEquals(map(expected, PlayerMatchStatDTO.class), result);
             }
         }
     }

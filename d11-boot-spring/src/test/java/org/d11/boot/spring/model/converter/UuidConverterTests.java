@@ -22,8 +22,8 @@ class UuidConverterTests {
         final UUID source = UUID.randomUUID();
         final String result = converter.convertToDatabaseColumn(source);
 
-        assertEquals(source.toString(), result, "UuidConverter::convertToDatabaseColumn equals");
-        assertNull(converter.convertToDatabaseColumn(null), "UuidConverter::convertToDatabaseColumn null");
+        assertEquals(source.toString(), result);
+        assertNull(converter.convertToDatabaseColumn(null));
     }
 
     /**
@@ -36,8 +36,8 @@ class UuidConverterTests {
         final String source = UUID.randomUUID().toString();
         final UUID result = converter.convertToEntityAttribute(source);
 
-        assertEquals(UUID.fromString(source), result, "UuidConverter::convertToEntityAttribute equals");
-        assertNull(converter.convertToEntityAttribute(null), "UuidConverter::convertToEntityAttribute null");
+        assertEquals(UUID.fromString(source), result);
+        assertNull(converter.convertToEntityAttribute(null));
     }
 
 }

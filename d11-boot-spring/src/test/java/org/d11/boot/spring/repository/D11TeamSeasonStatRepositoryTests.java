@@ -34,8 +34,8 @@ class D11TeamSeasonStatRepositoryTests extends AbstractRepositoryTests<D11TeamSe
 
         final List<D11TeamSeasonStat> result = getRepository().findBySeasonIdOrderByRanking(season.getId());
 
-        assertNotNull(result, "D11TeamSeasonStatRepository::findBySeasonIdOrderByRanking not null");
-        assertEquals(expected, result, "D11TeamSeasonStatRepository::findBySeasonIdOrderByRanking equals");
+        assertNotNull(result);
+        assertEquals(expected, result);
     }
 
     /**
@@ -45,18 +45,15 @@ class D11TeamSeasonStatRepositoryTests extends AbstractRepositoryTests<D11TeamSe
     void testFindByD11TeamIdAndSeasonId() {
         final List<D11TeamSeasonStat> entities = getEntities();
 
-        assertFalse(entities.isEmpty(),
-                    "D11TeamSeasonStatRepository::findByD11TeamIdAndSeasonId team season stats empty");
+        assertFalse(entities.isEmpty());
 
         for (final D11TeamSeasonStat expected : entities) {
             final Optional<D11TeamSeasonStat> optional =
                     getRepository().findByD11TeamIdAndSeasonId(expected.getD11Team().getId(),
                                                                expected.getSeason().getId());
 
-            assertTrue(optional.isPresent(), "D1TeamSeasonStatRepository::findByD11TeamIdAndSeasonId present");
-            optional.ifPresent(result ->
-                                       assertEquals(expected, result,
-                                                    "D11TeamSeasonStatRepository::findByD11TeamIdAndSeasonId equals"));
+            assertTrue(optional.isPresent());
+            optional.ifPresent(result -> assertEquals(expected, result));
         }
     }
 

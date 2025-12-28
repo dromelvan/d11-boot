@@ -22,8 +22,8 @@ class RefreshTokenRepositoryTests extends AbstractRepositoryTests<RefreshToken, 
     void testFindByUuid() {
         getEntities().forEach(refreshToken -> {
             final RefreshToken result = getRepository().findByUuid(refreshToken.getUuid()).orElse(null);
-            assertNotNull(result, "RefreshTokenRepository::findByUuid not null");
-            assertEquals(refreshToken, result, "RefreshTokenRepository::findByUuid");
+            assertNotNull(result);
+            assertEquals(refreshToken, result);
         });
     }
 
@@ -45,32 +45,23 @@ class RefreshTokenRepositoryTests extends AbstractRepositoryTests<RefreshToken, 
                             .orElse(null);
 
             if (refreshToken.getExpiresAt().isAfter(tomorrow)) {
-                assertNotNull(result,
-                              "RefreshTokenRepository::findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull pers not null");
-                assertEquals(refreshToken, result,
-                             "RefreshTokenRepository::findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull pers equals");
-                assertNotNull(refreshToken.getExpiresAt(),
-                              "RefreshTokenRepository::findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull pers expiresAt");
+                assertNotNull(result);
+                assertEquals(refreshToken, result);
+                assertNotNull(refreshToken.getExpiresAt());
                 ++persistentCount;
             } else if (refreshToken.getExpiresAt().isAfter(now)) {
-                assertNotNull(result,
-                              "RefreshTokenRepository::findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull noexp not null");
-                assertEquals(refreshToken, result,
-                             "RefreshTokenRepository::findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull noexp equals");
-                assertNotNull(refreshToken.getExpiresAt(),
-                              "RefreshTokenRepository::findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull noexp expiresAt");
-                assertTrue(refreshToken.getExpiresAt().isAfter(now),
-                              "RefreshTokenRepository::findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull noexp isAfter");
+                assertNotNull(result);
+                assertEquals(refreshToken, result);
+                assertNotNull(refreshToken.getExpiresAt());
+                assertTrue(refreshToken.getExpiresAt().isAfter(now));
                 ++nonExpiredCount;
             } else {
-                assertNull(result,
-                           "RefreshTokenRepository::findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull exp null");
+                assertNull(result);
                 ++expiredCount;
             }
         }
 
-        assertTrue(persistentCount > 0 && nonExpiredCount > 0 && expiredCount > 0,
-                   "RefreshTokenRepository::findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull test data correct");
+        assertTrue(persistentCount > 0 && nonExpiredCount > 0 && expiredCount > 0);
     }
 
 }

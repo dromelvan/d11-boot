@@ -66,9 +66,8 @@ class CreateTransferWindowRouteBuilderTests extends RouteBuilderTests {
 
         Exchange exchange = send(Route.CREATE_TRANSFER_WINDOW, body);
 
-        assertTrue(exchange.isFailed(), "Route.CREATE_TRANSFER_WINDOW isFailed BadRequestException");
-        assertEquals(badRequestException, exchange.getException(),
-                     "Route.CREATE_TRANSFER_WINDOW exception BadRequestException");
+        assertTrue(exchange.isFailed());
+        assertEquals(badRequestException, exchange.getException());
 
         final ConflictException conflictException = new ConflictException("");
         when(this.transferWindowService.createTransferWindow(eq(body.getDatetime()), eq(body.getTransferDayDelay())))
@@ -76,9 +75,8 @@ class CreateTransferWindowRouteBuilderTests extends RouteBuilderTests {
 
         exchange = send(Route.CREATE_TRANSFER_WINDOW, body);
 
-        assertTrue(exchange.isFailed(), "Route.CREATE_TRANSFER_WINDOW isFailed ConflictException");
-        assertEquals(conflictException, exchange.getException(),
-                     "Route.CREATE_TRANSFER_WINDOW exception ConflictException");
+        assertTrue(exchange.isFailed());
+        assertEquals(conflictException, exchange.getException());
 
         final TransferWindow transferWindow = new TransferWindow();
         when(this.transferWindowService.createTransferWindow(eq(body.getDatetime()), eq(body.getTransferDayDelay())))
@@ -86,10 +84,9 @@ class CreateTransferWindowRouteBuilderTests extends RouteBuilderTests {
 
         exchange = send(Route.CREATE_TRANSFER_WINDOW, body);
 
-        assertFalse(exchange.isFailed(), "Route.CREATE_TRANSFER_WINDOW isFailed");
+        assertFalse(exchange.isFailed());
         assertEquals(transferWindow,
-                     exchange.getIn().getBody(CreateTransferWindowExchangeBody.class).getTransferWindow(),
-                     "Route.CREATE_TRANSFER_WINDOW transferWindow equals");
+                     exchange.getIn().getBody(CreateTransferWindowExchangeBody.class).getTransferWindow());
     }
 
 }

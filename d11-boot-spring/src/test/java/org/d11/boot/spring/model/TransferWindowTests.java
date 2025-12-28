@@ -23,29 +23,28 @@ class TransferWindowTests extends EasyRandomTests {
      * Tests TransferWindow::isValid.
      */
     @Test
-    @SuppressWarnings("DataFlowIssue")
     void isValid() {
         final TransferWindow transferWindow = generate(TransferWindow.class);
 
-        assertTrue(transferWindow.isValid(), "TransferWindow::isValid");
+        assertTrue(transferWindow.isValid());
 
         transferWindow.setTransferWindowNumber(-1);
-        assertFalse(transferWindow.isValid(), "TransferWindow::isValid transfer window number negative");
+        assertFalse(transferWindow.isValid());
         transferWindow.setTransferWindowNumber(1);
 
         transferWindow.setStatus(null);
-        assertFalse(transferWindow.isValid(), "TransferWindow::isValid status null");
+        assertFalse(transferWindow.isValid());
         transferWindow.setStatus(Status.PENDING);
 
         transferWindow.setDatetime(null);
-        assertFalse(transferWindow.isValid(), "TransferWindow::isValid datetime null");
+        assertFalse(transferWindow.isValid());
         transferWindow.setDatetime(LocalDateTime.now());
 
         transferWindow.setMatchWeek(null);
-        assertFalse(transferWindow.isValid(), "TransferWindow::isValid match week null");
+        assertFalse(transferWindow.isValid());
         transferWindow.setMatchWeek(new MatchWeek());
 
-        assertTrue(transferWindow.isValid(), "TransferWindow::isValid valid");
+        assertTrue(transferWindow.isValid());
     }
 
     /**
@@ -64,7 +63,7 @@ class TransferWindowTests extends EasyRandomTests {
 
         transferWindows.sort(Comparator.comparing(TransferWindow::getDatetime).reversed());
 
-        assertEquals(transferWindows, sorted, "TransferWindow::compareTo equals");
+        assertEquals(transferWindows, sorted);
     }
 
 }

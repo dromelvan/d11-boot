@@ -37,20 +37,17 @@ class TeamControllerV2Tests extends D11BootControllerV2Tests {
     void testGetTeamById() {
         final TeamApi teamApi = getApi(TeamApi.class);
 
-        assertThrows(FeignException.NotFound.class, () -> teamApi.getTeamById(0L),
-                     "TeamController::getTeamById not found");
+        assertThrows(FeignException.NotFound.class, () -> teamApi.getTeamById(0L));
 
         final List<Team> teams = this.teamRepository.findAll();
 
-        assertFalse(teams.isEmpty(), "TeamController::getTeamById players not empty");
+        assertFalse(teams.isEmpty());
 
         for (final Team team : teams) {
             final TeamResponseBodyDTO result = teamApi.getTeamById(team.getId());
-            assertNotNull(result, "TeamController::getTeamById not null");
-            assertEquals(getMapper().map(team, TeamDTO.class), result.getTeam(),
-                    "TeamController::getTeamById equals");
-            assertEquals(getMapper().map(team.getStadium(), StadiumDTO.class), result.getStadium(),
-                    "TeamController::getTeamById stadium equals");
+            assertNotNull(result);
+            assertEquals(getMapper().map(team, TeamDTO.class), result.getTeam());
+            assertEquals(getMapper().map(team.getStadium(), StadiumDTO.class), result.getStadium());
         }
     }
 
@@ -62,21 +59,21 @@ class TeamControllerV2Tests extends D11BootControllerV2Tests {
         final TeamApi teamApi = getApi(TeamApi.class);
 
         final List<Team> teams = this.teamRepository.findByOrderByName();
-        assertFalse(teams.isEmpty(), "TeamController::getTeams not empty");
+        assertFalse(teams.isEmpty());
 
         final TeamsResponseBodyDTO teamsResponseBodyDTO = teamApi.getTeams();
 
-        assertNotNull(teamsResponseBodyDTO, "TeamController::getTeams not null");
+        assertNotNull(teamsResponseBodyDTO);
 
         final List<TeamBaseDTO> result = teamsResponseBodyDTO.getTeams();
 
-        assertEquals(teams.size(), result.size(), "TeamController::getTeams size");
+        assertEquals(teams.size(), result.size());
 
         for (int i = 0; i < teams.size(); ++i) {
             final Team team = teams.get(i);
             final TeamBaseDTO teamDTO = result.get(i);
 
-            assertEquals(map(team, TeamBaseDTO.class), teamDTO, "TeamController::getTeams equals");
+            assertEquals(map(team, TeamBaseDTO.class), teamDTO);
         }
     }
 

@@ -16,10 +16,10 @@ class LineupTests {
     @Test
     void testWithId() {
         for (final Lineup lineup : Lineup.values()) {
-            assertEquals(lineup, Lineup.valueOfId(lineup.getId()), "Lineup::withId id " + lineup);
+            assertEquals(lineup, Lineup.valueOfId(lineup.getId()));
         }
 
-        assertThrows(IllegalArgumentException.class, () -> Lineup.valueOfId(-1), "Lineup::valueOfId id invalid");
+        assertThrows(IllegalArgumentException.class, () -> Lineup.valueOfId(-1));
     }
 
 }

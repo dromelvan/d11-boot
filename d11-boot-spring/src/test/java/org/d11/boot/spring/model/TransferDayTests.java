@@ -23,29 +23,28 @@ class TransferDayTests extends EasyRandomTests {
      * Tests TransferDay::isValid.
      */
     @Test
-    @SuppressWarnings("DataFlowIssue")
     void isValid() {
         final TransferDay transferDay = generate(TransferDay.class);
 
-        assertTrue(transferDay.isValid(), "TransferDay::isValid");
+        assertTrue(transferDay.isValid());
 
         transferDay.setTransferDayNumber(-1);
-        assertFalse(transferDay.isValid(), "TransferDay::isValid transfer window number negative");
+        assertFalse(transferDay.isValid());
         transferDay.setTransferDayNumber(1);
 
         transferDay.setStatus(null);
-        assertFalse(transferDay.isValid(), "TransferDay::isValid status null");
+        assertFalse(transferDay.isValid());
         transferDay.setStatus(Status.PENDING);
 
         transferDay.setDatetime(null);
-        assertFalse(transferDay.isValid(), "TransferDay::isValid datetime null");
+        assertFalse(transferDay.isValid());
         transferDay.setDatetime(LocalDateTime.now());
 
         transferDay.setTransferWindow(null);
-        assertFalse(transferDay.isValid(), "TransferDay::isValid transfer window null");
+        assertFalse(transferDay.isValid());
         transferDay.setTransferWindow(new TransferWindow());
 
-        assertTrue(transferDay.isValid(), "TransferDay::isValid valid");
+        assertTrue(transferDay.isValid());
     }
 
     /**
@@ -64,7 +63,7 @@ class TransferDayTests extends EasyRandomTests {
 
         TransferDays.sort(Comparator.comparing(TransferDay::getDatetime).reversed());
 
-        assertEquals(TransferDays, sorted, "TransferDay::compareTo equals");
+        assertEquals(TransferDays, sorted);
     }
 
 }

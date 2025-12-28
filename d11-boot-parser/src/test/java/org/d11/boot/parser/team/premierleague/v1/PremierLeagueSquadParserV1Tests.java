@@ -31,24 +31,19 @@ class PremierLeagueSquadParserV1Tests {
         final File squadFile = new File("src/test/resources/premierleague/squad/v1/squad.html");
         final ParsedTeamData parsedTeamData = premierLeagueSquadParserV1.parse(squadFile);
 
-        assertNotNull(parsedTeamData, "PremierLeagueSquadParserV1::parse team not null");
-        assertNotNull(parsedTeamData.getSiteId(), "PremierLeagueSquadParserV1::parse team site id not null");
-        assertFalse(StringUtils.isBlank(parsedTeamData.getName()), "PremierLeagueSquadParserV1::parse team name blank");
+        assertNotNull(parsedTeamData);
+        assertNotNull(parsedTeamData.getSiteId());
+        assertFalse(StringUtils.isBlank(parsedTeamData.getName()));
 
-        assertNotNull(parsedTeamData.getPlayers(), "PremierLeagueSquadParserV1::parse team players not null");
-        assertEquals(playerCount, parsedTeamData.getPlayers().size(),
-                     "PremierLeagueSquadParserV1::parse team players size");
+        assertNotNull(parsedTeamData.getPlayers());
+        assertEquals(playerCount, parsedTeamData.getPlayers().size());
 
         for (final ParsedPlayerData playerData : parsedTeamData.getPlayers()) {
-            assertNotNull(playerData.getSiteId(), "PremierLeagueSquadParserV1::parse player site id not null");
-            assertFalse(StringUtils.isBlank(playerData.getName()),
-                        "PremierLeagueSquadParserV1::parse player name blank");
-            assertNotNull(playerData.getShirtNumber(),
-                          "PremierLeagueSquadParserV1::parse player shirt number not null");
-            assertFalse(StringUtils.isBlank(playerData.getPosition()),
-                        "PremierLeagueSquadParserV1::parse player position blank");
-            assertFalse(StringUtils.isBlank(playerData.getNationality()),
-                        "PremierLeagueSquadParserV1::parse player nationality blank");
+            assertNotNull(playerData.getSiteId());
+            assertFalse(StringUtils.isBlank(playerData.getName()));
+            assertNotNull(playerData.getShirtNumber());
+            assertFalse(StringUtils.isBlank(playerData.getPosition()));
+            assertFalse(StringUtils.isBlank(playerData.getNationality()));
         }
     }
 

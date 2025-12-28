@@ -23,11 +23,11 @@ class SeasonRepositoryTests extends AbstractRepositoryTests<Season, SeasonReposi
         final Season currentSeason = getEntities().stream()
                 .max(Comparator.comparing(Season::getDate))
                 .orElse(null);
-        assertNotNull(currentSeason, "SeasonRepository::findFirstByOrderByDateDesc currentSeason not null");
+        assertNotNull(currentSeason);
 
         final Season result = getRepository().findFirstByOrderByDateDesc().orElse(null);
-        assertNotNull(result, "SeasonRepository::findFirstByOrderByDateDesc not null");
-        assertEquals(currentSeason, result, "SeasonRepository::findFirstByOrderByDateDesc");
+        assertNotNull(result);
+        assertEquals(currentSeason, result);
     }
 
     /**
@@ -40,8 +40,8 @@ class SeasonRepositoryTests extends AbstractRepositoryTests<Season, SeasonReposi
 
         final List<Season> result = getRepository().findByOrderByDateDesc();
 
-        assertNotNull(result, "SeasonRepository::findByOrderByDateDesc not null");
-        assertEquals(seasons, result, "SeasonRepository::findByOrderByDateDesc");
+        assertNotNull(result);
+        assertEquals(seasons, result);
     }
 
 }

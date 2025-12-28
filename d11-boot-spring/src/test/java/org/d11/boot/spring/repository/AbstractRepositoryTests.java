@@ -46,7 +46,7 @@ abstract class AbstractRepositoryTests<E extends D11Entity, T extends D11EntityR
     void testGetEntities() {
         final List<E> entities = getEntities();
 
-        assertFalse(entities.isEmpty(), getClass().getSimpleName() + "::getEntities empty");
+        assertFalse(entities.isEmpty());
     }
 
 }

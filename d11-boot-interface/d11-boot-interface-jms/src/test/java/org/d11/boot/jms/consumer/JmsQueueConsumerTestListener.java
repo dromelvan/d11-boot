@@ -8,12 +8,12 @@ import org.d11.boot.jms.message.JmsMessage;
  *
  * @param <T> Type of the JMS message the consumer consumes.
  */
+@Getter
 public class JmsQueueConsumerTestListener<T extends JmsMessage> implements JmsQueueConsumerListener<T> {
 
     /**
      * The last JMS message that was consumed by the consumer this listener is listening to.
      */
-    @Getter
     private T jmsMessage;
 
     @Override

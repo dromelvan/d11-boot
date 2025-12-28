@@ -16,29 +16,28 @@ class TeamSeasonStatTests extends EasyRandomTests {
      * Tests TeamSeasonStat::isValid.
      */
     @Test
-    @SuppressWarnings("DataFlowIssue")
     void testIsValid() {
         final TeamSeasonStat teamSeasonStat = generate(TeamSeasonStat.class);
 
-        assertTrue(teamSeasonStat.isValid(), "TeamSeasonStat::isValid");
+        assertTrue(teamSeasonStat.isValid());
 
         teamSeasonStat.setWinCount(-1);
-        assertFalse(teamSeasonStat.isValid(), "TeamSeasonStat::isValid win count negative");
+        assertFalse(teamSeasonStat.isValid());
         teamSeasonStat.setWinCount(1);
 
         teamSeasonStat.setPointsPenalty(-1);
-        assertFalse(teamSeasonStat.isValid(), "TeamSeasonStat::isValid points penalty negative");
+        assertFalse(teamSeasonStat.isValid());
         teamSeasonStat.setPointsPenalty(1);
 
         teamSeasonStat.setTeam(null);
-        assertFalse(teamSeasonStat.isValid(), "TeamSeasonStat::isValid team null");
+        assertFalse(teamSeasonStat.isValid());
         teamSeasonStat.setTeam(new Team());
 
         teamSeasonStat.setSeason(null);
-        assertFalse(teamSeasonStat.isValid(), "TeamSeasonStat::isValid season null");
+        assertFalse(teamSeasonStat.isValid());
         teamSeasonStat.setSeason(new Season());
 
-        assertTrue(teamSeasonStat.isValid(), "TeamSeasonStat::isValid valid");
+        assertTrue(teamSeasonStat.isValid());
     }
 
     /**
@@ -50,8 +49,8 @@ class TeamSeasonStatTests extends EasyRandomTests {
 
         teamSeasonStat.reset();
 
-        assertEquals(0, teamSeasonStat.getWinCount(), "TeamSeasonStat::reset win count equals");
-        assertEquals(0, teamSeasonStat.getPointsPenalty(), "TeamSeasonStat::reset points penalty equals");
+        assertEquals(0, teamSeasonStat.getWinCount());
+        assertEquals(0, teamSeasonStat.getPointsPenalty());
     }
 
     /**
@@ -68,20 +67,16 @@ class TeamSeasonStatTests extends EasyRandomTests {
 
         destination.updateCumulativeStats(null);
 
-        assertEquals(winCount, destination.getWinCount(),
-                "TeamSeasonStat::updateCumulativeStats null win count equals");
-        assertEquals(pointsPenalty, destination.getPointsPenalty(),
-                "TeamSeasonStat::updateCumulativeStats null points penalty equals");
+        assertEquals(winCount, destination.getWinCount());
+        assertEquals(pointsPenalty, destination.getPointsPenalty());
 
         winCount += source.getWinCount();
         pointsPenalty += source.getPointsPenalty();
 
         destination.updateCumulativeStats(source);
 
-        assertEquals(winCount, destination.getWinCount(),
-                "TeamSeasonStat::updateCumulativeStats win count equals");
-        assertEquals(pointsPenalty, destination.getPointsPenalty(),
-                    "TeamSeasonStat::updateCumulativeStats points penalty equals");
+        assertEquals(winCount, destination.getWinCount());
+        assertEquals(pointsPenalty, destination.getPointsPenalty());
     }
 
 }

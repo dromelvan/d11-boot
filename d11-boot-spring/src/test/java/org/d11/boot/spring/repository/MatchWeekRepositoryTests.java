@@ -34,8 +34,8 @@ class MatchWeekRepositoryTests extends AbstractRepositoryTests<MatchWeek, MatchW
         final MatchWeek result = getRepository().findFirstByDateLessThanEqualOrderByDateDesc(matchWeek.getDate())
                 .orElse(null);
 
-        assertNotNull(result, "MatchWeekRepository::findFirstByDateLessThanEqualOrderByDateDesc not null");
-        assertEquals(matchWeek, result, "MatchWeekRepository::findFirstByDateLessThanEqualOrderByDateDesc equals");
+        assertNotNull(result);
+        assertEquals(matchWeek, result);
     }
 
     /**
@@ -53,8 +53,8 @@ class MatchWeekRepositoryTests extends AbstractRepositoryTests<MatchWeek, MatchW
 
         final MatchWeek result = getRepository().findFirstByDateGreaterThanOrderByDateAsc(localDate).orElse(null);
 
-        assertNotNull(result, "MatchWeekRepository::findFirstByDateGreaterThanOrderByDateAsc not null");
-        assertEquals(matchWeek, result, "MatchWeekRepository::findFirstByDateGreaterThanOrderByDateAsc equals");
+        assertNotNull(result);
+        assertEquals(matchWeek, result);
     }
 
     /**
@@ -72,8 +72,8 @@ class MatchWeekRepositoryTests extends AbstractRepositoryTests<MatchWeek, MatchW
 
         final MatchWeek result = getRepository().findFirstBySeasonStatusOrderByDateAsc(Status.PENDING).orElse(null);
 
-        assertNotNull(result, "MatchWeekRepository::findFirstBySeasonStatusOrderByDateAsc not null");
-        assertEquals(matchWeek, result, "MatchWeekRepository::findFirstBySeasonStatusOrderByDateAsc equals");
+        assertNotNull(result);
+        assertEquals(matchWeek, result);
     }
 
     /**
@@ -88,7 +88,7 @@ class MatchWeekRepositoryTests extends AbstractRepositoryTests<MatchWeek, MatchW
                 .map(MatchWeek::getSeason)
                 .collect(Collectors.toSet());
 
-        assertTrue(seasons.size() > 1, "MatchWeekRepository::findBySeasonIdOrderByDate seasons size > 1");
+        assertTrue(seasons.size() > 1);
 
         for (final Season season : seasons) {
             final List<MatchWeek> result = getRepository().findBySeasonIdOrderByDate(season.getId());
@@ -97,11 +97,11 @@ class MatchWeekRepositoryTests extends AbstractRepositoryTests<MatchWeek, MatchW
                     .filter(matchWeek -> matchWeek.getSeason().equals(season))
                     .toList();
 
-            assertTrue(expected.size() > 1, "MatchWeekRepository::findBySeasonIdOrderByDate expected size > 1");
+            assertTrue(expected.size() > 1);
 
-            assertNotNull(result, "MatchWeekRepository::findBySeasonIdOrderByDate not null ");
-            assertFalse(result.isEmpty(), "MatchWeekRepository::findBySeasonIdOrderByDate empty");
-            assertEquals(expected, result, "MatchWeekRepository::findBySeasonIdOrderByDate equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(expected, result);
         }
     }
 

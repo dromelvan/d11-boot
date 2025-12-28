@@ -18,31 +18,31 @@ class StadiumTests extends EasyRandomTests {
     void testIsValid() {
         final Stadium stadium = generate(Stadium.class);
 
-        assertTrue(stadium.isValid(), "Stadium::isValid");
+        assertTrue(stadium.isValid());
 
         stadium.setName("");
-        assertFalse(stadium.isValid(), "Stadium::isValid name empty");
+        assertFalse(stadium.isValid());
         stadium.setName(null);
-        assertFalse(stadium.isValid(), "Stadium::isValid name null");
+        assertFalse(stadium.isValid());
         stadium.setName("Name");
 
         stadium.setCity("");
-        assertFalse(stadium.isValid(), "Stadium::isValid city empty");
+        assertFalse(stadium.isValid());
         stadium.setCity(null);
-        assertFalse(stadium.isValid(), "Stadium::isValid city null");
+        assertFalse(stadium.isValid());
         stadium.setCity("City");
 
         stadium.setCapacity(0);
-        assertFalse(stadium.isValid(), "Stadium::isValid capacity not positive");
+        assertFalse(stadium.isValid());
         stadium.setCapacity(1);
 
         stadium.setOpened(Stadium.MIN_OPENED_YEAR - 1);
-        assertFalse(stadium.isValid(), "Stadium::isValid year too low");
+        assertFalse(stadium.isValid());
         stadium.setOpened(Stadium.MAX_OPENED_YEAR + 1);
-        assertFalse(stadium.isValid(), "Stadium::isValid year too high");
+        assertFalse(stadium.isValid());
         stadium.setOpened(Stadium.MIN_OPENED_YEAR);
 
-        assertTrue(stadium.isValid(), "Stadium::isValid valid");
+        assertTrue(stadium.isValid());
     }
 
 }

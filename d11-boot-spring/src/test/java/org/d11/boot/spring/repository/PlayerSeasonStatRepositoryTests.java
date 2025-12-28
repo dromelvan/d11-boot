@@ -38,8 +38,7 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
         final Set<Player> players = entities.stream()
                 .map(PlayerSeasonStat::getPlayer).collect(Collectors.toSet());
 
-        assertTrue(players.size() > 1,
-                   "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc players size > 1");
+        assertTrue(players.size() > 1);
 
         for (final Player player : players) {
             final List<PlayerSeasonStat> result = getRepository().findByPlayerIdOrderBySeasonIdDesc(player.getId());
@@ -48,12 +47,11 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
                     .filter(playerSeasonStat -> playerSeasonStat.getPlayer().equals(player))
                     .toList();
 
-            assertTrue(expected.size() > 1,
-                       "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc expected size > 1");
+            assertTrue(expected.size() > 1);
 
-            assertNotNull(result, "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc not null ");
-            assertFalse(result.isEmpty(), "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc empty");
-            assertEquals(expected, result, "PlayerSeasonStatRepository::findByPlayerIdOrderBySeasonIdDesc equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(expected, result);
         }
     }
 
@@ -64,16 +62,14 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
     void testFindByPlayerIdAndSeasonId() {
         final List<PlayerSeasonStat> entities = getEntities();
 
-        assertFalse(entities.isEmpty(), "PlayerSeasonStatRepository::findByPlayerIdAndSeasonId entities empty");
+        assertFalse(entities.isEmpty());
 
         for (final PlayerSeasonStat entity : entities) {
             final Optional<PlayerSeasonStat> optional =
                     getRepository().findByPlayerIdAndSeasonId(entity.getPlayer().getId(), entity.getSeason().getId());
 
-            assertTrue(optional.isPresent(), "PlayerSeasonStatRepository::findByPlayerIdAndSeasonId present");
-            optional.ifPresent(result -> {
-                assertEquals(entity, result, "PlayerSeasonStatRepository::findByPlayerIdAndSeasonId result equals");
-            });
+            assertTrue(optional.isPresent());
+            optional.ifPresent(result -> assertEquals(entity, result));
         }
     }
 
@@ -89,10 +85,8 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
         final Set<Team> teams = entities.stream().map(PlayerSeasonStat::getTeam).collect(Collectors.toSet());
         final Set<Season> seasons = entities.stream().map(PlayerSeasonStat::getSeason).collect(Collectors.toSet());
 
-        assertTrue(teams.size() > 1,
-                   "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking teams size > 1");
-        assertTrue(seasons.size() > 1,
-                   "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking seasons size > 1");
+        assertTrue(teams.size() > 1);
+        assertTrue(seasons.size() > 1);
 
         for (final Team team : teams) {
             for (final Season season : seasons) {
@@ -104,15 +98,11 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
                                                     && playerSeasonStat.getSeason().equals(season))
                         .toList();
 
-                assertFalse(expected.isEmpty(),
-                           "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking expected empty");
+                assertFalse(expected.isEmpty());
 
-                assertNotNull(result,
-                              "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking not null ");
-                assertFalse(result.isEmpty(),
-                            "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking empty");
-                assertEquals(expected, result,
-                             "PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking equals");
+                assertNotNull(result);
+                assertFalse(result.isEmpty());
+                assertEquals(expected, result);
             }
         }
     }
@@ -129,10 +119,8 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
         final Set<D11Team> d11Teams = entities.stream().map(PlayerSeasonStat::getD11Team).collect(Collectors.toSet());
         final Set<Season> seasons = entities.stream().map(PlayerSeasonStat::getSeason).collect(Collectors.toSet());
 
-        assertTrue(d11Teams.size() > 1,
-                   "PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking D11 teams size > 1");
-        assertTrue(seasons.size() > 1,
-                   "PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking seasons size > 1");
+        assertTrue(d11Teams.size() > 1);
+        assertTrue(seasons.size() > 1);
 
         for (final D11Team d11Team : d11Teams) {
             for (final Season season : seasons) {
@@ -144,15 +132,11 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
                                                     && playerSeasonStat.getSeason().equals(season))
                         .toList();
 
-                assertFalse(expected.isEmpty(),
-                            "PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking expected empty");
+                assertFalse(expected.isEmpty());
 
-                assertNotNull(result,
-                              "PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking not null ");
-                assertFalse(result.isEmpty(),
-                            "PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking empty");
-                assertEquals(expected, result,
-                             "PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking equals");
+                assertNotNull(result);
+                assertFalse(result.isEmpty());
+                assertEquals(expected, result);
             }
         }
     }
@@ -167,7 +151,7 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
         final Set<Season> seasons = entities.stream()
                 .map(PlayerSeasonStat::getSeason).collect(Collectors.toSet());
 
-        assertTrue(seasons.size() > 1, "PlayerSeasonStatRepository::findBySeasonId seasons size > 1");
+        assertTrue(seasons.size() > 1);
 
         for (final Season season : seasons) {
             final List<PlayerSeasonStat> result = getRepository().findBySeasonId(season.getId());
@@ -176,11 +160,11 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
                     .filter(playerSeasonStat -> playerSeasonStat.getSeason().equals(season))
                     .toList();
 
-            assertTrue(expected.size() > 1, "PlayerSeasonStatRepository::findBySeasonId expected size > 1");
+            assertTrue(expected.size() > 1);
 
-            assertNotNull(result, "PlayerSeasonStatRepository::findBySeasonId not null ");
-            assertFalse(result.isEmpty(), "PlayerSeasonStatRepository::findBySeasonId empty");
-            assertEquals(expected, result, "PlayerSeasonStatRepository::findBySeasonId equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(expected, result);
         }
     }
 
@@ -193,7 +177,7 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
 
         final Set<Season> seasons = entities.stream().map(PlayerSeasonStat::getSeason).collect(Collectors.toSet());
 
-        assertTrue(seasons.size() > 1, "PlayerSeasonStatRepository::findBySeasonIdPaged seasons size > 1");
+        assertTrue(seasons.size() > 1);
 
         final int pageSize = 2;
         final String sortProperty = "ranking";
@@ -207,16 +191,14 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
             final Pageable page1 = PageRequest.of(0, pageSize, Sort.by(sortProperty));
             final List<PlayerSeasonStat> page1Result = getRepository().findBySeasonId(season.getId(), page1);
 
-            assertNotNull(page1Result, "PlayerSeasonStatRepository::findBySeasonIdPaged page 1 not null");
-            assertEquals(expected.subList(0, pageSize), page1Result,
-                         "PlayerSeasonStatRepository::findBySeasonIdPaged page 1 equals");
+            assertNotNull(page1Result);
+            assertEquals(expected.subList(0, pageSize), page1Result);
 
             final Pageable page2 = PageRequest.of(1, pageSize, Sort.by(sortProperty));
             final List<PlayerSeasonStat> page2Result = getRepository().findBySeasonId(season.getId(), page2);
 
-            assertNotNull(page2Result, "PlayerSeasonStatRepository::findBySeasonIdPaged page 2 not null");
-            assertEquals(expected.subList(pageSize, pageSize + 1), page2Result,
-                         "PlayerSeasonStatRepository::findBySeasonIdPaged page 2 equals");
+            assertNotNull(page2Result);
+            assertEquals(expected.subList(pageSize, pageSize + 1), page2Result);
         }
     }
 

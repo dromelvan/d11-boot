@@ -33,16 +33,15 @@ class ParsedPlayerDataTests {
         final ParsedPlayerData parsedPlayerData = new ParsedPlayerData();
 
         parsedPlayerData.setName(LAST_NAME);
-        assertEquals(StringUtils.EMPTY, parsedPlayerData.getFirstName(), "ParsedPlayerData::getFirstName no delimiter");
+        assertEquals(StringUtils.EMPTY, parsedPlayerData.getFirstName());
 
         parsedPlayerData.setName(String.join(ParsedPlayerData.NAME_DELIMITER, FIRST_NAME, LAST_NAME));
-        assertEquals(FIRST_NAME, parsedPlayerData.getFirstName(), "ParsedPlayerData::getFirstName one delimiter");
+        assertEquals(FIRST_NAME, parsedPlayerData.getFirstName());
 
         parsedPlayerData.setName(
                 String.join(ParsedPlayerData.NAME_DELIMITER, FIRST_NAME, MIDDLE_NAME, LAST_NAME));
         assertEquals(String.join(ParsedPlayerData.NAME_DELIMITER, FIRST_NAME, MIDDLE_NAME),
-                     parsedPlayerData.getFirstName(),
-                     "ParsedPlayerData::getFirstName two delimiters");
+                     parsedPlayerData.getFirstName());
     }
 
     /**
@@ -53,14 +52,14 @@ class ParsedPlayerDataTests {
         final ParsedPlayerData parsedPlayerData = new ParsedPlayerData();
 
         parsedPlayerData.setName(LAST_NAME);
-        assertEquals(LAST_NAME, parsedPlayerData.getLastName(), "ParsedPlayerData::getLastName no delimiter");
+        assertEquals(LAST_NAME, parsedPlayerData.getLastName());
 
         parsedPlayerData.setName(String.join(ParsedPlayerData.NAME_DELIMITER, FIRST_NAME, LAST_NAME));
-        assertEquals(LAST_NAME, parsedPlayerData.getLastName(), "ParsedPlayerData::getLastName one delimiter");
+        assertEquals(LAST_NAME, parsedPlayerData.getLastName());
 
         parsedPlayerData.setName(
                 String.join(ParsedPlayerData.NAME_DELIMITER, FIRST_NAME, MIDDLE_NAME, LAST_NAME));
-        assertEquals(LAST_NAME, parsedPlayerData.getLastName(), "ParsedPlayerData::getLastName two delimiters");
+        assertEquals(LAST_NAME, parsedPlayerData.getLastName());
     }
 
 }

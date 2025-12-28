@@ -34,8 +34,8 @@ class MatchRepositoryTests extends AbstractRepositoryTests<Match, MatchRepositor
         matches.forEach(match -> {
             final Match result = getRepository().findByWhoscoredId(match.getWhoscoredId()).orElse(null);
 
-            assertNotNull(result, "MatchRepository::findByWhoscoredId not null");
-            assertEquals(match, result, "MatchRepository::findByWhoscoredId equals");
+            assertNotNull(result);
+            assertEquals(match, result);
         });
     }
 
@@ -51,15 +51,13 @@ class MatchRepositoryTests extends AbstractRepositoryTests<Match, MatchRepositor
                 .map(Match::getMatchWeek)
                 .collect(Collectors.toSet());
 
-        assertTrue(matchWeeks.size() > 1,
-                "MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime matchWeeks size > 1");
+        assertTrue(matchWeeks.size() > 1);
 
         final Set<Status> statuses = matches.stream()
                 .map(Match::getStatus)
                 .collect(Collectors.toSet());
 
-        assertTrue(statuses.size() > 1,
-                "MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime statuses size > 1");
+        assertTrue(statuses.size() > 1);
 
 
         matchWeeks.forEach(matchWeek -> {
@@ -70,16 +68,15 @@ class MatchRepositoryTests extends AbstractRepositoryTests<Match, MatchRepositor
             final List<Match> result =
                     getRepository().findByMatchWeekIdOrStatusInOrderByDatetime(matchWeek.getId(), Set.of());
 
-            assertNotNull(result, "MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime not null");
-            assertEquals(expected, result, "MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime equals");
+            assertNotNull(result);
+            assertEquals(expected, result);
 
             final List<Match> withStatusResult =
                     getRepository().findByMatchWeekIdOrStatusInOrderByDatetime(matchWeek.getId(),
                                                                                Set.of(Status.values()));
 
-            assertNotNull(result, "MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime with status not null");
-            assertEquals(matches, withStatusResult,
-                         "MatchRepository::findByMatchWeekIdOrStatusInOrderByDatetime with status equals");
+            assertNotNull(result);
+            assertEquals(matches, withStatusResult);
         });
     }
 
@@ -99,10 +96,8 @@ class MatchRepositoryTests extends AbstractRepositoryTests<Match, MatchRepositor
                 .map(match -> match.getMatchWeek().getSeason())
                 .collect(Collectors.toSet());
 
-        assertTrue(teams.size() > 1,
-                   "MatchRepository::findByTeamIdAndMatchWeekSeasonIdOrderByDatetime teams size > 1");
-        assertTrue(seasons.size() > 1,
-                   "MatchRepository::findByTeamIdAndMatchWeekSeasonIdOrderByDatetime seasons size > 1");
+        assertTrue(teams.size() > 1);
+        assertTrue(seasons.size() > 1);
 
         for (final Team team : teams) {
             for (final Season season : seasons) {
@@ -115,15 +110,11 @@ class MatchRepositoryTests extends AbstractRepositoryTests<Match, MatchRepositor
                                             && match.getMatchWeek().getSeason().equals(season))
                         .toList();
 
-                assertTrue(expected.size() > 1,
-                           "MatchRepository::findByTeamIdAndMatchWeekSeasonIdOrderByDatetime expected size > 1");
+                assertTrue(expected.size() > 1);
 
-                assertNotNull(result,
-                              "MatchRepository::findByTeamIdAndMatchWeekSeasonIdOrderByDatetime not null");
-                assertFalse(result.isEmpty(),
-                            "MatchRepository::findByTeamIdAndMatchWeekSeasonIdOrderByDatetime empty");
-                assertEquals(expected, result,
-                             "MatchRepository::findByTeamIdAndMatchWeekSeasonIdOrderByDatetime equals");
+                assertNotNull(result);
+                assertFalse(result.isEmpty());
+                assertEquals(expected, result);
             }
         }
     }
@@ -141,22 +132,20 @@ class MatchRepositoryTests extends AbstractRepositoryTests<Match, MatchRepositor
                 .map(Match::getMatchWeek)
                 .collect(Collectors.toSet());
 
-        assertTrue(matchWeeks.size() > 1,
-                "MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc matchWeeks size > 1");
+        assertTrue(matchWeeks.size() > 1);
 
         for (final MatchWeek matchWeek : matchWeeks) {
             final List<Match> expected = entities.stream()
                     .filter(match -> match.getMatchWeek().equals(matchWeek))
                     .toList();
 
-            assertTrue(expected.size() > 1,
-                    "MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc expected size > 1");
+            assertTrue(expected.size() > 1);
 
             final List<Match> result = getRepository().findByMatchWeekIdOrderByDatetimeAscIdAsc(matchWeek.getId());
 
-            assertNotNull(result, "MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc not null");
-            assertFalse(result.isEmpty(), "MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc empty");
-            assertEquals(expected, result, "MatchRepository::findByMatchWeekIdOrderByDatetimeAscIdAsc equals");
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(expected, result);
         }
     }
 

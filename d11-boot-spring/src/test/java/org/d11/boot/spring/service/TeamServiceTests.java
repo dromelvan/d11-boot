@@ -46,11 +46,11 @@ class TeamServiceTests extends BaseD11BootServiceTests {
             when(this.teamRepository.findById(team.getId())).thenReturn(Optional.of(team));
 
             final Team result = this.teamService.getById(team.getId());
-            assertNotNull(result, "TeamService::getById not null");
-            assertEquals(team, result, "TeamService::getById");
+            assertNotNull(result);
+            assertEquals(team, result);
         }
 
-        assertThrows(NotFoundException.class, () -> this.teamService.getById(-1L), "TeamService::getById not found");
+        assertThrows(NotFoundException.class, () -> this.teamService.getById(-1L));
     }
 
     /**
@@ -63,9 +63,9 @@ class TeamServiceTests extends BaseD11BootServiceTests {
 
         final List<Team> result = this.teamService.getTeams();
 
-        assertNotNull(result, "TeamService::getTeams not null");
-        assertFalse(result.isEmpty(), "TeamService::getTeams isEmpty");
-        assertEquals(teams, result, "TeamService::getTeams");
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(teams, result);
     }
 
 }

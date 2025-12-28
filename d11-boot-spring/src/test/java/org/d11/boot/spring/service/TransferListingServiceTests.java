@@ -112,11 +112,9 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
     void testCreateTransferListingPlayerIdNull() {
         final BadRequestException e =
                 assertThrows(BadRequestException.class,
-                             () -> this.transferListingService.createTransferListing(null),
-                             "TransferListingService::createTransferListing playerId null throws");
+                             () -> this.transferListingService.createTransferListing(null));
 
-        assertEquals("playerId", e.getParameter(),
-                     "TransferListingService::createTransferListing playerId null property equals");
+        assertEquals("playerId", e.getParameter());
     }
 
     /**
@@ -134,10 +132,8 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
 
         final ConflictException e =
                 assertThrows(ConflictException.class,
-                             () -> this.transferListingService.createTransferListing(1L),
-                             "TransferListingService::createTransferListing playerSeasonStat not found throws");
-        assertEquals(ErrorCode.CONFLICT_NO_PLAYER_SEASON_STAT, e.getErrorCode(),
-                     "TransferListingService::createTransferListing playerSeasonStat not found message equals");
+                             () -> this.transferListingService.createTransferListing(1L));
+        assertEquals(ErrorCode.CONFLICT_NO_PLAYER_SEASON_STAT, e.getErrorCode());
     }
 
     /**
@@ -159,8 +155,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
                 .thenReturn(Optional.of(playerSeasonStat));
 
         assertThrows(UnauthorizedException.class,
-                     () -> this.transferListingService.createTransferListing(player.getId()),
-                     "TransferListingService::createTransferListing unauthorized throws");
+                     () -> this.transferListingService.createTransferListing(player.getId()));
     }
 
     /**
@@ -187,8 +182,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
                 .thenReturn(Optional.of(playerSeasonStat));
 
         assertThrows(ForbiddenException.class,
-                     () -> this.transferListingService.createTransferListing(player.getId()),
-                     "TransferListingService::createTransferListing forbidden throws");
+                     () -> this.transferListingService.createTransferListing(player.getId()));
     }
 
     /**
@@ -218,10 +212,8 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
 
         final ConflictException e =
                 assertThrows(ConflictException.class,
-                             () -> this.transferListingService.createTransferListing(player.getId()),
-                             "TransferListingService::createTransferListing D11 team max transfers throws");
-        assertEquals(ErrorCode.CONFLICT_NO_REMAINING_D11_TEAM_TRANSFERS, e.getErrorCode(),
-                     "TransferListingService::createTransferListing D11 team max transfers message equals");
+                             () -> this.transferListingService.createTransferListing(player.getId()));
+        assertEquals(ErrorCode.CONFLICT_NO_REMAINING_D11_TEAM_TRANSFERS, e.getErrorCode());
     }
 
     /**
@@ -250,10 +242,8 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
 
         final ConflictException e =
                 assertThrows(ConflictException.class,
-                             () -> this.transferListingService.createTransferListing(player.getId()),
-                             "TransferListingService::createTransferListing transfer day invalid status throws");
-        assertEquals(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS, e.getErrorCode(),
-                     "TransferListingService::createTransferListing transfer day invalid status message equals");
+                             () -> this.transferListingService.createTransferListing(player.getId()));
+        assertEquals(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS, e.getErrorCode());
     }
 
     /**
@@ -284,10 +274,8 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
 
         final ConflictException e =
                 assertThrows(ConflictException.class,
-                             () -> this.transferListingService.createTransferListing(player.getId()),
-                             "TransferListingService::createTransferListing player already transfer listed throws");
-        assertEquals(ErrorCode.CONFLICT_NON_UNIQUE_TRANSFER_LISTING, e.getErrorCode(),
-                     "TransferListingService::createTransferListing player already transfer listed message equals");
+                             () -> this.transferListingService.createTransferListing(player.getId()));
+        assertEquals(ErrorCode.CONFLICT_NON_UNIQUE_TRANSFER_LISTING, e.getErrorCode());
     }
 
     /**
@@ -321,11 +309,9 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
     void testDeleteTransferListingTransferListingIdNull() {
         final BadRequestException e =
                 assertThrows(BadRequestException.class,
-                             () -> this.transferListingService.deleteTransferListing(null),
-                             "TransferListingService::deleteTransferListing transferListingId null throws");
+                             () -> this.transferListingService.deleteTransferListing(null));
 
-        assertEquals("transferListingId", e.getParameter(),
-                     "TransferListingService::deleteTransferListing transferListingId null property equals");
+        assertEquals("transferListingId", e.getParameter());
     }
 
     /**
@@ -335,8 +321,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
     void testDeleteTransferListingTransferListingNotFound() {
         when(this.transferListingRepository.findById(any(Long.class))).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class,
-                     () -> this.transferListingService.deleteTransferListing(1L),
-                     "TransferListingService::deleteTransferListing transferListing not found throws");
+                     () -> this.transferListingService.deleteTransferListing(1L));
     }
 
     /**
@@ -352,8 +337,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
                 .thenReturn(Optional.of(transferListing));
 
         assertThrows(UnauthorizedException.class,
-                     () -> this.transferListingService.deleteTransferListing(transferListing.getId()),
-                     "TransferListingService::deleteTransferListing unauthorized throws");
+                     () -> this.transferListingService.deleteTransferListing(transferListing.getId()));
     }
 
     /**
@@ -373,8 +357,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
         mockCurrentUser(user);
 
         assertThrows(ForbiddenException.class,
-                     () -> this.transferListingService.deleteTransferListing(transferListing.getId()),
-                     "TransferListingService::deleteTransferListing forbidden throws");
+                     () -> this.transferListingService.deleteTransferListing(transferListing.getId()));
     }
 
     /**
@@ -396,10 +379,8 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
 
         final ConflictException e =
                 assertThrows(ConflictException.class,
-                             () -> this.transferListingService.deleteTransferListing(transferListing.getId()),
-                             "TransferListingService::deleteTransferListing transferDay invalid status user throws");
-        assertEquals(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS, e.getErrorCode(),
-                     "TransferListingService::deleteTransferListing transferDay invalid status user equals");
+                             () -> this.transferListingService.deleteTransferListing(transferListing.getId()));
+        assertEquals(ErrorCode.CONFLICT_INVALID_TRANSFER_DAY_STATUS, e.getErrorCode());
     }
 
     /**
@@ -419,10 +400,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
         user.setAdministrator(true);
         mockCurrentUser(user);
 
-        assertDoesNotThrow(
-                () -> this.transferListingService.deleteTransferListing(transferListing.getId()),
-                "TransferListingService::deleteTransferListing transferDay invalid status admin does not throw"
-        );
+        assertDoesNotThrow(() -> this.transferListingService.deleteTransferListing(transferListing.getId()));
 
         verify(this.transferListingRepository, times(1)).delete(eq(transferListing));
     }
@@ -444,10 +422,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
         user.setAdministrator(false);
         mockCurrentUser(user);
 
-        assertDoesNotThrow(
-                () -> this.transferListingService.deleteTransferListing(transferListing.getId()),
-                "TransferListingService::deleteTransferListing user does not throw"
-        );
+        assertDoesNotThrow(() -> this.transferListingService.deleteTransferListing(transferListing.getId()));
 
         verify(this.transferListingRepository, times(1)).delete(eq(transferListing));
     }
@@ -469,10 +444,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
         user.setAdministrator(true);
         mockCurrentUser(user);
 
-        assertDoesNotThrow(
-                () -> this.transferListingService.deleteTransferListing(transferListing.getId()),
-                "TransferListingService::deleteTransferListing admin does not throw"
-        );
+        assertDoesNotThrow(() -> this.transferListingService.deleteTransferListing(transferListing.getId()));
 
         verify(this.transferListingRepository, times(1)).delete(eq(transferListing));
     }
@@ -490,22 +462,16 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
         final String transferDayIdProperty = "transferDayId";
 
         final BadRequestException nullTransferDayIdException =
-                assertThrows(BadRequestException.class, () -> this.transferListingService.getByTransferDayId(null, 0),
-                             "TransferListingService::getByTransferDayId null transferDayId throws");
-        assertEquals(transferDayIdProperty, nullTransferDayIdException.getParameter(),
-                     "TransferListingService::getByTransferDayId property equals null transferDayId");
+                assertThrows(BadRequestException.class, () -> this.transferListingService.getByTransferDayId(null, 0));
+        assertEquals(transferDayIdProperty, nullTransferDayIdException.getParameter());
 
         final BadRequestException invalidTransferDayIdException =
-                assertThrows(BadRequestException.class, () -> this.transferListingService.getByTransferDayId(-1L, 0),
-                             "TransferListingService::getByTransferDayId invalid transferDayId throws");
-        assertEquals(transferDayIdProperty, invalidTransferDayIdException.getParameter(),
-                     "TransferListingService::getByTransferDayId property equals invalid transferDayId");
+                assertThrows(BadRequestException.class, () -> this.transferListingService.getByTransferDayId(-1L, 0));
+        assertEquals(transferDayIdProperty, invalidTransferDayIdException.getParameter());
 
         final BadRequestException invalidPageException =
-                assertThrows(BadRequestException.class, () -> this.transferListingService.getByTransferDayId(1L, -1),
-                             "TransferListingService::getByTransferDayId invalid page throws");
-        assertEquals("page", invalidPageException.getParameter(),
-                     "TransferListingService::getByTransferDayId property equals invalid page");
+                assertThrows(BadRequestException.class, () -> this.transferListingService.getByTransferDayId(1L, -1));
+        assertEquals("page", invalidPageException.getParameter());
 
         // Success -----------------------------------------------------------------------------------------------------
 
@@ -515,14 +481,12 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
 
         when(this.transferDayRepository.findById(eq(transferDay.getId() + 1))).thenReturn(Optional.empty());
 
-        assertTrue(this.transferListingService.getByTransferDayId(transferDay.getId() + 1, 0).isEmpty(),
-                   "TransferListingService::getByTransferDayId invalid transferDayId isEmpty");
+        assertTrue(this.transferListingService.getByTransferDayId(transferDay.getId() + 1, 0).isEmpty());
 
         transferDay.setStatus(Status.PENDING);
         when(this.transferDayRepository.findById(eq(transferDay.getId()))).thenReturn(Optional.of(transferDay));
 
-        assertTrue(this.transferListingService.getByTransferDayId(transferDay.getId(), 0).isEmpty(),
-                   "TransferListingService::getByTransferDayId transfer day pending isEmpty");
+        assertTrue(this.transferListingService.getByTransferDayId(transferDay.getId(), 0).isEmpty());
 
         transferDay.setStatus(Status.ACTIVE);
         when(this.transferListingRepository.findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
@@ -531,7 +495,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
 
         final List<TransferListing> result = this.transferListingService.getByTransferDayId(transferDay.getId(), 0);
 
-        assertEquals(transferListings, result, "TransferListingService::getByTransferDayId result equals");
+        assertEquals(transferListings, result);
 
         verify(this.transferListingRepository, times(1)).findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
                                                                                            any(Pageable.class));
@@ -593,56 +557,31 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
      * @param result The result.
      */
     private void assertResultEquals(final PlayerSeasonStat playerSeasonStat, final TransferListing result) {
-        assertEquals(playerSeasonStat.getPlayer(), result.getPlayer(),
-                     "TransferListingService::createTransferListing result player equals");
-        assertEquals(playerSeasonStat.getTeam(), result.getTeam(),
-                     "TransferListingService::createTransferListing result team equals");
-        assertEquals(playerSeasonStat.getD11Team(), result.getD11Team(),
-                     "TransferListingService::createTransferListing result position equals");
-        assertEquals(playerSeasonStat.getPosition(), result.getPosition(),
-                     "TransferListingService::createTransferListing result position equals");
-        assertEquals(playerSeasonStat.getFormPoints(), result.getFormPoints(),
-                     "TransferListingService::createTransferListing result formPoints equals");
-        assertEquals(playerSeasonStat.getFormMatchPoints(), result.getFormMatchPoints(),
-                     "TransferListingService::createTransferListing result formMatchPoints equals");
-        assertEquals(playerSeasonStat.getRanking(), result.getRanking(),
-                     "TransferListingService::createTransferListing result ranking equals");
-        assertEquals(playerSeasonStat.getPointsPerAppearance(), result.getPointsPerAppearance(),
-                     "TransferListingService::createTransferListing result pointsPerAppearance equals");
-        assertEquals(playerSeasonStat.getCleanSheets(), result.getCleanSheets(),
-                     "TransferListingService::createTransferListing result cleanSheets equals");
-        assertEquals(playerSeasonStat.getYellowCards(), result.getYellowCards(),
-                     "TransferListingService::createTransferListing result yellowCards equals");
-        assertEquals(playerSeasonStat.getRedCards(), result.getRedCards(),
-                     "TransferListingService::createTransferListing result redCards equals");
-        assertEquals(playerSeasonStat.getSubstitutionsOn(), result.getSubstitutionsOn(),
-                     "TransferListingService::createTransferListing result substitutionsOn equals");
-        assertEquals(playerSeasonStat.getSubstitutionsOff(), result.getSubstitutionsOff(),
-                     "TransferListingService::createTransferListing result substitutionsOff equals");
-        assertEquals(playerSeasonStat.getManOfTheMatch(), result.getManOfTheMatch(),
-                     "TransferListingService::createTransferListing result manOfTheMatch equals");
-        assertEquals(playerSeasonStat.getSharedManOfTheMatch(), result.getSharedManOfTheMatch(),
-                     "TransferListingService::createTransferListing result sharedManOfTheMatch equals");
-        assertEquals(playerSeasonStat.getGamesStarted(), result.getGamesStarted(),
-                     "TransferListingService::createTransferListing result gamesStarted equals");
-        assertEquals(playerSeasonStat.getGamesSubstitute(), result.getGamesSubstitute(),
-                     "TransferListingService::createTransferListing result gamesSubstitute equals");
-        assertEquals(playerSeasonStat.getGamesDidNotParticipate(), result.getGamesDidNotParticipate(),
-                     "TransferListingService::createTransferListing result gamesDidNotParticipate equals");
-        assertEquals(playerSeasonStat.getMinutesPlayed(), result.getMinutesPlayed(),
-                     "TransferListingService::createTransferListing result minutesPlayed equals");
-        assertEquals(playerSeasonStat.getGoals(), result.getGoals(),
-                     "TransferListingService::createTransferListing result goals equals");
-        assertEquals(playerSeasonStat.getGoalAssists(), result.getGoalAssists(),
-                     "TransferListingService::createTransferListing result goalAssists equals");
-        assertEquals(playerSeasonStat.getOwnGoals(), result.getOwnGoals(),
-                     "TransferListingService::createTransferListing result ownGoals equals");
-        assertEquals(playerSeasonStat.getGoalsConceded(), result.getGoalsConceded(),
-                     "TransferListingService::createTransferListing result goalsConceded equals");
-        assertEquals(playerSeasonStat.getRating(), result.getRating(),
-                     "TransferListingService::createTransferListing result rating equals");
-        assertEquals(playerSeasonStat.getPoints(), result.getPoints(),
-                     "TransferListingService::createTransferListing result points equals");
+        assertEquals(playerSeasonStat.getPlayer(), result.getPlayer());
+        assertEquals(playerSeasonStat.getTeam(), result.getTeam());
+        assertEquals(playerSeasonStat.getD11Team(), result.getD11Team());
+        assertEquals(playerSeasonStat.getPosition(), result.getPosition());
+        assertEquals(playerSeasonStat.getFormPoints(), result.getFormPoints());
+        assertEquals(playerSeasonStat.getFormMatchPoints(), result.getFormMatchPoints());
+        assertEquals(playerSeasonStat.getRanking(), result.getRanking());
+        assertEquals(playerSeasonStat.getPointsPerAppearance(), result.getPointsPerAppearance());
+        assertEquals(playerSeasonStat.getCleanSheets(), result.getCleanSheets());
+        assertEquals(playerSeasonStat.getYellowCards(), result.getYellowCards());
+        assertEquals(playerSeasonStat.getRedCards(), result.getRedCards());
+        assertEquals(playerSeasonStat.getSubstitutionsOn(), result.getSubstitutionsOn());
+        assertEquals(playerSeasonStat.getSubstitutionsOff(), result.getSubstitutionsOff());
+        assertEquals(playerSeasonStat.getManOfTheMatch(), result.getManOfTheMatch());
+        assertEquals(playerSeasonStat.getSharedManOfTheMatch(), result.getSharedManOfTheMatch());
+        assertEquals(playerSeasonStat.getGamesStarted(), result.getGamesStarted());
+        assertEquals(playerSeasonStat.getGamesSubstitute(), result.getGamesSubstitute());
+        assertEquals(playerSeasonStat.getGamesDidNotParticipate(), result.getGamesDidNotParticipate());
+        assertEquals(playerSeasonStat.getMinutesPlayed(), result.getMinutesPlayed());
+        assertEquals(playerSeasonStat.getGoals(), result.getGoals());
+        assertEquals(playerSeasonStat.getGoalAssists(), result.getGoalAssists());
+        assertEquals(playerSeasonStat.getOwnGoals(), result.getOwnGoals());
+        assertEquals(playerSeasonStat.getGoalsConceded(), result.getGoalsConceded());
+        assertEquals(playerSeasonStat.getRating(), result.getRating());
+        assertEquals(playerSeasonStat.getPoints(), result.getPoints());
     }
 
 }

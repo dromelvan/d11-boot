@@ -77,17 +77,13 @@ class PlayerTransferContextServiceTests extends BaseD11BootServiceTests {
         SecurityContextHolder.getContext().setAuthentication(null);
         final PlayerTransferContext context = this.playerTransferContextService.getByPlayerId(player.getId());
 
-        assertNotNull(context, "PlayerTransferContextService::getByPlayerId no current user not null");
-        assertNull(context.getId(), "PlayerTransferContextService::getByPlayerId no current user id not null");
+        assertNotNull(context);
+        assertNull(context.getId());
 
-        assertFalse(context.isTransferListable(),
-                    "PlayerTransferContextService::getByPlayerId no current user isTransferListable");
-        assertNull(context.getDeletableTransferListing(),
-                   "PlayerTransferContextService::getByPlayerId no current user deletableTransferListing");
-        assertEquals(0, context.getMaxBid(),
-                     "PlayerTransferContextService::getByPlayerId no current user maxBid equals");
-        assertNull(context.getActiveTransferBid(),
-                   "PlayerTransferContextService::getByPlayerId no current user activeTransferBid");
+        assertFalse(context.isTransferListable());
+        assertNull(context.getDeletableTransferListing());
+        assertEquals(0, context.getMaxBid());
+        assertNull(context.getActiveTransferBid());
 
         verifyNoInteractions(this.playerTransferContextRepository);
     }
@@ -111,17 +107,13 @@ class PlayerTransferContextServiceTests extends BaseD11BootServiceTests {
 
         final PlayerTransferContext context = this.playerTransferContextService.getByPlayerId(player.getId());
 
-        assertNotNull(context, "PlayerTransferContextService::getByPlayerId not found not null");
-        assertNull(context.getId(), "PlayerTransferContextService::getByPlayerId not found id not null");
+        assertNotNull(context);
+        assertNull(context.getId());
 
-        assertFalse(context.isTransferListable(),
-                    "PlayerTransferContextService::getByPlayerId not found isTransferListable");
-        assertNull(context.getDeletableTransferListing(),
-                   "PlayerTransferContextService::getByPlayerId not found deletableTransferListing");
-        assertEquals(0, context.getMaxBid(),
-                     "PlayerTransferContextService::getByPlayerId not found maxBid equals");
-        assertNull(context.getActiveTransferBid(),
-                   "PlayerTransferContextService::getByPlayerId not found activeTransferBid");
+        assertFalse(context.isTransferListable());
+        assertNull(context.getDeletableTransferListing());
+        assertEquals(0, context.getMaxBid());
+        assertNull(context.getActiveTransferBid());
 
         verify(this.playerTransferContextRepository, times(1)).findByPlayerIdAndOwnerId(eq(player.getId()),
                                                                                         eq(owner.getId()));
@@ -147,8 +139,8 @@ class PlayerTransferContextServiceTests extends BaseD11BootServiceTests {
 
         final PlayerTransferContext result = this.playerTransferContextService.getByPlayerId(player.getId());
 
-        assertNotNull(result, "PlayerTransferContextService::getByPlayerId not null");
-        assertEquals(context, result, "PlayerTransferContextService::getByPlayerId result equals");
+        assertNotNull(result);
+        assertEquals(context, result);
 
         verify(this.playerTransferContextRepository, times(1)).findByPlayerIdAndOwnerId(eq(player.getId()),
                                                                                         eq(owner.getId()));

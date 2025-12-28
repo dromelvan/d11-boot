@@ -19,7 +19,7 @@ class LineupConverterTests {
 
         for (final Lineup lineup : Lineup.values()) {
             final Integer result = converter.convertToDatabaseColumn(lineup);
-            assertEquals(lineup.getId(), result, "LineupConverter::convertToDatabaseColumn equals");
+            assertEquals(lineup.getId(), result);
         }
     }
 
@@ -32,7 +32,7 @@ class LineupConverterTests {
 
         for (final Lineup lineup : Lineup.values()) {
             final Lineup result = converter.convertToEntityAttribute(lineup.getId());
-            assertEquals(lineup, result, "LineupConverter::convertToEntityAttribute equals");
+            assertEquals(lineup, result);
         }
     }
 

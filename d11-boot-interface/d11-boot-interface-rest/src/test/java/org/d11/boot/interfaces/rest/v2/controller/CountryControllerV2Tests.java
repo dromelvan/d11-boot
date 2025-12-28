@@ -33,21 +33,21 @@ class CountryControllerV2Tests extends D11BootControllerV2Tests {
         final CountryApi countryApi = getApi(CountryApi.class);
 
         final List<Country> countries = this.countryRepository.findByOrderByName();
-        assertFalse(countries.isEmpty(), "CountryController::getCountries not empty");
+        assertFalse(countries.isEmpty());
 
         final CountriesResponseBodyDTO countriesResponseBodyDTO = countryApi.getCountries();
 
-        assertNotNull(countriesResponseBodyDTO, "CountryController::getCountries not null");
+        assertNotNull(countriesResponseBodyDTO);
 
         final List<CountryDTO> result = countriesResponseBodyDTO.getCountries();
 
-        assertEquals(countries.size(), result.size(), "CountryController::getCountries size");
+        assertEquals(countries.size(), result.size());
 
         for (int i = 0; i < countries.size(); ++i) {
             final Country country = countries.get(i);
             final CountryDTO countryDTO = result.get(i);
 
-            assertEquals(map(country, CountryDTO.class), countryDTO, "CountryController::getCountries equals");
+            assertEquals(map(country, CountryDTO.class), countryDTO);
         }
     }
 

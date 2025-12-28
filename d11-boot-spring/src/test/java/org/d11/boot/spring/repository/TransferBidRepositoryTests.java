@@ -33,11 +33,7 @@ class TransferBidRepositoryTests extends AbstractRepositoryTests<TransferBid, Tr
         final Set<TransferDay> transferDays = entities.stream()
                 .map(TransferBid::getTransferDay).collect(Collectors.toSet());
 
-        assertTrue(transferDays.size() > 1,
-                   """
-                   TransferRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc
-                   transferDays size > 1
-                   """);
+        assertTrue(transferDays.size() > 1);
 
         for (final TransferDay transferDay : transferDays) {
             final long id = transferDay.getId();
@@ -48,27 +44,11 @@ class TransferBidRepositoryTests extends AbstractRepositoryTests<TransferBid, Tr
                     .filter(transferBid -> transferBid.getTransferDay().equals(transferDay))
                     .toList();
 
-            assertFalse(expected.isEmpty(),
-                       """
-                       TransferRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc
-                       expected empty
-                       """);
+            assertFalse(expected.isEmpty());
 
-            assertNotNull(result,
-                          """
-                          TransferRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc
-                          not null
-                          """);
-            assertFalse(result.isEmpty(),
-                        """
-                        TransferRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc
-                        empty
-                        """);
-            assertEquals(expected, result,
-                         """
-                         TransferRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc 
-                         equals
-                         """);
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(expected, result);
         }
     }
 

@@ -24,8 +24,8 @@ class CountryRepositoryTests extends AbstractRepositoryTests<Country, CountryRep
 
         final List<Country> result = getRepository().findByOrderByName();
 
-        assertNotNull(result, "CountryRepository::findByOrderByName not null");
-        assertEquals(countries, result, "CountryRepository::findByOrderByName");
+        assertNotNull(result);
+        assertEquals(countries, result);
     }
 
 }

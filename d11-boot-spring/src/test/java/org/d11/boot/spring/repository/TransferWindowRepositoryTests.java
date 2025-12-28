@@ -36,9 +36,8 @@ class TransferWindowRepositoryTests extends AbstractRepositoryTests<TransferWind
 
         final Optional<TransferWindow> optional = getRepository().findCurrentTransferWindow();
 
-        assertTrue(optional.isPresent(), "TransferWindowRepository::findFirstByOrderByDatetimeDesc present");
-        optional.ifPresent(result -> assertEquals(transferWindow, result,
-                                                  "TransferWindowRepository::findFirstByOrderByDatetimeDesc equals"));
+        assertTrue(optional.isPresent());
+        optional.ifPresent(result -> assertEquals(transferWindow, result));
     }
 
     /**
@@ -53,10 +52,8 @@ class TransferWindowRepositoryTests extends AbstractRepositoryTests<TransferWind
 
         final Optional<TransferWindow> optional = getRepository().findFirstByOrderByDatetimeDesc();
 
-        assertTrue(optional.isPresent(),
-                   "TransferWindowRepository::findFirstByOrderByDatetimeDesc present");
-        optional.ifPresent(result -> assertEquals(transferWindow, result,
-                "TransferWindowRepository::findFirstByOrderByDatetimeDesc equals"));
+        assertTrue(optional.isPresent());
+        optional.ifPresent(result -> assertEquals(transferWindow, result));
     }
 
     /**
@@ -76,8 +73,8 @@ class TransferWindowRepositoryTests extends AbstractRepositoryTests<TransferWind
 
         final List<TransferWindow> result = getRepository().findByMatchWeekSeasonIdOrderByDatetimeDesc(season.getId());
 
-        assertNotNull(result, "TransferWindowRepository::findByMatchWeekSeasonIdOrderByDatetimeDesc not null");
-        assertEquals(expected, result, "TransferWindowRepository::findByMatchWeekSeasonIdOrderByDatetimeDesc equals");
+        assertNotNull(result);
+        assertEquals(expected, result);
     }
 
 }

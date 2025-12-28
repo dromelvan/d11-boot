@@ -17,9 +17,9 @@ class YearIntervalValidatorTests {
     void testIsValid() {
         final YearIntervalValidator validator = new YearIntervalValidator();
 
-        assertFalse(validator.isValid("FOO", null), "YearIntervalValidator::isValid pattern invalid");
-        assertFalse(validator.isValid("1234-4321", null), "YearIntervalValidator::isValid interval invalid");
-        assertTrue(validator.isValid("1234-1235", null), "earIntervalValidator::isValid valid");
+        assertFalse(validator.isValid("FOO", null));
+        assertFalse(validator.isValid("1234-4321", null));
+        assertTrue(validator.isValid("1234-1235", null));
     }
 
 }

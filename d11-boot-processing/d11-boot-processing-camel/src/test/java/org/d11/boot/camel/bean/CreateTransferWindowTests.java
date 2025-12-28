@@ -44,8 +44,8 @@ class CreateTransferWindowTests {
         final CreateTransferWindow createTransferWindow = new CreateTransferWindow(this.transferWindowService);
         createTransferWindow.handle(body);
 
-        assertNotNull(body.getTransferWindow(), "CreateTransferWindow::handle not null");
-        assertEquals(transferWindow, body.getTransferWindow(), "CreateTransferWindow::handle equals");
+        assertNotNull(body.getTransferWindow());
+        assertEquals(transferWindow, body.getTransferWindow());
     }
 
 }
