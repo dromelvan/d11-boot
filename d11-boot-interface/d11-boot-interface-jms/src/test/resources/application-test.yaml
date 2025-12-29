@@ -1,4 +1,4 @@
 spring:
   main.banner-mode: "off"
   flyway:
-    locations: classpath:db/migration/table,classpath:db/migration/procedure/h2
+    locations: classpath:db/migration/schema,classpath:db/migration/procedure/h2
