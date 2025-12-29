@@ -24,15 +24,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MatchRepositoryTests extends AbstractRepositoryTests<Match, MatchRepository> {
 
     /**
-     * Tests MatchRepository::findByWhoscoredId.
+     * Tests MatchRepository::findByStatSourceId.
      */
     @Test
-    void testFindByWhoscoredId() {
+    void testFindByStatSourceId() {
         final List<Match> matches = getEntities();
-        matches.forEach(match -> match.setWhoscoredId(matches.indexOf(match)));
+        matches.forEach(match -> match.setStatSourceId(matches.indexOf(match)));
 
         matches.forEach(match -> {
-            final Match result = getRepository().findByWhoscoredId(match.getWhoscoredId()).orElse(null);
+            final Match result = getRepository().findByStatSourceId(match.getStatSourceId()).orElse(null);
 
             assertNotNull(result);
             assertEquals(match, result);

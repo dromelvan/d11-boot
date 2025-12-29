@@ -48,7 +48,7 @@ class ServiceMapperTests extends EasyRandomTests {
 
         final Player destination = this.mapper.mapToPlayer(source);
 
-        assertEquals(source.whoscoredId(), destination.getWhoscoredId());
+        assertEquals(source.statSourceId(), destination.getStatSourceId());
         assertEquals(source.premierLeagueId(), destination.getPremierLeagueId());
         assertEquals(source.firstName(), destination.getFirstName());
         assertEquals(source.lastName(), destination.getLastName());
@@ -77,7 +77,7 @@ class ServiceMapperTests extends EasyRandomTests {
 
         final Player destination = this.mapper.mapToPlayer(source, generate(Player.class));
 
-        assertEquals(source.whoscoredId(), destination.getWhoscoredId());
+        assertEquals(source.statSourceId(), destination.getStatSourceId());
         assertEquals(source.premierLeagueId(), destination.getPremierLeagueId());
         assertEquals(source.firstName(), destination.getFirstName());
         assertEquals(source.lastName(), destination.getLastName());

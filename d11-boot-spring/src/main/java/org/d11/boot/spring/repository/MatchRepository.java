@@ -29,12 +29,12 @@ public interface MatchRepository extends D11EntityRepository<Match> {
     Optional<Match> findById(Long id);
 
     /**
-     * Finds a match by WhoScored id.
+     * Finds a match by stat source id.
      *
-     * @param whoscoredId The WhoScored id.
-     * @return Match with the WhoScored id.
+     * @param statSourceId The stat source id.
+     * @return Match with the stat source id.
      */
-    Optional<Match> findByWhoscoredId(@Param("whoscoredId") Integer whoscoredId);
+    Optional<Match> findByStatSourceId(@Param("statSourceId") Integer statSourceId);
 
     /**
      * Gets matches by match week id or status in a set, ordered by datetime.

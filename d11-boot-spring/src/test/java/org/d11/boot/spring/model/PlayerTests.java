@@ -30,9 +30,9 @@ class PlayerTests extends EasyRandomTests {
         assertFalse(player.isValid());
         player.setCountry(new Country());
 
-        player.setWhoscoredId(-1);
+        player.setStatSourceId(-1);
         assertFalse(player.isValid());
-        player.setWhoscoredId(1);
+        player.setStatSourceId(1);
 
         player.setPremierLeagueId(-1);
         assertFalse(player.isValid());

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 /**
  * Record containing player properties that can be input by users.
  *
- * @param whoscoredId     Whoscored id.
+ * @param statSourceId    Stat source id.
  * @param premierLeagueId Premier league id.
  * @param firstName       First name.
  * @param lastName        Last name.
@@ -20,7 +20,7 @@ import java.time.LocalDate;
  * @param verified        Verified.
  */
 public record PlayerInput(
-        @PositiveOrZero int whoscoredId,
+        @PositiveOrZero int statSourceId,
         @PositiveOrZero int premierLeagueId,
         @NotNull String firstName,
         @NotEmpty String lastName,

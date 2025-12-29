@@ -137,7 +137,7 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
         assertEquals(playerInputDTO.getLastName(), result.getLastName());
         assertEquals(playerInputDTO.getFullName(), result.getFullName());
         assertEquals(playerInputDTO.getDateOfBirth(), result.getDateOfBirth());
-        assertEquals(playerInputDTO.getWhoscoredId(), result.getWhoscoredId());
+        assertEquals(playerInputDTO.getStatSourceId(), result.getStatSourceId());
         assertEquals(playerInputDTO.getPremierLeagueId(), result.getPremierLeagueId());
         assertEquals(playerInputDTO.getHeight(), result.getHeight());
         assertEquals(playerInputDTO.isVerified(), result.isVerified());
@@ -149,7 +149,7 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
         assertEquals(playerInputDTO.getLastName(), entity.getLastName());
         assertEquals(playerInputDTO.getFullName(), entity.getFullName());
         assertEquals(playerInputDTO.getDateOfBirth(), entity.getDateOfBirth());
-        assertEquals(playerInputDTO.getWhoscoredId(), entity.getWhoscoredId());
+        assertEquals(playerInputDTO.getStatSourceId(), entity.getStatSourceId());
         assertEquals(playerInputDTO.getPremierLeagueId(), entity.getPremierLeagueId());
         assertEquals(playerInputDTO.getHeight(), entity.getHeight());
         assertEquals(playerInputDTO.isVerified(), entity.isVerified());
@@ -200,7 +200,7 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
             .lastName("NEW_LAST_NAME")
             .fullName("NEW_FULL_NAME")
             .dateOfBirth(LocalDate.now().minusYears(1L))
-            .whoscoredId(654_321)
+            .statSourceId(654_321)
             .premierLeagueId(321_654)
             .height(333)
             .verified(false);
@@ -213,7 +213,7 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
         assertEquals(playerInputDTO.getLastName(), result.getLastName());
         assertEquals(playerInputDTO.getFullName(), result.getFullName());
         assertEquals(playerInputDTO.getDateOfBirth(), result.getDateOfBirth());
-        assertEquals(playerInputDTO.getWhoscoredId(), result.getWhoscoredId());
+        assertEquals(playerInputDTO.getStatSourceId(), result.getStatSourceId());
         assertEquals(playerInputDTO.getPremierLeagueId(), result.getPremierLeagueId());
         assertEquals(playerInputDTO.getHeight(), result.getHeight());
         assertEquals(playerInputDTO.isVerified(), result.isVerified());
@@ -225,7 +225,7 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
         assertEquals(playerInputDTO.getLastName(), entity.getLastName());
         assertEquals(playerInputDTO.getFullName(), entity.getFullName());
         assertEquals(playerInputDTO.getDateOfBirth(), entity.getDateOfBirth());
-        assertEquals(playerInputDTO.getWhoscoredId(), entity.getWhoscoredId());
+        assertEquals(playerInputDTO.getStatSourceId(), entity.getStatSourceId());
         assertEquals(playerInputDTO.getPremierLeagueId(), entity.getPremierLeagueId());
         assertEquals(playerInputDTO.getHeight(), entity.getHeight());
         assertEquals(playerInputDTO.isVerified(), entity.isVerified());

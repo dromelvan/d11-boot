@@ -29,13 +29,13 @@ INSERT INTO stadium (name, city, capacity, opened, photo_file_name)
 VALUES('StadiumB', 'CityB', 22222, 2020, '2.png');
 
 -- Team
-INSERT INTO team (stadium_id, whoscored_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
+INSERT INTO team (stadium_id, stat_source_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
 VALUES(1, 11, 1, 'None', 'None', 'DUM', 2020, 'None', true, null, 'https://test.com');
-INSERT INTO team (stadium_id, whoscored_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
+INSERT INTO team (stadium_id, stat_source_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
 VALUES(1, 11111, 2, 'TeamA', 'ShortA', 'TMA', 2020, 'ColourA', false, '1.png', 'https://test.com');
-INSERT INTO team (stadium_id, whoscored_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
+INSERT INTO team (stadium_id, stat_source_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
 VALUES(2, 22222, 3, 'TeamB', 'ShortB', 'TMB', 2020, 'ColourB', false, '2.png', 'https://test.com');
-INSERT INTO team (stadium_id, whoscored_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
+INSERT INTO team (stadium_id, stat_source_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
 VALUES(2, 33333, 4, 'TeamC', 'ShortC', 'TMC', 2020, 'ColourC', false, '3.png', 'https://test.com');
 
 -- D11 Team
@@ -49,18 +49,18 @@ INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, phot
 VALUES(3, null, 'D11TeamC', 'ShortC', 'DTC', false, '3.png');
 
 -- Player
-INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
+INSERT INTO player (country_id, stat_source_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
 VALUES(1, 111111, 1, 'FirstA', 'LastA', 'FullA', 'firsta-lasta', '2020-01-01', 111, '1.png', true);
-INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
+INSERT INTO player (country_id, stat_source_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
 VALUES(2, 222222, 2, 'FirstB', 'LastB', 'FullB', 'firstb-lastb', '2020-01-01', 222, '2.png', true);
-INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
+INSERT INTO player (country_id, stat_source_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
 VALUES(1, 333333, 3, 'FirstC', 'LastC', 'FullC', 'firstc-lastc', '2020-01-01', 333, '3.png', true);
 -- Players used for search tests.
-INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
+INSERT INTO player (country_id, stat_source_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
 VALUES(1, 444444, 4, 'Foo', 'Bar', null, 'foo-bar', '2020-01-01', 111, '4.png', true);
-INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
+INSERT INTO player (country_id, stat_source_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
 VALUES(1, 555555, 5, 'Bar', 'Foo', null, 'bar-foo', '2020-01-01', 111, '5.png', true);
-INSERT INTO player (country_id, whoscored_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
+INSERT INTO player (country_id, stat_source_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)
 VALUES(1, 666666, 6, '', 'Foo', null, 'foo', '2020-01-01', 111, '6.png', true);
 
 -- Position
@@ -92,28 +92,28 @@ INSERT INTO match_week (season_id, premier_league_leader_id, d11_league_leader_i
 VALUES(2, null, null, null, 4, CURRENT_DATE + 2, 0, 0);
 
 -- Match
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, stat_source_id, datetime, home_team_goals_scored, away_team_goals_scored,
                    previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(1, 2, 1, 1, 1, '2020-01-01 17:00:00', 0, 1, 0, 0, 'FT', 3);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, stat_source_id, datetime, home_team_goals_scored, away_team_goals_scored,
                    previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(3, 4, 1, 2, 2, '2020-01-02 17:00:00', 2, 1, 1, 0, 'FT', 3);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, stat_source_id, datetime, home_team_goals_scored, away_team_goals_scored,
                    previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(2, 1, 2, 1, 3, '2020-02-01 17:00:00', 0, 1, 0, 0, 'FT', 2);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, stat_source_id, datetime, home_team_goals_scored, away_team_goals_scored,
                    previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(4, 3, 2, 2, 4, '2020-02-02 17:00:00', 2, 1, 1, 0, 'FT', 2);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, stat_source_id, datetime, home_team_goals_scored, away_team_goals_scored,
                    previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(1, 2, 3, 1, 5, '2021-01-01 17:00:00', 0, 1, 0, 0, 'HT', 1);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, stat_source_id, datetime, home_team_goals_scored, away_team_goals_scored,
                    previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(3, 4, 3, 2, 6, '2021-01-02 17:00:00', 2, 1, 1, 0, '55', 1);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, stat_source_id, datetime, home_team_goals_scored, away_team_goals_scored,
                    previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(2, 1, 4, 1, 7, '2021-02-01 22:00:00', 0, 1, 0, 0, 'N/A', 0);
-INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, whoscored_id, datetime, home_team_goals_scored, away_team_goals_scored,
+INSERT INTO match (home_team_id, away_team_id, match_week_id, stadium_id, stat_source_id, datetime, home_team_goals_scored, away_team_goals_scored,
                    previous_home_team_goals_scored, previous_away_team_goals_scored, elapsed, status)
 VALUES(4, 3, 4, 2, 8, '2021-02-01 17:00:00', 2, 1, 1, 0, 'N/A', 4);
 

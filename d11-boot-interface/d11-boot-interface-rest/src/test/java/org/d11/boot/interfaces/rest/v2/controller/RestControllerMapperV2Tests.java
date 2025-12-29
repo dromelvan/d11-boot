@@ -55,7 +55,7 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
 
         final PlayerInput destination = this.mapper.mapToPlayerInput(source);
 
-        assertEquals(source.getWhoscoredId(), destination.whoscoredId());
+        assertEquals(source.getStatSourceId(), destination.statSourceId());
         assertEquals(source.getPremierLeagueId(), destination.premierLeagueId());
         assertEquals(source.getFirstName(), destination.firstName());
         assertEquals(source.getLastName(), destination.lastName());
@@ -75,7 +75,7 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
 
         final PlayerDTO destination = this.mapper.mapToPlayerDTO(source);
 
-        assertEquals(source.getWhoscoredId(), destination.getWhoscoredId());
+        assertEquals(source.getStatSourceId(), destination.getStatSourceId());
         assertEquals(source.getPremierLeagueId(), destination.getPremierLeagueId());
         assertEquals(source.getFirstName(), destination.getFirstName());
         assertEquals(source.getLastName(), destination.getLastName());

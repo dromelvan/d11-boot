@@ -42,10 +42,10 @@ public class Team extends D11Entity {
     public static final long DEFAULT_TEAM_ID = 1;
 
     /**
-     * Team id on whoscored.
+     * Team id on the stat source site.
      */
     @Min(1)
-    private int whoscoredId;
+    private int statSourceId;
 
     /**
      * Team id on premierleague.com.

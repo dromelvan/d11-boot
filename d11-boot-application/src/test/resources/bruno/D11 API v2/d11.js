@@ -21,7 +21,7 @@ function stadium(stadium1, stadium2) {
 
 function team(team1, team2) {
   expect(team1.id).to.eq(team2.id);
-  expect(team1.whoscoredId).to.eq(team2.whoscoredId);
+  expect(team1.statSourceId).to.eq(team2.statSourceId);
   expect(team1.premierLeagueId).to.eq(team2.premierLeagueId);
   expect(team1.name).to.eq(team2.name);
   expect(team1.shortName).to.eq(team2.shortName);
@@ -53,7 +53,7 @@ function position(position1, position2) {
 
 function player(player1, player2) {
     expect(player1.id).to.eq(player2.id);
-    expect(player1.whoscoredId).to.eq(player2.whoscoredId);
+    expect(player1.statSourceId).to.eq(player2.statSourceId);
     expect(player1.premierLeagueId).to.eq(player2.premierLeagueId);
     expect(player1.firstName).to.eq(player2.firstName);
     expect(player1.lastName).to.eq(player2.lastName);
@@ -113,7 +113,7 @@ function matchWeekWithoutMVP(matchWeek1, matchWeek2) {
 
 function match(match1, match2) {
     expect(match1.id).to.eq(match2.id);
-    expect(match1.whoscoredId).to.eq(match2.whoscoredId);
+    expect(match1.statSourceId).to.eq(match2.statSourceId);
     expect(match1.datetime).to.eq(match2.datetime);
     expect(match1.homeTeamGoalsScored).to.eq(match2.homeTeamGoalsScored);
     expect(match1.awayTeamGoalsScored).to.eq(match2.awayTeamGoalsScored);

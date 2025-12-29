@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS match (
     away_team_id INTEGER NOT NULL REFERENCES team,
     match_week_id INTEGER NOT NULL REFERENCES match_week,
     stadium_id INTEGER NOT NULL REFERENCES stadium,
-    whoscored_id INTEGER NOT NULL,
+    stat_source_id INTEGER NOT NULL,
     datetime TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     home_team_goals_scored INTEGER NOT NULL,
     away_team_goals_scored INTEGER NOT NULL,

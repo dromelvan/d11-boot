@@ -17,7 +17,7 @@ auth:bearer {
 body:json {
   {
       "player": {
-      
+
       }
   }
 }
@@ -43,6 +43,6 @@ assert {
   res.body.validationErrors[5].error: eq is missing
   res.body.validationErrors[6].property: eq player.premierLeagueId
   res.body.validationErrors[6].error: eq is missing
-  res.body.validationErrors[7].property: eq player.whoscoredId
+  res.body.validationErrors[7].property: eq player.statSourceId
   res.body.validationErrors[7].error: eq is missing
 }

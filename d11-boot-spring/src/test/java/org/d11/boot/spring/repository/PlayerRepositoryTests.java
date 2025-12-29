@@ -19,16 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PlayerRepositoryTests extends AbstractRepositoryTests<Player, PlayerRepository> {
 
     /**
-     * Tests PlayerRepository::findByWhoscoredId.
+     * Tests PlayerRepository::findByStatSourceId.
      */
     @Test
-    void testFindByWhoscoredId() {
+    void testFindByStatSourceId() {
         final List<Player> players = getEntities();
-        players.forEach(player -> player.setWhoscoredId(players.indexOf(player)));
+        players.forEach(player -> player.setStatSourceId(players.indexOf(player)));
         getRepository().saveAll(players);
 
         players.forEach(player -> {
-            final Player result = getRepository().findByWhoscoredId(player.getWhoscoredId()).orElse(null);
+            final Player result = getRepository().findByStatSourceId(player.getStatSourceId()).orElse(null);
 
             assertNotNull(result);
             assertEquals(player.getId(), result.getId());

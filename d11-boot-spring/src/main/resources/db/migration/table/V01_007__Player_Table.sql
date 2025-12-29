@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS player (
     id SERIAL PRIMARY KEY,
     country_id INTEGER NOT NULL REFERENCES country,
-    whoscored_id INTEGER NOT NULL,
+    stat_source_id INTEGER NOT NULL,
     premier_league_id INTEGER NOT NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,

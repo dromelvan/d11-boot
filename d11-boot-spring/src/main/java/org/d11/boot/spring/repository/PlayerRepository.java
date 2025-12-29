@@ -16,12 +16,12 @@ import java.util.Optional;
 public interface PlayerRepository extends D11EntityRepository<Player> {
 
     /**
-     * Finds a player by WhoScored id.
+     * Finds a player by stat source id.
      *
-     * @param whoscoredId The WhoScored id.
-     * @return Optional with player with the WhoScored id or empty optional if no player was found.
+     * @param statSourceId The stat source id.
+     * @return Optional with player with the stat source id or empty optional if no player was found.
      */
-    Optional<Player> findByWhoscoredId(@Param("whoscoredId") Integer whoscoredId);
+    Optional<Player> findByStatSourceId(@Param("statSourceId") Integer statSourceId);
 
     /**
      * Finds a player by Premier League id.

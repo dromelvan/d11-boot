@@ -79,10 +79,10 @@ public class Match extends D11Entity implements Comparable<Match> {
     public static final int LOSS_POINTS = 0;
 
     /**
-     * Match id on WhoScored.
+     * Match id on the stat source site we use.
      */
     @PositiveOrZero
-    private int whoscoredId;
+    private int statSourceId;
 
     /**
      * Match kickoff time.
@@ -118,7 +118,7 @@ public class Match extends D11Entity implements Comparable<Match> {
 
     /**
      * Elapsed string. This can be either the number of minutes played or N/A, HT, FT or whatever
-     * else WhoScored sees fit to put in their elapsed time data.
+     * else the stat source sees fit to put in their elapsed time data.
      */
     @NotNull
     @Size(min = 1, max = ELAPSED_TIME_MAX_LENGTH)
@@ -289,15 +289,15 @@ public class Match extends D11Entity implements Comparable<Match> {
     }
 
     /**
-     * Gets a team by WhoScored id from the match.
+     * Gets a team by stat source id from the match.
      *
-     * @param teamWhoscoredId The WhoScored id.
-     * @return The home team or the away team depending on which teams WhoScored id is provided.
+     * @param teamStatSourceId The stat source id.
+     * @return The home team or the away team depending on which teams stat source id is provided.
      */
-    public Optional<Team> getTeamByWhoscoredId(final int teamWhoscoredId) {
-        if (getHomeTeam().getWhoscoredId() == teamWhoscoredId) {
+    public Optional<Team> getTeamByStatSourceId(final int teamStatSourceId) {
+        if (getHomeTeam().getStatSourceId() == teamStatSourceId) {
             return Optional.of(getHomeTeam());
-        } else if (getAwayTeam().getWhoscoredId() == teamWhoscoredId) {
+        } else if (getAwayTeam().getStatSourceId() == teamStatSourceId) {
             return Optional.of(getAwayTeam());
         }
         return Optional.empty();

@@ -27,9 +27,9 @@ class MatchTests extends EasyRandomTests {
 
         assertTrue(match.isValid());
 
-        match.setWhoscoredId(-1);
+        match.setStatSourceId(-1);
         assertFalse(match.isValid());
-        match.setWhoscoredId(1);
+        match.setStatSourceId(1);
 
         match.setDatetime(null);
         assertFalse(match.isValid());
@@ -291,21 +291,21 @@ class MatchTests extends EasyRandomTests {
     }
 
     /**
-     * Tests Match::getTeamByWhoscoredId.
+     * Tests Match::getTeamByStatSourceId.
      */
     @Test
-    void testGetTeamByWhoscoredId() {
+    void testGetTeamByStatSourceId() {
         final Match match = generate(Match.class);
 
-        match.getHomeTeam().setWhoscoredId(1);
-        match.getAwayTeam().setWhoscoredId(0);
+        match.getHomeTeam().setStatSourceId(1);
+        match.getAwayTeam().setStatSourceId(0);
 
         assertEquals(match.getHomeTeam(),
-                     match.getTeamByWhoscoredId(match.getHomeTeam().getWhoscoredId()).orElse(null));
+                     match.getTeamByStatSourceId(match.getHomeTeam().getStatSourceId()).orElse(null));
         assertEquals(match.getAwayTeam(),
-                     match.getTeamByWhoscoredId(match.getAwayTeam().getWhoscoredId()).orElse(null));
+                     match.getTeamByStatSourceId(match.getAwayTeam().getStatSourceId()).orElse(null));
 
-        assertFalse(match.getTeamByWhoscoredId(-1).isPresent());
+        assertFalse(match.getTeamByStatSourceId(-1).isPresent());
     }
 
     /**

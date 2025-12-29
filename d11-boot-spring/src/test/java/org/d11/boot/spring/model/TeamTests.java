@@ -21,9 +21,9 @@ class TeamTests extends EasyRandomTests {
 
         assertTrue(team.isValid());
 
-        team.setWhoscoredId(0);
+        team.setStatSourceId(0);
         assertFalse(team.isValid());
-        team.setWhoscoredId(1);
+        team.setStatSourceId(1);
 
         team.setPremierLeagueId(-1);
         assertFalse(team.isValid());

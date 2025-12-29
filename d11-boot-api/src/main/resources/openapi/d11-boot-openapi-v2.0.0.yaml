@@ -2519,7 +2519,7 @@ components:
       type: object
       required:
         - id
-        - whoscoredId
+        - statSourceId
         - premierLeagueId
         - name
         - shortName
@@ -2531,7 +2531,7 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/Id'
-        whoscoredId:
+        statSourceId:
           type: integer
           format: int32
         premierLeagueId:
@@ -2679,14 +2679,14 @@ components:
         - $ref: '#/components/schemas/PlayerBase'
         - type: object
           required:
-            - whoscoredId
+            - statSourceId
             - premierLeagueId
             - dateOfBirth
             - height
             - verified
             - country
           properties:
-            whoscoredId:
+            statSourceId:
               type: integer
               format: int32
             premierLeagueId:
@@ -2712,7 +2712,7 @@ components:
       required:
         - firstName
         - lastName
-        - whoscoredId
+        - statSourceId
         - premierLeagueId
         - fullName
         - dateOfBirth
@@ -2724,7 +2724,7 @@ components:
           type: string
         lastName:
           type: string
-        whoscoredId:
+        statSourceId:
           type: integer
           format: int32
         premierLeagueId:
@@ -2982,13 +2982,13 @@ components:
         - $ref: '#/components/schemas/MatchBase'
         - type: object
           required:
-            - whoscoredId
+            - statSourceId
             - previous_home_team_goals_scored
             - previous_away_team_goals_scored
             - elapsed
             - status
           properties:
-            whoscoredId:
+            statSourceId:
               type: integer
               format: int64
             previousHomeTeamGoalsScored:

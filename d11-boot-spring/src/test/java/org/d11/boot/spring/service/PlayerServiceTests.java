@@ -97,7 +97,7 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
                 BadRequestException.class,
                 () -> this.playerService.createPlayer(new PlayerInput(-1, -1, "", null, null, null, -1, 1, true)));
 
-        final List<String> properties = Arrays.asList("height", "lastName", "premierLeagueId", "whoscoredId");
+        final List<String> properties = Arrays.asList("height", "lastName", "premierLeagueId", "statSourceId");
         assertEquals(properties, e.getValidationErrors().stream().map(ValidationError::property).toList());
 
         assertThrows(NotFoundException.class, () -> this.playerService.createPlayer(playerInput));
@@ -108,7 +108,7 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
 
         final Player result = this.playerService.createPlayer(playerInput);
 
-        assertEquals(playerInput.whoscoredId(), result.getWhoscoredId());
+        assertEquals(playerInput.statSourceId(), result.getStatSourceId());
         assertEquals(playerInput.premierLeagueId(), result.getPremierLeagueId());
         assertEquals(playerInput.firstName(), result.getFirstName());
         assertEquals(playerInput.lastName(), result.getLastName());
@@ -145,7 +145,7 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
                 () -> this.playerService.updatePlayer(player.getId(),
                                                       new PlayerInput(-1, -1, "", null, null, null, -1, 1, true)));
 
-        final List<String> properties = Arrays.asList("height", "lastName", "premierLeagueId", "whoscoredId");
+        final List<String> properties = Arrays.asList("height", "lastName", "premierLeagueId", "statSourceId");
         assertEquals(properties, e.getValidationErrors().stream().map(ValidationError::property).toList());
 
         when(this.playerRepository.findById(eq(player.getId()))).thenReturn(Optional.empty());
@@ -163,7 +163,7 @@ class PlayerServiceTests extends BaseD11BootServiceTests {
         final Player result = this.playerService.updatePlayer(player.getId(), playerInput);
 
         assertEquals(player.getId(), result.getId());
-        assertEquals(player.getWhoscoredId(), result.getWhoscoredId());
+        assertEquals(player.getStatSourceId(), result.getStatSourceId());
         assertEquals(player.getPremierLeagueId(), result.getPremierLeagueId());
         assertEquals(player.getFirstName(), result.getFirstName());
         assertEquals(player.getLastName(), result.getLastName());

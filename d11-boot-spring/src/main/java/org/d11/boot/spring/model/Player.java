@@ -22,10 +22,10 @@ import java.time.LocalDate;
 public class Player extends D11Entity {
 
     /**
-     * Player id on whoscored.
+     * Player id on the stat source site.
      */
     @PositiveOrZero
-    private int whoscoredId;
+    private int statSourceId;
 
     /**
      * Player id on premierleague.com.
