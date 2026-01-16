@@ -1,7 +1,9 @@
 package org.d11.boot.spring.security;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -19,16 +21,14 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.security.interfaces.RSAPublicKey;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Configures security for the application.
  */
 @Configuration
 @EnableWebSecurity
+@ConfigurationProperties(prefix = "app.security")
 public class SecurityConfiguration {
 
     /**
@@ -37,10 +37,11 @@ public class SecurityConfiguration {
     private final JwtToGrantedAuthorityConverter jwtToGrantedAuthorityConverter;
 
     /**
-     * Allowed origins for CORS configuration.
+     * Allowed origin patterns for CORS configuration.
      */
-    @Value("${app.security.allowedOrigins}")
-    private String[] allowedOrigins;
+    @Getter
+    @Setter
+    private List<String> allowedOriginPatterns;
 
     /**
      * Creates a new security configuration.
@@ -108,17 +109,13 @@ public class SecurityConfiguration {
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        final List<String> wildCardList = Collections.singletonList("*");
-
         final CorsConfiguration configuration = new CorsConfiguration();
-        // It seems wild card doesn't work for requests from an actual browser even though it does in Postman.
-        configuration.setAllowedOrigins(Arrays.stream(this.allowedOrigins)
-                                            .map(allowedOrigin -> "http://" + allowedOrigin)
-                                            .collect(Collectors.toList()));
-        configuration.setAllowedMethods(wildCardList);
-        configuration.setAllowedHeaders(wildCardList);
+        configuration.setAllowedOriginPatterns(this.allowedOriginPatterns);
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Content-Type", "Authorization"));
         // Allow credentials to enable setting cookies for POST requests.
         configuration.setAllowCredentials(true);
+
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

@@ -6,8 +6,9 @@ app:
       password: password
       keyAlias: local
       privateKeyPassphrase: password
-    # Configure local frontend to run on port 8081
-    allowedOrigins: 127.0.0.1:8081,localhost:8081
+    allowedOriginPatterns:
+      - http://localhost:*
+      - http://127.0.0.1:*
   download.selenium:
     remoteUrl: http://localhost:4444
     # Provide user data dir only if using a standalone application Selenium

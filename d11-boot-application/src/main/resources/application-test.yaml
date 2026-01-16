@@ -11,8 +11,9 @@ app:
       password: password
       keyAlias: test
       privateKeyPassphrase: password
-    # Configure test frontend to run on port 8081
-    allowedOrigins: 127.0.0.1:8081,localhost:8081
+    allowedOriginPatterns:
+      - http://localhost:*
+      - http://127.0.0.1:*
 
 # Super strong password for test secrets decryption.
 jasypt.encryptor.password: password
