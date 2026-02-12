@@ -27,14 +27,14 @@ assert {
   res.body.transferWindow.id: gt 0
   res.body.transferWindow.transferWindowNumber: eq 2
   res.body.transferWindow.draft: eq false
-  res.body.transferWindow.status: eq Pending
+  res.body.transferWindow.status: eq PENDING
   res.body.transferWindow.datetime: eq {{datetimePlus1}}
   res.body.matchWeek: isDefined
   res.body.matchWeek.id: eq 5
   res.body.matchWeek.matchWeekNumber: eq 3
   res.body.transferDays.length: eq 1
   res.body.transferDays[0].transferDayNumber: eq 1
-  res.body.transferDays[0].status: eq Pending
+  res.body.transferDays[0].status: eq PENDING
   res.body.transferDays[0].datetime: eq {{datetimePlus2}}
 }
 

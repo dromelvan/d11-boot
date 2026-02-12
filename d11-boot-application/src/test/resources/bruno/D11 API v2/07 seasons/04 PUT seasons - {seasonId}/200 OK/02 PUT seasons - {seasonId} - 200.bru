@@ -20,7 +20,7 @@ body:json {
           "name": "1970-1971",
           "d11TeamBudget": 5,
           "d11TeamMaxTransfers": 1,
-          "status": "Pending",
+          "status": "PENDING",
           "date": "1970-01-01",
           "legacy": true
       }
@@ -33,7 +33,7 @@ assert {
 
 tests {
   const { expectToEq } = require('./d11.js');
-
+  
   test("PUT season response body", () => {
     const body = res.getBody();
     const seasonId = JSON.parse(bru.getEnvVar("seasonId"));
@@ -43,12 +43,12 @@ tests {
       shortName: "70-71",
       d11TeamBudget: 5,
       d11TeamMaxTransfers: 1,
-      status: "Pending",
+      status: "PENDING",
       date: "1970-01-01",
       legacy: true
    };
-
+  
     expectToEq.season(body.season, season);
   });
-
+  
 }

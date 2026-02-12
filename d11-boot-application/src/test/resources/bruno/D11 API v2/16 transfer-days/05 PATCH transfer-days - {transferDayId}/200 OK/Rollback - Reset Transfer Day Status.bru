@@ -17,7 +17,7 @@ auth:bearer {
 body:json {
   {
       "transferDay": {
-            "status": "Finished",
+            "status": "FINISHED",
             "process": false
       }
   }
@@ -29,5 +29,5 @@ assert {
   res.body.transferDay: isDefined
   res.body.transferWindow: isDefined
   res.body.matchWeek: isDefined
-  res.body.transferDay.status: eq Finished
+  res.body.transferDay.status: eq FINISHED
 }

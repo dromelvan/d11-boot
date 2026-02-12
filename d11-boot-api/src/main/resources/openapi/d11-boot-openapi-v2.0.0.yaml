@@ -2265,11 +2265,11 @@ components:
     Status:
       type: string
       enum:
-        - 'Pending'
-        - 'Active'
-        - 'Full Time'
-        - 'Finished'
-        - 'Postponed'
+        - 'PENDING'
+        - 'ACTIVE'
+        - 'FULL_TIME'
+        - 'FINISHED'
+        - 'POSTPONED'
 
     Lineup:
       type: string
