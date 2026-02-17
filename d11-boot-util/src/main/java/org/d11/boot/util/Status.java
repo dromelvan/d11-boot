@@ -15,23 +15,23 @@ public enum Status {
     /**
      * The entity is pending and has not started yet.
      */
-    PENDING(0, "Pending"),
+    PENDING(0, "PENDING"),
     /**
      * The entity is currently active.
      */
-    ACTIVE(1, "Active"),
+    ACTIVE(1, "ACTIVE"),
     /**
      * The entity is no longer active but has not yet been confirmed to be finished.
      */
-    FULL_TIME(2, "Full Time"),
+    FULL_TIME(2, "FULL_TIME"),
     /**
      * The entity has finished.
      */
-    FINISHED(3, "Finished"),
+    FINISHED(3, "FINISHED"),
     /**
      * The entity has been postponed to an unknown date and time.
      */
-    POSTPONED(4, "Postponed");
+    POSTPONED(4, "POSTPONED");
 
     /**
      * Status id.
