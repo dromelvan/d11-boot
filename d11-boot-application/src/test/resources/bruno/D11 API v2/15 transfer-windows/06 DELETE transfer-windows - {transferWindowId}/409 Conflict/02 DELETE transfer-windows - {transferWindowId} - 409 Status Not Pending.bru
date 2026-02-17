@@ -17,7 +17,7 @@ auth:bearer {
 assert {
   res.status: eq 409
   res.body.error: eq Conflict
-  res.body.message: eq Transfer window status is Finished
+  res.body.message: eq Transfer window status is FINISHED
   res.body.method: eq DELETE
   res.body.path: eq /v2/transfer-windows/{{transferWindowId}}
 }

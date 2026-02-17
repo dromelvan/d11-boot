@@ -19,13 +19,13 @@ body:json {
       "datetime": "{{datetimePlus1}}",
       "transferDayDelay": 1
   }
-
+  
 }
 
 assert {
   res.status: eq 409
   res.body.error: eq Conflict
-  res.body.message: eq Current transfer window status is Pending
+  res.body.message: eq Current transfer window status is PENDING
   res.body.method: eq POST
   res.body.path: eq /v2/transfer-windows
 }
