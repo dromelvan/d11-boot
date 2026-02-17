@@ -2499,6 +2499,7 @@ components:
         - name
         - shortName
         - code
+        - colour
         - dummy
       properties:
         id:
@@ -2509,6 +2510,8 @@ components:
         shortName:
           type: string
         code:
+          type: string
+        colour:
           type: string
         dummy:
           type: boolean
@@ -2547,7 +2550,7 @@ components:
         established:
           type: integer
           format: int32
-        color:
+        colour:
           type: string
         dummy:
           type: boolean

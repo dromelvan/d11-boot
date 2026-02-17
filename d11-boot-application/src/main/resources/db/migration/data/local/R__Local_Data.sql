@@ -34,11 +34,11 @@ INSERT INTO position (name, code, max_count, defender, sort_order)
 
 -- Team
 INSERT INTO team (stadium_id, stat_source_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
-    VALUES(1, 11, 1, 'None', 'None', 'DUM', 2020, 'None', true, null, 'https://test.com');
+    VALUES(1, 11, 1, 'None', 'None', 'DUM', 2020, '#000000', true, null, 'https://test.com');
 INSERT INTO team (stadium_id, stat_source_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
-    VALUES(1, 11111, 2, 'TeamA', 'ShortA', 'TMA', 2020, 'ColourA', false, '1.png', 'https://test.com');
+    VALUES(1, 11111, 2, 'TeamA', 'ShortA', 'TMA', 2020, '#000000', false, '1.png', 'https://test.com');
 INSERT INTO team (stadium_id, stat_source_id, premier_league_id, name, short_name, code, established, colour, dummy, photo_file_name, url)
-    VALUES(2, 22222, 3, 'TeamB', 'ShortB', 'TMB', 2020, 'ColourB', false, '2.png', 'https://test.com');
+    VALUES(2, 22222, 3, 'TeamB', 'ShortB', 'TMB', 2020, '#000000', false, '2.png', 'https://test.com');
 
 -- D11 Team
 INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)

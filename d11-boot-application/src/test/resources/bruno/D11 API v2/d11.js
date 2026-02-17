@@ -27,7 +27,7 @@ function team(team1, team2) {
   expect(team1.shortName).to.eq(team2.shortName);
   expect(team1.code).to.eq(team2.code);
   expect(team1.established).to.eq(team2.established);
-  expect(team1.color).to.eq(team2.color);
+  expect(team1.colour).to.eq(team2.colour);
   expect(team1.dummy).to.eq(team2.dummy);
   expect(team1.photoFileName).to.eq(team2.photoFileName);
   expect(team1.url).to.eq(team2.url);

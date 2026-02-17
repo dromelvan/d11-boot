@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS team (
     short_name VARCHAR(255) NOT NULL,
     code VARCHAR(3) NOT NULL,
     established INTEGER NOT NULL,
-    colour VARCHAR(255) NOT NULL,
+    colour VARCHAR(7) NOT NULL,
     dummy BOOLEAN NOT NULL,
     photo_file_name VARCHAR(64),
     url VARCHAR(64) NOT NULL,
