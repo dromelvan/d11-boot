@@ -101,6 +101,11 @@ function matchWeek(matchWeek1, matchWeek2) {
     d11Team(matchWeek1.mostValuablePlayer.d11Team, matchWeek2.mostValuablePlayer.d11Team);
 }
 
+function matchWeekBase(matchWeek1, matchWeek2) {
+    expect(matchWeek1.id).to.eq(matchWeek2.id);
+    expect(matchWeek1.matchWeekNumber).to.eq(matchWeek2.matchWeekNumber);
+}
+
 function matchWeekWithoutMVP(matchWeek1, matchWeek2) {
     expect(matchWeek1.id).to.eq(matchWeek2.id);
     expect(matchWeek1.matchWeekNumber).to.eq(matchWeek2.matchWeekNumber);
@@ -109,6 +114,11 @@ function matchWeekWithoutMVP(matchWeek1, matchWeek2) {
     expect(matchWeek1.status).to.eq(matchWeek2.status);
 
     expect(matchWeek1.mostValuablePlayer).be.undefined
+}
+
+function matchBase(match1, match2) {
+    match(match1, match2)
+    stadium(match1.stadium, match2.stadium);
 }
 
 function match(match1, match2) {
@@ -121,6 +131,10 @@ function match(match1, match2) {
     expect(match1.previousAwayTeamGoalsScored).to.eq(match2.previousAwayTeamGoalsScored);
     expect(match1.elapsed).to.eq(match2.elapsed);
     expect(match1.status).to.eq(match2.status);
+
+    team(match1.homeTeam, match2.homeTeam);
+    team(match1.awayTeam, match2.awayTeam);
+    matchWeekBase(match1.matchWeek, match2.matchWeek);
 }
 
 function d11Match(d11Match1, d11Match2) {
@@ -160,7 +174,7 @@ function playerMatchStat(playerMatchStat1, playerMatchStat2) {
     player(playerMatchStat1.player, playerMatchStat2.player);
     team(playerMatchStat1.team, playerMatchStat2.team);
     d11Team(playerMatchStat1.d11Team, playerMatchStat2.d11Team);
-    match(playerMatchStat1.match, playerMatchStat2.match);
+    matchBase(playerMatchStat1.match, playerMatchStat2.match);
     position(playerMatchStat1.position, playerMatchStat2.position);
 }
 

@@ -2465,6 +2465,20 @@ components:
 
     # Stadium ----------------------------------------------------------------------------------------------------------
 
+    StadiumBase:
+      type: object
+      required:
+        - id
+        - name
+        - city
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          type: string
+        city:
+          type: string
+
     Stadium:
       type: object
       required:
@@ -2951,13 +2965,15 @@ components:
 
     # Match ------------------------------------------------------------------------------------------------------------
 
-    MatchBase:
+    MatchCore:
       type: object
       required:
         - id
         - datetime
-        - home_team_goals_scored
-        - away_team_goals_scored
+        - homeTeamGoalsScored
+        - awayTeamGoalsScored
+        - elapsed
+        - status
         - homeTeam
         - awayTeam
         - matchWeek
@@ -2973,6 +2989,10 @@ components:
         awayTeamGoalsScored:
           type: integer
           format: int32
+        elapsed:
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
         homeTeam:
           $ref: '#/components/schemas/TeamBase'
         awayTeam:
@@ -2980,14 +3000,24 @@ components:
         matchWeek:
           $ref: '#/components/schemas/MatchWeekBase'
 
+    MatchBase:
+      allOf:
+        - $ref: '#/components/schemas/MatchCore'
+        - type: object
+          required:
+            - stadium
+          properties:
+            stadium:
+              $ref: '#/components/schemas/StadiumBase'
+
     Match:
       allOf:
-        - $ref: '#/components/schemas/MatchBase'
+        - $ref: '#/components/schemas/MatchCore'
         - type: object
           required:
             - statSourceId
-            - previous_home_team_goals_scored
-            - previous_away_team_goals_scored
+            - previousHomeTeamGoalsScored
+            - previousAwayTeamGoalsScored
             - elapsed
             - status
           properties:
