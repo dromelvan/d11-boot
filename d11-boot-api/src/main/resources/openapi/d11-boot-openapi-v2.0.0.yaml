@@ -2965,7 +2965,7 @@ components:
 
     # Match ------------------------------------------------------------------------------------------------------------
 
-    MatchCore:
+    MatchBase:
       type: object
       required:
         - id
@@ -2977,6 +2977,7 @@ components:
         - homeTeam
         - awayTeam
         - matchWeek
+        - stadium
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -2999,20 +3000,12 @@ components:
           $ref: '#/components/schemas/TeamBase'
         matchWeek:
           $ref: '#/components/schemas/MatchWeekBase'
-
-    MatchBase:
-      allOf:
-        - $ref: '#/components/schemas/MatchCore'
-        - type: object
-          required:
-            - stadium
-          properties:
-            stadium:
-              $ref: '#/components/schemas/StadiumBase'
+        stadium:
+          $ref: '#/components/schemas/StadiumBase'
 
     Match:
       allOf:
-        - $ref: '#/components/schemas/MatchCore'
+        - $ref: '#/components/schemas/MatchBase'
         - type: object
           required:
             - statSourceId

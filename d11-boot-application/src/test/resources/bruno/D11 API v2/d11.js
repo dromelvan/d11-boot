@@ -135,6 +135,7 @@ function match(match1, match2) {
     team(match1.homeTeam, match2.homeTeam);
     team(match1.awayTeam, match2.awayTeam);
     matchWeekBase(match1.matchWeek, match2.matchWeek);
+    stadium(match1.stadium, match2.stadium);
 }
 
 function d11Match(d11Match1, d11Match2) {
