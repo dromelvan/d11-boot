@@ -286,6 +286,32 @@ INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_t
 INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
                                goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
     VALUES (3, 8, 1, 1, 1, 2, 'ND', 0, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 0, 0);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (4, 1, 1, 1, 2, 2, 'D', 2, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 700, 5);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (4, 2, 2, 1, 2, 2, 'D', 2, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 710, 5);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (4, 3, 3, 1, 2, 2, 'D', 2, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 720, 8);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (4, 4, 4, 1, 2, 2, 'D', 2, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 730, 8);
+-- Player 4 with D11TeamB (id=3) for season 2 (match_weeks 3-4, matches 5-8)
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (4, 5, 5, 1, 3, 2, 'D', 2, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 740, 3);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (4, 6, 6, 1, 3, 2, 'D', 2, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 750, 3);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (4, 7, 7, 1, 3, 2, 'D', 2, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 760, 12);
+INSERT INTO player_match_stat (player_id, match_id, d11_match_id, team_id, d11_team_id, position_id, played_position, lineup, substitution_on_time, substitution_off_time,
+                               goals, goal_assists, own_goals, goals_conceded, yellow_card_time, red_card_time, man_of_the_match, shared_man_of_the_match, rating, points)
+    VALUES (4, 8, 8, 1, 3, 2, 'D', 2, 0, 0, 0, 0, 0, 0, 0, 0, false, false, 770, 12);
+
 -- Update match_week most_valuable_player_id after player_match_stats are inserted
 UPDATE match_week SET most_valuable_player_id = id where most_valuable_player_id is null;
 
@@ -542,3 +568,7 @@ INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
     VALUES(7, 1, 1, 100);
 INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
     VALUES(8, 1, 1, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
+    VALUES(1, 4, 2, 75);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
+    VALUES(5, 4, 3, 60);
