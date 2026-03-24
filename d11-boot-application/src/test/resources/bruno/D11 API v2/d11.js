@@ -93,6 +93,8 @@ function matchWeek(matchWeek1, matchWeek2) {
     expect(matchWeek1.elapsed).to.eq(matchWeek2.elapsed);
     expect(matchWeek1.status).to.eq(matchWeek2.status);
 
+    season(matchWeek1.season, matchWeek2.season);
+
     expect(matchWeek1.mostValuablePlayer.points).to.eq(matchWeek2.mostValuablePlayer.points);
     expect(matchWeek1.mostValuablePlayer.goals).to.eq(matchWeek2.mostValuablePlayer.goals);
 

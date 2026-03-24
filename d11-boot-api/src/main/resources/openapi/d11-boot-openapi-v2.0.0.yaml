@@ -2933,6 +2933,7 @@ components:
             - date
             - elapsed
             - status
+            - season
           properties:
             date:
               type: string
@@ -2942,6 +2943,8 @@ components:
               format: int32
             status:
               $ref: '#/components/schemas/Status'
+            season:
+              $ref: '#/components/schemas/Season'
             mostValuablePlayer:
               $ref: '#/components/schemas/MostValuablePlayer'
 
