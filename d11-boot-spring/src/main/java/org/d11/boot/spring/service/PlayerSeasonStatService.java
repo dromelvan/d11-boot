@@ -19,6 +19,7 @@ import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.NotFoundException;
 import org.d11.boot.util.exception.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -43,9 +44,24 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
     private static final String SEASON_ID = "seasonId";
 
     /**
+     * Page property name.
+     */
+    private static final String PAGE = "page";
+
+    /**
+     * Ranking property name.
+     */
+    private static final String RANKING = "ranking";
+
+    /**
      * Must be positive error value.
      */
     private static final String MUST_BE_POSITIVE = "must be positive";
+
+    /**
+     * Must be non-negative error value.
+     */
+    private static final String MUST_BE_NON_NEGATIVE = "must be non-negative";
 
     /**
      * Invalid player season stat error value.
@@ -89,11 +105,39 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
         }
 
         if (page < 0) {
-            throw new BadRequestException("page", "must be non-negative");
+            throw new BadRequestException(PAGE, MUST_BE_NON_NEGATIVE);
         }
 
-        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("ranking"));
+        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(RANKING));
         return getJpaRepository().findBySeasonId(seasonId, pageable);
+    }
+
+    /**
+     * Get player season stats by season id, dummy and position ids, paged.
+     *
+     * @param seasonId    The season id.
+     * @param dummy       Null for all players, true for players on the dummy D11 team only,
+     *                    false for players on a real D11 team only.
+     * @param positionIds List of position ids to filter by.
+     * @param page        Page number (25 per page) for the search result page that will be returned.
+     * @return Player season stats matching the filters in pages of size 25.
+     */
+    public Page<PlayerSeasonStat> getBySeasonIdAndDummyAndPositionIds(final Long seasonId,
+                                                                      final Boolean dummy,
+                                                                      final List<Long> positionIds,
+                                                                      final int page) {
+        if (seasonId == null || seasonId <= 0) {
+            throw new BadRequestException(SEASON_ID, MUST_BE_POSITIVE);
+        }
+        if (positionIds == null) {
+            throw new BadRequestException("positionIds", "must not be null");
+        }
+        if (page < 0) {
+            throw new BadRequestException(PAGE, MUST_BE_NON_NEGATIVE);
+        }
+
+        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(RANKING));
+        return getJpaRepository().findBySeasonIdAndDummyAndPositionIds(seasonId, dummy, positionIds, pageable);
     }
 
     /**
