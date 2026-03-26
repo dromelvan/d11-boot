@@ -6,10 +6,12 @@ import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.Team;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -77,7 +79,6 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
      * Tests PlayerSeasonStatRepository::findByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking.
      */
     @Test
-    @SuppressWarnings("checkstyle:LineLength")
     void testFindByTeamIdAndSeasonIdOrderByPositionSortOrderAscRanking() {
         final List<PlayerSeasonStat> entities = getEntities();
         entities.sort(Comparator.comparing(PlayerSeasonStat::getPosition).thenComparing(PlayerSeasonStat::getRanking));
@@ -111,7 +112,6 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
      * Tests PlayerSeasonStatRepository::findByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking.
      */
     @Test
-    @SuppressWarnings("checkstyle:LineLength")
     void testFindByD11TeamIdAndSeasonIdOrderByPositionSortOrderAscRanking() {
         final List<PlayerSeasonStat> entities = getEntities();
         entities.sort(Comparator.comparing(PlayerSeasonStat::getPosition).thenComparing(PlayerSeasonStat::getRanking));
@@ -199,6 +199,167 @@ class PlayerSeasonStatRepositoryTests extends AbstractRepositoryTests<PlayerSeas
 
             assertNotNull(page2Result);
             assertEquals(expected.subList(pageSize, pageSize + 1), page2Result);
+        }
+    }
+
+    /**
+     * Tests PlayerSeasonStatRepository::findBySeasonIdAndDummyAndPositionIds without dummy filter.
+     */
+    @Test
+    void testFindBySeasonIdAndDummyAndPositionIdsNoDummyFilter() {
+        final List<PlayerSeasonStat> entities = getEntities();
+
+        final Set<Season> seasons = entities.stream()
+                .map(PlayerSeasonStat::getSeason).collect(Collectors.toSet());
+
+        assertTrue(seasons.size() > 1);
+
+        final Sort sort = Sort.by("id");
+
+        for (final Season season : seasons) {
+            final List<PlayerSeasonStat> seasonEntities = entities.stream()
+                    .filter(pss -> pss.getSeason().equals(season))
+                    .sorted(Comparator.comparing(PlayerSeasonStat::getId))
+                    .toList();
+
+            final List<Long> allPositionIds = seasonEntities.stream()
+                    .map(pss -> pss.getPosition().getId())
+                    .distinct()
+                    .toList();
+            final Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, sort);
+
+            final Page<PlayerSeasonStat> result = getRepository()
+                    .findBySeasonIdAndDummyAndPositionIds(season.getId(), null, allPositionIds, pageable);
+
+            assertNotNull(result);
+            assertEquals(seasonEntities, result.getContent());
+        }
+    }
+
+    /**
+     * Tests PlayerSeasonStatRepository::findBySeasonIdAndDummyAndPositionIds with dummy filter.
+     */
+    @Test
+    void testFindBySeasonIdAndDummyAndPositionIdsDummyFilter() {
+        final List<PlayerSeasonStat> entities = getEntities();
+
+        final Set<Season> seasons = entities.stream()
+                .map(PlayerSeasonStat::getSeason).collect(Collectors.toSet());
+
+        assertTrue(seasons.size() > 1);
+
+        final Sort sort = Sort.by("id");
+
+        final List<PlayerSeasonStat> combined = new ArrayList<>();
+
+        for (final Season season : seasons) {
+            final List<PlayerSeasonStat> seasonEntities = entities.stream()
+                    .filter(pss -> pss.getSeason().equals(season))
+                    .sorted(Comparator.comparing(PlayerSeasonStat::getId))
+                    .toList();
+
+            final List<Long> allPositionIds = seasonEntities.stream()
+                    .map(pss -> pss.getPosition().getId())
+                    .distinct()
+                    .toList();
+            final Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, sort);
+
+            final Page<PlayerSeasonStat> dummyResult = getRepository()
+                    .findBySeasonIdAndDummyAndPositionIds(season.getId(), Boolean.TRUE, allPositionIds, pageable);
+            final Page<PlayerSeasonStat> nonDummyResult = getRepository()
+                    .findBySeasonIdAndDummyAndPositionIds(season.getId(), Boolean.FALSE, allPositionIds, pageable);
+
+            assertNotNull(dummyResult);
+            assertNotNull(nonDummyResult);
+
+            combined.clear();
+            combined.addAll(dummyResult.getContent());
+
+            combined.addAll(nonDummyResult.getContent());
+            combined.sort(Comparator.comparing(PlayerSeasonStat::getId));
+
+            assertEquals(seasonEntities, combined);
+
+            dummyResult.forEach(pss -> assertTrue(pss.getD11Team().isDummy()));
+            nonDummyResult.forEach(pss -> assertFalse(pss.getD11Team().isDummy()));
+        }
+    }
+
+    /**
+     * Tests PlayerSeasonStatRepository::findBySeasonIdAndDummyAndPositionIds with position filter.
+     */
+    @Test
+    void testFindBySeasonIdAndDummyAndPositionIdsPositionFilter() {
+        final List<PlayerSeasonStat> entities = getEntities();
+
+        final Set<Season> seasons = entities.stream()
+                .map(PlayerSeasonStat::getSeason).collect(Collectors.toSet());
+
+        assertTrue(seasons.size() > 1);
+
+        final Sort sort = Sort.by("id");
+
+        for (final Season season : seasons) {
+            final List<PlayerSeasonStat> seasonEntities = entities.stream()
+                    .filter(pss -> pss.getSeason().equals(season))
+                    .sorted(Comparator.comparing(PlayerSeasonStat::getId))
+                    .toList();
+
+            final List<Long> positionIds = seasonEntities.stream()
+                    .map(pss -> pss.getPosition().getId())
+                    .distinct()
+                    .limit(1)
+                    .toList();
+            final Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, sort);
+
+            final List<PlayerSeasonStat> expected = seasonEntities.stream()
+                    .filter(pss -> positionIds.contains(pss.getPosition().getId()))
+                    .toList();
+            final Page<PlayerSeasonStat> result = getRepository()
+                    .findBySeasonIdAndDummyAndPositionIds(season.getId(), null, positionIds, pageable);
+
+            assertNotNull(result);
+            assertFalse(expected.isEmpty());
+            assertEquals(expected, result.getContent());
+        }
+    }
+
+    /**
+     * Tests PlayerSeasonStatRepository::findBySeasonIdAndDummyAndPositionIds with dummy and position filter.
+     */
+    @Test
+    void testFindBySeasonIdAndDummyAndPositionIdsDummyAndPositionFilter() {
+        final List<PlayerSeasonStat> entities = getEntities();
+
+        final Set<Season> seasons = entities.stream()
+                .map(PlayerSeasonStat::getSeason).collect(Collectors.toSet());
+
+        assertTrue(seasons.size() > 1);
+
+        final Sort sort = Sort.by("id");
+
+        for (final Season season : seasons) {
+            final List<PlayerSeasonStat> seasonEntities = entities.stream()
+                    .filter(pss -> pss.getSeason().equals(season))
+                    .sorted(Comparator.comparing(PlayerSeasonStat::getId))
+                    .toList();
+
+            final List<Long> positionIds = seasonEntities.stream()
+                    .map(pss -> pss.getPosition().getId())
+                    .distinct()
+                    .limit(1)
+                    .toList();
+            final Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, sort);
+
+            final List<PlayerSeasonStat> expected = seasonEntities.stream()
+                    .filter(pss -> pss.getD11Team().isDummy()
+                                   && positionIds.contains(pss.getPosition().getId()))
+                    .toList();
+            final Page<PlayerSeasonStat> result = getRepository()
+                    .findBySeasonIdAndDummyAndPositionIds(season.getId(), Boolean.TRUE, positionIds, pageable);
+
+            assertNotNull(result);
+            assertEquals(expected, result.getContent());
         }
     }
 

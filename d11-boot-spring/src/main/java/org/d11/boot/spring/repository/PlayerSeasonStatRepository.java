@@ -1,7 +1,9 @@
 package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.PlayerSeasonStat;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -75,5 +77,27 @@ public interface PlayerSeasonStatRepository extends D11EntityRepository<PlayerSe
      * @return Player season stat for the season, paged
      */
     List<PlayerSeasonStat> findBySeasonId(@Param(SEASON_ID) Long seasonId, Pageable pageable);
+
+    /**
+     * Finds player season stats by season id, dummy and position ids, paged.
+     *
+     * @param seasonId    The season id.
+     * @param dummy       Null for all, true for dummy D11 team only, false for real D11 team only.
+     * @param positionIds List of position ids to filter by.
+     * @param pageable    Pageable that defines page number, page size and sorting of the result.
+     * @return Player season stats matching the filters, paged.
+     */
+    @Query("""
+            SELECT pss FROM PlayerSeasonStat pss
+            WHERE pss.season.id = :seasonId
+              AND (:dummy IS NULL OR pss.d11Team.dummy = :dummy)
+              AND pss.position.id IN :positionIds
+            """)
+    Page<PlayerSeasonStat> findBySeasonIdAndDummyAndPositionIds(
+            @Param(SEASON_ID) Long seasonId,
+            @Param("dummy") Boolean dummy,
+            @Param("positionIds") List<Long> positionIds,
+            Pageable pageable
+    );
 
 }
