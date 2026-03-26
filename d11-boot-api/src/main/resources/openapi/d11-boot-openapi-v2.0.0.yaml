@@ -1261,6 +1261,24 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: dummy
+          in: query
+          required: false
+          description: |
+            Filter on D11 team dummy flag. Null (omitted) includes all players,
+            true includes only players on the dummy D11 team,
+            false includes only players on a real D11 team.
+          schema:
+            type: boolean
+        - name: positionIds
+          in: query
+          required: false
+          description: List of position ids to filter by. Required when dummy is provided.
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
       responses:
         200:
           description: OK
@@ -3363,8 +3381,18 @@ components:
     PlayerSeasonStatsResponseBody:
       type: object
       required:
+        - page
+        - totalPages
+        - totalElements
         - playerSeasonStats
       properties:
+        page:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
         playerSeasonStats:
           type: array
           items:

@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 /**
@@ -51,12 +53,18 @@ public class PlayerSeasonStatControllerV2 extends RepositoryServiceController<Pl
     }
 
     @Override
-    public ResponseEntity<PlayerSeasonStatsResponseBodyDTO> getPlayerSeasonStatsBySeasonId(final Long seasonId,
-                                                                                           final Integer page) {
-        final List<PlayerSeasonStat> playerSeasonStats = getRepositoryService().getBySeasonId(seasonId, page);
-
+    public ResponseEntity<PlayerSeasonStatsResponseBodyDTO> getPlayerSeasonStatsBySeasonId(
+            final Long seasonId,
+            final Integer page,
+            final Boolean dummy,
+            final List<Long> positionIds) {
+        final Page<PlayerSeasonStat> result =
+                getRepositoryService().getBySeasonIdAndDummyAndPositionIds(seasonId, dummy, positionIds, page);
         return ResponseEntity.ok(new PlayerSeasonStatsResponseBodyDTO()
-                .playerSeasonStats(getMapper().map(playerSeasonStats, PlayerSeasonStatDTO.class)));
+                .page(result.getNumber())
+                .totalPages(result.getTotalPages())
+                .totalElements(result.getTotalElements())
+                .playerSeasonStats(getMapper().map(result.getContent(), PlayerSeasonStatDTO.class)));
     }
 
     @Override

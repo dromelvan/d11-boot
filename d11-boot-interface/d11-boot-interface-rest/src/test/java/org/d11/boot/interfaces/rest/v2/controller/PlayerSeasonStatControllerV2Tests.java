@@ -21,6 +21,7 @@ import org.d11.boot.spring.repository.PlayerSeasonStatRepository;
 import org.d11.boot.spring.repository.PositionRepository;
 import org.d11.boot.spring.repository.SeasonRepository;
 import org.d11.boot.spring.repository.TeamRepository;
+import org.d11.boot.spring.service.PlayerSeasonStatService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -121,18 +122,25 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
      * Tests PlayerSeasonStatController::getPlayerSeasonStatsBySeasonId.
      */
     @Test
+    @SuppressWarnings({ "checkstyle:ExecutableStatementCount", "PMD.ExcessiveMethodLength" })
     void testGetPlayerSeasonStatsBySeasonId() {
         final PlayerSeasonStatApi playerSeasonStatApi = getApi(PlayerSeasonStatApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(null, 0));
-
-        assertThrows(FeignException.BadRequest.class, () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(-1L, 0));
+                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(null, 0, null, null));
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(1L, null));
+                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(-1L, 0, null, null));
 
-        assertThrows(FeignException.BadRequest.class, () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(1L, -1));
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(1L, null, null, null));
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(1L, -1, null, null));
+
+        final List<Long> allPositionIds = this.positionRepository.findAll().stream()
+                .map(Position::getId)
+                .toList();
 
         final List<PlayerSeasonStat> playerSeasonStats = this.playerSeasonStatRepository.findAll();
         playerSeasonStats.sort(Comparator.comparing(PlayerSeasonStat::getRanking));
@@ -144,21 +152,89 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
         assertTrue(seasons.size() > 1);
 
         for (final Season season : seasons) {
-            final PlayerSeasonStatsResponseBodyDTO playerSeasonStatsBySeasonId =
-                    playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0);
-            assertNotNull(playerSeasonStatsBySeasonId);
-
-            final List<PlayerSeasonStat> expected = playerSeasonStats.stream()
+            final List<PlayerSeasonStat> seasonStats = playerSeasonStats.stream()
                     .filter(playerSeasonStat -> playerSeasonStat.getSeason().equals(season))
                     .toList();
 
-            assertTrue(expected.size() > 1);
+            assertTrue(seasonStats.size() > 1);
 
-            final List<PlayerSeasonStatDTO> result = playerSeasonStatsBySeasonId.getPlayerSeasonStats();
+            // No dummy filter, all positions -------------------------------------------------------------------------
 
-            assertNotNull(result);
-            assertFalse(result.isEmpty());
-            assertEquals(map(expected, PlayerSeasonStatDTO.class), result);
+            final PlayerSeasonStatsResponseBodyDTO response =
+                    playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, null, allPositionIds);
+            assertNotNull(response);
+
+            assertEquals(0, response.getPage());
+            assertEquals(seasonStats.size(), response.getTotalElements());
+            assertEquals((int) Math.ceil((double) seasonStats.size() / PlayerSeasonStatService.PAGE_SIZE),
+                         response.getTotalPages());
+
+            assertNotNull(response.getPlayerSeasonStats());
+            assertFalse(response.getPlayerSeasonStats().isEmpty());
+            assertEquals(map(seasonStats, PlayerSeasonStatDTO.class), response.getPlayerSeasonStats());
+
+            // dummy=true filter ---------------------------------------------------------------------------------------
+
+            final List<PlayerSeasonStat> expectedDummy = seasonStats.stream()
+                    .filter(pss -> pss.getD11Team().isDummy())
+                    .toList();
+
+            final PlayerSeasonStatsResponseBodyDTO dummyResponse =
+                    playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, true, allPositionIds);
+            assertNotNull(dummyResponse);
+
+            assertEquals(expectedDummy.size(), dummyResponse.getTotalElements());
+            assertFalse(dummyResponse.getPlayerSeasonStats().isEmpty());
+            assertEquals(map(expectedDummy, PlayerSeasonStatDTO.class), dummyResponse.getPlayerSeasonStats());
+
+            // dummy=false filter --------------------------------------------------------------------------------------
+
+            final List<PlayerSeasonStat> expectedNonDummy = seasonStats.stream()
+                    .filter(pss -> !pss.getD11Team().isDummy())
+                    .toList();
+
+            final PlayerSeasonStatsResponseBodyDTO nonDummyResponse =
+                    playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, false, allPositionIds);
+            assertNotNull(nonDummyResponse);
+
+            assertEquals(expectedNonDummy.size(), nonDummyResponse.getTotalElements());
+            assertFalse(nonDummyResponse.getPlayerSeasonStats().isEmpty());
+            assertEquals(map(expectedNonDummy, PlayerSeasonStatDTO.class), nonDummyResponse.getPlayerSeasonStats());
+
+            // Position filter -----------------------------------------------------------------------------------------
+
+            final List<Long> singlePositionId = seasonStats.stream()
+                    .map(pss -> pss.getPosition().getId())
+                    .distinct()
+                    .limit(1)
+                    .toList();
+
+            final List<PlayerSeasonStat> expectedPosition = seasonStats.stream()
+                    .filter(pss -> singlePositionId.contains(pss.getPosition().getId()))
+                    .toList();
+
+            final PlayerSeasonStatsResponseBodyDTO positionResponse =
+                    playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, null, singlePositionId);
+            assertNotNull(positionResponse);
+
+            assertEquals(expectedPosition.size(), positionResponse.getTotalElements());
+            assertFalse(positionResponse.getPlayerSeasonStats().isEmpty());
+            assertEquals(map(expectedPosition, PlayerSeasonStatDTO.class), positionResponse.getPlayerSeasonStats());
+
+            // Dummy=true + position filter ----------------------------------------------------------------------------
+
+            final List<PlayerSeasonStat> expectedDummyAndPosition = seasonStats.stream()
+                    .filter(pss -> pss.getD11Team().isDummy()
+                                   && singlePositionId.contains(pss.getPosition().getId()))
+                    .toList();
+
+            final PlayerSeasonStatsResponseBodyDTO dummyAndPositionResponse =
+                    playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, true, singlePositionId);
+            assertNotNull(dummyAndPositionResponse);
+
+            assertEquals(expectedDummyAndPosition.size(), dummyAndPositionResponse.getTotalElements());
+            assertEquals(map(expectedDummyAndPosition, PlayerSeasonStatDTO.class),
+                         dummyAndPositionResponse.getPlayerSeasonStats());
         }
     }
 
@@ -222,7 +298,6 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
      * Tests PlayerSeasonStatController::getPlayerSeasonStatsByD11TeamIdAndSeasonId.
      */
     @Test
-    @SuppressWarnings("checkstyle:LineLength")
     void testGetPlayerSeasonStatsByD11TeamIdAndSeasonId() {
         final PlayerSeasonStatApi playerSeasonStatApi = getApi(PlayerSeasonStatApi.class);
 
