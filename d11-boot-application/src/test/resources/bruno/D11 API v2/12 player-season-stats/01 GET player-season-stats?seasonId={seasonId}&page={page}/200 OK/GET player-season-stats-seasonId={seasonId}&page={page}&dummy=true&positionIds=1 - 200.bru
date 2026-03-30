@@ -1,23 +1,29 @@
 meta {
-  name: GET player-season-stats?seasonId={seasonId}&page={page} - 200
+  name: GET player-season-stats?seasonId={seasonId}&page={page}&dummy=true&positionIds=1 - 200
   type: http
-  seq: 1
+  seq: 5
 }
 
 get {
-  url: {{baseUrl}}/v2/player-season-stats?seasonId={{seasonId}}&page=0
+  url: {{baseUrl}}/v2/player-season-stats?seasonId={{seasonId}}&page=0&dummy=true&positionIds=1
   body: none
   auth: none
 }
 
 params:query {
   seasonId: {{seasonId}}
+  page: 0
+  dummy: true
+  positionIds: 1
 }
 
 assert {
   res.status: eq 200
+  res.body.page: eq 0
+  res.body.totalPages: eq 1
+  res.body.totalElements: eq 1
   res.body.playerSeasonStats: isDefined
-  res.body.playerSeasonStats.length: eq 2
+  res.body.playerSeasonStats.length: eq 1
 }
 
 tests {
@@ -25,7 +31,7 @@ tests {
   
   test("GET season player season stats response body", () => {
     const body = res.getBody();
-    const playerSeasonStats = JSON.parse(bru.getEnvVar("seasonPlayerSeasonStats"));
+    const playerSeasonStats = JSON.parse(bru.getEnvVar("seasonPlayerSeasonStatsDummyPosition"));
   
     for (let i = 0; i < playerSeasonStats.length; ++i) {
       expectToEq.playerSeasonStat(body.playerSeasonStats[i], playerSeasonStats[i]);

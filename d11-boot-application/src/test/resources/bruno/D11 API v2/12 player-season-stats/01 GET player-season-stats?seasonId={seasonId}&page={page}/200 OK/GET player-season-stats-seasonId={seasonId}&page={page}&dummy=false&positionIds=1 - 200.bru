@@ -1,0 +1,27 @@
+meta {
+  name: GET player-season-stats?seasonId={seasonId}&page={page}&dummy=false&positionIds=1 - 200
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/v2/player-season-stats?seasonId={{seasonId}}&page=0&dummy=false&positionIds=1
+  body: none
+  auth: none
+}
+
+params:query {
+  seasonId: {{seasonId}}
+  page: 0
+  dummy: false
+  positionIds: 1
+}
+
+assert {
+  res.status: eq 200
+  res.body.page: eq 0
+  res.body.totalPages: eq 0
+  res.body.totalElements: eq 0
+  res.body.playerSeasonStats: isDefined
+  res.body.playerSeasonStats.length: eq 0
+}

@@ -1,0 +1,28 @@
+meta {
+  name: GET player-season-stats?seasonId={seasonId}&page={page} - 400 Invalid Dummy
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/v2/player-season-stats?seasonId={{seasonId}}&page=0&positionIds=1&dummy=invalid
+  body: none
+  auth: none
+}
+
+params:query {
+  seasonId: {{seasonId}}
+  page: 0
+  positionIds: 1
+  dummy: invalid
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq GET
+  res.body.path: eq /v2/player-season-stats
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq dummy
+  res.body.validationErrors[0].error: eq Invalid boolean value [invalid]
+}
