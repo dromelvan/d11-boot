@@ -14,6 +14,7 @@ import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.spring.repository.PlayerSeasonStatRepository;
 import org.d11.boot.spring.repository.PositionRepository;
 import org.d11.boot.spring.repository.TeamRepository;
+import org.d11.boot.util.PlayerSeasonStatSort;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.NotFoundException;
@@ -49,11 +50,6 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
     private static final String PAGE = "page";
 
     /**
-     * Ranking property name.
-     */
-    private static final String RANKING = "ranking";
-
-    /**
      * Must be positive error value.
      */
     private static final String MUST_BE_POSITIVE = "must be positive";
@@ -62,6 +58,11 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
      * Must be non-negative error value.
      */
     private static final String MUST_BE_NON_NEGATIVE = "must be non-negative";
+
+    /**
+     * Must not be null error value.
+     */
+    private static final String MUST_NOT_BE_NULL = "must not be null";
 
     /**
      * Invalid player season stat error value.
@@ -108,7 +109,7 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
             throw new BadRequestException(PAGE, MUST_BE_NON_NEGATIVE);
         }
 
-        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(RANKING));
+        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(PlayerSeasonStatSort.RANKING.getProperty()));
         return getJpaRepository().findBySeasonId(seasonId, pageable);
     }
 
@@ -120,23 +121,31 @@ public class PlayerSeasonStatService extends RepositoryService<PlayerSeasonStat,
      *                    false for players on a real D11 team only.
      * @param positionIds List of position ids to filter by.
      * @param page        Page number (25 per page) for the search result page that will be returned.
+     * @param sort        Sort order. RANKING sorts ascending by ranking, all others sort descending.
      * @return Player season stats matching the filters in pages of size 25.
      */
     public Page<PlayerSeasonStat> getBySeasonIdAndDummyAndPositionIds(final Long seasonId,
                                                                       final Boolean dummy,
                                                                       final List<Long> positionIds,
-                                                                      final int page) {
+                                                                      final int page,
+                                                                      final PlayerSeasonStatSort sort) {
         if (seasonId == null || seasonId <= 0) {
             throw new BadRequestException(SEASON_ID, MUST_BE_POSITIVE);
         }
         if (positionIds == null) {
-            throw new BadRequestException("positionIds", "must not be null");
+            throw new BadRequestException("positionIds", MUST_NOT_BE_NULL);
         }
         if (page < 0) {
             throw new BadRequestException(PAGE, MUST_BE_NON_NEGATIVE);
         }
+        if (sort == null) {
+            throw new BadRequestException("sort", MUST_NOT_BE_NULL);
+        }
 
-        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(RANKING));
+        final Sort pageSort = sort == PlayerSeasonStatSort.RANKING
+                ? Sort.by(sort.getProperty())
+                : Sort.by(Sort.Direction.DESC, sort.getProperty());
+        final Pageable pageable = PageRequest.of(page, PAGE_SIZE, pageSort);
         return getJpaRepository().findBySeasonIdAndDummyAndPositionIds(seasonId, dummy, positionIds, pageable);
     }
 

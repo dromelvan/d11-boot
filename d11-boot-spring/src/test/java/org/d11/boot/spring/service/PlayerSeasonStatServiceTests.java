@@ -14,6 +14,7 @@ import org.d11.boot.spring.repository.PlayerSeasonStatRepository;
 import org.d11.boot.spring.repository.PositionRepository;
 import org.d11.boot.spring.repository.SeasonRepository;
 import org.d11.boot.spring.repository.TeamRepository;
+import org.d11.boot.util.PlayerSeasonStatSort;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.NotFoundException;
@@ -275,14 +276,15 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
 
         // Validation --------------------------------------------------------------------------------------------------
 
-
+        final PlayerSeasonStatSort sort = PlayerSeasonStatSort.POINTS;
 
         final BadRequestException nullSeasonIdException =
                 assertThrows(BadRequestException.class,
                              () -> this.playerSeasonStatService.getBySeasonIdAndDummyAndPositionIds(null,
                                                                                                     null,
                                                                                                     List.of(),
-                                                                                                    0));
+                                                                                                    0,
+                                                                                                    sort));
         assertEquals(SEASON_ID, nullSeasonIdException.getParameter());
 
         final BadRequestException invalidSeasonIdException =
@@ -290,7 +292,8 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
                              () -> this.playerSeasonStatService.getBySeasonIdAndDummyAndPositionIds(-1L,
                                                                                                     null,
                                                                                                     List.of(),
-                                                                                                    0));
+                                                                                                    0,
+                                                                                                    sort));
         assertEquals(SEASON_ID, invalidSeasonIdException.getParameter());
 
         final BadRequestException nullPositionIdsException =
@@ -298,7 +301,8 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
                              () -> this.playerSeasonStatService.getBySeasonIdAndDummyAndPositionIds(1L,
                                                                                                     null,
                                                                                                     null,
-                                                                                                    0));
+                                                                                                    0,
+                                                                                                    sort));
         assertEquals("positionIds", nullPositionIdsException.getParameter());
 
         final BadRequestException invalidPageException =
@@ -306,8 +310,18 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
                              () -> this.playerSeasonStatService.getBySeasonIdAndDummyAndPositionIds(1L,
                                                                                                     null,
                                                                                                     List.of(),
-                                                                                                    -1));
+                                                                                                    -1,
+                                                                                                    sort));
         assertEquals("page", invalidPageException.getParameter());
+
+        final BadRequestException invalidSortException =
+                assertThrows(BadRequestException.class,
+                             () -> this.playerSeasonStatService.getBySeasonIdAndDummyAndPositionIds(1L,
+                                                                                                    null,
+                                                                                                    List.of(),
+                                                                                                    0,
+                                                                                                    null));
+        assertEquals("sort", invalidSortException.getParameter());
 
         // Success -----------------------------------------------------------------------------------------------------
 
@@ -322,23 +336,34 @@ class PlayerSeasonStatServiceTests extends BaseD11BootServiceTests {
                                                                                   any(Pageable.class)))
                 .thenReturn(playerSeasonStats);
 
-        this.playerSeasonStatService.getBySeasonIdAndDummyAndPositionIds(seasonId, null, positionIds, 0);
-        this.playerSeasonStatService.getBySeasonIdAndDummyAndPositionIds(seasonId, null, positionIds, 1);
+        this.playerSeasonStatService.getBySeasonIdAndDummyAndPositionIds(seasonId, null, positionIds, 0,
+                                                                         PlayerSeasonStatSort.RANKING);
+        this.playerSeasonStatService.getBySeasonIdAndDummyAndPositionIds(seasonId, null, positionIds, 0,
+                                                                         PlayerSeasonStatSort.GOALS);
+        this.playerSeasonStatService.getBySeasonIdAndDummyAndPositionIds(seasonId, null, positionIds, 0,
+                                                                         PlayerSeasonStatSort.RATING);
+        this.playerSeasonStatService.getBySeasonIdAndDummyAndPositionIds(seasonId, null, positionIds, 0,
+                                                                         PlayerSeasonStatSort.FORM);
+        this.playerSeasonStatService.getBySeasonIdAndDummyAndPositionIds(seasonId, null, positionIds, 0,
+                                                                         PlayerSeasonStatSort.POINTS);
 
         final ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
-        verify(this.playerSeasonStatRepository, times(2))
+        verify(this.playerSeasonStatRepository, times(5))
                 .findBySeasonIdAndDummyAndPositionIds(eq(seasonId), eq(null), eq(positionIds),
                                                       pageableCaptor.capture());
 
         final List<Pageable> pageables = pageableCaptor.getAllValues();
 
-        assertEquals(0, pageables.get(0).getPageNumber());
-        assertEquals(PlayerSeasonStatService.PAGE_SIZE, pageables.get(0).getPageSize());
-        assertEquals(Sort.by("ranking"), pageables.get(0).getSort());
-
-        assertEquals(1, pageables.get(1).getPageNumber());
-        assertEquals(PlayerSeasonStatService.PAGE_SIZE, pageables.get(1).getPageSize());
-        assertEquals(Sort.by("ranking"), pageables.get(1).getSort());
+        assertEquals(Sort.by(Sort.Direction.ASC, PlayerSeasonStatSort.RANKING.getProperty()),
+                     pageables.get(0).getSort());
+        assertEquals(Sort.by(Sort.Direction.DESC, PlayerSeasonStatSort.GOALS.getProperty()),
+                     pageables.get(1).getSort());
+        assertEquals(Sort.by(Sort.Direction.DESC, PlayerSeasonStatSort.RATING.getProperty()),
+                     pageables.get(2).getSort());
+        assertEquals(Sort.by(Sort.Direction.DESC, PlayerSeasonStatSort.FORM.getProperty()),
+                     pageables.get(3).getSort());
+        assertEquals(Sort.by(Sort.Direction.DESC, PlayerSeasonStatSort.POINTS.getProperty()),
+                     pageables.get(4).getSort());
     }
 
     /**
