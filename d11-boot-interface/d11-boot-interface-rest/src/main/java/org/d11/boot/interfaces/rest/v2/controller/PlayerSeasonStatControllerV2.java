@@ -4,6 +4,7 @@ import org.d11.boot.api.v2.PlayerSeasonStatApi;
 import org.d11.boot.api.v2.model.CreatePlayerSeasonStatInputRequestBodyDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatResponseBodyDTO;
+import org.d11.boot.api.v2.model.PlayerSeasonStatSortDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatsResponseBodyDTO;
 import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputRequestBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
@@ -12,6 +13,7 @@ import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
 import org.d11.boot.spring.security.RoleAdmin;
 import org.d11.boot.spring.service.PlayerSeasonStatService;
+import org.d11.boot.util.PlayerSeasonStatSort;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,9 +59,20 @@ public class PlayerSeasonStatControllerV2 extends RepositoryServiceController<Pl
             final Long seasonId,
             final Integer page,
             final Boolean dummy,
-            final List<Long> positionIds) {
+            final List<Long> positionIds,
+            final PlayerSeasonStatSortDTO sort) {
+        final PlayerSeasonStatSort playerSeasonStatSort = sort == null
+                ? PlayerSeasonStatSort.RANKING
+                : switch (sort) {
+            case GOALS -> PlayerSeasonStatSort.GOALS;
+            case RATING -> PlayerSeasonStatSort.RATING;
+            case FORM -> PlayerSeasonStatSort.FORM;
+            case POINTS -> PlayerSeasonStatSort.POINTS;
+            default -> PlayerSeasonStatSort.RANKING;
+        };
         final Page<PlayerSeasonStat> result =
-                getRepositoryService().getBySeasonIdAndDummyAndPositionIds(seasonId, dummy, positionIds, page);
+                getRepositoryService().getBySeasonIdAndDummyAndPositionIds(seasonId, dummy, positionIds, page,
+                                                                           playerSeasonStatSort);
         return ResponseEntity.ok(new PlayerSeasonStatsResponseBodyDTO()
                 .page(result.getNumber())
                 .totalPages(result.getTotalPages())

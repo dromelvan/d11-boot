@@ -1279,6 +1279,12 @@ paths:
             items:
               type: integer
               format: int64
+        - name: sort
+          in: query
+          required: false
+          description: Sort order for the results.
+          schema:
+            $ref: '#/components/schemas/PlayerSeasonStatSort'
       responses:
         200:
           description: OK
@@ -3205,6 +3211,15 @@ components:
               $ref: '#/components/schemas/TeamBase'
 
     # Player season stat -----------------------------------------------------------------------------------------------
+
+    PlayerSeasonStatSort:
+      type: string
+      enum:
+        - RANKING
+        - GOALS
+        - RATING
+        - FORM
+        - POINTS
 
     PlayerSeasonStat:
       type: object

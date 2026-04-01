@@ -6,6 +6,7 @@ import org.d11.boot.api.v2.model.CreatePlayerSeasonStatInputDTO;
 import org.d11.boot.api.v2.model.CreatePlayerSeasonStatInputRequestBodyDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatResponseBodyDTO;
+import org.d11.boot.api.v2.model.PlayerSeasonStatSortDTO;
 import org.d11.boot.api.v2.model.PlayerSeasonStatsResponseBodyDTO;
 import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputDTO;
 import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputRequestBodyDTO;
@@ -126,16 +127,16 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
         final PlayerSeasonStatApi playerSeasonStatApi = getApi(PlayerSeasonStatApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(null, 0, null, null));
+                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(null, 0, null, null, null));
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(-1L, 0, null, null));
+                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(-1L, 0, null, null, null));
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(1L, null, null, null));
+                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(1L, null, null, null, null));
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(1L, -1, null, null));
+                     () -> playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(1L, -1, null, null, null));
     }
 
     /**
@@ -164,7 +165,7 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
                     .toList();
 
             final PlayerSeasonStatsResponseBodyDTO response =
-                    playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, null, positionIds);
+                    playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, null, positionIds, null);
             assertNotNull(response);
 
             assertEquals(0, response.getPage());
@@ -207,7 +208,7 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
                     .toList();
 
             PlayerSeasonStatsResponseBodyDTO response =
-                    playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, true, positionIds);
+                    playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, true, positionIds, null);
             assertNotNull(response);
 
             assertEquals(expected.size(), response.getTotalElements());
@@ -218,7 +219,7 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
                     .filter(pss -> !pss.getD11Team().isDummy())
                     .toList();
 
-            response = playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, false, positionIds);
+            response = playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, false, positionIds, null);
             assertNotNull(response);
 
             assertEquals(expected.size(), response.getTotalElements());
@@ -258,8 +259,8 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
                     .filter(pss -> pss.getPosition().getId().equals(positionId))
                     .toList();
 
-            final PlayerSeasonStatsResponseBodyDTO response =
-                    playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, null, List.of(positionId));
+            final PlayerSeasonStatsResponseBodyDTO response = playerSeasonStatApi
+                    .getPlayerSeasonStatsBySeasonId(season.getId(), 0, null, List.of(positionId), null);
             assertNotNull(response);
 
             assertEquals(expected.size(), response.getTotalElements());
@@ -301,7 +302,7 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
                     .toList();
 
             PlayerSeasonStatsResponseBodyDTO response = playerSeasonStatApi
-                    .getPlayerSeasonStatsBySeasonId(season.getId(), 0, true, List.of(dummyPositionId));
+                    .getPlayerSeasonStatsBySeasonId(season.getId(), 0, true, List.of(dummyPositionId), null);
             assertNotNull(response);
 
             assertEquals(expected.size(), response.getTotalElements());
@@ -324,13 +325,192 @@ class PlayerSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
                     .toList();
 
             response = playerSeasonStatApi
-                    .getPlayerSeasonStatsBySeasonId(season.getId(), 0, false, List.of(positionId));
+                    .getPlayerSeasonStatsBySeasonId(season.getId(), 0, false, List.of(positionId), null);
             assertNotNull(response);
 
             assertEquals(expected.size(), response.getTotalElements());
             assertFalse(response.getPlayerSeasonStats().isEmpty());
             assertEquals(map(expected, PlayerSeasonStatDTO.class), response.getPlayerSeasonStats());
         }
+    }
+
+    /**
+     * Tests PlayerSeasonStatController::getPlayerSeasonStatsBySeasonId with null sort (default ranking).
+     */
+    @Test
+    void testGetPlayerSeasonStatsBySeasonIdSortNull() {
+        final PlayerSeasonStatApi playerSeasonStatApi = getApi(PlayerSeasonStatApi.class);
+
+        final List<Long> positionIds = this.positionRepository.findAll().stream()
+                .map(Position::getId)
+                .toList();
+
+        final List<PlayerSeasonStat> playerSeasonStats = this.playerSeasonStatRepository.findAll();
+
+        final Season season = playerSeasonStats.stream()
+                .map(PlayerSeasonStat::getSeason)
+                .findFirst()
+                .orElseThrow();
+
+        final List<PlayerSeasonStat> expected = playerSeasonStats.stream()
+                .filter(pss -> pss.getSeason().equals(season))
+                .sorted(Comparator.comparing(PlayerSeasonStat::getRanking))
+                .toList();
+
+        final PlayerSeasonStatsResponseBodyDTO response =
+                playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, null, positionIds, null);
+        assertNotNull(response);
+        assertEquals(map(expected, PlayerSeasonStatDTO.class), response.getPlayerSeasonStats());
+    }
+
+    /**
+     * Tests PlayerSeasonStatController::getPlayerSeasonStatsBySeasonId with RANKING sort.
+     */
+    @Test
+    void testGetPlayerSeasonStatsBySeasonIdSortRanking() {
+        final PlayerSeasonStatApi playerSeasonStatApi = getApi(PlayerSeasonStatApi.class);
+
+        final List<Long> positionIds = this.positionRepository.findAll().stream()
+                .map(Position::getId)
+                .toList();
+
+        final List<PlayerSeasonStat> playerSeasonStats = this.playerSeasonStatRepository.findAll();
+
+        final Season season = playerSeasonStats.stream()
+                .map(PlayerSeasonStat::getSeason)
+                .findFirst()
+                .orElseThrow();
+
+        final List<PlayerSeasonStat> expected = playerSeasonStats.stream()
+                .filter(pss -> pss.getSeason().equals(season))
+                .sorted(Comparator.comparing(PlayerSeasonStat::getRanking))
+                .toList();
+
+        final PlayerSeasonStatsResponseBodyDTO response =
+                playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, null, positionIds,
+                                                                   PlayerSeasonStatSortDTO.RANKING);
+        assertNotNull(response);
+        assertEquals(map(expected, PlayerSeasonStatDTO.class), response.getPlayerSeasonStats());
+    }
+
+    /**
+     * Tests PlayerSeasonStatController::getPlayerSeasonStatsBySeasonId with GOALS sort.
+     */
+    @Test
+    void testGetPlayerSeasonStatsBySeasonIdSortGoals() {
+        final PlayerSeasonStatApi playerSeasonStatApi = getApi(PlayerSeasonStatApi.class);
+
+        final List<Long> positionIds = this.positionRepository.findAll().stream()
+                .map(Position::getId)
+                .toList();
+
+        final List<PlayerSeasonStat> playerSeasonStats = this.playerSeasonStatRepository.findAll();
+
+        final Season season = playerSeasonStats.stream()
+                .map(PlayerSeasonStat::getSeason)
+                .findFirst()
+                .orElseThrow();
+
+        final List<PlayerSeasonStat> expected = playerSeasonStats.stream()
+                .filter(pss -> pss.getSeason().equals(season))
+                .sorted(Comparator.comparing(PlayerSeasonStat::getGoals).reversed())
+                .toList();
+
+        final PlayerSeasonStatsResponseBodyDTO response =
+                playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, null, positionIds,
+                                                                   PlayerSeasonStatSortDTO.GOALS);
+        assertNotNull(response);
+        assertEquals(map(expected, PlayerSeasonStatDTO.class), response.getPlayerSeasonStats());
+    }
+
+    /**
+     * Tests PlayerSeasonStatController::getPlayerSeasonStatsBySeasonId with RATING sort.
+     */
+    @Test
+    void testGetPlayerSeasonStatsBySeasonIdSortRating() {
+        final PlayerSeasonStatApi playerSeasonStatApi = getApi(PlayerSeasonStatApi.class);
+
+        final List<Long> positionIds = this.positionRepository.findAll().stream()
+                .map(Position::getId)
+                .toList();
+
+        final List<PlayerSeasonStat> playerSeasonStats = this.playerSeasonStatRepository.findAll();
+
+        final Season season = playerSeasonStats.stream()
+                .map(PlayerSeasonStat::getSeason)
+                .findFirst()
+                .orElseThrow();
+
+        final List<PlayerSeasonStat> expected = playerSeasonStats.stream()
+                .filter(pss -> pss.getSeason().equals(season))
+                .sorted(Comparator.comparing(PlayerSeasonStat::getRating).reversed())
+                .toList();
+
+        final PlayerSeasonStatsResponseBodyDTO response =
+                playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, null, positionIds,
+                                                                   PlayerSeasonStatSortDTO.RATING);
+        assertNotNull(response);
+        assertEquals(map(expected, PlayerSeasonStatDTO.class), response.getPlayerSeasonStats());
+    }
+
+    /**
+     * Tests PlayerSeasonStatController::getPlayerSeasonStatsBySeasonId with FORM sort.
+     */
+    @Test
+    void testGetPlayerSeasonStatsBySeasonIdSortForm() {
+        final PlayerSeasonStatApi playerSeasonStatApi = getApi(PlayerSeasonStatApi.class);
+
+        final List<Long> positionIds = this.positionRepository.findAll().stream()
+                .map(Position::getId)
+                .toList();
+
+        final List<PlayerSeasonStat> playerSeasonStats = this.playerSeasonStatRepository.findAll();
+
+        final Season season = playerSeasonStats.stream()
+                .map(PlayerSeasonStat::getSeason)
+                .findFirst()
+                .orElseThrow();
+
+        final List<PlayerSeasonStat> expected = playerSeasonStats.stream()
+                .filter(pss -> pss.getSeason().equals(season))
+                .sorted(Comparator.comparing(PlayerSeasonStat::getFormPoints).reversed())
+                .toList();
+
+        final PlayerSeasonStatsResponseBodyDTO response =
+                playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, null, positionIds,
+                                                                   PlayerSeasonStatSortDTO.FORM);
+        assertNotNull(response);
+        assertEquals(map(expected, PlayerSeasonStatDTO.class), response.getPlayerSeasonStats());
+    }
+
+    /**
+     * Tests PlayerSeasonStatController::getPlayerSeasonStatsBySeasonId with POINTS sort.
+     */
+    @Test
+    void testGetPlayerSeasonStatsBySeasonIdSortPoints() {
+        final PlayerSeasonStatApi playerSeasonStatApi = getApi(PlayerSeasonStatApi.class);
+
+        final List<Long> positionIds = this.positionRepository.findAll().stream()
+                .map(Position::getId)
+                .toList();
+
+        final List<PlayerSeasonStat> playerSeasonStats = this.playerSeasonStatRepository.findAll();
+
+        final Season season = playerSeasonStats.stream()
+                .map(PlayerSeasonStat::getSeason)
+                .findFirst()
+                .orElseThrow();
+
+        final List<PlayerSeasonStat> expected = playerSeasonStats.stream()
+                .filter(pss -> pss.getSeason().equals(season))
+                .sorted(Comparator.comparing(PlayerSeasonStat::getPoints).reversed())
+                .toList();
+
+        final PlayerSeasonStatsResponseBodyDTO response =
+                playerSeasonStatApi.getPlayerSeasonStatsBySeasonId(season.getId(), 0, null, positionIds,
+                                                                   PlayerSeasonStatSortDTO.POINTS);
+        assertNotNull(response);
+        assertEquals(map(expected, PlayerSeasonStatDTO.class), response.getPlayerSeasonStats());
     }
 
     /**
