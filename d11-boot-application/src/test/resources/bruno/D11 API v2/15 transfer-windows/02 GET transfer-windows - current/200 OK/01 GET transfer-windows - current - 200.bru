@@ -13,8 +13,8 @@ get {
 assert {
   res.status: eq 200
   res.body.transferWindow: isDefined
-  res.body.matchWeek: isDefined 
-  res.body.transferDays.length: eq 1
+  res.body.matchWeek: isDefined
+  res.body.transferDays.length: eq 2
 }
 
 tests {
