@@ -3770,6 +3770,32 @@ components:
           type: string
           format: date-time
 
+    TransferWindow:
+      allOf:
+        - $ref: '#/components/schemas/TransferWindowBase'
+        - type: object
+          properties:
+            transferWindowPositionCounts:
+              type: array
+              items:
+                $ref: '#/components/schemas/TransferWindowPositionCount'
+
+    TransferWindowPositionCount:
+      type: object
+      required:
+        - transferListingCount
+        - transferCount
+        - position
+      properties:
+        transferListingCount:
+          type: integer
+          format: int32
+        transferCount:
+          type: integer
+          format: int32
+        position:
+          $ref: '#/components/schemas/Position'
+
     TransferWindowInput:
       type: object
       required:

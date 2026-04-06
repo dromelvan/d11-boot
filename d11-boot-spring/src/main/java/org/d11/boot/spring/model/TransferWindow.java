@@ -14,6 +14,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.d11.boot.spring.model.converter.StatusConverter;
 import org.d11.boot.util.Status;
 
@@ -21,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * A transfer window. Contains a number of transfer days.
@@ -30,7 +33,8 @@ import java.util.List;
 @NamedEntityGraph(name = TransferWindow.TRANSFER_WINDOW_ASSOCIATIONS,
         attributeNodes = {
             @NamedAttributeNode("matchWeek"),
-            @NamedAttributeNode("transferDays")
+            @NamedAttributeNode("transferDays"),
+            @NamedAttributeNode("transferWindowPositionCounts")
         }
 )
 public class TransferWindow extends D11Entity implements Comparable<TransferWindow> {
@@ -89,8 +93,17 @@ public class TransferWindow extends D11Entity implements Comparable<TransferWind
     @EqualsAndHashCode.Exclude
     private List<TransferDay> transferDays = new ArrayList<>();
 
+    /**
+     * Set of position counts for this transfer window.
+     */
+    @OneToMany
+    @JoinColumn(name = "transfer_window_id")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private SortedSet<TransferWindowPositionCount> transferWindowPositionCounts = new TreeSet<>();
+
     @Override
-    public int compareTo(final TransferWindow transferWindow) {
+    public int compareTo(final @NonNull TransferWindow transferWindow) {
         return COMPARATOR.compare(this, transferWindow);
     }
 
