@@ -21,6 +21,7 @@ import org.hibernate.annotations.Immutable;
 @Getter
 @ToString
 @Immutable
+@EqualsAndHashCode
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
 public class TransferWindowPositionCount implements Comparable<TransferWindowPositionCount> {
@@ -64,7 +65,7 @@ public class TransferWindowPositionCount implements Comparable<TransferWindowPos
     private final Position position;
 
     @Override
-    public int compareTo(TransferWindowPositionCount transferWindowPositionCount) {
+    public int compareTo(final TransferWindowPositionCount transferWindowPositionCount) {
         return this.getPosition().compareTo(transferWindowPositionCount.getPosition());
     }
 }

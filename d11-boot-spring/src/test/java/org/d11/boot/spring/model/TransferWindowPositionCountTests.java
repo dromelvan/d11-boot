@@ -12,11 +12,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,15 +58,19 @@ class TransferWindowPositionCountTests extends EasyRandomTests {
      * Tests TransferWindow::getTransferWindowPositionCounts.
      */
     @Test
-    void getTransferWindowPositionCounts() {
+    @SuppressWarnings({ "checkstyle:NestedForDepth", "PMD.CognitiveComplexity" })
+    void testGetTransferWindowPositionCounts() {
         final List<TransferWindow> transferWindows = this.transferWindowRepository.findAll();
 
         assertFalse(transferWindows.isEmpty());
 
+        final Map<Position, Integer> transferListingCounts = new ConcurrentHashMap<>();
+        final Map<Position, Integer> transferCounts = new ConcurrentHashMap<>();
+
         boolean hasResults = false;
         for (final TransferWindow transferWindow : transferWindows) {
-            final Map<Position, Integer> transferListingCounts = new HashMap<>();
-            final Map<Position, Integer> transferCounts = new HashMap<>();
+            transferListingCounts.clear();
+            transferCounts.clear();
 
             for (final TransferDay transferDay : transferWindow.getTransferDays()) {
                 if (transferDay.getTransferDayNumber() == 1) {
@@ -76,8 +80,9 @@ class TransferWindowPositionCountTests extends EasyRandomTests {
                         }
                     }
                 }
-                for (final Transfer transfer :
-                        this.transferRepository.findByTransferDayIdOrderByD11TeamNameAscFeeDesc(transferDay.getId())) {
+                for (final Transfer transfer
+                        : this.transferRepository
+                        .findByTransferDayIdOrderByD11TeamNameAscFeeDesc(transferDay.getId())) {
                     final Optional<TransferListing> optional =
                             this.transferListingRepository.findByTransferDayIdAndPlayerId(transferDay.getId(),
                                                                                           transfer.getPlayer().getId());
