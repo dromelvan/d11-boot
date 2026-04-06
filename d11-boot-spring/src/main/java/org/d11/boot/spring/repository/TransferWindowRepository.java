@@ -2,7 +2,6 @@ package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.TransferWindow;
 import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -24,15 +23,6 @@ public interface TransferWindowRepository extends D11EntityRepository<TransferWi
     @Override
     @EntityGraph(TransferWindow.TRANSFER_WINDOW_ASSOCIATIONS)
     Optional<TransferWindow> findById(Long id);
-
-    /**
-     * Finds the current transfer window and its match week and transfer days..
-     *
-     * @return The current transfer window.
-     */
-    @EntityGraph(TransferWindow.TRANSFER_WINDOW_ASSOCIATIONS)
-    @Query("SELECT tw FROM TransferWindow tw ORDER BY tw.datetime DESC LIMIT 1")
-    Optional<TransferWindow> findCurrentTransferWindow();
 
     /**
      * Finds the latest transfer window. This is the current one.

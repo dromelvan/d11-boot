@@ -67,12 +67,12 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
     void testGetTransferWindow() {
         final TransferWindow current = generate(TransferWindow.class);
 
-        when(this.transferWindowRepository.findCurrentTransferWindow()).thenReturn(Optional.empty());
+        when(this.transferWindowRepository.findFirstByOrderByDatetimeDesc()).thenReturn(Optional.empty());
 
         assertThrows(ConflictException.class, () -> this.transferWindowService.getCurrentTransferWindow());
 
-        when(this.transferWindowRepository.findCurrentTransferWindow())
-                .thenReturn(Optional.of(current));
+        when(this.transferWindowRepository.findFirstByOrderByDatetimeDesc()).thenReturn(Optional.of(current));
+        when(this.transferWindowRepository.findById(eq(current.getId()))).thenReturn(Optional.of(current));
 
         assertEquals(current, this.transferWindowService.getCurrentTransferWindow());
     }

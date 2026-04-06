@@ -16,9 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Transfer window service.
@@ -50,9 +48,11 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
      * @return The current transfer window.
      */
     public TransferWindow getCurrentTransferWindow() {
-        final Optional<TransferWindow> optional = getJpaRepository().findCurrentTransferWindow();
+        final TransferWindow current = getJpaRepository().findFirstByOrderByDatetimeDesc()
+                .orElseThrow(() -> new ConflictException(ErrorCode.CONFLICT_NO_CURRENT_TRANSFER_WINDOW));
 
-        return optional.orElseThrow(() -> new ConflictException(ErrorCode.CONFLICT_NO_CURRENT_TRANSFER_WINDOW));
+        return getJpaRepository().findById(current.getId())
+                .orElseThrow(() -> new ConflictException(ErrorCode.CONFLICT_NO_CURRENT_TRANSFER_WINDOW));
     }
 
     /**
@@ -104,7 +104,7 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
         final TransferDay transferDay = new TransferDay();
         transferDay.setTransferWindow(transferWindow);
         transferDay.setTransferDayNumber(1);
-        transferDay.setDatetime(datetime.plus(transferDayDelay, ChronoUnit.DAYS));
+        transferDay.setDatetime(datetime.plusDays(transferDayDelay));
         transferWindow.getTransferDays().add(transferDay);
 
         return save(transferWindow);

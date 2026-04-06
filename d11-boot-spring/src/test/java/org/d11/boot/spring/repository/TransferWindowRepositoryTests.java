@@ -25,22 +25,6 @@ class TransferWindowRepositoryTests extends AbstractRepositoryTests<TransferWind
     private MatchWeekRepository matchWeekRepository;
 
     /**
-     * Tests TransferWindowRepository::findCurrentTransferWindow.
-     */
-    @Test
-    void testFindCurrentTransferWindow() {
-        final List<TransferWindow> entities = getEntities();
-        entities.sort(Comparator.naturalOrder());
-
-        final TransferWindow transferWindow = entities.get(0);
-
-        final Optional<TransferWindow> optional = getRepository().findCurrentTransferWindow();
-
-        assertTrue(optional.isPresent());
-        optional.ifPresent(result -> assertEquals(transferWindow, result));
-    }
-
-    /**
      * Tests TransferWindowRepository::findFirstByOrderByDatetimeDesc.
      */
     @Test
