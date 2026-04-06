@@ -5,7 +5,7 @@ import org.d11.boot.api.v2.model.MatchWeekDTO;
 import org.d11.boot.api.v2.model.TransferDayDTO;
 import org.d11.boot.api.v2.model.TransferDayResponseBodyDTO;
 import org.d11.boot.api.v2.model.TransferDaysResponseBodyDTO;
-import org.d11.boot.api.v2.model.TransferWindowDTO;
+import org.d11.boot.api.v2.model.TransferWindowBaseDTO;
 import org.d11.boot.api.v2.model.UpdateTransferDayRequestBodyDTO;
 import org.d11.boot.api.v2.model.UpdateTransferDayStatusRequestBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
@@ -49,7 +49,7 @@ public class TransferDayControllerV2 extends RepositoryServiceController<Transfe
         return ResponseEntity.ok(new TransferDayResponseBodyDTO()
                                          .transferDay(getMapper().map(transferDay, TransferDayDTO.class))
                                          .transferWindow(getMapper().map(transferDay.getTransferWindow(),
-                                                                         TransferWindowDTO.class))
+                                                                         TransferWindowBaseDTO.class))
                                          .matchWeek(getMapper().map(transferDay.getTransferWindow().getMatchWeek(),
                                                                     MatchWeekDTO.class)));
     }
@@ -60,7 +60,7 @@ public class TransferDayControllerV2 extends RepositoryServiceController<Transfe
 
         return ResponseEntity.ok(new TransferDayResponseBodyDTO()
                 .transferDay(map(transferDay, TransferDayDTO.class))
-                .transferWindow(map(transferDay.getTransferWindow(), TransferWindowDTO.class))
+                .transferWindow(map(transferDay.getTransferWindow(), TransferWindowBaseDTO.class))
                 .matchWeek(map(transferDay.getTransferWindow().getMatchWeek(), MatchWeekDTO.class)));
     }
 
@@ -84,7 +84,7 @@ public class TransferDayControllerV2 extends RepositoryServiceController<Transfe
 
         return ResponseEntity.ok(new TransferDayResponseBodyDTO()
                 .transferDay(map(transferDay, TransferDayDTO.class))
-                .transferWindow(map(transferDay.getTransferWindow(), TransferWindowDTO.class))
+                .transferWindow(map(transferDay.getTransferWindow(), TransferWindowBaseDTO.class))
                 .matchWeek(map(transferDay.getTransferWindow().getMatchWeek(), MatchWeekDTO.class)));
     }
 
@@ -101,7 +101,7 @@ public class TransferDayControllerV2 extends RepositoryServiceController<Transfe
                                                                                        transferDayStatusInput);
         return ResponseEntity.ok(new TransferDayResponseBodyDTO()
                 .transferDay(map(transferDay, TransferDayDTO.class))
-                .transferWindow(map(transferDay.getTransferWindow(), TransferWindowDTO.class))
+                .transferWindow(map(transferDay.getTransferWindow(), TransferWindowBaseDTO.class))
                 .matchWeek(map(transferDay.getTransferWindow().getMatchWeek(), MatchWeekDTO.class)));
     }
 

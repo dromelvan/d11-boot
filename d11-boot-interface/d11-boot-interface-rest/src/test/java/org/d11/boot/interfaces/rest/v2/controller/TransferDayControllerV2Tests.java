@@ -9,7 +9,7 @@ import org.d11.boot.api.v2.model.TransferDayInputDTO;
 import org.d11.boot.api.v2.model.TransferDayResponseBodyDTO;
 import org.d11.boot.api.v2.model.TransferDayStatusInputDTO;
 import org.d11.boot.api.v2.model.TransferDaysResponseBodyDTO;
-import org.d11.boot.api.v2.model.TransferWindowDTO;
+import org.d11.boot.api.v2.model.TransferWindowBaseDTO;
 import org.d11.boot.api.v2.model.UpdateTransferDayRequestBodyDTO;
 import org.d11.boot.api.v2.model.UpdateTransferDayStatusRequestBodyDTO;
 import org.d11.boot.spring.model.TransferDay;
@@ -58,7 +58,7 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
             assertNotNull(result);
 
             assertEquals(getMapper().map(transferDay, TransferDayDTO.class), result.getTransferDay());
-            assertEquals(getMapper().map(transferDay.getTransferWindow(), TransferWindowDTO.class),
+            assertEquals(getMapper().map(transferDay.getTransferWindow(), TransferWindowBaseDTO.class),
                          result.getTransferWindow());
             assertEquals(getMapper().map(transferDay.getTransferWindow().getMatchWeek(), MatchWeekDTO.class),
                          result.getMatchWeek());
@@ -82,7 +82,7 @@ class TransferDayControllerV2Tests extends D11BootControllerV2Tests {
             final TransferDayResponseBodyDTO result = transferDayApi.getCurrentTransferDay();
             assertNotNull(result);
             assertEquals(getMapper().map(transferDay, TransferDayDTO.class), result.getTransferDay());
-            assertEquals(getMapper().map(transferDay.getTransferWindow(), TransferWindowDTO.class),
+            assertEquals(getMapper().map(transferDay.getTransferWindow(), TransferWindowBaseDTO.class),
                          result.getTransferWindow());
             assertEquals(getMapper().map(transferDay.getTransferWindow().getMatchWeek(), MatchWeekDTO.class),
                          result.getMatchWeek());

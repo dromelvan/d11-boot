@@ -4,6 +4,7 @@ import org.d11.boot.api.v2.TransferWindowApi;
 import org.d11.boot.api.v2.model.CreateTransferWindowRequestBodyDTO;
 import org.d11.boot.api.v2.model.MatchWeekBaseDTO;
 import org.d11.boot.api.v2.model.TransferDayDTO;
+import org.d11.boot.api.v2.model.TransferWindowBaseDTO;
 import org.d11.boot.api.v2.model.TransferWindowDTO;
 import org.d11.boot.api.v2.model.TransferWindowResponseBodyDTO;
 import org.d11.boot.api.v2.model.TransferWindowsResponseBodyDTO;
@@ -58,7 +59,7 @@ public class TransferWindowControllerV2 extends RepositoryServiceController<Tran
         final List<TransferWindow> transferWindows = getRepositoryService().getBySeasonId(seasonId);
 
         return ResponseEntity.ok(new TransferWindowsResponseBodyDTO()
-                .transferWindows(getMapper().map(transferWindows, TransferWindowDTO.class)));
+                .transferWindows(getMapper().map(transferWindows, TransferWindowBaseDTO.class)));
     }
 
     @Override

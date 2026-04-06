@@ -6,6 +6,7 @@ import org.d11.boot.api.v2.model.CreateTransferWindowRequestBodyDTO;
 import org.d11.boot.api.v2.model.MatchWeekBaseDTO;
 import org.d11.boot.api.v2.model.StatusDTO;
 import org.d11.boot.api.v2.model.TransferDayDTO;
+import org.d11.boot.api.v2.model.TransferWindowBaseDTO;
 import org.d11.boot.api.v2.model.TransferWindowDTO;
 import org.d11.boot.api.v2.model.TransferWindowInputDTO;
 import org.d11.boot.api.v2.model.TransferWindowResponseBodyDTO;
@@ -151,11 +152,11 @@ class TransferWindowControllerV2Tests extends D11BootControllerV2Tests {
 
             assertTrue(expected.size() > 1);
 
-            final List<TransferWindowDTO> result = transferWindowsResponseBodyDTO.getTransferWindows();
+            final List<TransferWindowBaseDTO> result = transferWindowsResponseBodyDTO.getTransferWindows();
 
             assertNotNull(result);
             assertFalse(result.isEmpty());
-            assertEquals(map(expected, TransferWindowDTO.class), result);
+            assertEquals(map(expected, TransferWindowBaseDTO.class), result);
         }
     }
 
