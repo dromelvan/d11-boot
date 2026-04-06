@@ -1,0 +1,19 @@
+meta {
+  name: GET transfer-windows/{transferWindowId} - 200 Pending
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/v2/transfer-windows/{{transferWindowId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.transferWindow: isDefined
+  res.body.transferWindow.id: eq {{transferWindowId}}
+  res.body.transferWindow.status: eq PENDING
+  res.body.transferWindow.transferWindowPositionCounts.length: eq 0
+}

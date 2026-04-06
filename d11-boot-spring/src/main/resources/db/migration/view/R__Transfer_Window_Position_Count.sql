@@ -20,6 +20,7 @@ FROM (
             ON tl.d11_team_id = d11t.id
     WHERE td.transfer_day_number = 1
         AND d11t.dummy = false
+        AND tw.status > 0
     GROUP BY tw.id, tl.position_id
 ) transfer_listing_sub_query
 LEFT JOIN (

@@ -1,12 +1,16 @@
 package org.d11.boot.spring.model;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.d11.boot.spring.EasyRandomTests;
 import org.d11.boot.spring.repository.TransferListingRepository;
 import org.d11.boot.spring.repository.TransferRepository;
 import org.d11.boot.spring.repository.TransferWindowRepository;
+import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -53,6 +57,12 @@ class TransferWindowPositionCountTests extends EasyRandomTests {
      */
     @Autowired
     private TransferRepository transferRepository;
+
+    /**
+     * Entity manager for clearing context.
+     */
+    @PersistenceContext
+    private EntityManager entityManager;
 
     /**
      * Tests TransferWindow::getTransferWindowPositionCounts.
@@ -112,6 +122,31 @@ class TransferWindowPositionCountTests extends EasyRandomTests {
         }
 
         assertTrue(hasResults);
+    }
+
+    /**
+     * Tests TransferWindow::getTransferWindowPositionCounts with pending status.
+     */
+    @Test
+    @DirtiesContext
+    void testGetTransferWindowPositionCountsPending() {
+        final TransferWindow transferWindow = this.transferWindowRepository.findById(1L).orElseThrow();
+
+        assertFalse(transferWindow.getTransferWindowPositionCounts().isEmpty());
+
+        for (final TransferWindowPositionCount positionCount : transferWindow.getTransferWindowPositionCounts()) {
+            assertTrue(positionCount.getTransferListingCount() > 0);
+            assertTrue(positionCount.getTransferCount() > 0);
+        }
+
+        transferWindow.setStatus(Status.PENDING);
+        this.transferWindowRepository.save(transferWindow);
+        this.transferWindowRepository.flush();
+        this.entityManager.clear();
+
+        final TransferWindow pendingTransferWindow = this.transferWindowRepository.findById(1L).orElseThrow();
+
+        assertTrue(pendingTransferWindow.getTransferWindowPositionCounts().isEmpty());
     }
 
     /**

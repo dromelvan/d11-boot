@@ -275,6 +275,20 @@ function transferWindow(transferWindow1, transferWindow2) {
     expect(transferWindow1.draft).to.eq(transferWindow2.draft);
     expect(transferWindow1.status).to.eq(transferWindow2.status);
     //expect(transferWindow1.datetime).to.eq(transferWindow2.datetime);
+
+    if (transferWindow1.transferWindowPositionCounts) {
+        expect(transferWindow1.transferWindowPositionCounts.length)
+            .to.eq(transferWindow2.transferWindowPositionCounts.length);
+
+        for (let i = 0; i < transferWindow1.transferWindowPositionCounts.length; ++i) {
+            expect(transferWindow1.transferWindowPositionCounts[i].transferListingCount)
+                .to.eq(transferWindow2.transferWindowPositionCounts[i].transferListingCount);
+            expect(transferWindow1.transferWindowPositionCounts[i].transferCount)
+                .to.eq(transferWindow2.transferWindowPositionCounts[i].transferCount);
+            position(transferWindow1.transferWindowPositionCounts[i].position,
+                      transferWindow2.transferWindowPositionCounts[i].position);
+        }
+    }
 }
 
 function transferDay(transferDay1, transferDay2) {
