@@ -1,0 +1,35 @@
+meta {
+  name: PUT transfers - {transferId} - 409 Player Not Transfer Listed
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/v2/transfers/{{transferId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "transfer": {
+          "fee": 5,
+          "transferDayId": {{transferDayId}},
+          "playerId": {{transferListablePlayerId}},
+          "d11TeamId": {{d11TeamId}}
+      }
+  }
+  
+}
+
+assert {
+  res.status: eq 409
+  res.body.error: eq Conflict
+  res.body.message: eq Player is not transfer listed
+  res.body.method: eq PUT
+  res.body.path: eq /v2/transfers/{{transferId}}
+}
