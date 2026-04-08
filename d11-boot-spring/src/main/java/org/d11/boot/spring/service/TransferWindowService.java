@@ -84,7 +84,7 @@ public class TransferWindowService extends RepositoryService<TransferWindow, Tra
 
         // Have to use the no entity graph version of the query here. The match week repository query throws stack
         // overflow exception otherwise for reasons that aren't currently clear
-        final TransferWindow currentTransferWindow = getJpaRepository().findFirstByOrderByDatetimeDesc()
+        final TransferWindow currentTransferWindow = getJpaRepository().findTopByOrderByDatetimeDesc()
                 .orElseThrow(() -> new ConflictException(ErrorCode.CONFLICT_NO_CURRENT_TRANSFER_WINDOW));
 
         final MatchWeek matchWeek =

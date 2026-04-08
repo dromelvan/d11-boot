@@ -3,6 +3,7 @@ package org.d11.boot.interfaces.rest.v2.controller;
 import org.d11.boot.api.v2.TransferWindowApi;
 import org.d11.boot.api.v2.model.CreateTransferWindowRequestBodyDTO;
 import org.d11.boot.api.v2.model.MatchWeekBaseDTO;
+import org.d11.boot.api.v2.model.SeasonBaseDTO;
 import org.d11.boot.api.v2.model.TransferDayDTO;
 import org.d11.boot.api.v2.model.TransferWindowBaseDTO;
 import org.d11.boot.api.v2.model.TransferWindowDTO;
@@ -49,6 +50,7 @@ public class TransferWindowControllerV2 extends RepositoryServiceController<Tran
         final TransferWindowResponseBodyDTO responseBody = new TransferWindowResponseBodyDTO()
                 .transferWindow(map(transferWindow, TransferWindowDTO.class))
                 .matchWeek(map(transferWindow.getMatchWeek(), MatchWeekBaseDTO.class))
+                .season(map(transferWindow.getMatchWeek().getSeason(), SeasonBaseDTO.class))
                 .transferDays(map(transferWindow.getTransferDays(), TransferDayDTO.class));
 
         return ResponseEntity.ok(responseBody);
@@ -69,6 +71,7 @@ public class TransferWindowControllerV2 extends RepositoryServiceController<Tran
         return ResponseEntity.ok(new TransferWindowResponseBodyDTO()
                 .transferWindow(getMapper().map(transferWindow, TransferWindowDTO.class))
                 .matchWeek(getMapper().map(transferWindow.getMatchWeek(), MatchWeekBaseDTO.class))
+                .season(map(transferWindow.getMatchWeek().getSeason(), SeasonBaseDTO.class))
                 .transferDays(map(transferWindow.getTransferDays(), TransferDayDTO.class)));
     }
 

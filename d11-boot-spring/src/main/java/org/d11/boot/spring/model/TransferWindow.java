@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
@@ -32,9 +33,17 @@ import java.util.TreeSet;
 @Entity
 @NamedEntityGraph(name = TransferWindow.TRANSFER_WINDOW_ASSOCIATIONS,
         attributeNodes = {
-            @NamedAttributeNode("matchWeek"),
+            @NamedAttributeNode(value = "matchWeek", subgraph = "season-subgraph"),
             @NamedAttributeNode("transferDays"),
             @NamedAttributeNode("transferWindowPositionCounts")
+        },
+        subgraphs = {
+            @NamedSubgraph(
+                        name = "season-subgraph",
+                        attributeNodes = {
+                            @NamedAttributeNode("season")
+                        }
+                )
         }
 )
 public class TransferWindow extends D11Entity implements Comparable<TransferWindow> {

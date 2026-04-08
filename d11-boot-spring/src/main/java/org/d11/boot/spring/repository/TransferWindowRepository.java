@@ -29,7 +29,15 @@ public interface TransferWindowRepository extends D11EntityRepository<TransferWi
      *
      * @return The current transfer window.
      */
+    @EntityGraph(TransferWindow.TRANSFER_WINDOW_ASSOCIATIONS)
     Optional<TransferWindow> findFirstByOrderByDatetimeDesc();
+
+    /**
+     * Finds the latest transfer window without loading associations.
+     *
+     * @return The current transfer window without associations.
+     */
+    Optional<TransferWindow> findTopByOrderByDatetimeDesc();
 
     /**
      * Finds transfer windows by match week season id ordered by datetime desc.

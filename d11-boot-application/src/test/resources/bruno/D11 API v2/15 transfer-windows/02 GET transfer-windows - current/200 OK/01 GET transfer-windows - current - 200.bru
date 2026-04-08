@@ -23,11 +23,13 @@ tests {
   test("GET current transfer window response body", () => {
     const body = res.getBody();
     const transferWindow = JSON.parse(bru.getEnvVar("currentTransferWindow"));
+    const season = JSON.parse(bru.getEnvVar("currentTransferWindowSeason"));
     const matchWeek = JSON.parse(bru.getEnvVar("currentTransferWindowMatchWeek"));
     const transferDays = JSON.parse(bru.getEnvVar("currentTransferWindowTransferDays"));
   
     expectToEq.transferWindow(body.transferWindow, transferWindow);
     expectToEq.matchWeekWithoutMVP(body.matchWeek, matchWeek);
+    expectToEq.season(body.season, season);
   
     for (let i = 0; i < transferDays.length; ++i) {
       expectToEq.transferDay(body.transferDays[i], transferDays[i]);

@@ -123,7 +123,7 @@ class TransferWindowServiceTests extends BaseD11BootServiceTests {
         final TransferWindow currentTransferWindow = new TransferWindow();
         currentTransferWindow.setStatus(Status.PENDING);
 
-        when(this.transferWindowRepository.findFirstByOrderByDatetimeDesc())
+        when(this.transferWindowRepository.findTopByOrderByDatetimeDesc())
                 .thenReturn(Optional.of(currentTransferWindow));
 
         assertThrows(ConflictException.class,

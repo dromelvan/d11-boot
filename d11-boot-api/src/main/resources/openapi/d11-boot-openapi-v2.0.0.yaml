@@ -2877,15 +2877,10 @@ components:
 
     # Season -----------------------------------------------------------------------------------------------------------
 
-    Season:
+    SeasonBase:
       type: object
       required:
         - name
-        - d11TeamBudget
-        - d11TeamMaxTransfers
-        - status
-        - date
-        - legacy
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -2895,19 +2890,31 @@ components:
         shortName:
           type: string
           pattern: \d{2}-\d{2}
-        d11TeamBudget:
-          type: integer
-          format: int32
-        d11TeamMaxTransfers:
-          type: integer
-          format: int32
-        status:
-          $ref: '#/components/schemas/Status'
-        date:
-          type: string
-          format: date
-        legacy:
-          type: boolean
+
+    Season:
+      allOf:
+        - $ref: '#/components/schemas/SeasonBase'
+        - type: object
+          required:
+            - d11TeamBudget
+            - d11TeamMaxTransfers
+            - status
+            - date
+            - legacy
+          properties:
+            d11TeamBudget:
+              type: integer
+              format: int32
+            d11TeamMaxTransfers:
+              type: integer
+              format: int32
+            status:
+              $ref: '#/components/schemas/Status'
+            date:
+              type: string
+              format: date
+            legacy:
+              type: boolean
 
     UpdateSeasonRequestBody:
       type: object
@@ -3849,6 +3856,8 @@ components:
           $ref: '#/components/schemas/TransferWindow'
         matchWeek:
           $ref: '#/components/schemas/MatchWeekBase'
+        season:
+          $ref: '#/components/schemas/SeasonBase'
         transferDays:
           type: array
           items:
