@@ -252,6 +252,23 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         assertTrue(e.getMessage().contains("\"id\":" + requestBodyDTO.getTransfer().getD11TeamId()));
     }
 
+    /**
+     * Tests TransferService::createTransfer with transfer listing conflict.
+     */
+    @Test
+    void testCreateTransferTransferListingConflict() {
+        final TransferApi transferApi = getAdministratorApi(TransferApi.class);
+
+        final CreateTransferRequestBodyDTO requestBodyDTO = new CreateTransferRequestBodyDTO()
+                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(7L).d11TeamId(1L));
+
+        final FeignException.Conflict e =
+                assertThrows(FeignException.Conflict.class, () -> transferApi.createTransfer(requestBodyDTO));
+
+        assertTrue(e.getMessage().contains("\"error\":\"Conflict\""));
+        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_NO_TRANSFER_LISTING.getMessage()));
+    }
+
     // updateTransfer --------------------------------------------------------------------------------------------------
 
     /**
@@ -396,6 +413,23 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         assertTrue(e.getMessage().contains("\"error\":\"Not Found\""));
         assertTrue(e.getMessage().contains("\"resource\":\"D11Team\""));
         assertTrue(e.getMessage().contains("\"id\":" + requestBodyDTO.getTransfer().getD11TeamId()));
+    }
+
+    /**
+     * Tests TransferService::updateTransfer with transfer listing conflict.
+     */
+    @Test
+    void testUpdateTransferTransferListingConflict() {
+        final TransferApi transferApi = getAdministratorApi(TransferApi.class);
+
+        final UpdateTransferRequestBodyDTO requestBodyDTO = new UpdateTransferRequestBodyDTO()
+                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(7L).d11TeamId(1L));
+
+        final FeignException.Conflict e =
+                assertThrows(FeignException.Conflict.class, () -> transferApi.updateTransfer(1L, requestBodyDTO));
+
+        assertTrue(e.getMessage().contains("\"error\":\"Conflict\""));
+        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_NO_TRANSFER_LISTING.getMessage()));
     }
 
     // deleteTransfer --------------------------------------------------------------------------------------------------

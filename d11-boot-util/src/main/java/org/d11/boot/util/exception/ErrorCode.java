@@ -55,6 +55,11 @@ public enum ErrorCode {
     CONFLICT_NON_UNIQUE_TRANSFER_LISTING("Player is already transfer listed"),
 
     /**
+     * No transfer listing error.
+     */
+    CONFLICT_NO_TRANSFER_LISTING("Player is not transfer listed"),
+
+    /**
      * The current user is not allowed to bid on the player at this time.
      */
     CONFLICT_TRANSFER_BID_NOT_ALLOWED("Transfer bid is not allowed");

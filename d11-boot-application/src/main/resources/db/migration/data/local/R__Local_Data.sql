@@ -526,19 +526,19 @@ INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_rankin
     VALUES(8, 2, 2, 2, 1, 200, 50, false);
 
 -- Transfer
-INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
-    VALUES(1, 1, 1, 100);
-INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
-    VALUES(2, 1, 1, 100);
-INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
-    VALUES(3, 1, 1, 100);
-INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
-    VALUES(4, 1, 1, 100);
-INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
-    VALUES(5, 1, 1, 100);
-INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
-    VALUES(6, 1, 1, 100);
-INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
-    VALUES(7, 1, 1, 100);
-INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
-    VALUES(8, 1, 1, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, transfer_listing_id, fee)
+    VALUES(1, 1, 1, 1, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, transfer_listing_id, fee)
+    VALUES(2, 1, 1, 3, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, transfer_listing_id, fee)
+    VALUES(3, 1, 1, 5, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, transfer_listing_id, fee)
+    VALUES(4, 1, 1, 7, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, transfer_listing_id, fee)
+    VALUES(5, 1, 1, 9, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, transfer_listing_id, fee)
+    VALUES(6, 1, 1, 10, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, transfer_listing_id, fee)
+    VALUES(7, 1, 1, 11, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, transfer_listing_id, fee)
+    VALUES(8, 1, 1, 14, 100);

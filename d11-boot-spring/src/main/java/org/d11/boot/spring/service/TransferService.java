@@ -5,11 +5,14 @@ import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferInput;
+import org.d11.boot.spring.model.TransferListing;
 import org.d11.boot.spring.repository.D11TeamRepository;
 import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.spring.repository.TransferDayRepository;
+import org.d11.boot.spring.repository.TransferListingRepository;
 import org.d11.boot.spring.repository.TransferRepository;
 import org.d11.boot.util.exception.BadRequestException;
+import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ErrorCode;
 import org.d11.boot.util.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +48,11 @@ public class TransferService extends RepositoryService<Transfer, TransferReposit
     private final PlayerRepository playerRepository;
 
     /**
+     * Transfer listing repository.
+     */
+    private final TransferListingRepository transferListingRepository;
+
+    /**
      * D11 team repository.
      */
     private final D11TeamRepository d11TeamRepository;
@@ -52,19 +60,22 @@ public class TransferService extends RepositoryService<Transfer, TransferReposit
     /**
      * Creates a new transfer service.
      *
-     * @param transferRepository    The transfer repository the service will use.
-     * @param transferDayRepository The transfer day repository the service will use.
-     * @param playerRepository      The player repository the service will use.
-     * @param d11TeamRepository     The D11 team repository the service will use.
+     * @param transferRepository        The transfer repository the service will use.
+     * @param transferDayRepository     The transfer day repository the service will use.
+     * @param playerRepository          The player repository the service will use.
+     * @param transferListingRepository The transfer listing repository the service will use.
+     * @param d11TeamRepository         The D11 team repository the service will use.
      */
     @Autowired
     public TransferService(final TransferRepository transferRepository,
                            final TransferDayRepository transferDayRepository,
                            final PlayerRepository playerRepository,
+                           final TransferListingRepository transferListingRepository,
                            final D11TeamRepository d11TeamRepository) {
         super(Transfer.class, transferRepository);
         this.transferDayRepository = transferDayRepository;
         this.playerRepository = playerRepository;
+        this.transferListingRepository = transferListingRepository;
         this.d11TeamRepository = d11TeamRepository;
     }
 
@@ -117,10 +128,15 @@ public class TransferService extends RepositoryService<Transfer, TransferReposit
         final D11Team d11Team = this.d11TeamRepository.findById(transferInput.d11TeamId())
                 .orElseThrow(() -> new NotFoundException(transferInput.d11TeamId(), D11Team.class));
 
+        final TransferListing transferListing =
+                this.transferListingRepository.findByTransferDayIdAndPlayerId(transferDay.getId(), player.getId())
+                        .orElseThrow(() -> new ConflictException(ErrorCode.CONFLICT_NO_TRANSFER_LISTING));
+
         final Transfer transfer = getServiceMapper().mapToTransfer(transferInput);
         transfer.setTransferDay(transferDay);
         transfer.setPlayer(player);
         transfer.setD11Team(d11Team);
+        transfer.setTransferListing(transferListing);
 
         return getJpaRepository().save(transfer);
     }
@@ -144,19 +160,24 @@ public class TransferService extends RepositoryService<Transfer, TransferReposit
 
         final Transfer transfer = getById(transferId);
 
-        final TransferDay transferDay = this.transferDayRepository.findById(transferInput.transferDayId())
-                .orElseThrow(() -> new NotFoundException(transferInput.transferDayId(), TransferDay.class));
-
         final Player player = this.playerRepository.findById(transferInput.playerId())
                 .orElseThrow(() -> new NotFoundException(transferInput.playerId(), Player.class));
 
+        final TransferDay transferDay = this.transferDayRepository.findById(transferInput.transferDayId())
+                .orElseThrow(() -> new NotFoundException(transferInput.transferDayId(), TransferDay.class));
+
         final D11Team d11Team = this.d11TeamRepository.findById(transferInput.d11TeamId())
                 .orElseThrow(() -> new NotFoundException(transferInput.d11TeamId(), D11Team.class));
+
+        final TransferListing transferListing =
+                this.transferListingRepository.findByTransferDayIdAndPlayerId(transferDay.getId(), player.getId())
+                        .orElseThrow(() -> new ConflictException(ErrorCode.CONFLICT_NO_TRANSFER_LISTING));
 
         transfer.setFee(transferInput.fee());
         transfer.setTransferDay(transferDay);
         transfer.setPlayer(player);
         transfer.setD11Team(d11Team);
+        transfer.setTransferListing(transferListing);
 
         return getJpaRepository().save(transfer);
     }

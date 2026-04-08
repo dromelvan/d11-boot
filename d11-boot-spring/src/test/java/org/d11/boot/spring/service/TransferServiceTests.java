@@ -5,11 +5,14 @@ import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferInput;
+import org.d11.boot.spring.model.TransferListing;
 import org.d11.boot.spring.repository.D11TeamRepository;
 import org.d11.boot.spring.repository.PlayerRepository;
 import org.d11.boot.spring.repository.TransferDayRepository;
+import org.d11.boot.spring.repository.TransferListingRepository;
 import org.d11.boot.spring.repository.TransferRepository;
 import org.d11.boot.util.exception.BadRequestException;
+import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ErrorCode;
 import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
@@ -46,6 +49,12 @@ class TransferServiceTests extends BaseD11BootServiceTests {
      */
     @Mock
     private TransferDayRepository transferDayRepository;
+
+    /**
+     * Mocked transfer listing repository.
+     */
+    @Mock
+    private TransferListingRepository transferListingRepository;
 
     /**
      * Mocked player repository.
@@ -210,6 +219,25 @@ class TransferServiceTests extends BaseD11BootServiceTests {
     }
 
     /**
+     * Tests TransferService::createTransfer with transfer listing conflict.
+     */
+    @Test
+    void testCreateTransferTransferListingConflict() {
+        final TransferInput transferInput = new TransferInput(5, 1, 2, 3);
+        when(this.transferDayRepository.findById(eq(transferInput.transferDayId())))
+                .thenReturn(Optional.of(generate(TransferDay.class)));
+        when(this.playerRepository.findById(eq(transferInput.playerId())))
+                .thenReturn(Optional.of(generate(Player.class)));
+        when(this.d11TeamRepository.findById(eq(transferInput.d11TeamId())))
+                .thenReturn(Optional.of(generate(D11Team.class)));
+
+        final ConflictException transferListingException =
+                assertThrows(ConflictException.class, () -> this.transferService.createTransfer(transferInput));
+
+        assertEquals(ErrorCode.CONFLICT_NO_TRANSFER_LISTING, transferListingException.getErrorCode());
+    }
+
+    /**
      * Tests TransferService::createTransfer.
      */
     @Test
@@ -226,6 +254,8 @@ class TransferServiceTests extends BaseD11BootServiceTests {
         when(this.d11TeamRepository.findById(eq(transferInput.d11TeamId())))
                 .thenReturn(Optional.of(d11Team));
         when(this.transferRepository.save(any(Transfer.class))).then(AdditionalAnswers.returnsFirstArg());
+        when(this.transferListingRepository.findByTransferDayIdAndPlayerId(any(Long.class), any(Long.class)))
+                .thenReturn(Optional.of(generate(TransferListing.class)));
 
         final Transfer transfer = this.transferService.createTransfer(transferInput);
 
@@ -297,6 +327,8 @@ class TransferServiceTests extends BaseD11BootServiceTests {
     void testUpdateTransferTransferDayNotFound() {
         final TransferInput transferInput = new TransferInput(5, 1, 2, 3);
         when(this.transferRepository.findById(eq(1L))).thenReturn(Optional.of(generate(Transfer.class)));
+        when(this.playerRepository.findById(eq(transferInput.playerId())))
+                .thenReturn(Optional.of(generate(Player.class)));
         when(this.transferDayRepository.findById(eq(transferInput.transferDayId()))).thenReturn(Optional.empty());
 
         final NotFoundException e = assertThrows(NotFoundException.class,
@@ -313,8 +345,6 @@ class TransferServiceTests extends BaseD11BootServiceTests {
     void testUpdateTransferPlayerNotFound() {
         final TransferInput transferInput = new TransferInput(5, 1, 2, 3);
         when(this.transferRepository.findById(eq(1L))).thenReturn(Optional.of(generate(Transfer.class)));
-        when(this.transferDayRepository.findById(eq(transferInput.transferDayId())))
-                .thenReturn(Optional.of(generate(TransferDay.class)));
         when(this.playerRepository.findById(eq(transferInput.playerId()))).thenReturn(Optional.empty());
 
         final NotFoundException e = assertThrows(NotFoundException.class,
@@ -345,6 +375,26 @@ class TransferServiceTests extends BaseD11BootServiceTests {
     }
 
     /**
+     * Tests TransferService::updateTransfer with transfer listing conflict.
+     */
+    @Test
+    void testUpdateTransferTransferListingConflict() {
+        final TransferInput transferInput = new TransferInput(5, 1, 2, 3);
+        when(this.transferRepository.findById(eq(1L))).thenReturn(Optional.of(generate(Transfer.class)));
+        when(this.transferDayRepository.findById(eq(transferInput.transferDayId())))
+                .thenReturn(Optional.of(generate(TransferDay.class)));
+        when(this.playerRepository.findById(eq(transferInput.playerId())))
+                .thenReturn(Optional.of(generate(Player.class)));
+        when(this.d11TeamRepository.findById(eq(transferInput.d11TeamId())))
+                .thenReturn(Optional.of(generate(D11Team.class)));
+
+        final ConflictException e = assertThrows(ConflictException.class,
+                                                 () -> this.transferService.updateTransfer(1L, transferInput));
+
+        assertEquals(ErrorCode.CONFLICT_NO_TRANSFER_LISTING, e.getErrorCode());
+    }
+
+    /**
      * Tests TransferService::updateTransfer.
      */
     @Test
@@ -361,6 +411,8 @@ class TransferServiceTests extends BaseD11BootServiceTests {
         when(this.playerRepository.findById(eq(transferInput.playerId()))).thenReturn(Optional.of(player));
         when(this.d11TeamRepository.findById(eq(transferInput.d11TeamId()))).thenReturn(Optional.of(d11Team));
         when(this.transferRepository.save(any(Transfer.class))).then(AdditionalAnswers.returnsFirstArg());
+        when(this.transferListingRepository.findByTransferDayIdAndPlayerId(any(Long.class), any(Long.class)))
+                .thenReturn(Optional.of(generate(TransferListing.class)));
 
         final Transfer updatedTransfer = this.transferService.updateTransfer(1L, transferInput);
 

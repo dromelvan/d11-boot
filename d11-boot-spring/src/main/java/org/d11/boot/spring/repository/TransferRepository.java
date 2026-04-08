@@ -1,6 +1,7 @@
 package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.Transfer;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +21,7 @@ public interface TransferRepository extends D11EntityRepository<Transfer> {
      * @param d11TeamId The D11 team id.
      * @return Transfers for the season and D11 team id.
      */
+    @EntityGraph(Transfer.TRANSFER_ASSOCIATIONS)
     List<Transfer> findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId(@Param("seasonId") Long seasonId,
                                                                                 @Param("d11TeamId") Long d11TeamId);
 
@@ -29,6 +31,7 @@ public interface TransferRepository extends D11EntityRepository<Transfer> {
      * @param transferDayId The transfer day id.
      * @return Transfers for the transfer day ordered by D11 team name and fee descending.
      */
+    @EntityGraph(Transfer.TRANSFER_ASSOCIATIONS)
     List<Transfer> findByTransferDayIdOrderByD11TeamNameAscFeeDesc(@Param("transferDayId") Long transferDayId);
 
     /**
@@ -37,6 +40,7 @@ public interface TransferRepository extends D11EntityRepository<Transfer> {
      * @param playerId The player id.
      * @return Transfers for the player ordered by transfer day datetime descending.
      */
+    @EntityGraph(Transfer.TRANSFER_ASSOCIATIONS)
     List<Transfer> findByPlayerIdOrderByTransferDayDatetimeDesc(@Param("playerId") Long playerId);
 
     /**
@@ -46,6 +50,7 @@ public interface TransferRepository extends D11EntityRepository<Transfer> {
      * @param transferDayId The transfer id.
      * @return Optional with transfer for the player and transfer day or empty optional if none was found.
      */
+    @EntityGraph(Transfer.TRANSFER_ASSOCIATIONS)
     Optional<Transfer> findByPlayerIdAndTransferDayId(@Param("playerId") Long playerId,
                                                       @Param("transferDayId") Long transferDayId);
 

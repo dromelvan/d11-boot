@@ -43,6 +43,10 @@ class TransferTests extends EasyRandomTests {
         assertFalse(transferBid.isValid());
         transferBid.setD11Team(new D11Team());
 
+        transferBid.setTransferListing(null);
+        assertFalse(transferBid.isValid());
+        transferBid.setTransferListing(new TransferListing());
+
         assertTrue(transferBid.isValid());
     }
 

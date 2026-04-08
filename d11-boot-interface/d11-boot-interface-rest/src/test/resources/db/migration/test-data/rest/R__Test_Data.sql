@@ -484,11 +484,11 @@ INSERT INTO transfer_bid (transfer_day_id, player_id, d11_team_id, player_rankin
 VALUES(7, 2, 3, 2, 3, 100, 50, false);
 
 -- Transfer
-INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
-VALUES(1, 1, 1, 100);
-INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
-VALUES(2, 1, 1, 100);
-INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
-VALUES(3, 1, 1, 100);
-INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, fee)
-VALUES(4, 1, 1, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, transfer_listing_id, fee)
+VALUES(1, 1, 1, 1, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, transfer_listing_id, fee)
+VALUES(2, 2, 1, 2, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, transfer_listing_id, fee)
+VALUES(3, 1, 1, 3, 100);
+INSERT INTO transfer (transfer_day_id, player_id, d11_team_id, transfer_listing_id, fee)
+VALUES(4, 2, 1, 4, 100);
