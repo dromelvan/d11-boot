@@ -5,7 +5,7 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/v2/player-season-stats?seasonId={{seasonId}}&page=-1&positionIds=1
+  url: {{baseUrl}}/v2/player-season-stats?seasonId={{seasonId}}&page=-1&positionIds=1,2,3,4,5
   body: none
   auth: none
 }
@@ -13,7 +13,7 @@ get {
 params:query {
   seasonId: {{seasonId}}
   page: -1
-  positionIds: 1
+  positionIds: 1,2,3,4,5
 }
 
 assert {
