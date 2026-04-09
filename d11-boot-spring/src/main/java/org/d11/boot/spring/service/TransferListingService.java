@@ -134,10 +134,12 @@ public class TransferListingService extends RepositoryService<TransferListing, T
      * Get transfer listings by transfer day id ordered by ranking.
      *
      * @param transferDayId The transfer day id.
+     * @param dummy         Null for all players, true for players on the dummy D11 team only,
+     *                      false for players on a real D11 team only.
      * @param page          Page number (25 per page) for the search result page that will be returned.
      * @return Transfer listings by transfer day id ordered by ranking in pages of size 25.
      */
-    public List<TransferListing> getByTransferDayId(final Long transferDayId, final int page) {
+    public List<TransferListing> getByTransferDayId(final Long transferDayId, final Boolean dummy, final int page) {
         if (transferDayId == null || transferDayId <= 0) {
             throw new BadRequestException("transferDayId", "must be positive");
         }
@@ -153,7 +155,9 @@ public class TransferListingService extends RepositoryService<TransferListing, T
         optional.ifPresent(transferDay -> {
             if (!Status.PENDING.equals(transferDay.getStatus())) {
                 final Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("ranking"));
-                transferListings.addAll(getJpaRepository().findByTransferDayIdOrderByRanking(transferDayId, pageable));
+                transferListings.addAll(getJpaRepository().findByTransferDayIdOrderByRanking(transferDayId,
+                                                                                             dummy,
+                                                                                             pageable));
             }
         });
 

@@ -1783,6 +1783,15 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: dummy
+          in: query
+          required: false
+          description: |
+            Filter on D11 team dummy flag. Null (omitted) includes all players,
+            true includes only players on the dummy D11 team,
+            false includes only players on a real D11 team.
+          schema:
+            type: boolean
       responses:
         200:
           description: OK

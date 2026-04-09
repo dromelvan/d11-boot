@@ -10,6 +10,7 @@ import org.d11.boot.api.v2.model.TransferListingsResponseBodyDTO;
 import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.TransferDay;
+import org.d11.boot.spring.model.TransferListing;
 import org.d11.boot.spring.repository.PlayerSeasonStatRepository;
 import org.d11.boot.spring.repository.SeasonRepository;
 import org.d11.boot.spring.repository.TransferDayRepository;
@@ -302,10 +303,10 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
         final TransferListingApi transferListingApi = getApi(TransferListingApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> transferListingApi.getTransferListingsByTransferDayId(null, 1));
+                     () -> transferListingApi.getTransferListingsByTransferDayId(null, 1, null));
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> transferListingApi.getTransferListingsByTransferDayId(1L, null));
+                     () -> transferListingApi.getTransferListingsByTransferDayId(1L, null, null));
 
         final List<TransferDay> transferDays = this.transferDayRepository.findAll();
 
@@ -316,7 +317,7 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
 
         for (final TransferDay transferDay : transferDays) {
             final TransferListingsResponseBodyDTO transferListingsResponseBodyDTO =
-                    transferListingApi.getTransferListingsByTransferDayId(transferDay.getId(), 0);
+                    transferListingApi.getTransferListingsByTransferDayId(transferDay.getId(), 0, null);
             assertNotNull(transferListingsResponseBodyDTO);
 
             final List<TransferListingDTO> result = transferListingsResponseBodyDTO.getTransferListings();
@@ -336,6 +337,42 @@ class TransferListingControllerV2Tests extends D11BootControllerV2Tests {
 
         // Make sure that we have both pending and not pending test transfer days
         assertTrue(pendingCount > 0 && notPendingCount > 0);
+    }
+
+    /**
+     * Tests TransferListingControllerV2::getTransferListingsByTransferDayId with dummy filter.
+     */
+    @Test
+    @Transactional
+    void testGetTransferListingsByTransferDayIdDummyFilter() {
+        final TransferListingApi transferListingApi = getApi(TransferListingApi.class);
+
+        final List<TransferDay> transferDays = this.transferDayRepository.findAll().stream()
+                .filter(transferDay -> !Status.PENDING.equals(transferDay.getStatus()))
+                .toList();
+
+        assertFalse(transferDays.isEmpty());
+
+        for (final TransferDay transferDay : transferDays) {
+            List<TransferListing> expected = transferDay.getTransferListings().stream()
+                    .filter(transferListing -> transferListing.getD11Team().isDummy())
+                    .toList();
+
+            TransferListingsResponseBodyDTO response =
+                    transferListingApi.getTransferListingsByTransferDayId(transferDay.getId(), 0, true);
+            assertNotNull(response);
+            assertNotNull(response.getTransferListings());
+            assertEquals(map(expected, TransferListingDTO.class), response.getTransferListings());
+
+            expected = transferDay.getTransferListings().stream()
+                    .filter(transferListing -> !transferListing.getD11Team().isDummy())
+                    .toList();
+
+            response = transferListingApi.getTransferListingsByTransferDayId(transferDay.getId(), 0, false);
+            assertNotNull(response);
+            assertNotNull(response.getTransferListings());
+            assertEquals(map(expected, TransferListingDTO.class), response.getTransferListings());
+        }
     }
 
     /**

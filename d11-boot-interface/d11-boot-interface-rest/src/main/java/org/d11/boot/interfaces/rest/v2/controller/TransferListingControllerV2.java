@@ -54,8 +54,10 @@ public class TransferListingControllerV2 extends RepositoryServiceController<Tra
 
     @Override
     public ResponseEntity<TransferListingsResponseBodyDTO> getTransferListingsByTransferDayId(final Long transferDayId,
-                                                                                              final Integer page) {
-        final List<TransferListing> transferListings = getRepositoryService().getByTransferDayId(transferDayId, page);
+                                                                                              final Integer page,
+                                                                                              final Boolean dummy) {
+        final List<TransferListing> transferListings =
+                getRepositoryService().getByTransferDayId(transferDayId, dummy, page);
         return ResponseEntity.ok(new TransferListingsResponseBodyDTO()
                 .transferListings(map(transferListings, TransferListingDTO.class)));
     }

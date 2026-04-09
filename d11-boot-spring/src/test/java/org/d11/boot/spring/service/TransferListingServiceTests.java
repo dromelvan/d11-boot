@@ -462,15 +462,21 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
         final String transferDayIdProperty = "transferDayId";
 
         final BadRequestException nullTransferDayIdException =
-                assertThrows(BadRequestException.class, () -> this.transferListingService.getByTransferDayId(null, 0));
+                assertThrows(BadRequestException.class, () -> this.transferListingService.getByTransferDayId(null,
+                                                                                                             null,
+                                                                                                             0));
         assertEquals(transferDayIdProperty, nullTransferDayIdException.getParameter());
 
         final BadRequestException invalidTransferDayIdException =
-                assertThrows(BadRequestException.class, () -> this.transferListingService.getByTransferDayId(-1L, 0));
+                assertThrows(BadRequestException.class, () -> this.transferListingService.getByTransferDayId(-1L,
+                                                                                                             null,
+                                                                                                             0));
         assertEquals(transferDayIdProperty, invalidTransferDayIdException.getParameter());
 
         final BadRequestException invalidPageException =
-                assertThrows(BadRequestException.class, () -> this.transferListingService.getByTransferDayId(1L, -1));
+                assertThrows(BadRequestException.class, () -> this.transferListingService.getByTransferDayId(1L,
+                                                                                                             null,
+                                                                                                             -1));
         assertEquals("page", invalidPageException.getParameter());
 
         // Success -----------------------------------------------------------------------------------------------------
@@ -481,23 +487,57 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
 
         when(this.transferDayRepository.findById(eq(transferDay.getId() + 1))).thenReturn(Optional.empty());
 
-        assertTrue(this.transferListingService.getByTransferDayId(transferDay.getId() + 1, 0).isEmpty());
+        assertTrue(this.transferListingService.getByTransferDayId(transferDay.getId() + 1, null, 0).isEmpty());
 
         transferDay.setStatus(Status.PENDING);
         when(this.transferDayRepository.findById(eq(transferDay.getId()))).thenReturn(Optional.of(transferDay));
 
-        assertTrue(this.transferListingService.getByTransferDayId(transferDay.getId(), 0).isEmpty());
+        assertTrue(this.transferListingService.getByTransferDayId(transferDay.getId(), null, 0).isEmpty());
 
         transferDay.setStatus(Status.ACTIVE);
         when(this.transferListingRepository.findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
+                                                                              eq(null),
                                                                               any(Pageable.class)))
                 .thenReturn(transferListings);
 
-        final List<TransferListing> result = this.transferListingService.getByTransferDayId(transferDay.getId(), 0);
+        final List<TransferListing> result = this.transferListingService.getByTransferDayId(transferDay.getId(),
+                                                                                            null,
+                                                                                            0);
 
         assertEquals(transferListings, result);
 
         verify(this.transferListingRepository, times(1)).findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
+                                                                                           eq(null),
+                                                                                           any(Pageable.class));
+
+        // Dummy filter ------------------------------------------------------------------------------------------------
+
+        when(this.transferListingRepository.findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
+                                                                              eq(Boolean.TRUE),
+                                                                              any(Pageable.class)))
+                .thenReturn(transferListings);
+
+        final List<TransferListing> dummyResult =
+                this.transferListingService.getByTransferDayId(transferDay.getId(), Boolean.TRUE, 0);
+
+        assertEquals(transferListings, dummyResult);
+
+        verify(this.transferListingRepository, times(1)).findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
+                                                                                           eq(Boolean.TRUE),
+                                                                                           any(Pageable.class));
+
+        when(this.transferListingRepository.findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
+                                                                              eq(Boolean.FALSE),
+                                                                              any(Pageable.class)))
+                .thenReturn(transferListings);
+
+        final List<TransferListing> nonDummyResult =
+                this.transferListingService.getByTransferDayId(transferDay.getId(), Boolean.FALSE, 0);
+
+        assertEquals(transferListings, nonDummyResult);
+
+        verify(this.transferListingRepository, times(1)).findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
+                                                                                           eq(Boolean.FALSE),
                                                                                            any(Pageable.class));
     }
 
