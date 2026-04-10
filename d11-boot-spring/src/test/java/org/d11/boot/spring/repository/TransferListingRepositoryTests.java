@@ -139,6 +139,76 @@ class TransferListingRepositoryTests extends AbstractRepositoryTests<TransferLis
     }
 
     /**
+     * Tests TransferListingRepository::findByTransferDayIdOrderByRanking unpaged.
+     */
+    @Test
+    void testFindByTransferDayIdOrderByRankingUnpaged() {
+        final List<TransferListing> entities = getEntities();
+
+        final Set<TransferDay> transferDays = entities.stream()
+                .map(TransferListing::getTransferDay)
+                .collect(Collectors.toSet());
+
+        assertTrue(transferDays.size() > 1);
+
+        for (final TransferDay transferDay : transferDays) {
+            final List<TransferListing> expected = entities.stream()
+                    .filter(tl -> tl.getTransferDay().equals(transferDay))
+                    .sorted(Comparator.comparing(TransferListing::getRanking))
+                    .toList();
+
+            final List<TransferListing> result =
+                    getRepository().findByTransferDayIdOrderByRanking(transferDay.getId(), null);
+
+            assertNotNull(result);
+            assertEquals(expected, result);
+        }
+    }
+
+    /**
+     * Tests TransferListingRepository::findByTransferDayIdOrderByRanking unpaged dummy filter.
+     */
+    @Test
+    void testFindByTransferDayIdOrderByRankingUnpagedDummyFilter() {
+        final List<TransferListing> entities = getEntities();
+
+        final Set<TransferDay> transferDays = entities.stream()
+                .map(TransferListing::getTransferDay)
+                .collect(Collectors.toSet());
+
+        assertTrue(transferDays.size() > 1);
+
+        final List<TransferListing> combined = new ArrayList<>();
+
+        for (final TransferDay transferDay : transferDays) {
+            final List<TransferListing> transferListings = entities.stream()
+                    .filter(tl -> tl.getTransferDay().equals(transferDay))
+                    .sorted(Comparator.comparing(TransferListing::getRanking))
+                    .toList();
+
+            final List<TransferListing> dummyResult =
+                    getRepository().findByTransferDayIdOrderByRanking(transferDay.getId(), Boolean.TRUE);
+
+            assertNotNull(dummyResult);
+            dummyResult.forEach(transferListing -> assertTrue(transferListing.getD11Team().isDummy()));
+
+            final List<TransferListing> nonDummyResult =
+                    getRepository().findByTransferDayIdOrderByRanking(transferDay.getId(), Boolean.FALSE);
+
+            assertNotNull(nonDummyResult);
+            nonDummyResult.forEach(transferListing -> assertFalse(transferListing.getD11Team().isDummy()));
+
+            combined.addAll(dummyResult);
+            combined.addAll(nonDummyResult);
+            combined.sort(Comparator.comparing(TransferListing::getRanking));
+
+            assertEquals(transferListings, combined);
+
+            combined.clear();
+        }
+    }
+
+    /**
      * Tests TransferListingRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId.
      */
     @Test

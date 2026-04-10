@@ -1778,8 +1778,8 @@ paths:
             format: int64
         - name: page
           in: query
-          required: true
-          description: Result page starting from 0.
+          required: false
+          description: Result page starting from 0. Omit to get all results unpaged.
           schema:
             type: integer
             format: int32

@@ -455,6 +455,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
      * Tests TransferListingService::getByTransferDayId.
      */
     @Test
+    @SuppressWarnings({ "PMD.ExcessiveMethodLength", "checkstyle:ExecutableStatementCount" })
     void testGetByTransferDayId() {
 
         // Validation --------------------------------------------------------------------------------------------------
@@ -479,7 +480,7 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
                                                                                                              -1));
         assertEquals("page", invalidPageException.getParameter());
 
-        // Success -----------------------------------------------------------------------------------------------------
+        // Success (paged) ---------------------------------------------------------------------------------------------
 
         final TransferDay transferDay = generate(TransferDay.class);
 
@@ -510,6 +511,26 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
                                                                                            eq(null),
                                                                                            any(Pageable.class));
 
+        // Success (unpaged) -------------------------------------------------------------------------------------------
+
+        when(this.transferListingRepository.findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
+                                                                              eq(null)))
+                .thenReturn(transferListings);
+
+        assertTrue(this.transferListingService.getByTransferDayId(transferDay.getId() + 1, null, null).isEmpty());
+
+        transferDay.setStatus(Status.PENDING);
+        assertTrue(this.transferListingService.getByTransferDayId(transferDay.getId(), null, null).isEmpty());
+
+        transferDay.setStatus(Status.ACTIVE);
+        final List<TransferListing> unpagedResult =
+                this.transferListingService.getByTransferDayId(transferDay.getId(), null, null);
+
+        assertEquals(transferListings, unpagedResult);
+
+        verify(this.transferListingRepository, times(1)).findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
+                                                                                           eq(null));
+
         // Dummy filter ------------------------------------------------------------------------------------------------
 
         when(this.transferListingRepository.findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
@@ -539,6 +560,32 @@ class TransferListingServiceTests extends BaseD11BootServiceTests {
         verify(this.transferListingRepository, times(1)).findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
                                                                                            eq(Boolean.FALSE),
                                                                                            any(Pageable.class));
+
+        // Dummy filter (unpaged) --------------------------------------------------------------------------------------
+
+        when(this.transferListingRepository.findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
+                                                                              eq(Boolean.TRUE)))
+                .thenReturn(transferListings);
+
+        final List<TransferListing> unpagedDummyResult =
+                this.transferListingService.getByTransferDayId(transferDay.getId(), Boolean.TRUE, null);
+
+        assertEquals(transferListings, unpagedDummyResult);
+
+        verify(this.transferListingRepository, times(1)).findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
+                                                                                           eq(Boolean.TRUE));
+
+        when(this.transferListingRepository.findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
+                                                                              eq(Boolean.FALSE)))
+                .thenReturn(transferListings);
+
+        final List<TransferListing> unpagedNonDummyResult =
+                this.transferListingService.getByTransferDayId(transferDay.getId(), Boolean.FALSE, null);
+
+        assertEquals(transferListings, unpagedNonDummyResult);
+
+        verify(this.transferListingRepository, times(1)).findByTransferDayIdOrderByRanking(eq(transferDay.getId()),
+                                                                                           eq(Boolean.FALSE));
     }
 
     /**

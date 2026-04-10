@@ -43,6 +43,22 @@ public interface TransferListingRepository extends D11EntityRepository<TransferL
                                                             Pageable pageable);
 
     /**
+     * Finds all transfer listings by transfer day ordered by ranking, unpaged.
+     *
+     * @param transferDayId The transfer day id.
+     * @param dummy         Null for all, true for dummy D11 team only, false for real D11 team only.
+     * @return Transfer listings for the transfer day ordered by ranking.
+     */
+    @Query("""
+            SELECT tl FROM TransferListing tl
+            WHERE tl.transferDay.id = :transferDayId
+              AND (:dummy IS NULL OR tl.d11Team.dummy = :dummy)
+            ORDER BY tl.ranking
+            """)
+    List<TransferListing> findByTransferDayIdOrderByRanking(@Param("transferDayId") Long transferDayId,
+                                                            @Param("dummy") Boolean dummy);
+
+    /**
      * Finds transfer listings by season id and D11 team id.
      *
      * @param seasonId The season id.
