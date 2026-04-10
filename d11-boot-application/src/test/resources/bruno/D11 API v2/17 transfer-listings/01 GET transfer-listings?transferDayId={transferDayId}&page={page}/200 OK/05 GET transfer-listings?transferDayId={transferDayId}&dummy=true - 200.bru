@@ -1,0 +1,37 @@
+meta {
+  name: GET transfer-listings?transferDayId={transferDayId}&page={page}&dummy=true - 200
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/v2/transfer-listings?transferDayId={{transferDayId}}&dummy=true
+  body: none
+  auth: none
+}
+
+params:query {
+  transferDayId: {{transferDayId}}
+  dummy: true
+}
+
+assert {
+  res.status: eq 200
+  res.body.transferListings: isDefined
+  res.body.transferListings.length: eq 1
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+  
+  test("GET transfer day transfer listings dummy response body unpaged", () => {
+    const body = res.getBody();
+    const transferListings = JSON.parse(bru.getEnvVar("transferDayTransferListingsDummy"));
+  
+    for (let i = 0; i < transferListings.length; ++i) {
+      expectToEq.transferListing(body.transferListings[i], transferListings[i]);
+    }
+  
+  });
+  
+}
