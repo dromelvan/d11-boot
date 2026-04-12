@@ -2,6 +2,7 @@ package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.TransferBid;
 import org.d11.boot.spring.model.TransferDay;
+import org.d11.boot.spring.util.TransferDayPlayer;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
@@ -42,6 +43,47 @@ class TransferBidRepositoryTests extends AbstractRepositoryTests<TransferBid, Tr
 
             final List<TransferBid> expected = entities.stream()
                     .filter(transferBid -> transferBid.getTransferDay().equals(transferDay))
+                    .toList();
+
+            assertFalse(expected.isEmpty());
+
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(expected, result);
+        }
+    }
+
+    /**
+     * Test TransferBidRepository::findByTransferDayIdAndPlayerIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc.
+     */
+    @Test
+    void testFindByTransferDayIdAndPlayerIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc() {
+        final List<TransferBid> entities = getEntities();
+        entities.sort(Comparator
+                              .comparing(TransferBid::getPlayerRanking)
+                              .thenComparing(TransferBid::getActiveFee, Comparator.reverseOrder())
+                              .thenComparing(TransferBid::getD11TeamRanking, Comparator.reverseOrder()));
+
+        final Set<TransferDayPlayer> transferDayPlayers = entities.stream()
+                .map(transferBid ->
+                    new TransferDayPlayer(transferBid.getTransferDay(), transferBid.getPlayer())
+                )
+                .collect(Collectors.toSet());
+
+        assertTrue(transferDayPlayers.size() > 1);
+
+        for (final TransferDayPlayer transferDayPlayer : transferDayPlayers) {
+            final long tranferDayid = transferDayPlayer.transferDay().getId();
+            final long playerid = transferDayPlayer.player().getId();
+
+            final List<TransferBid> result =
+                getRepository()
+                    .findByTransferDayIdAndPlayerIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(tranferDayid,
+                                                                                                          playerid);
+
+            final List<TransferBid> expected = entities.stream()
+                    .filter(transferBid -> transferBid.getTransferDay().equals(transferDayPlayer.transferDay())
+                                           && transferBid.getPlayer().equals(transferDayPlayer.player()))
                     .toList();
 
             assertFalse(expected.isEmpty());

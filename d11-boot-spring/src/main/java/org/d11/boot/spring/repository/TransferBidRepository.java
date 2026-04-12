@@ -22,4 +22,17 @@ public interface TransferBidRepository extends D11EntityRepository<TransferBid> 
             @Param("transferDayId") Long transferDayId
     );
 
+    /**
+     * Finds transfer bids by transfer day id and player id ordered by player ranking, active fee descending and
+     * d11 team ranking.
+     *
+     * @param transferDayId The transfer day id.
+     * @param playerId The player id.
+     * @return Transfer bids for the transfer day and player ordered by player ranking, active fee descending and
+     *         d11 team ranking.
+     */
+    List<TransferBid> findByTransferDayIdAndPlayerIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(
+            @Param("transferDayId") Long transferDayId, @Param("playerId") Long playerId
+    );
+
 }

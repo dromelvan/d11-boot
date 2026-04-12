@@ -1876,12 +1876,18 @@ paths:
         - transferBid
       summary: Get transfer bids by transfer day id.
       security: []
-      operationId: getTransferBidsByTransferDayId
+      operationId: getTransferBidsByTransferDayIdAndPlayerId
       parameters:
         - name: transferDayId
           in: query
           required: true
           description: Id of the transfer day.
+          schema:
+            type: integer
+            format: int64
+        - name: playerId
+          in: query
+          description: Optional player ID to filter on.
           schema:
             type: integer
             format: int64

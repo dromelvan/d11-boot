@@ -38,6 +38,21 @@ public class TransferBidService extends RepositoryService<TransferBid, TransferB
     private static final String TRANSFER_BID_ID = "transferBidId";
 
     /**
+     * Transfer day id property name.
+     */
+    private static final String TRANSFER_DAY_ID = "transferDayId";
+
+    /**
+     * Player id.
+     */
+    private static final String PLAYER_ID = "playerId";
+
+    /**
+     * Must be positive error message.
+     */
+    private static final String MUST_BE_POSITIVE = "must be positive";
+
+    /**
      * Repository for looking up current transfer day.
      */
     private final TransferDayRepository transferDayRepository;
@@ -67,11 +82,11 @@ public class TransferBidService extends RepositoryService<TransferBid, TransferB
      * Get transfer bids by transfer day id ordered by ranking.
      *
      * @param transferDayId The transfer day id.
-     * @return Transfer bids by transfer day id ordered by ranking in pages of size 25.
+     * @return Transfer bids by transfer day id ordered by ranking.
      */
     public List<TransferBid> getByTransferDayId(final Long transferDayId) {
         if (transferDayId == null || transferDayId <= 0) {
-            throw new BadRequestException("transferDayId", "must be positive");
+            throw new BadRequestException(TRANSFER_DAY_ID, MUST_BE_POSITIVE);
         }
 
         final List<TransferBid> transferBids = new ArrayList<>();
@@ -82,6 +97,37 @@ public class TransferBidService extends RepositoryService<TransferBid, TransferB
             if (Status.FINISHED.equals(transferDay.getStatus())) {
                 transferBids.addAll(getJpaRepository()
                         .findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(transferDayId));
+            }
+        });
+
+        return transferBids;
+    }
+
+    /**
+     * Get transfer bids by transfer day id and player id ordered by ranking.
+     *
+     * @param transferDayId The transfer day id.
+     * @param playerId The player id.
+     * @return Transfer bids by transfer day id and player id ordered by ranking in pages of size 25.
+     */
+    public List<TransferBid> getByTransferDayIdAndPlayerId(final Long transferDayId, final Long playerId) {
+        if (transferDayId == null || transferDayId <= 0) {
+            throw new BadRequestException(TRANSFER_DAY_ID, MUST_BE_POSITIVE);
+        }
+
+        if (playerId == null || playerId <= 0) {
+            throw new BadRequestException(PLAYER_ID, MUST_BE_POSITIVE);
+        }
+
+        final List<TransferBid> transferBids = new ArrayList<>();
+
+        final Optional<TransferDay> optional = this.transferDayRepository.findById(transferDayId);
+
+        optional.ifPresent(transferDay -> {
+            if (Status.FINISHED.equals(transferDay.getStatus())) {
+                transferBids.addAll(getJpaRepository()
+                    .findByTransferDayIdAndPlayerIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(transferDayId,
+                                                                                                          playerId));
             }
         });
 

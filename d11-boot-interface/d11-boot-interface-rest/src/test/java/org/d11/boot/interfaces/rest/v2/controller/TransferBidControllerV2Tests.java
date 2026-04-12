@@ -16,6 +16,7 @@ import org.d11.boot.spring.repository.PlayerTransferContextRepository;
 import org.d11.boot.spring.repository.SeasonRepository;
 import org.d11.boot.spring.repository.TransferBidRepository;
 import org.d11.boot.spring.repository.TransferDayRepository;
+import org.d11.boot.spring.util.TransferDayPlayer;
 import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,16 +64,18 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
     private SeasonRepository seasonRepository;
 
     /**
-     * Tests TransferBidControllerV2::getTransferBidsByTransferDayId.
+     * Tests TransferBidControllerV2::getTransferBidsByTransferDayIdAndPlayerId.
      */
     @Test
     @Transactional
-    void testGetTransferBidsByTransferDayId() {
+    void testGetTransferBidsByTransferDayIdAndPlayerId() {
         final TransferBidApi transferBidApi = getApi(TransferBidApi.class);
 
-        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.getTransferBidsByTransferDayId((Long) null));
+        assertThrows(FeignException.BadRequest.class,
+                     () -> transferBidApi.getTransferBidsByTransferDayIdAndPlayerId(null, null));
 
-        assertThrows(FeignException.BadRequest.class, () -> transferBidApi.getTransferBidsByTransferDayId(-1L));
+        assertThrows(FeignException.BadRequest.class,
+                     () -> transferBidApi.getTransferBidsByTransferDayIdAndPlayerId(-1L, null));
 
         final List<TransferDay> transferDays = this.transferDayRepository.findAll();
 
@@ -81,7 +86,7 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
 
         for (final TransferDay transferDay : transferDays) {
             final TransferBidsResponseBodyDTO transferBidsResponseBodyDTO =
-                    transferBidApi.getTransferBidsByTransferDayId(transferDay.getId());
+                    transferBidApi.getTransferBidsByTransferDayIdAndPlayerId(transferDay.getId(), null);
             assertNotNull(transferBidsResponseBodyDTO);
 
             final List<TransferBidDTO> result = transferBidsResponseBodyDTO.getTransferBids();
@@ -91,10 +96,10 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
             if (Status.FINISHED.equals(transferDay.getStatus())) {
                 assertFalse(result.isEmpty());
 
-                final List<TransferBid> transferBids = this.transferBidRepository
+                final List<TransferBid> expected = this.transferBidRepository
                         .findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(transferDay.getId());
 
-                assertEquals(map(transferBids, TransferBidDTO.class), result);
+                assertEquals(map(expected, TransferBidDTO.class), result);
                 ++finishedCount;
             } else {
                 assertTrue(result.isEmpty());
@@ -109,6 +114,61 @@ class TransferBidControllerV2Tests extends D11BootControllerV2Tests {
         assertTrue(finishedCount > 0 && notFinishedCount > 0);
     }
 
+    /**
+     * Tests TransferBidControllerV2::getTransferBidsByTransferDayIdAndPlayerId with player id.
+     */
+    @Test
+    @Transactional
+    void testGetTransferBidsByTransferDayIdAndPlayerIdWithPlayerId() {
+        final TransferBidApi transferBidApi = getApi(TransferBidApi.class);
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> transferBidApi.getTransferBidsByTransferDayIdAndPlayerId(1L, -1L));
+
+        int finishedCount = 0;
+        int notFinishedCount = 0;
+
+        final Set<TransferDayPlayer> transferDayPlayers = this.transferBidRepository.findAll().stream()
+                .map(transferBid ->
+                             new TransferDayPlayer(transferBid.getTransferDay(), transferBid.getPlayer())
+                    )
+                .collect(Collectors.toSet());
+
+        assertFalse(transferDayPlayers.isEmpty());
+
+        for (final TransferDayPlayer transferDayPlayer : transferDayPlayers) {
+            final TransferBidsResponseBodyDTO transferBidsResponseBodyDTO =
+                    transferBidApi.getTransferBidsByTransferDayIdAndPlayerId(transferDayPlayer.transferDay().getId(),
+                                                                             transferDayPlayer.player().getId());
+            assertNotNull(transferBidsResponseBodyDTO);
+
+            final List<TransferBidDTO> result = transferBidsResponseBodyDTO.getTransferBids();
+
+            assertNotNull(result);
+
+            if (Status.FINISHED.equals(transferDayPlayer.transferDay().getStatus())) {
+                assertFalse(result.isEmpty());
+
+                final List<TransferBid> expected = this.transferBidRepository
+                        .findByTransferDayIdAndPlayerIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(
+                                transferDayPlayer.transferDay().getId(),
+                                transferDayPlayer.player().getId()
+                );
+
+                assertEquals(map(expected, TransferBidDTO.class), result);
+                ++finishedCount;
+            } else {
+                assertTrue(result.isEmpty());
+                if (!Status.PENDING.equals(transferDayPlayer.transferDay().getStatus())) {
+                    assertFalse(transferDayPlayer.transferDay().getTransferBids().isEmpty());
+                }
+                ++notFinishedCount;
+            }
+        }
+
+        // Make sure that we have both finished and not finished test transfer days
+        assertTrue(finishedCount > 0 && notFinishedCount > 0);
+    }
     // createTransferBid -----------------------------------------------------------------------------------------------
 
     /**

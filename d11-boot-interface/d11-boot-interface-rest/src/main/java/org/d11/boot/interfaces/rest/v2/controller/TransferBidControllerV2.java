@@ -34,8 +34,13 @@ public class TransferBidControllerV2 extends RepositoryServiceController<Transfe
     }
 
     @Override
-    public ResponseEntity<TransferBidsResponseBodyDTO> getTransferBidsByTransferDayId(final Long transferDayId) {
-        final List<TransferBid> transferBids = getRepositoryService().getByTransferDayId(transferDayId);
+    public ResponseEntity<TransferBidsResponseBodyDTO> getTransferBidsByTransferDayIdAndPlayerId(
+            final Long transferDayId,
+            final Long playerId
+    ) {
+        final List<TransferBid> transferBids = playerId != null
+                ? getRepositoryService().getByTransferDayIdAndPlayerId(transferDayId, playerId)
+                : getRepositoryService().getByTransferDayId(transferDayId);
         return ResponseEntity.ok(new TransferBidsResponseBodyDTO()
                 .transferBids(map(transferBids, TransferBidDTO.class)));
     }

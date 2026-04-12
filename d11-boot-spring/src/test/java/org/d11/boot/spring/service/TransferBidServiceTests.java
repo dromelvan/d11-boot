@@ -146,6 +146,78 @@ class TransferBidServiceTests extends BaseD11BootServiceTests {
                 .findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(eq(transferDay.getId()));
     }
 
+    /**
+     * Tests TransferBidService::getByTransferDayIdAndPlayerId.
+     */
+    @Test
+    void testGetByTransferDayIdAndPlayerId() {
+
+        // Validation --------------------------------------------------------------------------------------------------
+
+        final String transferDayIdProperty = "transferDayId";
+        final String playerIdProperty = "playerId";
+
+        final BadRequestException nullTransferDayIdException =
+                assertThrows(BadRequestException.class,
+                             () -> this.transferBidService.getByTransferDayIdAndPlayerId(null, null));
+        assertEquals(transferDayIdProperty, nullTransferDayIdException.getParameter());
+
+        final BadRequestException invalidTransferDayIdException =
+                assertThrows(BadRequestException.class,
+                             () -> this.transferBidService.getByTransferDayIdAndPlayerId(-1L, null));
+        assertEquals(transferDayIdProperty, invalidTransferDayIdException.getParameter());
+
+        final BadRequestException nullPlayerIdException =
+                assertThrows(BadRequestException.class,
+                             () -> this.transferBidService.getByTransferDayIdAndPlayerId(1L, null));
+        assertEquals(playerIdProperty, nullPlayerIdException.getParameter());
+
+        final BadRequestException invalidPlayerIdException =
+                assertThrows(BadRequestException.class,
+                             () -> this.transferBidService.getByTransferDayIdAndPlayerId(1L, -1L));
+        assertEquals(playerIdProperty, invalidPlayerIdException.getParameter());
+
+        // Success -----------------------------------------------------------------------------------------------------
+
+        final TransferDay transferDay = generate(TransferDay.class);
+        final Player player = generate(Player.class);
+
+        final List<TransferBid> transferBids = generateList(TransferBid.class);
+
+        when(this.transferDayRepository.findById(eq(transferDay.getId() + 1))).thenReturn(Optional.empty());
+
+        assertTrue(this.transferBidService.getByTransferDayIdAndPlayerId(transferDay.getId() + 1, player.getId())
+                           .isEmpty());
+
+        transferDay.setStatus(Status.PENDING);
+        when(this.transferDayRepository.findById(eq(transferDay.getId()))).thenReturn(Optional.of(transferDay));
+
+        assertTrue(this.transferBidService.getByTransferDayIdAndPlayerId(transferDay.getId(), player.getId())
+                           .isEmpty());
+
+        transferDay.setStatus(Status.ACTIVE);
+        assertTrue(this.transferBidService.getByTransferDayIdAndPlayerId(transferDay.getId(), player.getId())
+                           .isEmpty());
+
+        transferDay.setStatus(Status.FINISHED);
+        when(this.transferBidRepository
+                     .findByTransferDayIdAndPlayerIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(
+                             eq(transferDay.getId()),
+                             eq(player.getId())
+                     )
+            ).thenReturn(transferBids);
+
+        final List<TransferBid> result = this.transferBidService.getByTransferDayIdAndPlayerId(transferDay.getId(),
+                                                                                               player.getId());
+
+        assertEquals(transferBids, result);
+
+        verify(this.transferBidRepository, times(1))
+                .findByTransferDayIdAndPlayerIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(
+                        eq(transferDay.getId()),
+                        eq(player.getId())
+            );
+    }
     // createTransferBid -----------------------------------------------------------------------------------------------
 
     /**
