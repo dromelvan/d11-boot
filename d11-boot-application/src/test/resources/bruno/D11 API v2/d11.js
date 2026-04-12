@@ -333,6 +333,14 @@ function transferListing(transferListing1, transferListing2) {
     position(transferListing1.position, transferListing2.position);
 }
 
+function transferListingBase(transferListing1, transferListing2) {
+    expect(transferListing1.id).to.eq(transferListing2.id);
+    expect(transferListing1.ranking).to.eq(transferListing2.ranking);
+
+    team(transferListing1.team, transferListing2.team);
+    position(transferListing1.position, transferListing2.position);
+}
+
 function transferBid(transferBid1, transferBid2) {
     expect(transferBid1.id).to.eq(transferBid2.id);
     expect(transferBid1.playerRanking).to.eq(transferBid2.playerRanking);
@@ -352,6 +360,7 @@ function transfer(transfer1, transfer2) {
     transferDay(transfer1.transferDay, transfer2.transferDay);
     player(transfer1.player, transfer2.player);
     d11Team(transfer1.d11Team, transfer2.d11Team);
+    transferListingBase(transfer1.transferListing, transfer2.transferListing);
 }
 
 const expectToEq = {

@@ -3976,12 +3976,16 @@ components:
       type: object
       required:
         - id
+        - ranking
         - team
         - position
       properties:
         id:
           type: integer
           format: int64
+        ranking:
+          type: integer
+          format: int32
         team:
           $ref: '#/components/schemas/TeamBase'
         position:
