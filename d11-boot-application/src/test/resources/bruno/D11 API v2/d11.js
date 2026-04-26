@@ -75,6 +75,12 @@ function playerSearchResult(player1, player2) {
 
 }
 
+function seasonBase(season1, season2) {
+    expect(season1.id).to.eq(season2.id);
+    expect(season1.name).to.eq(season2.name);
+    expect(season1.shortName).to.eq(season2.shortName);
+}
+
 function season(season1, season2) {
   expect(season1.id).to.eq(season2.id);
   expect(season1.name).to.eq(season2.name);
@@ -84,6 +90,11 @@ function season(season1, season2) {
   expect(season1.status).to.eq(season2.status);
   expect(season1.date).to.eq(season2.date);
   expect(season1.legacy).to.eq(season2.legacy);
+}
+
+function matchWeekBase(matchWeek1, matchWeek2) {
+    expect(matchWeek1.id).to.eq(matchWeek2.id);
+    expect(matchWeek1.matchWeekNumber).to.eq(matchWeek2.matchWeekNumber);
 }
 
 function matchWeek(matchWeek1, matchWeek2) {
@@ -269,6 +280,13 @@ function d11TeamSeasonStat(d11TeamSeasonStat1, d11TeamSeasonStat2) {
     season(d11TeamSeasonStat1.season, d11TeamSeasonStat2.season);
 }
 
+function transferWindowBase(transferWindow1, transferWindow2) {
+    expect(transferWindow1.id).to.eq(transferWindow2.id);
+    expect(transferWindow1.transferWindowNumber).to.eq(transferWindow2.transferWindowNumber);
+    expect(transferWindow1.draft).to.eq(transferWindow2.draft);
+    expect(transferWindow1.status).to.eq(transferWindow2.status);
+}
+
 function transferWindow(transferWindow1, transferWindow2) {
     expect(transferWindow1.id).to.eq(transferWindow2.id);
     expect(transferWindow1.transferWindowNumber).to.eq(transferWindow2.transferWindowNumber);
@@ -289,6 +307,12 @@ function transferWindow(transferWindow1, transferWindow2) {
                       transferWindow2.transferWindowPositionCounts[i].position);
         }
     }
+}
+
+function transferDayBase(transferDay1, transferDay2) {
+    expect(transferDay1.id).to.eq(transferDay2.id);
+    expect(transferDay1.transferDayNumber).to.eq(transferDay2.transferDayNumber);
+    expect(transferDay1.status).to.eq(transferDay2.status);
 }
 
 function transferDay(transferDay1, transferDay2) {
@@ -372,7 +396,9 @@ const expectToEq = {
     position,
     player,
     playerSearchResult,
+    seasonBase,
     season,
+    matchWeekBase,
     matchWeek,
     matchWeekWithoutMVP,
     match,
@@ -381,7 +407,9 @@ const expectToEq = {
     playerSeasonStat,
     teamSeasonStat,
     d11TeamSeasonStat,
+    transferWindowBase,
     transferWindow,
+    transferDayBase,
     transferDay,
     transferListing,
     transferBid,

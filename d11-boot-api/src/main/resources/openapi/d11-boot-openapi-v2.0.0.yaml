@@ -2134,6 +2134,25 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  # Current ------------------------------------------------------------------------------------------------------------
+
+  /v2/current:
+    get:
+      tags:
+        - current
+      summary: Gets the current season, match week, transfer window and transfer day.
+      security: []
+      operationId: getCurrent
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentResponseBody"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
 # Components -----------------------------------------------------------------------------------------------------------
 
 components:
@@ -4287,6 +4306,20 @@ components:
       properties:
         transfer:
           $ref: '#/components/schemas/TransferInput'
+
+  # Current ------------------------------------------------------------------------------------------------------------
+
+    CurrentResponseBody:
+      type: object
+      properties:
+        season:
+          $ref: '#/components/schemas/SeasonBase'
+        matchWeek:
+          $ref: '#/components/schemas/MatchWeekBase'
+        transferWindow:
+          $ref: '#/components/schemas/TransferWindowBase'
+        transferDay:
+          $ref: '#/components/schemas/TransferDay'
 
   # Security schemes ---------------------------------------------------------------------------------------------------
 
