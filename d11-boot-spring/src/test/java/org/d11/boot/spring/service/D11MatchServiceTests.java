@@ -136,4 +136,21 @@ class D11MatchServiceTests extends BaseD11BootServiceTests {
         assertEquals(d11Matches, result);
     }
 
+    /**
+     * Tests D11MatchService::getActiveD11Matches.
+     */
+    @Test
+    void testGetActiveD11Matches() {
+        final List<D11Match> d11Matches = generateList(D11Match.class);
+        final Set<Status> activeStatuses = Set.of(Status.ACTIVE, Status.FULL_TIME);
+
+        when(this.d11MatchRepository.findByStatusInOrderByDatetime(eq(activeStatuses))).thenReturn(d11Matches);
+
+        final List<D11Match> result = this.d11MatchService.getActiveD11Matches();
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(d11Matches, result);
+    }
+
 }

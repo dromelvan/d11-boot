@@ -63,4 +63,12 @@ public interface D11MatchRepository extends D11EntityRepository<D11Match> {
      */
     List<D11Match> findByMatchWeekIdOrderByDatetimeAscIdAsc(@Param("matchWeekId") Long matchWeekId);
 
+    /**
+     * Gets D11 matches by status ordered by datetime.
+     *
+     * @param statuses The set of statuses.
+     * @return D11 matches with the provided statuses ordered by datetime.
+     */
+    List<D11Match> findByStatusInOrderByDatetime(@Param("statuses") Set<Status> statuses);
+
 }

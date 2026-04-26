@@ -87,4 +87,13 @@ public class D11MatchService extends RepositoryService<D11Match, D11MatchReposit
                                                                              CURRENT_STATUSES);
     }
 
+    /**
+     * Gets active D11 matches (status ACTIVE or FULL_TIME).
+     *
+     * @return A list of active D11 matches sorted by datetime.
+     */
+    public List<D11Match> getActiveD11Matches() {
+        return getJpaRepository().findByStatusInOrderByDatetime(CURRENT_STATUSES);
+    }
+
 }

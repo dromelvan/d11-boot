@@ -188,4 +188,22 @@ class D11MatchControllerV2Tests extends D11BootControllerV2Tests {
         assertEquals(map(expected, D11MatchBaseDTO.class), result);
     }
 
+    /**
+     * Tests D11MatchController::getActiveD11Matches.
+     */
+    @Test
+    void testGetActiveD11Matches() {
+        final D11MatchApi d11MatchApi = getApi(D11MatchApi.class);
+        final Set<Status> activeStatuses = Set.of(Status.ACTIVE, Status.FULL_TIME);
+
+        final List<D11Match> expected = this.d11MatchRepository.findByStatusInOrderByDatetime(activeStatuses);
+
+        final D11MatchesResponseBodyDTO response = d11MatchApi.getActiveD11Matches();
+        final List<D11MatchBaseDTO> result = response.getD11Matches();
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(map(expected, D11MatchBaseDTO.class), result);
+    }
+
 }

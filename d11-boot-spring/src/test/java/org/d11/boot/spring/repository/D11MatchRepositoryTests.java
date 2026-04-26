@@ -133,4 +133,34 @@ class D11MatchRepositoryTests extends AbstractRepositoryTests<D11Match, D11Match
         }
     }
 
+    /**
+     * Tests D11MatchRepository::findByStatusInOrderByDatetime.
+     */
+    @Test
+    void testFindByStatusInOrderByDatetime() {
+        final List<D11Match> d11Matches = getEntities();
+        d11Matches.sort(Comparator.comparing(D11Match::getDatetime));
+
+        final Set<Status> statuses = d11Matches.stream()
+                .map(D11Match::getStatus)
+                .collect(Collectors.toSet());
+
+        assertTrue(statuses.size() > 1);
+
+        statuses.forEach(status -> {
+            final List<D11Match> expected = d11Matches.stream()
+                    .filter(d11Match -> d11Match.getStatus() == status)
+                    .toList();
+
+            final List<D11Match> result = getRepository().findByStatusInOrderByDatetime(Set.of(status));
+
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(expected, result);
+        });
+
+        final List<D11Match> allResult = getRepository().findByStatusInOrderByDatetime(statuses);
+        assertEquals(d11Matches, allResult);
+    }
+
 }
