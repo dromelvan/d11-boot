@@ -15,6 +15,7 @@ app:
     allowedOriginPatterns:
       - http://localhost:*
       - http://127.0.0.1:*
+      - http://192.168.*.*:*
 
 # Super strong password for development secrets decryption.
 jasypt.encryptor.password: password
