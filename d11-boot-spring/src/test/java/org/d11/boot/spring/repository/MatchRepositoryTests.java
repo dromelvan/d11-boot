@@ -81,6 +81,36 @@ class MatchRepositoryTests extends AbstractRepositoryTests<Match, MatchRepositor
     }
 
     /**
+     * Tests MatchRepository::findByStatusInOrderByDatetime.
+     */
+    @Test
+    void testFindByStatusInOrderByDatetime() {
+        final List<Match> matches = getEntities();
+        matches.sort(Comparator.comparing(Match::getDatetime));
+
+        final Set<Status> statuses = matches.stream()
+                .map(Match::getStatus)
+                .collect(Collectors.toSet());
+
+        assertTrue(statuses.size() > 1);
+
+        statuses.forEach(status -> {
+            final List<Match> expected = matches.stream()
+                    .filter(match -> match.getStatus() == status)
+                    .toList();
+
+            final List<Match> result = getRepository().findByStatusInOrderByDatetime(Set.of(status));
+
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(expected, result);
+        });
+
+        final List<Match> allResult = getRepository().findByStatusInOrderByDatetime(statuses);
+        assertEquals(matches, allResult);
+    }
+
+    /**
      * Tests MatchRepository::findByTeamIdAndMatchWeekSeasonIdOrderByDatetime.
      */
     @Test

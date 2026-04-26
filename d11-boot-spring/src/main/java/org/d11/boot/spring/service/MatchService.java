@@ -88,4 +88,13 @@ public class MatchService extends RepositoryService<Match, MatchRepository> {
                                                                              CURRENT_STATUSES);
     }
 
+    /**
+     * Gets active matches (status ACTIVE or FULL_TIME).
+     *
+     * @return A list of active matches sorted by datetime.
+     */
+    public List<Match> getActiveMatches() {
+        return getJpaRepository().findByStatusInOrderByDatetime(CURRENT_STATUSES);
+    }
+
 }

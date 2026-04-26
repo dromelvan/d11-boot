@@ -1108,6 +1108,23 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/matches/active:
+    get:
+      tags:
+        - match
+      summary: Get active matches.
+      security: []
+      operationId: getActiveMatches
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchesResponseBody"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /v2/matches/{matchId}/player-match-stats:
     get:
       tags:

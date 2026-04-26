@@ -180,4 +180,22 @@ class MatchControllerV2Tests extends D11BootControllerV2Tests {
         assertEquals(map(expected, MatchBaseDTO.class), result);
     }
 
+    /**
+     * Tests MatchController::getActiveMatches.
+     */
+    @Test
+    void testGetActiveMatches() {
+        final MatchApi matchApi = getApi(MatchApi.class);
+        final Set<Status> activeStatuses = Set.of(Status.ACTIVE, Status.FULL_TIME);
+
+        final List<Match> expected = this.matchRepository.findByStatusInOrderByDatetime(activeStatuses);
+
+        final MatchesResponseBodyDTO response = matchApi.getActiveMatches();
+        final List<MatchBaseDTO> result = response.getMatches();
+
+        assertNotNull(result);
+        assertEquals(map(expected, MatchBaseDTO.class), result);
+    }
+
 }
+

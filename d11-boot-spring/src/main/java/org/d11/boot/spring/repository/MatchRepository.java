@@ -47,6 +47,14 @@ public interface MatchRepository extends D11EntityRepository<Match> {
                                                            @Param("status") Set<Status> status);
 
     /**
+     * Gets matches by status ordered by datetime.
+     *
+     * @param statuses The set of statuses.
+     * @return Matches with the provided statuses ordered by datetime.
+     */
+    List<Match> findByStatusInOrderByDatetime(@Param("statuses") Set<Status> statuses);
+
+    /**
      * Gets matches by team and season ordered by datetime.
      * It's tricky to do (? or ?) and ? with the brackets by defining the query in the method name, so we'll use JPQL.
      *

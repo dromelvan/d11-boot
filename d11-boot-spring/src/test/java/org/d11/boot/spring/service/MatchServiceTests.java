@@ -135,4 +135,21 @@ class MatchServiceTests extends BaseD11BootServiceTests {
         assertEquals(matches, result);
     }
 
+    /**
+     * Tests MatchService::getActiveMatches.
+     */
+    @Test
+    void testGetActiveMatches() {
+        final List<Match> matches = generateList(Match.class);
+        final Set<Status> activeStatuses = Set.of(Status.ACTIVE, Status.FULL_TIME);
+
+        when(this.matchRepository.findByStatusInOrderByDatetime(eq(activeStatuses))).thenReturn(matches);
+
+        final List<Match> result = this.matchService.getActiveMatches();
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(matches, result);
+    }
+
 }

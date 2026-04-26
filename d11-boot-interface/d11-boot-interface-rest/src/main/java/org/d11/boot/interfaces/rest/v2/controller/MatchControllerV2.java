@@ -62,4 +62,11 @@ public class MatchControllerV2 extends RepositoryServiceController<MatchService>
                 .matches(getMapper().map(matches, MatchBaseDTO.class)));
     }
 
+    @Override
+    public ResponseEntity<MatchesResponseBodyDTO> getActiveMatches() {
+        final List<Match> matches = getRepositoryService().getActiveMatches();
+        return ResponseEntity.ok(new MatchesResponseBodyDTO()
+                .matches(getMapper().map(matches, MatchBaseDTO.class)));
+    }
+
 }
