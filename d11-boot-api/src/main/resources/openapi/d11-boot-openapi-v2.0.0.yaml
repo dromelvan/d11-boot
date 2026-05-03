@@ -3074,6 +3074,8 @@ components:
         - datetime
         - homeTeamGoalsScored
         - awayTeamGoalsScored
+        - previousHomeTeamGoalsScored
+        - previousAwayTeamGoalsScored
         - elapsed
         - status
         - homeTeam
@@ -3090,6 +3092,12 @@ components:
           type: integer
           format: int32
         awayTeamGoalsScored:
+          type: integer
+          format: int32
+        previousHomeTeamGoalsScored:
+          type: integer
+          format: int32
+        previousAwayTeamGoalsScored:
           type: integer
           format: int32
         elapsed:
@@ -3111,20 +3119,12 @@ components:
         - type: object
           required:
             - statSourceId
-            - previousHomeTeamGoalsScored
-            - previousAwayTeamGoalsScored
             - elapsed
             - status
           properties:
             statSourceId:
               type: integer
               format: int64
-            previousHomeTeamGoalsScored:
-              type: integer
-              format: int32
-            previousAwayTeamGoalsScored:
-              type: integer
-              format: int32
             elapsed:
               type: string
             status:
@@ -3170,6 +3170,12 @@ components:
         - away_team_goals_scored
         - home_team_points
         - away_team_points
+        - previous_home_team_goals_scored
+        - previous_away_team_goals_scored
+        - previous_home_team_points
+        - previous_away_team_points
+        - elapsed
+        - status
         - homeD11Team
         - awayD11Team
         - matchWeek
@@ -3191,6 +3197,22 @@ components:
         awayTeamPoints:
           type: integer
           format: int32
+        previousHomeTeamGoalsScored:
+          type: integer
+          format: int32
+        previousAwayTeamGoalsScored:
+          type: integer
+          format: int32
+        previousHomeTeamPoints:
+          type: integer
+          format: int32
+        previousAwayTeamPoints:
+          type: integer
+          format: int32
+        elapsed:
+          type: string
+        status:
+          $ref: '#/components/schemas/Status'
         homeD11Team:
           $ref: '#/components/schemas/D11TeamBase'
         awayD11Team:
@@ -3202,30 +3224,6 @@ components:
       allOf:
         - $ref: '#/components/schemas/D11MatchBase'
         - type: object
-          required:
-            - previous_home_team_goals_scored
-            - previous_away_team_goals_scored
-            - previous_home_team_points
-            - previous_away_team_points
-            - elapsed
-            - status
-          properties:
-            previousHomeTeamGoalsScored:
-              type: integer
-              format: int32
-            previousAwayTeamGoalsScored:
-              type: integer
-              format: int32
-            previousHomeTeamPoints:
-              type: integer
-              format: int32
-            previousAwayTeamPoints:
-              type: integer
-              format: int32
-            elapsed:
-              type: string
-            status:
-              $ref: '#/components/schemas/Status'
 
     D11MatchResponseBody:
       type: object
