@@ -1408,17 +1408,24 @@ paths:
     get:
       tags:
         - teamSeasonStat
-      summary: Gets all team season stats for a season.
+      summary: Gets all team season stats for a season or a team.
       security: []
-      operationId: getTeamSeasonStatsBySeasonId
+      operationId: getTeamSeasonStats
       parameters:
         - in: query
-          required: true
+          required: false
           name: seasonId
           schema:
             type: integer
             format: int64
           description: The season id.
+        - in: query
+          required: false
+          name: teamId
+          schema:
+            type: integer
+            format: int64
+          description: The team id.
       responses:
         200:
           description: OK

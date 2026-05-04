@@ -68,6 +68,38 @@ class TeamSeasonStatServiceTests extends BaseD11BootServiceTests {
     }
 
     /**
+     * Tests TeamSeasonStatService::getByTeamId.
+     */
+    @Test
+    void testGetByTeamId() {
+
+        // Validation --------------------------------------------------------------------------------------------------
+
+        final String teamIdProperty = "teamId";
+
+        final BadRequestException nullTeamIdException =
+                assertThrows(BadRequestException.class, () -> this.teamSeasonStatService.getByTeamId(null));
+        assertEquals(teamIdProperty, nullTeamIdException.getParameter());
+
+        final BadRequestException invalidTeamIdException =
+                assertThrows(BadRequestException.class, () -> this.teamSeasonStatService.getByTeamId(-1L));
+        assertEquals(teamIdProperty, invalidTeamIdException.getParameter());
+
+        // Success -----------------------------------------------------------------------------------------------------
+
+        final long teamId = 1L;
+        final List<TeamSeasonStat> teamSeasonStats = generateList(TeamSeasonStat.class);
+
+        when(this.teamSeasonStatRepository.findByTeamIdOrderBySeasonIdDesc(eq(teamId))).thenReturn(teamSeasonStats);
+
+        final List<TeamSeasonStat> result = this.teamSeasonStatService.getByTeamId(teamId);
+
+        assertEquals(teamSeasonStats, result);
+
+        verify(this.teamSeasonStatRepository, times(1)).findByTeamIdOrderBySeasonIdDesc(eq(teamId));
+    }
+
+    /**
      * Tests TeamSeasonStatService::getByTeamIdAndSeasonId.
      */
     @Test

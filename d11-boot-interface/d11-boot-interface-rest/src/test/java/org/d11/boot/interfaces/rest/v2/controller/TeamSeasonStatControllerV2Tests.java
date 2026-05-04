@@ -36,39 +36,77 @@ class TeamSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
     private TeamSeasonStatRepository teamSeasonStatRepository;
 
     /**
-     * Tests TeamSeasonStatController::getTeamSeasonStatsBySeasonId.
+     * Tests TeamSeasonStatController::getTeamSeasonStats.
      */
     @Test
-    void testGetTeamSeasonStatsBySeasonId() {
+    void testGetTeamSeasonStats() {
         final TeamSeasonStatApi teamSeasonStatApi = getApi(TeamSeasonStatApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> teamSeasonStatApi.getTeamSeasonStatsBySeasonId((Long) null));
+                     () -> teamSeasonStatApi.getTeamSeasonStats(null, null));
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> teamSeasonStatApi.getTeamSeasonStatsBySeasonId(-1L));
+                     () -> teamSeasonStatApi.getTeamSeasonStats(1L, 1L));
 
-        final List<TeamSeasonStat> teamSeasonStats = this.teamSeasonStatRepository.findAll();
-        teamSeasonStats.sort(Comparator.comparing(TeamSeasonStat::getRanking));
+        assertThrows(FeignException.BadRequest.class,
+                     () -> teamSeasonStatApi.getTeamSeasonStats(-1L, null));
 
-        final Set<Season> seasons = teamSeasonStats.stream()
+        assertThrows(FeignException.BadRequest.class,
+                     () -> teamSeasonStatApi.getTeamSeasonStats(null, -1L));
+
+        // By seasonId ------------------------------------------------------------------------------------------------
+
+        final List<TeamSeasonStat> teamSeasonStatsBySeasonId = this.teamSeasonStatRepository.findAll();
+        teamSeasonStatsBySeasonId.sort(Comparator.comparing(TeamSeasonStat::getRanking));
+
+        final Set<Season> seasons = teamSeasonStatsBySeasonId.stream()
                 .map(TeamSeasonStat::getSeason)
                 .collect(Collectors.toSet());
 
         assertTrue(seasons.size() > 1);
 
         for (final Season season : seasons) {
-            final TeamSeasonStatsResponseBodyDTO teamSeasonStatsBySeasonId =
-                    teamSeasonStatApi.getTeamSeasonStatsBySeasonId(season.getId());
-            assertNotNull(teamSeasonStatsBySeasonId);
+            final TeamSeasonStatsResponseBodyDTO response =
+                    teamSeasonStatApi.getTeamSeasonStats(season.getId(), null);
+            assertNotNull(response);
 
-            final List<TeamSeasonStat> expected = teamSeasonStats.stream()
+            final List<TeamSeasonStat> expected = teamSeasonStatsBySeasonId.stream()
                     .filter(teamSeasonStat -> teamSeasonStat.getSeason().equals(season))
                     .toList();
 
             assertTrue(expected.size() > 1);
 
-            final List<TeamSeasonStatDTO> result = teamSeasonStatsBySeasonId.getTeamSeasonStats();
+            final List<TeamSeasonStatDTO> result = response.getTeamSeasonStats();
+
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(map(expected, TeamSeasonStatDTO.class), result);
+        }
+
+        // By teamId --------------------------------------------------------------------------------------------------
+
+        final List<TeamSeasonStat> teamSeasonStatsByTeamId = this.teamSeasonStatRepository.findAll();
+        teamSeasonStatsByTeamId.sort(Comparator.comparing(
+                (TeamSeasonStat tss) -> tss.getSeason().getId(), Comparator.reverseOrder()));
+
+        final Set<Team> teams = teamSeasonStatsByTeamId.stream()
+                .map(TeamSeasonStat::getTeam)
+                .collect(Collectors.toSet());
+
+        assertTrue(teams.size() > 1);
+
+        for (final Team team : teams) {
+            final TeamSeasonStatsResponseBodyDTO response =
+                    teamSeasonStatApi.getTeamSeasonStats(null, team.getId());
+            assertNotNull(response);
+
+            final List<TeamSeasonStat> expected = teamSeasonStatsByTeamId.stream()
+                    .filter(teamSeasonStat -> teamSeasonStat.getTeam().equals(team))
+                    .toList();
+
+            assertTrue(expected.size() > 1);
+
+            final List<TeamSeasonStatDTO> result = response.getTeamSeasonStats();
 
             assertNotNull(result);
             assertFalse(result.isEmpty());

@@ -22,6 +22,14 @@ public interface TeamSeasonStatRepository extends D11EntityRepository<TeamSeason
     List<TeamSeasonStat> findBySeasonIdOrderByRanking(@Param("seasonId") Long seasonId);
 
     /**
+     * Finds team season stats by team id ordered by ranking.
+     *
+     * @param teamId The team id.
+     * @return Team season stats for the team ordered by season id descending.
+     */
+    List<TeamSeasonStat> findByTeamIdOrderBySeasonIdDesc(@Param("teamId") Long teamId);
+
+    /**
      * Finds team season stats by team id and season id.
      *
      * @param teamId   The team id.

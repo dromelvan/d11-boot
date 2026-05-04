@@ -21,6 +21,11 @@ public class TeamSeasonStatService extends RepositoryService<TeamSeasonStat, Tea
     private static final String SEASON_ID = "seasonId";
 
     /**
+     * Team id property name.
+     */
+    private static final String TEAM_ID = "teamId";
+
+    /**
      * Must be positive error value.
      */
     private static final String MUST_BE_POSITIVE = "must be positive";
@@ -50,6 +55,20 @@ public class TeamSeasonStatService extends RepositoryService<TeamSeasonStat, Tea
     }
 
     /**
+     * Get team season stats by team id ordered by ranking.
+     *
+     * @param teamId The team id.
+     * @return Team season stats by team id ordered by ranking.
+     */
+    public List<TeamSeasonStat> getByTeamId(final Long teamId) {
+        if (teamId == null || teamId <= 0) {
+            throw new BadRequestException(TEAM_ID, MUST_BE_POSITIVE);
+        }
+
+        return getJpaRepository().findByTeamIdOrderBySeasonIdDesc(teamId);
+    }
+
+    /**
      * Get team season stat by team id and season id.
      *
      * @param teamId   The team id.
@@ -58,7 +77,7 @@ public class TeamSeasonStatService extends RepositoryService<TeamSeasonStat, Tea
      */
     public TeamSeasonStat getByTeamIdAndSeasonId(final Long teamId, final Long seasonId) {
         if (teamId == null || teamId <= 0) {
-            throw new BadRequestException("teamId", MUST_BE_POSITIVE);
+            throw new BadRequestException(TEAM_ID, MUST_BE_POSITIVE);
         }
         if (seasonId == null || seasonId <= 0) {
             throw new BadRequestException(SEASON_ID, MUST_BE_POSITIVE);
