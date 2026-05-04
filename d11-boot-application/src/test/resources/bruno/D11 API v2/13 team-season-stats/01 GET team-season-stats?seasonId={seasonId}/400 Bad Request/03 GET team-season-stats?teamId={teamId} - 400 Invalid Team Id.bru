@@ -1,0 +1,26 @@
+meta {
+  name: GET team-season-stats?teamId={teamId} - 400 Invalid Team Id
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/v2/team-season-stats?teamId=invalid
+  body: none
+  auth: none
+}
+
+params:query {
+  teamId: invalid
+  page: 0
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq Bad Request
+  res.body.method: eq GET
+  res.body.path: eq /v2/team-season-stats
+  res.body.validationErrors.length: eq 1
+  res.body.validationErrors[0].property: eq teamId
+  res.body.validationErrors[0].error: eq is invalid
+}
