@@ -7,6 +7,7 @@ import org.d11.boot.api.v2.model.D11TeamSeasonStatsResponseBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.D11TeamSeasonStat;
 import org.d11.boot.spring.service.D11TeamSeasonStatService;
+import org.d11.boot.util.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,8 +32,15 @@ public class D11TeamSeasonStatControllerV2 extends RepositoryServiceController<D
     }
 
     @Override
-    public ResponseEntity<D11TeamSeasonStatsResponseBodyDTO> getD11TeamSeasonStatsBySeasonId(final Long seasonId) {
-        final List<D11TeamSeasonStat> d11TeamSeasonStats = getRepositoryService().getBySeasonId(seasonId);
+    public ResponseEntity<D11TeamSeasonStatsResponseBodyDTO> getD11TeamSeasonStats(final Long seasonId,
+                                                                                   final Long d11TeamId) {
+        if ((seasonId == null) == (d11TeamId == null)) {
+            throw new BadRequestException("seasonId or d11TeamId", "one and only one must be provided");
+        }
+
+        final List<D11TeamSeasonStat> d11TeamSeasonStats = seasonId != null
+                ? getRepositoryService().getBySeasonId(seasonId)
+                : getRepositoryService().getByD11TeamId(d11TeamId);
 
         return ResponseEntity.ok(new D11TeamSeasonStatsResponseBodyDTO()
                                          .d11TeamSeasonStats(getMapper().map(d11TeamSeasonStats,

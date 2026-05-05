@@ -21,6 +21,11 @@ public class D11TeamSeasonStatService extends RepositoryService<D11TeamSeasonSta
     private static final String SEASON_ID = "seasonId";
 
     /**
+     * D11 team id property name.
+     */
+    private static final String D11_TEAM_ID = "d11TeamId";
+
+    /**
      * Must be positive error value.
      */
     private static final String MUST_BE_POSITIVE = "must be positive";
@@ -50,6 +55,20 @@ public class D11TeamSeasonStatService extends RepositoryService<D11TeamSeasonSta
     }
 
     /**
+     * Get D11 team season stats by D11 team id ordered by season id descending.
+     *
+     * @param d11TeamId The D11 team id.
+     * @return D11 team season stats by D11 team id ordered by season id descending.
+     */
+    public List<D11TeamSeasonStat> getByD11TeamId(final Long d11TeamId) {
+        if (d11TeamId == null || d11TeamId <= 0) {
+            throw new BadRequestException(D11_TEAM_ID, MUST_BE_POSITIVE);
+        }
+
+        return getJpaRepository().findByD11TeamIdOrderBySeasonIdDesc(d11TeamId);
+    }
+
+    /**
      * Get D11 team season stat by D11 team id and season id.
      *
      * @param d11TeamId The D11 team id.
@@ -58,7 +77,7 @@ public class D11TeamSeasonStatService extends RepositoryService<D11TeamSeasonSta
      */
     public D11TeamSeasonStat getByD11TeamIdAndSeasonId(final Long d11TeamId, final Long seasonId) {
         if (d11TeamId == null || d11TeamId <= 0) {
-            throw new BadRequestException("d11TeamId", MUST_BE_POSITIVE);
+            throw new BadRequestException(D11_TEAM_ID, MUST_BE_POSITIVE);
         }
         if (seasonId == null || seasonId <= 0) {
             throw new BadRequestException(SEASON_ID, MUST_BE_POSITIVE);

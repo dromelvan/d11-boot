@@ -70,6 +70,39 @@ class D11TeamSeasonStatServiceTests extends BaseD11BootServiceTests {
     }
 
     /**
+     * Tests D11TeamSeasonStatService::getByD11TeamId.
+     */
+    @Test
+    void testGetByD11TeamId() {
+
+        // Validation --------------------------------------------------------------------------------------------------
+
+        final String d11TeamIdProperty = "d11TeamId";
+
+        final BadRequestException nullD11TeamIdException =
+                assertThrows(BadRequestException.class, () -> this.d11TeamSeasonStatService.getByD11TeamId(null));
+        assertEquals(d11TeamIdProperty, nullD11TeamIdException.getParameter());
+
+        final BadRequestException invalidD11TeamIdException =
+                assertThrows(BadRequestException.class, () -> this.d11TeamSeasonStatService.getByD11TeamId(-1L));
+        assertEquals(d11TeamIdProperty, invalidD11TeamIdException.getParameter());
+
+        // Success -----------------------------------------------------------------------------------------------------
+
+        final long d11TeamId = 1L;
+        final List<D11TeamSeasonStat> d11TeamSeasonStats = generateList(D11TeamSeasonStat.class);
+
+        when(this.d11TeamSeasonStatRepository.findByD11TeamIdOrderBySeasonIdDesc(eq(d11TeamId)))
+                .thenReturn(d11TeamSeasonStats);
+
+        final List<D11TeamSeasonStat> result = this.d11TeamSeasonStatService.getByD11TeamId(d11TeamId);
+
+        assertEquals(d11TeamSeasonStats, result);
+
+        verify(this.d11TeamSeasonStatRepository, times(1)).findByD11TeamIdOrderBySeasonIdDesc(eq(d11TeamId));
+    }
+
+    /**
      * Tests D11TeamSeasonStatService::getByD11TeamIdAndSeasonId.
      */
     @Test

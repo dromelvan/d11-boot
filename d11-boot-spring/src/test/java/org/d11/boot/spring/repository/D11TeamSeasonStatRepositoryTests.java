@@ -1,5 +1,6 @@
 package org.d11.boot.spring.repository;
 
+import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.D11TeamSeasonStat;
 import org.d11.boot.spring.model.Season;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,28 @@ class D11TeamSeasonStatRepositoryTests extends AbstractRepositoryTests<D11TeamSe
         expected.sort(Comparator.comparingInt(D11TeamSeasonStat::getRanking));
 
         final List<D11TeamSeasonStat> result = getRepository().findBySeasonIdOrderByRanking(season.getId());
+
+        assertNotNull(result);
+        assertEquals(expected, result);
+    }
+
+    /**
+     * Tests D11TeamSeasonStatRepository::findByD11TeamIdOrderBySeasonIdDesc.
+     */
+    @Test
+    void testFindByD11TeamIdOrderBySeasonIdDesc() {
+        final List<D11TeamSeasonStat> entities = getEntities();
+        final D11Team d11Team = entities.get(0).getD11Team();
+
+        final List<D11TeamSeasonStat> expected = entities.stream()
+                .filter(d11TeamSeasonStat -> d11TeamSeasonStat.getD11Team().equals(d11Team))
+                .sorted(Comparator.comparing(d11TeamSeasonStat -> d11TeamSeasonStat.getSeason().getId(),
+                                             Comparator.reverseOrder()))
+                .toList();
+
+        assertTrue(expected.size() > 1);
+
+        final List<D11TeamSeasonStat> result = getRepository().findByD11TeamIdOrderBySeasonIdDesc(d11Team.getId());
 
         assertNotNull(result);
         assertEquals(expected, result);

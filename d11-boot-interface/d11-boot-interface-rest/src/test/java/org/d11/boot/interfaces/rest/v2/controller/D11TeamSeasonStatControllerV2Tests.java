@@ -36,36 +36,77 @@ class D11TeamSeasonStatControllerV2Tests extends D11BootControllerV2Tests {
     private D11TeamSeasonStatRepository d11TeamSeasonStatRepository;
 
     /**
-     * Tests D11TeamSeasonStatController::getD11TeamSeasonStatsBySeasonId.
+     * Tests D11TeamSeasonStatController::getD11TeamSeasonStats.
      */
     @Test
-    void testGetD11TeamSeasonStatsBySeasonId() {
+    void testGetD11TeamSeasonStats() {
         final D11TeamSeasonStatApi d11TeamSeasonStatApi = getApi(D11TeamSeasonStatApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStatsBySeasonId((Long) null));
+                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStats(null, null));
 
-        final List<D11TeamSeasonStat> d11TeamSeasonStats = this.d11TeamSeasonStatRepository.findAll();
-        d11TeamSeasonStats.sort(Comparator.comparing(D11TeamSeasonStat::getRanking));
+        assertThrows(FeignException.BadRequest.class,
+                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStats(1L, 1L));
 
-        final Set<Season> seasons = d11TeamSeasonStats.stream()
+        assertThrows(FeignException.BadRequest.class,
+                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStats(-1L, null));
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> d11TeamSeasonStatApi.getD11TeamSeasonStats(null, -1L));
+
+        // By seasonId ------------------------------------------------------------------------------------------------
+
+        final List<D11TeamSeasonStat> d11TeamSeasonStatsBySeasonId = this.d11TeamSeasonStatRepository.findAll();
+        d11TeamSeasonStatsBySeasonId.sort(Comparator.comparing(D11TeamSeasonStat::getRanking));
+
+        final Set<Season> seasons = d11TeamSeasonStatsBySeasonId.stream()
                 .map(D11TeamSeasonStat::getSeason)
                 .collect(Collectors.toSet());
 
         assertTrue(seasons.size() > 1);
 
         for (final Season season : seasons) {
-            final D11TeamSeasonStatsResponseBodyDTO d11TeamSeasonStatsResponseBodyDTO =
-                    d11TeamSeasonStatApi.getD11TeamSeasonStatsBySeasonId(season.getId());
-            assertNotNull(d11TeamSeasonStatsResponseBodyDTO);
+            final D11TeamSeasonStatsResponseBodyDTO response =
+                    d11TeamSeasonStatApi.getD11TeamSeasonStats(season.getId(), null);
+            assertNotNull(response);
 
-            final List<D11TeamSeasonStat> expected = d11TeamSeasonStats.stream()
+            final List<D11TeamSeasonStat> expected = d11TeamSeasonStatsBySeasonId.stream()
                     .filter(d11TeamSeasonStat -> d11TeamSeasonStat.getSeason().equals(season))
                     .toList();
 
             assertTrue(expected.size() > 1);
 
-            final List<D11TeamSeasonStatDTO> result = d11TeamSeasonStatsResponseBodyDTO.getD11TeamSeasonStats();
+            final List<D11TeamSeasonStatDTO> result = response.getD11TeamSeasonStats();
+
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+            assertEquals(map(expected, D11TeamSeasonStatDTO.class), result);
+        }
+
+        // By d11TeamId -----------------------------------------------------------------------------------------------
+
+        final List<D11TeamSeasonStat> d11TeamSeasonStatsByD11TeamId = this.d11TeamSeasonStatRepository.findAll();
+        d11TeamSeasonStatsByD11TeamId.sort(Comparator.comparing(
+                (D11TeamSeasonStat tss) -> tss.getSeason().getId(), Comparator.reverseOrder()));
+
+        final Set<D11Team> d11Teams = d11TeamSeasonStatsByD11TeamId.stream()
+                .map(D11TeamSeasonStat::getD11Team)
+                .collect(Collectors.toSet());
+
+        assertTrue(d11Teams.size() > 1);
+
+        for (final D11Team d11Team : d11Teams) {
+            final D11TeamSeasonStatsResponseBodyDTO response =
+                    d11TeamSeasonStatApi.getD11TeamSeasonStats(null, d11Team.getId());
+            assertNotNull(response);
+
+            final List<D11TeamSeasonStat> expected = d11TeamSeasonStatsByD11TeamId.stream()
+                    .filter(d11TeamSeasonStat -> d11TeamSeasonStat.getD11Team().equals(d11Team))
+                    .toList();
+
+            assertTrue(expected.size() > 1);
+
+            final List<D11TeamSeasonStatDTO> result = response.getD11TeamSeasonStats();
 
             assertNotNull(result);
             assertFalse(result.isEmpty());

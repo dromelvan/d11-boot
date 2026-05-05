@@ -1444,17 +1444,24 @@ paths:
     get:
       tags:
         - d11TeamSeasonStat
-      summary: Gets all D11 team season stats for a season.
+      summary: Gets all D11 team season stats for a season or a D11 team.
       security: []
-      operationId: getD11TeamSeasonStatsBySeasonId
+      operationId: getD11TeamSeasonStats
       parameters:
         - in: query
-          required: true
+          required: false
           name: seasonId
           schema:
             type: integer
             format: int64
           description: The season id.
+        - in: query
+          required: false
+          name: d11TeamId
+          schema:
+            type: integer
+            format: int64
+          description: The D11 team id.
       responses:
         200:
           description: OK
