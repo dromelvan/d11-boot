@@ -1,9 +1,14 @@
 package org.d11.boot.interfaces.rest.v2.controller;
 
 import org.d11.boot.api.v2.SeasonApi;
+import org.d11.boot.api.v2.model.D11TeamSeasonStatDTO;
+import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.v2.model.SeasonDTO;
 import org.d11.boot.api.v2.model.SeasonResponseBodyDTO;
+import org.d11.boot.api.v2.model.SeasonWinnersDTO;
+import org.d11.boot.api.v2.model.SeasonWinnersResponseBodyDTO;
 import org.d11.boot.api.v2.model.SeasonsResponseBodyDTO;
+import org.d11.boot.api.v2.model.TeamSeasonStatDTO;
 import org.d11.boot.api.v2.model.UpdateSeasonRequestBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.Season;
@@ -45,6 +50,19 @@ public class SeasonControllerV2 extends RepositoryServiceController<SeasonServic
 
         return ResponseEntity.ok(new SeasonsResponseBodyDTO()
                 .seasons(getMapper().map(seasons, SeasonDTO.class)));
+    }
+
+    @Override
+    public ResponseEntity<SeasonWinnersResponseBodyDTO> getSeasonWinners() {
+        final List<SeasonWinnersDTO> seasonWinners = getRepositoryService().getSeasonWinners().stream()
+                .map(sw -> new SeasonWinnersDTO()
+                        .season(getMapper().map(sw.season(), SeasonDTO.class))
+                        .d11TeamSeasonStat(getMapper().map(sw.d11TeamSeasonStat(), D11TeamSeasonStatDTO.class))
+                        .teamSeasonStat(getMapper().map(sw.teamSeasonStat(), TeamSeasonStatDTO.class))
+                        .playerSeasonStat(getMapper().map(sw.playerSeasonStat(), PlayerSeasonStatDTO.class)))
+                .toList();
+
+        return ResponseEntity.ok(new SeasonWinnersResponseBodyDTO().seasonWinners(seasonWinners));
     }
 
     @Override

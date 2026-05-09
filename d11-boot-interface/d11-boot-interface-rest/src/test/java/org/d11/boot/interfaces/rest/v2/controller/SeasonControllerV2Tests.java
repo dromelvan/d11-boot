@@ -2,19 +2,30 @@ package org.d11.boot.interfaces.rest.v2.controller;
 
 import feign.FeignException;
 import org.d11.boot.api.v2.client.SeasonApi;
+import org.d11.boot.api.v2.model.D11TeamSeasonStatDTO;
+import org.d11.boot.api.v2.model.PlayerSeasonStatDTO;
 import org.d11.boot.api.v2.model.SeasonDTO;
 import org.d11.boot.api.v2.model.SeasonResponseBodyDTO;
+import org.d11.boot.api.v2.model.SeasonWinnersDTO;
 import org.d11.boot.api.v2.model.SeasonsResponseBodyDTO;
 import org.d11.boot.api.v2.model.StatusDTO;
+import org.d11.boot.api.v2.model.TeamSeasonStatDTO;
 import org.d11.boot.api.v2.model.UpdateSeasonRequestBodyDTO;
+import org.d11.boot.spring.model.D11TeamSeasonStat;
+import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Season;
+import org.d11.boot.spring.model.TeamSeasonStat;
 import org.d11.boot.spring.model.Transfer;
+import org.d11.boot.spring.repository.D11TeamSeasonStatRepository;
+import org.d11.boot.spring.repository.PlayerSeasonStatRepository;
 import org.d11.boot.spring.repository.SeasonRepository;
+import org.d11.boot.spring.repository.TeamSeasonStatRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -31,6 +42,24 @@ class SeasonControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Autowired
     private SeasonRepository seasonRepository;
+
+    /**
+     * D11 team season stat repository.
+     */
+    @Autowired
+    private D11TeamSeasonStatRepository d11TeamSeasonStatRepository;
+
+    /**
+     * Team season stat repository.
+     */
+    @Autowired
+    private TeamSeasonStatRepository teamSeasonStatRepository;
+
+    /**
+     * Player season stat repository.
+     */
+    @Autowired
+    private PlayerSeasonStatRepository playerSeasonStatRepository;
 
     /**
      * Tests SeasonController::getSeasonById.
@@ -148,6 +177,50 @@ class SeasonControllerV2Tests extends D11BootControllerV2Tests {
 
         // Rollback the changes just in case
         this.seasonRepository.save(season);
+    }
+
+    /**
+     * Tests SeasonController::getSeasonWinners.
+     */
+    @Test
+    void testGetSeasonWinners() {
+        final SeasonApi seasonApi = getApi(SeasonApi.class);
+
+        final List<Season> seasons = this.seasonRepository.findByOrderByDateDesc();
+        assertFalse(seasons.isEmpty());
+
+        final List<SeasonWinnersDTO> result = seasonApi.getSeasonWinners().getSeasonWinners();
+
+        assertNotNull(result);
+        assertEquals(seasons.size(), result.size());
+
+        for (int i = 0; i < seasons.size(); ++i) {
+            final Season season = seasons.get(i);
+            final SeasonWinnersDTO dto = result.get(i);
+
+            assertEquals(getMapper().map(season, SeasonDTO.class), dto.getSeason());
+
+            final Optional<D11TeamSeasonStat> d11TeamSeasonStat =
+                    this.d11TeamSeasonStatRepository.findBySeasonIdOrderByRanking(season.getId()).stream()
+                            .filter(stat -> stat.getRanking() == 1)
+                            .findFirst();
+            d11TeamSeasonStat.ifPresent(stat ->
+                    assertEquals(map(stat, D11TeamSeasonStatDTO.class), dto.getD11TeamSeasonStat()));
+
+            final Optional<TeamSeasonStat> teamSeasonStat =
+                    this.teamSeasonStatRepository.findBySeasonIdOrderByRanking(season.getId()).stream()
+                            .filter(stat -> stat.getRanking() == 1)
+                            .findFirst();
+            teamSeasonStat.ifPresent(stat ->
+                    assertEquals(map(stat, TeamSeasonStatDTO.class), dto.getTeamSeasonStat()));
+
+            final Optional<PlayerSeasonStat> playerSeasonStat =
+                    this.playerSeasonStatRepository.findBySeasonId(season.getId()).stream()
+                            .filter(stat -> stat.getRanking() == 1)
+                            .findFirst();
+            playerSeasonStat.ifPresent(stat ->
+                    assertEquals(map(stat, PlayerSeasonStatDTO.class), dto.getPlayerSeasonStat()));
+        }
     }
 
 }

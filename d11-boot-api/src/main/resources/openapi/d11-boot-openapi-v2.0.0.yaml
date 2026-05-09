@@ -939,6 +939,23 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 
+  /v2/seasons/winners:
+    get:
+      tags:
+        - season
+      summary: Gets season winners.
+      security: []
+      operationId: getSeasonWinners
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeasonWinnersResponseBody"
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
   /v2/seasons/current:
     get:
       tags:
@@ -3023,6 +3040,33 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Season'
+
+    SeasonWinners:
+      type: object
+      required:
+        - season
+        - d11TeamSeasonStat
+        - teamSeasonStat
+        - playerSeasonStat
+      properties:
+        season:
+          $ref: '#/components/schemas/Season'
+        d11TeamSeasonStat:
+          $ref: '#/components/schemas/D11TeamSeasonStat'
+        teamSeasonStat:
+          $ref: '#/components/schemas/TeamSeasonStat'
+        playerSeasonStat:
+          $ref: '#/components/schemas/PlayerSeasonStat'
+
+    SeasonWinnersResponseBody:
+      type: object
+      required:
+        - seasonWinners
+      properties:
+        seasonWinners:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeasonWinners'
 
   # Match week ---------------------------------------------------------------------------------------------------------
 

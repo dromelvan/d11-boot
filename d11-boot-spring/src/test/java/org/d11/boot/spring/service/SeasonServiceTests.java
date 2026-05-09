@@ -1,6 +1,10 @@
 package org.d11.boot.spring.service;
 
+import org.d11.boot.spring.model.D11TeamSeasonStat;
+import org.d11.boot.spring.model.PlayerSeasonStat;
 import org.d11.boot.spring.model.Season;
+import org.d11.boot.spring.model.SeasonWinners;
+import org.d11.boot.spring.model.TeamSeasonStat;
 import org.d11.boot.spring.repository.SeasonRepository;
 import org.d11.boot.util.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
@@ -70,6 +74,25 @@ class SeasonServiceTests extends BaseD11BootServiceTests {
         assertNotNull(result);
         assertTrue(result.size() >= 2);
         assertEquals(seasons, result);
+    }
+
+    /**
+     * Tests SeasonService::getSeasonWinners.
+     */
+    @Test
+    void testGetSeasonWinners() {
+        final List<SeasonWinners> seasonWinners = List.of(
+                new SeasonWinners(generate(Season.class), generate(D11TeamSeasonStat.class),
+                                  generate(TeamSeasonStat.class), generate(PlayerSeasonStat.class)),
+                new SeasonWinners(generate(Season.class), generate(D11TeamSeasonStat.class),
+                                  generate(TeamSeasonStat.class), generate(PlayerSeasonStat.class))
+        );
+        when(this.seasonRepository.findAllSeasonWinners()).thenReturn(seasonWinners);
+
+        final List<SeasonWinners> result = this.seasonService.getSeasonWinners();
+
+        assertNotNull(result);
+        assertEquals(seasonWinners, result);
     }
 
     /**

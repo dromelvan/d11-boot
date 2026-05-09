@@ -1,6 +1,7 @@
 package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.Season;
+import org.d11.boot.spring.model.SeasonWinners;
 import org.d11.boot.spring.repository.SeasonRepository;
 import org.d11.boot.util.exception.ConflictException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,15 @@ public class SeasonService extends RepositoryService<Season, SeasonRepository> {
      */
     public List<Season> getSeasons() {
         return getJpaRepository().findByOrderByDateDesc();
+    }
+
+    /**
+     * Gets a list of all seasons with their ranking-1 stat entries ordered by descending date.
+     *
+     * @return List of season winners ordered by descending date.
+     */
+    public List<SeasonWinners> getSeasonWinners() {
+        return getJpaRepository().findAllSeasonWinners();
     }
 
     /**
