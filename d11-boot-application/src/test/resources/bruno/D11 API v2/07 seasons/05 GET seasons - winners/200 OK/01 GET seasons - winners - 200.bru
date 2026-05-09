@@ -1,0 +1,32 @@
+meta {
+  name: GET seasons - winners - 200
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/v2/seasons/winners
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.seasonWinners: isDefined
+  res.body.seasonWinners.length: eq 2
+}
+
+tests {
+  const { expectToEq } = require('./d11.js');
+
+  test("GET season winners response body", () => {
+    const body = res.getBody();
+    const seasonWinners = JSON.parse(bru.getEnvVar("seasonWinners"));
+
+    for (let i = 0; i < seasonWinners.length; ++i) {
+      expectToEq.seasonWinners(body.seasonWinners[i], seasonWinners[i]);
+    }
+
+  });
+
+}

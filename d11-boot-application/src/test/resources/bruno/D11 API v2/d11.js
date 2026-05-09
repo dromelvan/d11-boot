@@ -280,6 +280,13 @@ function d11TeamSeasonStat(d11TeamSeasonStat1, d11TeamSeasonStat2) {
     season(d11TeamSeasonStat1.season, d11TeamSeasonStat2.season);
 }
 
+function seasonWinners(seasonWinners1, seasonWinners2) {
+    season(seasonWinners1.season, seasonWinners2.season);
+    d11TeamSeasonStat(seasonWinners1.d11TeamSeasonStat, seasonWinners2.d11TeamSeasonStat);
+    teamSeasonStat(seasonWinners1.teamSeasonStat, seasonWinners2.teamSeasonStat);
+    playerSeasonStat(seasonWinners1.playerSeasonStat, seasonWinners2.playerSeasonStat);
+}
+
 function transferWindowBase(transferWindow1, transferWindow2) {
     expect(transferWindow1.id).to.eq(transferWindow2.id);
     expect(transferWindow1.transferWindowNumber).to.eq(transferWindow2.transferWindowNumber);
@@ -407,6 +414,7 @@ const expectToEq = {
     playerSeasonStat,
     teamSeasonStat,
     d11TeamSeasonStat,
+    seasonWinners,
     transferWindowBase,
     transferWindow,
     transferDayBase,
