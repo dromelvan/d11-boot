@@ -16,6 +16,7 @@ assert {
   res.body.jwt: isDefined
   res.body.expiresAt: isDefined
   res.body.persistent: eq true
+  res.body.d11Team: isDefined
   res.headers['set-cookie']: neq undefined
 }
 
@@ -28,9 +29,10 @@ tests {
     const user = JSON.parse(bru.getEnvVar("user"));
   
     expectToEq.user(body.user, user);
-  
+    expectToEq.d11Team(body.d11Team, JSON.parse(bru.getEnvVar("userD11Team")));
+
     expect(body.jwt).to.match(new RegExp(bru.getEnvVar("jwtRegex")));
-  
+
       let expiresAt = new Date(body.expiresAt + "Z");
     expect(isNaN(expiresAt.getTime())).to.eq(false);
   
