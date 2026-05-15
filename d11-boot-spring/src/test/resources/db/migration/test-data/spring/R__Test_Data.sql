@@ -7,6 +7,8 @@ INSERT INTO application_user (name, email, encrypted_password, administrator, co
     VALUES('Unconfirmed', 'unconfirmed@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', false, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '33333333-3333-3333-3333-333333333333');
 INSERT INTO application_user (name, email, encrypted_password, administrator, confirm_registration_token, reset_password_token)
     VALUES('User2', 'user2@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', true, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '33333333-3333-3333-3333-333333333333');
+INSERT INTO application_user (name, email, encrypted_password, administrator)
+    VALUES('user3', 'user3@email.com', '$2a$12$MgLkW.T6F0iqYRbdwHL9LOGxmt2UtI5hgVr.DA7qho7iuMVFdtQha', false);
 
 -- Refresh Token
 INSERT INTO refresh_token (application_user_id, uuid, expires_at)
