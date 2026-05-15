@@ -15,13 +15,15 @@ public class Authorization extends Authentication {
      * @param expiresAt    JWT expiration time.
      * @param refreshToken Token that can be used to refresh the authorization.
      * @param persistent   Authorization persistent status.
+     * @param d11Team      The D11 team owned or co-owned by the authorized user, if any.
      */
     public Authorization(final User user,
                          final String jwt,
                          final LocalDateTime expiresAt,
                          final RefreshToken refreshToken,
-                         final boolean persistent) {
-        super(user, jwt, expiresAt, refreshToken, persistent);
+                         final boolean persistent,
+                         final D11Team d11Team) {
+        super(user, jwt, expiresAt, refreshToken, persistent, d11Team);
     }
 
 }

@@ -2,8 +2,10 @@ package org.d11.boot.spring.service;
 
 import org.d11.boot.spring.model.Authentication;
 import org.d11.boot.spring.model.Authorization;
+import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.RefreshToken;
 import org.d11.boot.spring.model.User;
+import org.d11.boot.spring.repository.D11TeamRepository;
 import org.d11.boot.spring.repository.RefreshTokenRepository;
 import org.d11.boot.spring.repository.UserRepository;
 import org.d11.boot.spring.security.JwtBuildResult;
@@ -74,6 +76,12 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
     private RefreshTokenRepository refreshTokenRepository;
 
     /**
+     * Mocked D11 team repository.
+     */
+    @Mock
+    private D11TeamRepository d11TeamRepository;
+
+    /**
      * Mocked password encoder.
      */
     @Mock
@@ -103,6 +111,7 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
     void setUp() {
         securityService = new SecurityService(this.userRepository,
                                               this.refreshTokenRepository,
+                                              this.d11TeamRepository,
                                               TIME_TO_LIVE,
                                               TIME_TO_LIVE_PERSISTENT,
                                               passwordEncoder,
@@ -136,6 +145,9 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
 
             when(this.userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
+            final D11Team d11Team = generate(D11Team.class);
+            when(this.d11TeamRepository.findByOwnerOrCoOwner(eq(user), eq(user))).thenReturn(Optional.of(d11Team));
+
             final Authentication result = this.securityService.authenticate(user.getEmail(),
                                                                             user.getEncryptedPassword(),
                                                                             false,
@@ -146,6 +158,7 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
             assertNotNull(result);
 
             assertEquals(user, result.getUser());
+            assertEquals(d11Team, result.getD11Team());
             assertEquals(jwtBuildResult.jwt(), result.getJwt());
             assertEquals(jwtBuildResult.expiresAt(), result.getExpiresAt());
             assertFalse(result.isPersistent());
@@ -184,6 +197,9 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
 
             when(this.userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
+            final D11Team d11Team = generate(D11Team.class);
+            when(this.d11TeamRepository.findByOwnerOrCoOwner(eq(user), eq(user))).thenReturn(Optional.of(d11Team));
+
             final Authentication result = this.securityService.authenticate(user.getEmail(),
                                                                             user.getEncryptedPassword(),
                                                                             true,
@@ -194,6 +210,7 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
             assertNotNull(result);
 
             assertEquals(user, result.getUser());
+            assertEquals(d11Team, result.getD11Team());
             assertEquals(jwtBuildResult.jwt(), result.getJwt());
             assertEquals(jwtBuildResult.expiresAt(), result.getExpiresAt());
             assertTrue(result.isPersistent());
@@ -225,6 +242,8 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
         when(this.refreshTokenRepository.save(any(RefreshToken.class)))
                 .thenAnswer(invocation -> invocation.getArguments()[0]);
         when(this.refreshTokenRepository.findByUuid(refreshToken.getUuid())).thenReturn(Optional.of(refreshToken));
+        when(this.d11TeamRepository.findByOwnerOrCoOwner(any(User.class), any(User.class)))
+                .thenReturn(Optional.empty());
 
         final Authentication result = this.securityService.authenticate(user.getEmail(),
                                                                         user.getEncryptedPassword(),
@@ -236,6 +255,7 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
         assertNotNull(result);
 
         assertEquals(user, result.getUser());
+        assertNull(result.getD11Team());
         assertEquals(jwtBuildResult.jwt(), result.getJwt());
         assertEquals(jwtBuildResult.expiresAt(), result.getExpiresAt());
         assertTrue(result.isPersistent());
@@ -267,6 +287,8 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
         when(this.refreshTokenRepository.save(any(RefreshToken.class)))
                 .thenAnswer(invocation -> invocation.getArguments()[0]);
         when(this.refreshTokenRepository.findByUuid(refreshToken.getUuid())).thenReturn(Optional.empty());
+        when(this.d11TeamRepository.findByOwnerOrCoOwner(any(User.class), any(User.class)))
+                .thenReturn(Optional.empty());
 
         final Authentication result = this.securityService.authenticate(user.getEmail(),
                                                                         user.getEncryptedPassword(),
@@ -278,6 +300,7 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
         assertNotNull(result);
 
         assertEquals(user, result.getUser());
+        assertNull(result.getD11Team());
         assertEquals(jwtBuildResult.jwt(), result.getJwt());
         assertEquals(jwtBuildResult.expiresAt(), result.getExpiresAt());
         assertTrue(result.isPersistent());
@@ -329,12 +352,15 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
         when(this.refreshTokenRepository.findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull(any(), any()))
             .thenReturn(Optional.of(refreshToken));
         when(this.jwtBuilder.build(anyString())).thenReturn(jwtBuildResult);
+        when(this.d11TeamRepository.findByOwnerOrCoOwner(any(User.class), any(User.class)))
+            .thenReturn(Optional.empty());
 
         final Authorization result = this.securityService.authorize(refreshToken.getUuid());
 
         assertNotNull(result);
 
         assertEquals(user, result.getUser());
+        assertNull(result.getD11Team());
         assertEquals(jwtBuildResult.jwt(), result.getJwt());
         assertEquals(jwtBuildResult.expiresAt(), result.getExpiresAt());
         assertFalse(result.isPersistent());
@@ -358,15 +384,19 @@ class SecurityServiceTests extends BaseD11BootServiceTests {
 
         assertThrows(BadCredentialsException.class, () -> this.securityService.authorize(refreshToken.getUuid()));
 
+        final D11Team d11Team = generate(D11Team.class);
         when(this.refreshTokenRepository.findByUuidAndExpiresAtIsAfterOrExpiresAtIsNull(any(), any()))
             .thenReturn(Optional.of(refreshToken));
         when(this.jwtBuilder.build(anyString())).thenReturn(jwtBuildResult);
+        when(this.d11TeamRepository.findByOwnerOrCoOwner(any(User.class), any(User.class)))
+            .thenReturn(Optional.of(d11Team));
 
         final Authorization result = this.securityService.authorize(refreshToken.getUuid());
 
         assertNotNull(result);
 
         assertEquals(user, result.getUser());
+        assertEquals(d11Team, result.getD11Team());
         assertEquals(jwtBuildResult.jwt(), result.getJwt());
         assertEquals(jwtBuildResult.expiresAt(), result.getExpiresAt());
         assertTrue(result.isPersistent());

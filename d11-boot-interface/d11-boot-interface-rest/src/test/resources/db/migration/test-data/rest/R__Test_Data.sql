@@ -44,7 +44,7 @@ VALUES(1, null, 'D11TeamA', 'ShortA', 'DTA', false, '1.png');
 INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)
 VALUES(2, null, 'D11TeamB', 'ShortB', 'DTB', false, '2.png');
 INSERT INTO d11_team (owner_id, co_owner_id, name, short_name, code, dummy, photo_file_name)
-VALUES(1, null, 'D11TeamC', 'ShortC', 'DTC', false, '3.png');
+VALUES(3, null, 'D11TeamC', 'ShortC', 'DTC', false, '3.png');
 
 -- Player
 INSERT INTO player (country_id, stat_source_id, premier_league_id, first_name, last_name, full_name, parameterized_name, date_of_birth, height, photo_file_name, verified)

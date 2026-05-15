@@ -6,6 +6,7 @@ import org.d11.boot.api.v2.client.SecurityApi;
 import org.d11.boot.api.v2.model.AuthenticationRequestBodyDTO;
 import org.d11.boot.api.v2.model.AuthenticationResponseBodyDTO;
 import org.d11.boot.api.v2.model.AuthorizationResponseBodyDTO;
+import org.d11.boot.api.v2.model.D11TeamBaseDTO;
 import org.d11.boot.api.v2.model.RequestPasswordResetRequestBodyDTO;
 import org.d11.boot.api.v2.model.ResetPasswordRequestBodyDTO;
 import org.d11.boot.api.v2.model.UnauthorizationResponseBodyDTO;
@@ -13,8 +14,10 @@ import org.d11.boot.interfaces.rest.CookieErrorDecoder;
 import org.d11.boot.interfaces.rest.CookieRequestInterceptor;
 import org.d11.boot.interfaces.rest.RefreshTokenCookieBuilder;
 import org.d11.boot.interfaces.rest.RefreshTokenCookieDecoder;
+import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.RefreshToken;
 import org.d11.boot.spring.model.User;
+import org.d11.boot.spring.repository.D11TeamRepository;
 import org.d11.boot.spring.repository.RefreshTokenRepository;
 import org.d11.boot.spring.repository.UserRepository;
 import org.d11.boot.spring.security.JwtBuilder;
@@ -81,6 +84,12 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
      */
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
+
+    /**
+     * D11 team repository.
+     */
+    @Autowired
+    private D11TeamRepository d11TeamRepository;
 
     /**
      * JWT builder.
@@ -154,6 +163,9 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
             assertFalse(result.isPersistent());
 
+            final D11Team d11Team = this.d11TeamRepository.findByOwnerOrCoOwner(user, user).orElse(null);
+            assertEquals(map(d11Team, D11TeamBaseDTO.class), result.getD11Team());
+
             // Check cookie --------------------------------------------------------------------------------------------
 
             final UUID uuid = this.refreshTokenCookieDecoder.getCookieValue();
@@ -206,6 +218,9 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
             assertTrue(result.getExpiresAt().isAfter(now.plusSeconds(TIME_TO_LIVE).minusSeconds(5)));
 
             assertTrue(result.isPersistent());
+
+            final D11Team d11Team = this.d11TeamRepository.findByOwnerOrCoOwner(user, user).orElse(null);
+            assertEquals(map(d11Team, D11TeamBaseDTO.class), result.getD11Team());
 
             // Check cookie --------------------------------------------------------------------------------------------
 
@@ -357,6 +372,9 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
 
             assertFalse(result.isPersistent());
 
+            final D11Team d11Team = this.d11TeamRepository.findByOwnerOrCoOwner(user, user).orElse(null);
+            assertEquals(map(d11Team, D11TeamBaseDTO.class), result.getD11Team());
+
             // Check cookie --------------------------------------------------------------------------------------------
 
             final UUID uuid = this.refreshTokenCookieDecoder.getCookieValue();
@@ -417,6 +435,9 @@ class SecurityControllerV2Tests extends D11BootControllerV2Tests {
             assertTrue(result.getExpiresAt().isAfter(expiresAt.minusSeconds(5)));
 
             assertTrue(result.isPersistent());
+
+            final D11Team d11Team = this.d11TeamRepository.findByOwnerOrCoOwner(user, user).orElse(null);
+            assertEquals(map(d11Team, D11TeamBaseDTO.class), result.getD11Team());
 
             // Check cookie --------------------------------------------------------------------------------------------
 

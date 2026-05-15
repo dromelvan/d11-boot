@@ -3,8 +3,10 @@ package org.d11.boot.spring.service;
 import lombok.Getter;
 import org.d11.boot.spring.model.Authentication;
 import org.d11.boot.spring.model.Authorization;
+import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.RefreshToken;
 import org.d11.boot.spring.model.User;
+import org.d11.boot.spring.repository.D11TeamRepository;
 import org.d11.boot.spring.repository.RefreshTokenRepository;
 import org.d11.boot.spring.repository.UserRepository;
 import org.d11.boot.spring.security.JwtBuildResult;
@@ -27,6 +29,7 @@ import java.util.UUID;
  * Security service.
  */
 @Service
+@SuppressWarnings("checkstyle:ClassFanOutComplexity")
 public class SecurityService extends D11BootService {
 
     /**
@@ -48,6 +51,11 @@ public class SecurityService extends D11BootService {
      * The refresh token repository the service will use.
      */
     private final RefreshTokenRepository refreshTokenRepository;
+
+    /**
+     * The D11 team repository the service will use.
+     */
+    private final D11TeamRepository d11TeamRepository;
 
     /**
      * Refresh token time to live.
@@ -81,14 +89,17 @@ public class SecurityService extends D11BootService {
      *
      * @param userRepository                   The user repository the service will use.
      * @param refreshTokenRepository           The refresh token repository the service will use.
+     * @param d11TeamRepository                The D11 team repository the service will use.
      * @param refreshTokenTimeToLive           Refresh token time to live.
      * @param refreshTokenTimeToLivePersistent Persistent refresh token time to live.
      * @param passwordEncoder                  The password encoder the service will use.
      * @param jwtBuilder                       The JWT builder the service will use.
      * @param javaMailSender                   Password reset email sender.
      */
+    @SuppressWarnings("checkstyle:ParameterNumber")
     public SecurityService(final UserRepository userRepository,
                            final RefreshTokenRepository refreshTokenRepository,
+                           final D11TeamRepository d11TeamRepository,
                            @Value("${app.security.time-to-live.refresh-token}")
                            final int refreshTokenTimeToLive,
                            @Value("${app.security.time-to-live.refresh_token-persistent}")
@@ -98,6 +109,7 @@ public class SecurityService extends D11BootService {
                            final JavaMailSender javaMailSender) {
         this.userRepository = userRepository;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.d11TeamRepository = d11TeamRepository;
         this.refreshTokenTimeToLive = refreshTokenTimeToLive;
         this.refreshTokenTimeToLivePersistent = refreshTokenTimeToLivePersistent;
         this.passwordEncoder = passwordEncoder;
@@ -138,11 +150,14 @@ public class SecurityService extends D11BootService {
                 unauthorize(currentRefreshToken);
             }
 
+            final D11Team d11Team = this.d11TeamRepository.findByOwnerOrCoOwner(user, user).orElse(null);
+
             return new Authentication(user,
                                       jwtBuildResult.jwt(),
                                       jwtBuildResult.expiresAt(),
                                       this.refreshTokenRepository.save(refreshToken),
-                                      persistent);
+                                      persistent,
+                                      d11Team);
         }
         throw new BadCredentialsException(AUTHENTICATION_FAILED_MESSAGE);
     }
@@ -169,8 +184,14 @@ public class SecurityService extends D11BootService {
         this.refreshTokenRepository.save(refreshToken);
 
         final boolean persistent = expiresAt.isAfter(LocalDateTime.now().plusSeconds(this.refreshTokenTimeToLive));
+        final D11Team d11Team = this.d11TeamRepository.findByOwnerOrCoOwner(user, user).orElse(null);
 
-        return new Authorization(user, jwtBuildResult.jwt(), jwtBuildResult.expiresAt(), refreshToken, persistent);
+        return new Authorization(user,
+                                 jwtBuildResult.jwt(),
+                                 jwtBuildResult.expiresAt(),
+                                 refreshToken,
+                                 persistent,
+                                 d11Team);
     }
 
     /**

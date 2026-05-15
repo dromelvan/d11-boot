@@ -39,4 +39,9 @@ public class Authentication extends D11Model {
      */
     private boolean persistent;
 
+    /**
+     * The D11 team owned or co-owned by the authenticated user, if any.
+     */
+    private D11Team d11Team;
+
 }

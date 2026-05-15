@@ -2432,6 +2432,8 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/User'
+        d11Team:
+          $ref: '#/components/schemas/D11TeamBase'
         jwt:
           type: string
         expiresAt:
@@ -2449,6 +2451,8 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/User'
+        d11Team:
+          $ref: '#/components/schemas/D11TeamBase'
         jwt:
           type: string
         expiresAt:
