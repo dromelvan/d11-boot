@@ -17,7 +17,7 @@ auth:bearer {
 body:json {
   {
       "player": {
-
+  
       }
   }
 }
@@ -28,21 +28,17 @@ assert {
   res.body.method: eq PUT
   res.body.path: eq /v2/players/{{playerId}}
   res.body.validationErrors: isDefined
-  res.body.validationErrors.length: eq 8
+  res.body.validationErrors.length: eq 6
   res.body.validationErrors[0].property: eq player.country
   res.body.validationErrors[0].error: eq is missing
-  res.body.validationErrors[1].property: eq player.dateOfBirth
+  res.body.validationErrors[1].property: eq player.firstName
   res.body.validationErrors[1].error: eq is missing
-  res.body.validationErrors[2].property: eq player.firstName
+  res.body.validationErrors[2].property: eq player.height
   res.body.validationErrors[2].error: eq is missing
-  res.body.validationErrors[3].property: eq player.fullName
+  res.body.validationErrors[3].property: eq player.lastName
   res.body.validationErrors[3].error: eq is missing
-  res.body.validationErrors[4].property: eq player.height
+  res.body.validationErrors[4].property: eq player.premierLeagueId
   res.body.validationErrors[4].error: eq is missing
-  res.body.validationErrors[5].property: eq player.lastName
+  res.body.validationErrors[5].property: eq player.statSourceId
   res.body.validationErrors[5].error: eq is missing
-  res.body.validationErrors[6].property: eq player.premierLeagueId
-  res.body.validationErrors[6].error: eq is missing
-  res.body.validationErrors[7].property: eq player.statSourceId
-  res.body.validationErrors[7].error: eq is missing
 }

@@ -2858,10 +2858,7 @@ components:
         - lastName
         - statSourceId
         - premierLeagueId
-        - fullName
-        - dateOfBirth
         - height
-        - verified
         - country
       properties:
         firstName:
