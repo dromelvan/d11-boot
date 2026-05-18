@@ -29,7 +29,7 @@ assert {
   res.body.path: eq /v2/players
   res.body.validationErrors: isDefined
   res.body.validationErrors.length: eq 6
-  res.body.validationErrors[0].property: eq player.country
+  res.body.validationErrors[0].property: eq player.countryId
   res.body.validationErrors[0].error: eq is missing
   res.body.validationErrors[1].property: eq player.firstName
   res.body.validationErrors[1].error: eq is missing

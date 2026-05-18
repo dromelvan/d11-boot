@@ -28,15 +28,15 @@ assert {
 
 tests {
   const { expectToEq } = require('./d11.js');
-
+  
   test("POST player response body", () => {
     const body = res.getBody();
     const player = JSON.parse(bru.getEnvVar("newPlayer"));
-
+  
     player.id = body.player.id
-
+  
     expectToEq.player(body.player, player);
-    expectToEq.country(body.player.country, player.country);
+    expect(player.countryId).to.eq(body.player.country.id);
   });
-
+  
 }

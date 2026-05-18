@@ -2859,7 +2859,7 @@ components:
         - statSourceId
         - premierLeagueId
         - height
-        - country
+        - countryId
       properties:
         firstName:
           type: string
@@ -2881,8 +2881,9 @@ components:
           format: int32
         verified:
           type: boolean
-        country:
-          $ref: '#/components/schemas/Country'
+        countryId:
+          type: integer
+          format: int64
 
     PlayerSearchResult:
       type: object

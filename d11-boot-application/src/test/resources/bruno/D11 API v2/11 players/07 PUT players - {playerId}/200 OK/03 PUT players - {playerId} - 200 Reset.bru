@@ -16,7 +16,7 @@ auth:bearer {
 
 body:json {
   {
-    "player": {{player}}
+    "player": {{playerReset}}
   }
 }
 
@@ -27,13 +27,13 @@ assert {
 
 tests {
   const { expectToEq } = require('./d11.js');
-
+  
   test("PUT player response body", () => {
     const body = res.getBody();
     const player = JSON.parse(bru.getEnvVar("player"));
-
+  
     expectToEq.player(body.player, player);
     expectToEq.country(body.player.country, player.country);
   });
-
+  
 }

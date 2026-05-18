@@ -124,9 +124,9 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
 
         // 404 Not Found -----------------------------------------------------------------------------------------------
 
-        request.getPlayer().getCountry().id(123_456L);
+        request.getPlayer().setCountryId(123_456L);
         assertThrows(FeignException.NotFound.class, () -> playerApi.createPlayer(request));
-        request.getPlayer().getCountry().setId(player.getCountry().getId());
+        request.getPlayer().setCountryId(player.getCountry().getId());
 
         // 201 CREATED -------------------------------------------------------------------------------------------------
 
@@ -141,7 +141,7 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
         assertEquals(playerInputDTO.getPremierLeagueId(), result.getPremierLeagueId());
         assertEquals(playerInputDTO.getHeight(), result.getHeight());
         assertEquals(playerInputDTO.isVerified(), result.isVerified());
-        assertEquals(playerInputDTO.getCountry().getId(), result.getCountry().getId());
+        assertEquals(playerInputDTO.getCountryId(), result.getCountry().getId());
 
         final Player entity = this.playerRepository.findById(result.getId()).orElseThrow(RuntimeException::new);
 
@@ -153,7 +153,7 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
         assertEquals(playerInputDTO.getPremierLeagueId(), entity.getPremierLeagueId());
         assertEquals(playerInputDTO.getHeight(), entity.getHeight());
         assertEquals(playerInputDTO.isVerified(), entity.isVerified());
-        assertEquals(playerInputDTO.getCountry().getId(), entity.getCountry().getId());
+        assertEquals(playerInputDTO.getCountryId(), entity.getCountry().getId());
     }
 
     /**
@@ -189,9 +189,9 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
         assertThrows(FeignException.NotFound.class,
                      () -> playerApi.updatePlayer(123_456L, request));
 
-        request.getPlayer().getCountry().id(123_456L);
+        request.getPlayer().setCountryId(123_456L);
         assertThrows(FeignException.NotFound.class, () -> playerApi.updatePlayer(player.getId(), request));
-        request.getPlayer().getCountry().setId(player.getCountry().getId());
+        request.getPlayer().setCountryId(player.getCountry().getId());
 
         // 200 OK ------------------------------------------------------------------------------------------------------
 
@@ -204,7 +204,7 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
             .premierLeagueId(321_654)
             .height(333)
             .verified(false);
-        playerInputDTO.getCountry().setId(2L);
+        playerInputDTO.setCountryId(2L);
 
         final PlayerResponseBodyDTO response = playerApi.updatePlayer(player.getId(), request);
         final PlayerDTO result = response.getPlayer();
@@ -217,7 +217,7 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
         assertEquals(playerInputDTO.getPremierLeagueId(), result.getPremierLeagueId());
         assertEquals(playerInputDTO.getHeight(), result.getHeight());
         assertEquals(playerInputDTO.isVerified(), result.isVerified());
-        assertEquals(playerInputDTO.getCountry().getId(), result.getCountry().getId());
+        assertEquals(playerInputDTO.getCountryId(), result.getCountry().getId());
 
         final Player entity = this.playerRepository.findById(player.getId()).orElseThrow(RuntimeException::new);
 
@@ -229,7 +229,7 @@ class PlayerControllerV2Tests extends D11BootControllerV2Tests {
         assertEquals(playerInputDTO.getPremierLeagueId(), entity.getPremierLeagueId());
         assertEquals(playerInputDTO.getHeight(), entity.getHeight());
         assertEquals(playerInputDTO.isVerified(), entity.isVerified());
-        assertEquals(playerInputDTO.getCountry().getId(), entity.getCountry().getId());
+        assertEquals(playerInputDTO.getCountryId(), entity.getCountry().getId());
     }
 
 }

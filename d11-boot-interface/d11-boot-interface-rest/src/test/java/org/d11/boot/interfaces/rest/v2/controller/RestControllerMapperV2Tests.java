@@ -62,7 +62,7 @@ class RestControllerMapperV2Tests extends EasyRandomTests {
         assertEquals(source.getFullName(), destination.fullName());
         assertEquals(source.getDateOfBirth(), destination.dateOfBirth());
         assertEquals(source.getHeight(), destination.height());
-        assertEquals(source.getCountry().getId(), destination.countryId());
+        assertEquals(source.getCountryId(), destination.countryId());
         assertEquals(source.isVerified(), destination.verified());
     }
 

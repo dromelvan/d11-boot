@@ -41,7 +41,6 @@ public interface RestControllerMapperV2 {
      * @param playerInputDTO The PlayerInputDTO.
      * @return Mapped PlayerInput.
      */
-    @Mapping(source = "country.id", target = "countryId")
     PlayerInput mapToPlayerInput(PlayerInputDTO playerInputDTO);
 
     /**
