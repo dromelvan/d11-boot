@@ -14,6 +14,7 @@ import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ForbiddenException;
 import org.d11.boot.util.exception.NotFoundException;
 import org.d11.boot.util.exception.UnauthorizedException;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -297,6 +298,26 @@ public class ControllerExceptionHandlerV2 {
         LOGGER.trace(request.getRequestURI(), e);
 
         // Set a cookie with max age 0 to remove the refresh token cookie when we provide bad credentials.
+        final ResponseCookie responseCookie = new RefreshTokenCookieBuilder().build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .build();
+    }
+
+    /**
+     * Handles a CannotAcquireLockException. This is thrown when a SERIALIZABLE transaction is aborted due to a
+     * concurrent request consuming the same refresh token. The losing request is treated as unauthorized.
+     *
+     * @param e       The exception that will be handled.
+     * @param request The request that caused the exception.
+     * @return Response entity with error details.
+     */
+    @ExceptionHandler(CannotAcquireLockException.class)
+    public ResponseEntity<?> handle(@NonNull final CannotAcquireLockException e,
+                                    @NonNull final HttpServletRequest request) {
+        LOGGER.trace(request.getRequestURI(), e);
+
         final ResponseCookie responseCookie = new RefreshTokenCookieBuilder().build();
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

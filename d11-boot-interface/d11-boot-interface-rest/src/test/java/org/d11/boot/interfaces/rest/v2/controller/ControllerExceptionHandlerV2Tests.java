@@ -5,12 +5,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.d11.boot.api.v2.model.BadRequestResponseBodyDTO;
 import org.d11.boot.api.v2.model.ConflictResponseBodyDTO;
 import org.d11.boot.api.v2.model.NotFoundResponseBodyDTO;
+import org.d11.boot.interfaces.rest.RefreshTokenCookieBuilder;
 import org.d11.boot.util.exception.BadRequestException;
 import org.d11.boot.util.exception.ConflictException;
 import org.d11.boot.util.exception.ForbiddenException;
 import org.d11.boot.util.exception.NotFoundException;
 import org.d11.boot.util.exception.UnauthorizedException;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -24,6 +27,7 @@ import static org.mockito.Mockito.when;
 /**
  * Controller exception handler tests.
  */
+@SuppressWarnings("checkstyle:ClassDataAbstractionCoupling")
 class ControllerExceptionHandlerV2Tests {
 
     /**
@@ -162,6 +166,29 @@ class ControllerExceptionHandlerV2Tests {
         assertEquals(e.getMessage(), conflictResponseBodyDTO.getMessage());
         assertEquals(httpServletRequest.getMethod(), conflictResponseBodyDTO.getMethod());
         assertEquals(httpServletRequest.getRequestURI(), conflictResponseBodyDTO.getPath());
+    }
+
+    /**
+     * Tests ControllerExceptionHandlerV2::handle(CannotAcquireLockException).
+     */
+    @Test
+    void testHandleCannotAcquireLockException() {
+        final CannotAcquireLockException e = new CannotAcquireLockException("CannotAcquireLock");
+
+        final HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
+        when(httpServletRequest.getRequestURI()).thenReturn(REQUEST_URI);
+        when(httpServletRequest.getMethod()).thenReturn(METHOD);
+
+        final ControllerExceptionHandlerV2 controllerExceptionHandlerV2 = new ControllerExceptionHandlerV2();
+
+        final ResponseEntity<?> responseEntity = controllerExceptionHandlerV2.handle(e, httpServletRequest);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+        assertNull(responseEntity.getBody());
+
+        final String setCookie = responseEntity.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
+        assertNotNull(setCookie);
+        assertEquals(RefreshTokenCookieBuilder.REFRESH_TOKEN_DUMMY_UUID, setCookie.split(";")[0].split("=")[1]);
     }
 
     /**
