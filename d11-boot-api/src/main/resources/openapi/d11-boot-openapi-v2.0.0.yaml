@@ -2982,6 +2982,7 @@ components:
       type: object
       required:
         - name
+        - status
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -2991,6 +2992,8 @@ components:
         shortName:
           type: string
           pattern: \d{2}-\d{2}
+        status:
+          $ref: '#/components/schemas/Status'
 
     Season:
       allOf:
@@ -2999,7 +3002,6 @@ components:
           required:
             - d11TeamBudget
             - d11TeamMaxTransfers
-            - status
             - date
             - legacy
           properties:
@@ -3009,8 +3011,6 @@ components:
             d11TeamMaxTransfers:
               type: integer
               format: int32
-            status:
-              $ref: '#/components/schemas/Status'
             date:
               type: string
               format: date
