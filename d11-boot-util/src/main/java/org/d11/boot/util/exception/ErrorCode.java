@@ -55,6 +55,16 @@ public enum ErrorCode {
     CONFLICT_NON_UNIQUE_TRANSFER_LISTING("Player is already transfer listed"),
 
     /**
+     * Non unique transfer error.
+     */
+    CONFLICT_NON_UNIQUE_TRANSFER("Player already has a transfer in this transfer day"),
+
+    /**
+     * Non unique transfer bid error.
+     */
+    CONFLICT_NON_UNIQUE_TRANSFER_BID("Player already has a transfer bid from this D11 team"),
+
+    /**
      * No transfer listing error.
      */
     CONFLICT_NO_TRANSFER_LISTING("Player is not transfer listed"),

@@ -258,6 +258,31 @@ class TransferBidServiceTests extends BaseD11BootServiceTests {
     }
 
     /**
+     * Tests TransferBidService::createTransferBid with non-unique transfer bid.
+     */
+    @Test
+    void testCreateTransferBidNonUniqueTransferBid() {
+        final TransferDay transferDay = generate(TransferDay.class);
+        final D11Team d11Team = generate(D11Team.class);
+        final Player player = generate(Player.class);
+
+        final PlayerTransferContext playerTransferContext = mock(PlayerTransferContext.class);
+        when(playerTransferContext.getMaxBid()).thenReturn(5);
+        when(playerTransferContext.getTransferDay()).thenReturn(transferDay);
+        when(playerTransferContext.getD11Team()).thenReturn(d11Team);
+        when(playerTransferContext.getPlayer()).thenReturn(player);
+        when(playerTransferContext.isValidFee(eq(5))).thenReturn(true);
+
+        when(this.playerTransferContextService.getByPlayerId(any(Long.class))).thenReturn(playerTransferContext);
+        when(this.transferBidRepository.findByTransferDayIdAndPlayerIdAndD11TeamId(eq(transferDay.getId()),
+                                                                                   eq(player.getId()),
+                                                                                   eq(d11Team.getId())))
+                .thenReturn(Optional.of(generate(TransferBid.class)));
+
+        assertThrows(ConflictException.class, () -> this.transferBidService.createTransferBid(player.getId(), 5));
+    }
+
+    /**
      * Tests TransferBidService::createTransferBid with null fee.
      */
     @Test

@@ -5,6 +5,7 @@ import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferInput;
+import org.d11.boot.spring.model.UpdateTransferInput;
 import org.d11.boot.spring.model.TransferListing;
 import org.d11.boot.spring.repository.D11TeamRepository;
 import org.d11.boot.spring.repository.PlayerRepository;
@@ -132,6 +133,10 @@ public class TransferService extends RepositoryService<Transfer, TransferReposit
                 this.transferListingRepository.findByTransferDayIdAndPlayerId(transferDay.getId(), player.getId())
                         .orElseThrow(() -> new ConflictException(ErrorCode.CONFLICT_NO_TRANSFER_LISTING));
 
+        getJpaRepository().findByPlayerIdAndTransferDayId(player.getId(), transferDay.getId()).ifPresent(transfer -> {
+            throw new ConflictException(ErrorCode.CONFLICT_NON_UNIQUE_TRANSFER);
+        });
+
         final Transfer transfer = getServiceMapper().mapToTransfer(transferInput);
         transfer.setTransferDay(transferDay);
         transfer.setPlayer(player);
@@ -144,40 +149,27 @@ public class TransferService extends RepositoryService<Transfer, TransferReposit
     /**
      * Updates an existing transfer. This is pretty lenient as it should only be used by admins.
      *
-     * @param transferId Transfer id.
-     * @param transferInput Transfer properties.
+     * @param transferId         Transfer id.
+     * @param updateTransferInput Transfer properties.
      * @return Updated transfer.
      */
     @Transactional
-    public Transfer updateTransfer(final Long transferId, final TransferInput transferInput) {
+    public Transfer updateTransfer(final Long transferId, final UpdateTransferInput updateTransferInput) {
         if (transferId == null) {
             throw new BadRequestException("transferId", ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
         }
 
-        if (transferInput.fee() <= 0 || transferInput.fee() % Transfer.FEE_DIVISOR != 0) {
+        if (updateTransferInput.fee() <= 0 || updateTransferInput.fee() % Transfer.FEE_DIVISOR != 0) {
             throw new BadRequestException(FEE, ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
         }
 
         final Transfer transfer = getById(transferId);
 
-        final Player player = this.playerRepository.findById(transferInput.playerId())
-                .orElseThrow(() -> new NotFoundException(transferInput.playerId(), Player.class));
+        final D11Team d11Team = this.d11TeamRepository.findById(updateTransferInput.d11TeamId())
+                .orElseThrow(() -> new NotFoundException(updateTransferInput.d11TeamId(), D11Team.class));
 
-        final TransferDay transferDay = this.transferDayRepository.findById(transferInput.transferDayId())
-                .orElseThrow(() -> new NotFoundException(transferInput.transferDayId(), TransferDay.class));
-
-        final D11Team d11Team = this.d11TeamRepository.findById(transferInput.d11TeamId())
-                .orElseThrow(() -> new NotFoundException(transferInput.d11TeamId(), D11Team.class));
-
-        final TransferListing transferListing =
-                this.transferListingRepository.findByTransferDayIdAndPlayerId(transferDay.getId(), player.getId())
-                        .orElseThrow(() -> new ConflictException(ErrorCode.CONFLICT_NO_TRANSFER_LISTING));
-
-        transfer.setFee(transferInput.fee());
-        transfer.setTransferDay(transferDay);
-        transfer.setPlayer(player);
+        transfer.setFee(updateTransferInput.fee());
         transfer.setD11Team(d11Team);
-        transfer.setTransferListing(transferListing);
 
         return getJpaRepository().save(transfer);
     }

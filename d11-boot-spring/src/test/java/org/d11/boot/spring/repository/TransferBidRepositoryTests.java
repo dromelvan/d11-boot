@@ -4,21 +4,46 @@ import org.d11.boot.spring.model.TransferBid;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.util.TransferDayPlayer;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Transfer bid repository tests.
  */
 class TransferBidRepositoryTests extends AbstractRepositoryTests<TransferBid, TransferBidRepository> {
+
+    /**
+     * Tests TransferBidRepository::saveAndFlush with duplicate transferDayId, playerId and d11TeamId.
+     */
+    @Test
+    void testSaveAndFlushUniqueConstraint() {
+        final List<TransferBid> entities = getEntities();
+        assertFalse(entities.isEmpty());
+
+        final TransferBid transferBid = entities.get(0);
+        final TransferBid duplicate = new TransferBid();
+
+        duplicate.setTransferDay(transferBid.getTransferDay());
+        duplicate.setPlayer(transferBid.getPlayer());
+        duplicate.setD11Team(transferBid.getD11Team());
+        duplicate.setPlayerRanking(transferBid.getPlayerRanking());
+        duplicate.setD11TeamRanking(transferBid.getD11TeamRanking());
+        duplicate.setFee(transferBid.getFee());
+        duplicate.setActiveFee(transferBid.getActiveFee());
+
+        assertThrows(DataIntegrityViolationException.class, () -> getRepository().saveAndFlush(duplicate));
+    }
 
     /**
      * Tests TransferBidRepository::findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc.
@@ -52,6 +77,27 @@ class TransferBidRepositoryTests extends AbstractRepositoryTests<TransferBid, Tr
             assertEquals(expected, result);
         }
     }
+
+    /**
+     * Tests TransferBidRepository::findByTransferDayIdAndPlayerIdAndD11TeamId.
+     */
+    @Test
+    void testFindByTransferDayIdAndPlayerIdAndD11TeamId() {
+        final List<TransferBid> entities = getEntities();
+
+        assertFalse(entities.isEmpty());
+
+        for (final TransferBid transferBid : entities) {
+            final Optional<TransferBid> optional =
+                    getRepository().findByTransferDayIdAndPlayerIdAndD11TeamId(transferBid.getTransferDay().getId(),
+                                                                               transferBid.getPlayer().getId(),
+                                                                               transferBid.getD11Team().getId());
+
+            assertTrue(optional.isPresent());
+            optional.ifPresent(result -> assertEquals(transferBid, result));
+        }
+    }
+
 
     /**
      * Test TransferBidRepository::findByTransferDayIdAndPlayerIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc.

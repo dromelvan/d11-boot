@@ -28,5 +28,6 @@ CREATE TABLE IF NOT EXISTS transfer_listing(
     minutes_played INTEGER NOT NULL DEFAULT 0,
     new_player BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp,
-    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp,
+    CONSTRAINT transfer_listing_transfer_day_id_player_id_unique UNIQUE (transfer_day_id, player_id)
 );

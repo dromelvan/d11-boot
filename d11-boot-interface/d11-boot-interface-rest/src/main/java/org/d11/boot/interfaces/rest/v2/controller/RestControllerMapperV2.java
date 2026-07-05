@@ -11,6 +11,7 @@ import org.d11.boot.api.v2.model.TransferDayInputDTO;
 import org.d11.boot.api.v2.model.TransferDayStatusInputDTO;
 import org.d11.boot.api.v2.model.TransferInputDTO;
 import org.d11.boot.api.v2.model.TransferWindowInputDTO;
+import org.d11.boot.api.v2.model.UpdateTransferInputDTO;
 import org.d11.boot.api.v2.model.UpdatePlayerSeasonStatInputDTO;
 import org.d11.boot.spring.model.CreatePlayerSeasonStatInput;
 import org.d11.boot.spring.model.Player;
@@ -23,6 +24,7 @@ import org.d11.boot.spring.model.TransferDayInput;
 import org.d11.boot.spring.model.TransferDayStatusInput;
 import org.d11.boot.spring.model.TransferInput;
 import org.d11.boot.spring.model.TransferWindowInput;
+import org.d11.boot.spring.model.UpdateTransferInput;
 import org.d11.boot.spring.model.UpdatePlayerSeasonStatInput;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -116,6 +118,14 @@ public interface RestControllerMapperV2 {
      * @return Mapped TransferInput.
      */
     TransferInput mapToTransferInput(TransferInputDTO transferInputDTO);
+
+    /**
+     * Maps an UpdateTransferInputDTO to an UpdateTransferInput.
+     *
+     * @param updateTransferInputDTO The UpdateTransferInputDTO.
+     * @return Mapped UpdateTransferInput.
+     */
+    UpdateTransferInput mapToUpdateTransferInput(UpdateTransferInputDTO updateTransferInputDTO);
 
     /**
      * Maps a Transfer to a TransferDTO.

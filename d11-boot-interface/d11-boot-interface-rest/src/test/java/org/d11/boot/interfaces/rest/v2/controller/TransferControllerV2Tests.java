@@ -8,6 +8,7 @@ import org.d11.boot.api.v2.model.TransferDTO;
 import org.d11.boot.api.v2.model.TransferInputDTO;
 import org.d11.boot.api.v2.model.TransferResponseBodyDTO;
 import org.d11.boot.api.v2.model.TransfersResponseBodyDTO;
+import org.d11.boot.api.v2.model.UpdateTransferInputDTO;
 import org.d11.boot.api.v2.model.UpdateTransferRequestBodyDTO;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.Transfer;
@@ -134,7 +135,7 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         final TransferApi transferApi = getAdministratorApi(TransferApi.class);
 
         final CreateTransferRequestBodyDTO requestBodyDTO = new CreateTransferRequestBodyDTO()
-                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(1L).d11TeamId(1L));
+                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(3L).d11TeamId(1L));
 
         final TransferResponseBodyDTO response = transferApi.createTransfer(requestBodyDTO);
 
@@ -145,6 +146,8 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         assertEquals(requestBodyDTO.getTransfer().getTransferDayId(), response.getTransfer().getTransferDay().getId());
         assertEquals(requestBodyDTO.getTransfer().getPlayerId(), response.getTransfer().getPlayer().getId());
         assertEquals(requestBodyDTO.getTransfer().getD11TeamId(), response.getTransfer().getD11Team().getId());
+
+        assertDoesNotThrow(() -> transferApi.deleteTransfer(response.getTransfer().getId()));
     }
 
     /**
@@ -269,6 +272,23 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_NO_TRANSFER_LISTING.getMessage()));
     }
 
+    /**
+     * Tests TransferService::createTransfer with non-unique transfer.
+     */
+    @Test
+    void testCreateTransferNonUniqueTransfer() {
+        final TransferApi transferApi = getAdministratorApi(TransferApi.class);
+
+        final CreateTransferRequestBodyDTO requestBodyDTO = new CreateTransferRequestBodyDTO()
+                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(1L).d11TeamId(1L));
+
+        final FeignException.Conflict e =
+                assertThrows(FeignException.Conflict.class, () -> transferApi.createTransfer(requestBodyDTO));
+
+        assertTrue(e.getMessage().contains("\"error\":\"Conflict\""));
+        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_NON_UNIQUE_TRANSFER.getMessage()));
+    }
+
     // updateTransfer --------------------------------------------------------------------------------------------------
 
     /**
@@ -279,7 +299,7 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         final TransferApi transferApi = getAdministratorApi(TransferApi.class);
 
         final UpdateTransferRequestBodyDTO requestBodyDTO = new UpdateTransferRequestBodyDTO()
-                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(1L).d11TeamId(1L));
+                .transfer(new UpdateTransferInputDTO().fee(5).d11TeamId(1L));
 
         final TransferResponseBodyDTO response = transferApi.updateTransfer(1L, requestBodyDTO);
 
@@ -287,8 +307,6 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         assertNotNull(response.getTransfer());
 
         assertEquals(requestBodyDTO.getTransfer().getFee(), response.getTransfer().getFee());
-        assertEquals(requestBodyDTO.getTransfer().getTransferDayId(), response.getTransfer().getTransferDay().getId());
-        assertEquals(requestBodyDTO.getTransfer().getPlayerId(), response.getTransfer().getPlayer().getId());
         assertEquals(requestBodyDTO.getTransfer().getD11TeamId(), response.getTransfer().getD11Team().getId());
     }
 
@@ -300,7 +318,7 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         final TransferApi transferApi = getAdministratorApi(TransferApi.class);
 
         final UpdateTransferRequestBodyDTO requestBodyDTO = new UpdateTransferRequestBodyDTO()
-                .transfer(new TransferInputDTO().fee(-5).transferDayId(1L).playerId(1L).d11TeamId(1L));
+                .transfer(new UpdateTransferInputDTO().fee(-5).d11TeamId(1L));
 
         final FeignException.BadRequest negativeFeeException =
                 assertThrows(FeignException.BadRequest.class, () -> transferApi.updateTransfer(1L, requestBodyDTO));
@@ -325,7 +343,7 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         final TransferApi transferApi = getApi(TransferApi.class);
 
         final UpdateTransferRequestBodyDTO requestBodyDTO = new UpdateTransferRequestBodyDTO()
-                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(1L).d11TeamId(1L));
+                .transfer(new UpdateTransferInputDTO().fee(5).d11TeamId(1L));
 
         assertThrows(FeignException.Unauthorized.class, () -> transferApi.updateTransfer(1L, requestBodyDTO));
     }
@@ -338,7 +356,7 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         final TransferApi transferApi = getUserApi(TransferApi.class);
 
         final UpdateTransferRequestBodyDTO requestBodyDTO = new UpdateTransferRequestBodyDTO()
-                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(1L).d11TeamId(1L));
+                .transfer(new UpdateTransferInputDTO().fee(5).d11TeamId(1L));
 
         assertThrows(FeignException.Forbidden.class, () -> transferApi.updateTransfer(1L, requestBodyDTO));
     }
@@ -351,7 +369,7 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         final TransferApi transferApi = getAdministratorApi(TransferApi.class);
 
         final UpdateTransferRequestBodyDTO requestBodyDTO = new UpdateTransferRequestBodyDTO()
-                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(1L).d11TeamId(1L));
+                .transfer(new UpdateTransferInputDTO().fee(5).d11TeamId(1L));
 
         final FeignException.NotFound e =
                 assertThrows(FeignException.NotFound.class, () -> transferApi.updateTransfer(-1L, requestBodyDTO));
@@ -362,42 +380,6 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
     }
 
     /**
-     * Tests TransferService::updateTransfer with transfer day not found.
-     */
-    @Test
-    void testUpdateTransferTransferDayNotFound() {
-        final TransferApi transferApi = getAdministratorApi(TransferApi.class);
-
-        final UpdateTransferRequestBodyDTO requestBodyDTO = new UpdateTransferRequestBodyDTO()
-                .transfer(new TransferInputDTO().fee(5).transferDayId(-1L).playerId(1L).d11TeamId(1L));
-
-        final FeignException.NotFound e =
-                assertThrows(FeignException.NotFound.class, () -> transferApi.updateTransfer(1L, requestBodyDTO));
-
-        assertTrue(e.getMessage().contains("\"error\":\"Not Found\""));
-        assertTrue(e.getMessage().contains("\"resource\":\"TransferDay\""));
-        assertTrue(e.getMessage().contains("\"id\":" + requestBodyDTO.getTransfer().getTransferDayId()));
-    }
-
-    /**
-     * Tests TransferService::updateTransfer with player not found.
-     */
-    @Test
-    void testUpdateTransferPlayerNotFound() {
-        final TransferApi transferApi = getAdministratorApi(TransferApi.class);
-
-        final UpdateTransferRequestBodyDTO requestBodyDTO = new UpdateTransferRequestBodyDTO()
-                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(-1L).d11TeamId(1L));
-
-        final FeignException.NotFound e =
-                assertThrows(FeignException.NotFound.class, () -> transferApi.updateTransfer(1L, requestBodyDTO));
-
-        assertTrue(e.getMessage().contains("\"error\":\"Not Found\""));
-        assertTrue(e.getMessage().contains("\"resource\":\"Player\""));
-        assertTrue(e.getMessage().contains("\"id\":" + requestBodyDTO.getTransfer().getPlayerId()));
-    }
-
-    /**
      * Tests TransferService::updateTransfer with D11 team not found.
      */
     @Test
@@ -405,7 +387,7 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         final TransferApi transferApi = getAdministratorApi(TransferApi.class);
 
         final UpdateTransferRequestBodyDTO requestBodyDTO = new UpdateTransferRequestBodyDTO()
-                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(1L).d11TeamId(-1L));
+                .transfer(new UpdateTransferInputDTO().fee(5).d11TeamId(-1L));
 
         final FeignException.NotFound e =
                 assertThrows(FeignException.NotFound.class, () -> transferApi.updateTransfer(1L, requestBodyDTO));
@@ -413,23 +395,6 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         assertTrue(e.getMessage().contains("\"error\":\"Not Found\""));
         assertTrue(e.getMessage().contains("\"resource\":\"D11Team\""));
         assertTrue(e.getMessage().contains("\"id\":" + requestBodyDTO.getTransfer().getD11TeamId()));
-    }
-
-    /**
-     * Tests TransferService::updateTransfer with transfer listing conflict.
-     */
-    @Test
-    void testUpdateTransferTransferListingConflict() {
-        final TransferApi transferApi = getAdministratorApi(TransferApi.class);
-
-        final UpdateTransferRequestBodyDTO requestBodyDTO = new UpdateTransferRequestBodyDTO()
-                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(7L).d11TeamId(1L));
-
-        final FeignException.Conflict e =
-                assertThrows(FeignException.Conflict.class, () -> transferApi.updateTransfer(1L, requestBodyDTO));
-
-        assertTrue(e.getMessage().contains("\"error\":\"Conflict\""));
-        assertTrue(e.getMessage().contains(ErrorCode.CONFLICT_NO_TRANSFER_LISTING.getMessage()));
     }
 
     // deleteTransfer --------------------------------------------------------------------------------------------------
@@ -468,7 +433,7 @@ class TransferControllerV2Tests extends D11BootControllerV2Tests {
         final TransferApi transferApi = getAdministratorApi(TransferApi.class);
 
         final CreateTransferRequestBodyDTO createRequest = new CreateTransferRequestBodyDTO()
-                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(1L).d11TeamId(1L));
+                .transfer(new TransferInputDTO().fee(5).transferDayId(1L).playerId(3L).d11TeamId(1L));
 
         final TransferDTO transferDTO = transferApi.createTransfer(createRequest).getTransfer();
 

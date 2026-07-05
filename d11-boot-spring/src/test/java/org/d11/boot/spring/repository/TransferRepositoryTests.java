@@ -6,6 +6,7 @@ import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferDay;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Comparator;
 import java.util.List;
@@ -16,12 +17,33 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Transfer repository tests.
  */
 class TransferRepositoryTests extends AbstractRepositoryTests<Transfer, TransferRepository> {
+
+    /**
+     * Tests TransferRepository::saveAndFlush with duplicate playerId and transferDayId.
+     */
+    @Test
+    void testSaveAndFlushUniqueConstraint() {
+        final List<Transfer> entities = getEntities();
+        assertFalse(entities.isEmpty());
+
+        final Transfer transfer = entities.get(0);
+        final Transfer duplicate = new Transfer();
+
+        duplicate.setTransferDay(transfer.getTransferDay());
+        duplicate.setPlayer(transfer.getPlayer());
+        duplicate.setD11Team(transfer.getD11Team());
+        duplicate.setTransferListing(transfer.getTransferListing());
+        duplicate.setFee(transfer.getFee());
+
+        assertThrows(DataIntegrityViolationException.class, () -> getRepository().saveAndFlush(duplicate));
+    }
 
     /**
      * Tests TransferRepository::findByTransferDayTransferWindowMatchWeekSeasonIdAndD11TeamId.

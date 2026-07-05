@@ -9,6 +9,7 @@ import org.d11.boot.api.v2.model.UpdateTransferRequestBodyDTO;
 import org.d11.boot.interfaces.rest.RepositoryServiceController;
 import org.d11.boot.spring.model.Transfer;
 import org.d11.boot.spring.model.TransferInput;
+import org.d11.boot.spring.model.UpdateTransferInput;
 import org.d11.boot.spring.security.RoleAdmin;
 import org.d11.boot.spring.service.TransferService;
 import org.mapstruct.factory.Mappers;
@@ -73,8 +74,9 @@ public class TransferControllerV2 extends RepositoryServiceController<TransferSe
             final Long transferId,
             final UpdateTransferRequestBodyDTO updateTransferRequestBodyDTO) {
 
-        final TransferInput transferInput = this.mapper.mapToTransferInput(updateTransferRequestBodyDTO.getTransfer());
-        final Transfer transfer = getRepositoryService().updateTransfer(transferId, transferInput);
+        final UpdateTransferInput updateTransferInput =
+                this.mapper.mapToUpdateTransferInput(updateTransferRequestBodyDTO.getTransfer());
+        final Transfer transfer = getRepositoryService().updateTransfer(transferId, updateTransferInput);
 
         final TransferResponseBodyDTO responseBody = new TransferResponseBodyDTO()
                 .transfer(this.mapper.mapToTransferDTO(transfer));

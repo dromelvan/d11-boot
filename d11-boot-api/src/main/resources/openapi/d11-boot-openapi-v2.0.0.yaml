@@ -4365,6 +4365,17 @@ components:
         d11TeamId:
           $ref: '#/components/schemas/Id'
 
+    UpdateTransferInput:
+      type: object
+      required:
+        - fee
+        - d11TeamId
+      properties:
+        fee:
+          $ref: '#/components/schemas/Fee'
+        d11TeamId:
+          $ref: '#/components/schemas/Id'
+
     TransferResponseBody:
       type: object
       required:
@@ -4397,7 +4408,7 @@ components:
         - transfer
       properties:
         transfer:
-          $ref: '#/components/schemas/TransferInput'
+          $ref: '#/components/schemas/UpdateTransferInput'
 
   # Current ------------------------------------------------------------------------------------------------------------
 

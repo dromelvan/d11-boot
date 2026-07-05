@@ -5,6 +5,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository for TransferBid entities.
@@ -20,6 +21,20 @@ public interface TransferBidRepository extends D11EntityRepository<TransferBid> 
      */
     List<TransferBid> findByTransferDayIdOrderByPlayerRankingAscActiveFeeDescD11TeamRankingDesc(
             @Param("transferDayId") Long transferDayId
+    );
+
+    /**
+     * Finds a transfer bid by transfer day id, player id and D11 team id.
+     *
+     * @param transferDayId The transfer day id.
+     * @param playerId The player id.
+     * @param d11TeamId The D11 team id.
+     * @return Optional with transfer bid for the transfer day, player and D11 team or empty optional if none was found.
+     */
+    Optional<TransferBid> findByTransferDayIdAndPlayerIdAndD11TeamId(
+            @Param("transferDayId") Long transferDayId,
+            @Param("playerId") Long playerId,
+            @Param("d11TeamId") Long d11TeamId
     );
 
     /**

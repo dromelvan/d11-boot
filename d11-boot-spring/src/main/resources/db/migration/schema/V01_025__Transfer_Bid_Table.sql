@@ -9,5 +9,6 @@ CREATE TABLE IF NOT EXISTS transfer_bid(
     active_fee INTEGER NOT NULL,
     successful BOOLEAN NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp,
-    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp,
+    CONSTRAINT transfer_bid_transfer_day_id_player_id_d11_team_id_unique UNIQUE (transfer_day_id, player_id, d11_team_id)
 );

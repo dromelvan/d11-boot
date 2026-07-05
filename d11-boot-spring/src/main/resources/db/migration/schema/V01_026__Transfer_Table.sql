@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS transfer(
     transfer_listing_id INTEGER NOT NULL REFERENCES transfer_listing,
     fee INTEGER NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp,
-    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()::timestamp,
+    CONSTRAINT transfer_transfer_day_id_player_id_unique UNIQUE (transfer_day_id, player_id)
 );

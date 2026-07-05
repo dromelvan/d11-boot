@@ -5,6 +5,8 @@ import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.model.TransferDay;
 import org.d11.boot.spring.model.TransferListing;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,12 +21,39 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Transfer listing repository tests.
  */
 class TransferListingRepositoryTests extends AbstractRepositoryTests<TransferListing, TransferListingRepository> {
+
+    /**
+     * Transfer day repository.
+     */
+    @Autowired
+    private TransferDayRepository transferDayRepository;
+
+    /**
+     * Tests TransferListingRepository::saveAndFlush with duplicate playerId and transferDayId.
+     */
+    @Test
+    void testSaveAndFlushUniqueConstraint() {
+        final List<TransferListing> entities = getEntities();
+        assertFalse(entities.isEmpty());
+
+        final TransferListing transferListing = entities.get(0);
+        final TransferListing duplicate = new TransferListing();
+
+        duplicate.setTransferDay(transferListing.getTransferDay());
+        duplicate.setPlayer(transferListing.getPlayer());
+        duplicate.setTeam(transferListing.getTeam());
+        duplicate.setD11Team(transferListing.getD11Team());
+        duplicate.setPosition(transferListing.getPosition());
+
+        assertThrows(DataIntegrityViolationException.class, () -> getRepository().saveAndFlush(duplicate));
+    }
 
     /**
      * Tests TransferListingRepository::findByTransferDayIdAndPlayerId.
@@ -51,46 +80,49 @@ class TransferListingRepositoryTests extends AbstractRepositoryTests<TransferLis
     @Test
     void testFindByTransferDayIdOrderByRanking() {
         final List<TransferListing> entities = getEntities();
-        // Set transfer day for two entities to the same one. This way the query should return some but not all the
-        // entities
-        final TransferDay transferDay = entities.get(0).getTransferDay();
-        entities.get(1).setTransferDay(transferDay);
 
         for (final TransferListing transferListing : entities) {
             transferListing.setRanking(entities.indexOf(transferListing) + 1);
         }
         getRepository().saveAll(entities);
 
-        final List<TransferListing> expected = entities.subList(0, 2);
-
         final int pageSize = 2;
         final String sortBy = "ranking";
-        Pageable pageable = PageRequest.of(0, pageSize, Sort.by(sortBy));
 
-        final List<TransferListing> result = getRepository().findByTransferDayIdOrderByRanking(transferDay.getId(),
-                                                                                               null, pageable);
+        int minPageCount = pageSize;
+        int maxPageCount = 0;
 
-        assertNotNull(result);
-        assertEquals(expected, result);
+        for (final TransferDay transferDay : this.transferDayRepository.findAll()) {
+            final List<TransferListing> transferDayEntities = entities.stream()
+                    .filter(transferListing -> transferListing.getTransferDay().equals(transferDay))
+                    .sorted(Comparator.comparing(TransferListing::getRanking))
+                    .toList();
 
-        for (final TransferListing transferListing : entities) {
-            transferListing.setTransferDay(transferDay);
+            final int pages = transferDayEntities.size() / pageSize;
+
+            if (pages < minPageCount) {
+                minPageCount = pages;
+            }
+            if (pages > maxPageCount) {
+                maxPageCount = pages;
+            }
+
+            for (int i = 0; i < pages; i++) {
+                final List<TransferListing> expected = transferDayEntities.subList(i * pageSize,
+                                                                                   i * pageSize + pageSize);
+                final Pageable pageable = PageRequest.of(i, pageSize, Sort.by(sortBy));
+
+                final List<TransferListing> result =
+                        getRepository().findByTransferDayIdOrderByRanking(transferDay.getId(), null, pageable);
+
+                assertNotNull(result);
+                assertEquals(expected, result);
+            }
         }
-        getRepository().saveAll(entities);
 
-        final List<TransferListing> page1result = getRepository().findByTransferDayIdOrderByRanking(transferDay.getId(),
-                                                                                                    null,
-                                                                                                    pageable);
-        assertNotNull(page1result);
-        assertEquals(entities.subList(0, pageSize), page1result);
-
-        pageable = PageRequest.of(1, pageSize, Sort.by(sortBy));
-
-        final List<TransferListing> page2result = getRepository().findByTransferDayIdOrderByRanking(transferDay.getId(),
-                                                                                                    null,
-                                                                                                    pageable);
-        assertNotNull(page2result);
-        assertEquals(entities.subList(pageSize, pageSize * 2), page2result);
+        // Make sure the test data has empty result and 2+ pages result
+        assertEquals(0, minPageCount);
+        assertTrue(maxPageCount >= pageSize);
     }
 
     /**

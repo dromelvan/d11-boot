@@ -151,6 +151,14 @@ public class TransferBidService extends RepositoryService<TransferBid, TransferB
             throw new BadRequestException(FEE, ErrorCode.BAD_REQUEST_INVALID_PARAMETER);
         }
 
+        getJpaRepository().findByTransferDayIdAndPlayerIdAndD11TeamId(
+                playerTransferContext.getTransferDay().getId(),
+                playerTransferContext.getPlayer().getId(),
+                playerTransferContext.getD11Team().getId()
+        ).ifPresent(transferBid -> {
+            throw new ConflictException(ErrorCode.CONFLICT_NON_UNIQUE_TRANSFER_BID);
+        });
+
         final TransferBid transferBid = new TransferBid();
         transferBid.setTransferDay(playerTransferContext.getTransferDay());
         transferBid.setD11Team(playerTransferContext.getD11Team());
