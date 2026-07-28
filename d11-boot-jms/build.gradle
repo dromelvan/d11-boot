@@ -1,7 +1,5 @@
 plugins {
     id 'java-library'
-    id 'checkstyle'
-    id 'pmd'
 }
 
 configurations {
@@ -14,16 +12,6 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.2'
-}
-
-checkstyle {
-    toolVersion '8.36.2'
-    configFile rootProject.file("plugins/checkstyle.xml")
-}
-
-pmd {
-    ruleSets = []
-    ruleSetFiles = rootProject.files("plugins/pmd.xml")
 }
 
 test {

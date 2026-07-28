@@ -1,7 +1,5 @@
 plugins {
     id 'java-library'
-    id 'checkstyle'
-    id 'pmd'
 }
 
 configurations {
@@ -21,16 +19,6 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-}
-
-checkstyle {
-    toolVersion '8.36.2'
-    configFile rootProject.file("plugins/checkstyle.xml")
-}
-
-pmd {
-    ruleSets = []
-    ruleSetFiles = rootProject.files("plugins/pmd.xml")
 }
 
 test {

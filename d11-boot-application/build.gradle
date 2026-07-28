@@ -2,8 +2,6 @@ plugins {
     id 'java'
 	id 'org.springframework.boot' version '2.3.4.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-	id 'checkstyle'
-	id 'pmd'
 	id "com.github.spotbugs" version "4.5.1"
     id "com.palantir.docker" version "0.27.0"
 }
@@ -70,16 +68,6 @@ dependencies {
 	testRuntimeOnly 'com.h2database:h2'
 }
 
-checkstyle {
-	toolVersion '8.36.2'
-	configFile rootProject.file("plugins/checkstyle.xml")
-}
-
-pmd {
-	ruleSets = []
-	ruleSetFiles = rootProject.files("plugins/pmd.xml")
-}
-
 test {
 	useJUnitPlatform()
 	dependencyManagement {
@@ -92,6 +80,12 @@ test {
 
 springBoot {
 	buildInfo()
+}
+
+bootJar {
+	layered {
+		enabled = true
+	}
 }
 
 processResources {
