@@ -36,11 +36,17 @@ import java.util.stream.Collectors;
                   attributeNodes = {
                           @NamedAttributeNode("homeTeam"),
                           @NamedAttributeNode("awayTeam"),
-                          @NamedAttributeNode("matchWeek"),
+                          @NamedAttributeNode(value = "matchWeek", subgraph = "matchWeek-subgraph"),
                           @NamedAttributeNode("stadium"),
                           @NamedAttributeNode(value = "goals", subgraph = "goals-subgraph")
                   },
                   subgraphs = {
+                          @NamedSubgraph(
+                                  name = "matchWeek-subgraph",
+                                  attributeNodes = {
+                                          @NamedAttributeNode("season")
+                                  }
+                          ),
                           @NamedSubgraph(
                                   name = "goals-subgraph",
                                   attributeNodes = {

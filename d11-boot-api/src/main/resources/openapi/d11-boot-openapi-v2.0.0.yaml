@@ -3077,12 +3077,15 @@ components:
       required:
         - id
         - matchWeekNumber
+        - season
       properties:
         id:
           $ref: '#/components/schemas/Id'
         matchWeekNumber:
           type: integer
           format: int32
+        season:
+          $ref: '#/components/schemas/SeasonBase'
 
     MatchWeek:
       allOf:

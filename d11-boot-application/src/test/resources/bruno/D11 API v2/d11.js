@@ -93,6 +93,7 @@ function season(season1, season2) {
 function matchWeekBase(matchWeek1, matchWeek2) {
     expect(matchWeek1.id).to.eq(matchWeek2.id);
     expect(matchWeek1.matchWeekNumber).to.eq(matchWeek2.matchWeekNumber);
+    seasonBase(matchWeek1.season, matchWeek2.season);
 }
 
 function matchWeek(matchWeek1, matchWeek2) {
@@ -112,17 +113,13 @@ function matchWeek(matchWeek1, matchWeek2) {
     d11Team(matchWeek1.mostValuablePlayer.d11Team, matchWeek2.mostValuablePlayer.d11Team);
 }
 
-function matchWeekBase(matchWeek1, matchWeek2) {
-    expect(matchWeek1.id).to.eq(matchWeek2.id);
-    expect(matchWeek1.matchWeekNumber).to.eq(matchWeek2.matchWeekNumber);
-}
-
 function matchWeekWithoutMVP(matchWeek1, matchWeek2) {
     expect(matchWeek1.id).to.eq(matchWeek2.id);
     expect(matchWeek1.matchWeekNumber).to.eq(matchWeek2.matchWeekNumber);
     //expect(matchWeek1.date).to.eq(matchWeek2.date);
     expect(matchWeek1.elapsed).to.eq(matchWeek2.elapsed);
     expect(matchWeek1.status).to.eq(matchWeek2.status);
+    seasonBase(matchWeek1.season, matchWeek2.season);
 
     expect(matchWeek1.mostValuablePlayer).be.undefined
 }
@@ -163,6 +160,8 @@ function d11Match(d11Match1, d11Match2) {
 
     expect(d11Match1.elapsed).to.eq(d11Match2.elapsed);
     expect(d11Match1.status).to.eq(d11Match2.status);
+
+    matchWeekBase(d11Match1.matchWeek, d11Match2.matchWeek);
 }
 
 function playerMatchStat(playerMatchStat1, playerMatchStat2) {

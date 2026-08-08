@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -31,7 +32,15 @@ import java.util.Objects;
                   attributeNodes = {
                           @NamedAttributeNode("homeD11Team"),
                           @NamedAttributeNode("awayD11Team"),
-                          @NamedAttributeNode("matchWeek")
+                          @NamedAttributeNode(value = "matchWeek", subgraph = "matchWeek-subgraph")
+                  },
+                  subgraphs = {
+                          @NamedSubgraph(
+                                  name = "matchWeek-subgraph",
+                                  attributeNodes = {
+                                          @NamedAttributeNode("season")
+                                  }
+                          )
                   }
 )
 @SuppressWarnings("checkstyle:Indentation")
