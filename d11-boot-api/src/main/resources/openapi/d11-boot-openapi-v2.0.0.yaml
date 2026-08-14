@@ -3287,6 +3287,15 @@ components:
       allOf:
         - $ref: '#/components/schemas/D11MatchBase'
         - type: object
+          properties:
+            homeTeamGoals:
+              type: array
+              items:
+                $ref: "#/components/schemas/GoalBase"
+            awayTeamGoals:
+              type: array
+              items:
+                $ref: "#/components/schemas/GoalBase"
 
     D11MatchResponseBody:
       type: object
