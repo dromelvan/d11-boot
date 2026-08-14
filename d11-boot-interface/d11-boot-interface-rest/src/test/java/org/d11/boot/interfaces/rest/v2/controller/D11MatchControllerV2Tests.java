@@ -14,6 +14,7 @@ import org.d11.boot.spring.model.MatchWeek;
 import org.d11.boot.spring.model.Season;
 import org.d11.boot.spring.repository.D11MatchRepository;
 import org.d11.boot.spring.repository.MatchWeekRepository;
+import org.d11.boot.spring.service.D11MatchService;
 import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,12 @@ class D11MatchControllerV2Tests extends D11BootControllerV2Tests {
     private D11MatchRepository d11MatchRepository;
 
     /**
+     * D11 match service.
+     */
+    @Autowired
+    private D11MatchService d11MatchService;
+
+    /**
      * Match week repository.
      */
     @Autowired
@@ -61,12 +68,8 @@ class D11MatchControllerV2Tests extends D11BootControllerV2Tests {
             final D11MatchResponseBodyDTO result = d11MatchApi.getD11MatchById(d11MatchId);
             assertNotNull(result);
 
-            // Have to do findById to get the associations needed for the mapping
-            final D11Match d11Match = this.d11MatchRepository
-                    .findById(d11MatchId).orElseThrow(IllegalStateException::new);
-
-            assertEquals(getMapper().map(d11Match, D11MatchDTO.class),
-                         result.getD11Match());
+            final D11Match d11Match = this.d11MatchService.getById(d11MatchId);
+            assertEquals(getMapper().map(d11Match, D11MatchDTO.class), result.getD11Match());
         }
 
         assertThrows(FeignException.NotFound.class, () -> d11MatchApi.getD11MatchById(0L));

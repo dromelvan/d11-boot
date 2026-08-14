@@ -33,15 +33,32 @@ public class D11MatchService extends RepositoryService<D11Match, D11MatchReposit
     private final MatchWeekService matchWeekService;
 
     /**
+     * Goal service for populating home and away team goals on D11 match entities.
+     */
+    private final GoalService goalService;
+
+    /**
      * Creates a new D11 match service.
      *
      * @param d11MatchRepository The repository the service will use.
-     * @param matchWeekService The match week service the service will use.
+     * @param matchWeekService   The match week service the service will use.
+     * @param goalService        The goal service the service will use.
      */
     @Autowired
-    public D11MatchService(final D11MatchRepository d11MatchRepository, final MatchWeekService matchWeekService) {
+    public D11MatchService(final D11MatchRepository d11MatchRepository,
+                           final MatchWeekService matchWeekService,
+                           final GoalService goalService) {
         super(D11Match.class, d11MatchRepository);
         this.matchWeekService = matchWeekService;
+        this.goalService = goalService;
+    }
+
+    @Override
+    public D11Match getById(final long id) {
+        final D11Match d11Match = super.getById(id);
+        d11Match.setHomeTeamGoals(this.goalService.getByD11MatchIdAndD11TeamId(id, d11Match.getHomeD11Team().getId()));
+        d11Match.setAwayTeamGoals(this.goalService.getByD11MatchIdAndD11TeamId(id, d11Match.getAwayD11Team().getId()));
+        return d11Match;
     }
 
     /**

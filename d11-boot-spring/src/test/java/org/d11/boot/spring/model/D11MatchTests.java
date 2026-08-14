@@ -5,6 +5,7 @@ import org.d11.boot.util.Status;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -264,6 +265,8 @@ class D11MatchTests extends EasyRandomTests {
         d11Match.setAwayTeamPoints(1);
         d11Match.setPreviousHomeTeamPoints(1);
         d11Match.setPreviousAwayTeamPoints(1);
+        d11Match.setHomeTeamGoals(generateList(Goal.class));
+        d11Match.setAwayTeamGoals(generateList(Goal.class));
 
         d11Match.reset();
 
@@ -275,6 +278,8 @@ class D11MatchTests extends EasyRandomTests {
         assertEquals(0, d11Match.getAwayTeamPoints());
         assertEquals(1, d11Match.getPreviousHomeTeamPoints());
         assertEquals(1, d11Match.getPreviousAwayTeamPoints());
+        assertEquals(List.of(), d11Match.getHomeTeamGoals());
+        assertEquals(List.of(), d11Match.getAwayTeamGoals());
     }
 
 }

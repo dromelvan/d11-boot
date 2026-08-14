@@ -10,6 +10,7 @@ import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -20,6 +21,8 @@ import org.d11.boot.spring.model.converter.StatusConverter;
 import org.d11.boot.util.Status;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -43,7 +46,7 @@ import java.util.Objects;
                           )
                   }
 )
-@SuppressWarnings("checkstyle:Indentation")
+@SuppressWarnings({ "PMD.TooManyFields", "checkstyle:ClassFanOutComplexity", "checkstyle:Indentation" })
 public class D11Match extends D11Entity implements Comparable<D11Match> {
 
     /**
@@ -166,6 +169,22 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
     private MatchWeek matchWeek;
 
     /**
+     * Goals scored by the home D11 team. Transient — populated by the service, not persisted.
+     */
+    @Transient
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private List<Goal> homeTeamGoals = new ArrayList<>();
+
+    /**
+     * Goals scored by the away D11 team. Transient — populated by the service, not persisted.
+     */
+    @Transient
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private List<Goal> awayTeamGoals = new ArrayList<>();
+
+    /**
      * Gets D11 team participant status.
      *
      * @param d11Team The D11 team.
@@ -276,6 +295,8 @@ public class D11Match extends D11Entity implements Comparable<D11Match> {
         this.homeTeamPoints = 0;
         this.awayTeamGoalsScored = 0;
         this.awayTeamPoints = 0;
+        this.homeTeamGoals = new ArrayList<>();
+        this.awayTeamGoals = new ArrayList<>();
     }
 
     @Override

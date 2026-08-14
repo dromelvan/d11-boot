@@ -2,6 +2,7 @@ package org.d11.boot.spring.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Max;
@@ -50,7 +51,7 @@ public class Goal extends D11Entity {
     /**
      * The match in which the goal was scored.
      */
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "match_id")
     @NotNull
     @EqualsAndHashCode.Exclude
