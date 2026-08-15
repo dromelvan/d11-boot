@@ -67,6 +67,25 @@ function player(player1, player2) {
     expect(player1.verified).to.eq(player2.verified);
 }
 
+function playerBase(player1, player2) {
+    expect(player1.id).to.eq(player2.id);
+    expect(player1.firstName).to.eq(player2.firstName);
+    expect(player1.lastName).to.eq(player2.lastName);
+    expect(player1.name).to.eq(player2.name);
+    expect(player1.shortName).to.eq(player2.shortName);
+    expect(player1.parameterizedName).to.eq(player2.parameterizedName);
+    expect(player1.photoFileName).to.eq(player2.photoFileName);
+}
+
+function goalBase(goal1, goal2) {
+    expect(goal1.id).to.eq(goal2.id);
+    expect(goal1.time).to.eq(goal2.time);
+    expect(goal1.addedTime).to.eq(goal2.addedTime);
+    expect(goal1.penalty).to.eq(goal2.penalty);
+    expect(goal1.ownGoal).to.eq(goal2.ownGoal);
+    playerBase(goal1.player, goal2.player);
+}
+
 function playerSearchResult(player1, player2) {
     expect(player1.id).to.eq(player2.id);
     expect(player1.name).to.eq(player2.name);
@@ -162,6 +181,20 @@ function d11Match(d11Match1, d11Match2) {
     expect(d11Match1.status).to.eq(d11Match2.status);
 
     matchWeekBase(d11Match1.matchWeek, d11Match2.matchWeek);
+
+    if (d11Match2.homeTeamGoals !== undefined) {
+        expect(d11Match1.homeTeamGoals.length).to.eq(d11Match2.homeTeamGoals.length);
+        for (let i = 0; i < d11Match1.homeTeamGoals.length; ++i) {
+            goalBase(d11Match1.homeTeamGoals[i], d11Match2.homeTeamGoals[i]);
+        }
+    }
+
+    if (d11Match2.awayTeamGoals !== undefined) {
+        expect(d11Match1.awayTeamGoals.length).to.eq(d11Match2.awayTeamGoals.length);
+        for (let i = 0; i < d11Match1.awayTeamGoals.length; ++i) {
+            goalBase(d11Match1.awayTeamGoals[i], d11Match2.awayTeamGoals[i]);
+        }
+    }
 }
 
 function playerMatchStat(playerMatchStat1, playerMatchStat2) {
@@ -399,6 +432,8 @@ const expectToEq = {
     d11Team,
     position,
     player,
+    playerBase,
+    goalBase,
     playerSearchResult,
     seasonBase,
     season,
