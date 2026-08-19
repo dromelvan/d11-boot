@@ -41,8 +41,11 @@ public class PlayerMatchStatControllerV2 extends RepositoryServiceController<Pla
     }
 
     @Override
-    public ResponseEntity<PlayerMatchStatsResponseBodyDTO> getPlayerMatchStatsByD11MatchId(final Long d11MatchId) {
-        final List<PlayerMatchStat> playerMatchStats = getRepositoryService().getByD11MatchId(d11MatchId);
+    public ResponseEntity<PlayerMatchStatsResponseBodyDTO> getPlayerMatchStatsByD11MatchId(final Long d11MatchId,
+                                                                                           final Long d11TeamId) {
+        final List<PlayerMatchStat> playerMatchStats = d11TeamId == null
+                ? getRepositoryService().getByD11MatchId(d11MatchId)
+                : getRepositoryService().getByD11MatchIdAndD11TeamId(d11MatchId, d11TeamId);
 
         return ResponseEntity.ok(new PlayerMatchStatsResponseBodyDTO()
                 .playerMatchStats(getMapper().map(playerMatchStats, PlayerMatchStatDTO.class)));

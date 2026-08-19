@@ -5,6 +5,7 @@ import org.d11.boot.api.v2.client.PlayerMatchStatApi;
 import org.d11.boot.api.v2.model.PlayerMatchStatDTO;
 import org.d11.boot.api.v2.model.PlayerMatchStatsResponseBodyDTO;
 import org.d11.boot.spring.model.D11Match;
+import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.Match;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerMatchStat;
@@ -137,10 +138,10 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
         final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerMatchStatApi.getPlayerMatchStatsByD11MatchId(null));
+                     () -> playerMatchStatApi.getPlayerMatchStatsByD11MatchId(null, (Long) null));
 
         assertThrows(FeignException.BadRequest.class,
-                     () -> playerMatchStatApi.getPlayerMatchStatsByD11MatchId(-1L));
+                     () -> playerMatchStatApi.getPlayerMatchStatsByD11MatchId(-1L, (Long) null));
 
         final List<PlayerMatchStat> playerMatchStats = this.playerMatchStatRepository.findAll();
         playerMatchStats.sort(Comparator.comparing(PlayerMatchStat::getPosition));
@@ -153,7 +154,7 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
 
         for (final D11Match d11Match : d11Matches) {
             final PlayerMatchStatsResponseBodyDTO response =
-                    playerMatchStatApi.getPlayerMatchStatsByD11MatchId(d11Match.getId());
+                    playerMatchStatApi.getPlayerMatchStatsByD11MatchId(d11Match.getId(), (Long) null);
             assertNotNull(response);
 
             final List<PlayerMatchStat> expected = playerMatchStats.stream()
@@ -167,6 +168,58 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
             assertNotNull(result);
             assertFalse(result.isEmpty());
             assertEquals(map(expected, PlayerMatchStatDTO.class), result);
+        }
+    }
+
+    /**
+     * Tests PlayerMatchStatController::getPlayerMatchStatsByD11MatchIdAndD11TeamId.
+     */
+    @Test
+    void testGetPlayerMatchStatsByD11MatchIdAndD11TeamId() {
+        final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerMatchStatApi.getPlayerMatchStatsByD11MatchId(null, 1L));
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerMatchStatApi.getPlayerMatchStatsByD11MatchId(-1L, 1L));
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerMatchStatApi.getPlayerMatchStatsByD11MatchId(1L, -1L));
+
+        final List<PlayerMatchStat> playerMatchStats = this.playerMatchStatRepository.findAll();
+        playerMatchStats.sort(Comparator.comparing(PlayerMatchStat::getPosition));
+
+        final Set<D11Match> d11Matches = playerMatchStats.stream()
+                .map(PlayerMatchStat::getD11Match)
+                .collect(Collectors.toSet());
+
+        assertTrue(d11Matches.size() > 1);
+
+        for (final D11Match d11Match : d11Matches) {
+            final Set<D11Team> d11Teams = playerMatchStats.stream()
+                    .filter(playerMatchStat -> playerMatchStat.getD11Match().equals(d11Match))
+                    .map(PlayerMatchStat::getD11Team)
+                    .collect(Collectors.toSet());
+
+            assertTrue(d11Teams.size() > 1);
+
+            for (final D11Team d11Team : d11Teams) {
+                final PlayerMatchStatsResponseBodyDTO response =
+                        playerMatchStatApi.getPlayerMatchStatsByD11MatchId(d11Match.getId(), d11Team.getId());
+                assertNotNull(response);
+
+                final List<PlayerMatchStat> expected = playerMatchStats.stream()
+                        .filter(playerMatchStat -> playerMatchStat.getD11Match().equals(d11Match)
+                                                   && playerMatchStat.getD11Team().equals(d11Team))
+                        .toList();
+
+                final List<PlayerMatchStatDTO> result = response.getPlayerMatchStats();
+
+                assertNotNull(result);
+                assertFalse(result.isEmpty());
+                assertEquals(map(expected, PlayerMatchStatDTO.class), result);
+            }
         }
     }
 

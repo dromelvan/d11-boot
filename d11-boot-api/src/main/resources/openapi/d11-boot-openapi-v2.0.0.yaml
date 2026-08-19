@@ -1283,6 +1283,13 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: d11TeamId
+          in: query
+          required: false
+          description: Optional id of the D11 team to filter player match stats by.
+          schema:
+            type: integer
+            format: int64
       responses:
         200:
           description: OK
