@@ -1,6 +1,7 @@
 package org.d11.boot.spring.repository;
 
 import org.d11.boot.spring.model.D11Match;
+import org.d11.boot.spring.model.D11Team;
 import org.d11.boot.spring.model.Match;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerMatchStat;
@@ -119,6 +120,44 @@ class PlayerMatchStatRepositoryTests extends AbstractRepositoryTests<PlayerMatch
                 final List<PlayerMatchStat> expected = entities.stream()
                         .filter(playerMatchStat -> playerMatchStat.getMatch().equals(match)
                                                    && playerMatchStat.getTeam().equals(team))
+                        .toList();
+
+                assertNotNull(result);
+                assertFalse(result.isEmpty());
+                assertEquals(expected, result);
+            }
+        }
+    }
+
+    /**
+     * Tests PlayerMatchStatRepository::findByD11MatchIdAndD11TeamIdOrderByPositionSortOrder.
+     */
+    @Test
+    void testFindByD11MatchIdAndD11TeamIdOrderByPositionSortOrder() {
+        final List<PlayerMatchStat> entities = getEntities();
+        entities.sort(Comparator.comparing(playerMatchStat -> playerMatchStat.getPosition().getSortOrder()));
+
+        final Set<D11Match> d11Matches = entities.stream()
+                .map(PlayerMatchStat::getD11Match).collect(Collectors.toSet());
+
+        assertTrue(d11Matches.size() > 1);
+
+        for (final D11Match d11Match : d11Matches) {
+            final Set<D11Team> d11Teams = entities.stream()
+                    .filter(playerMatchStat -> playerMatchStat.getD11Match().equals(d11Match))
+                    .map(PlayerMatchStat::getD11Team)
+                    .collect(Collectors.toSet());
+
+            assertTrue(d11Teams.size() > 1);
+
+            for (final D11Team d11Team : d11Teams) {
+                final List<PlayerMatchStat> result =
+                        getRepository().findByD11MatchIdAndD11TeamIdOrderByPositionSortOrder(d11Match.getId(),
+                                                                                             d11Team.getId());
+
+                final List<PlayerMatchStat> expected = entities.stream()
+                        .filter(playerMatchStat -> playerMatchStat.getD11Match().equals(d11Match)
+                                                   && playerMatchStat.getD11Team().equals(d11Team))
                         .toList();
 
                 assertNotNull(result);

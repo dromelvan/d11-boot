@@ -52,4 +52,16 @@ public interface PlayerMatchStatRepository extends D11EntityRepository<PlayerMat
      */
     List<PlayerMatchStat> findByD11MatchIdOrderByPositionSortOrder(@Param("d11MatchId") Long d11MatchId);
 
+    /**
+     * Finds player match stats by D11 match id and D11 team id ordered by position sort order.
+     *
+     * @param d11MatchId The D11 match id.
+     * @param d11TeamId  The D11 team id.
+     * @return Player match stats for the D11 match and D11 team ordered by position sort order.
+     */
+    List<PlayerMatchStat> findByD11MatchIdAndD11TeamIdOrderByPositionSortOrder(
+            @Param("d11MatchId") Long d11MatchId,
+            @Param("d11TeamId") Long d11TeamId
+    );
+
 }

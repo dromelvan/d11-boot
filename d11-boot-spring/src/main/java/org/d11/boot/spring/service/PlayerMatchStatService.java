@@ -20,6 +20,11 @@ public class PlayerMatchStatService extends RepositoryService<PlayerMatchStat, P
     private static final String MATCH_ID = "matchId";
 
     /**
+     * D11 match id parameter name.
+     */
+    private static final String D11_MATCH_ID = "d11MatchId";
+
+    /**
      * Must be positive error value.
      */
     private static final String MUST_BE_POSITIVE = "must be positive";
@@ -74,10 +79,28 @@ public class PlayerMatchStatService extends RepositoryService<PlayerMatchStat, P
      */
     public List<PlayerMatchStat> getByD11MatchId(final Long d11MatchId) {
         if (d11MatchId == null || d11MatchId <= 0) {
-            throw new BadRequestException("d11MatchId", MUST_BE_POSITIVE);
+            throw new BadRequestException(D11_MATCH_ID, MUST_BE_POSITIVE);
         }
 
         return getJpaRepository().findByD11MatchIdOrderByPositionSortOrder(d11MatchId);
+    }
+
+    /**
+     * Get player match stats by D11 match id and D11 team id ordered by position sort order.
+     *
+     * @param d11MatchId The D11 match id.
+     * @param d11TeamId  The D11 team id.
+     * @return Player match stats by D11 match id and D11 team id ordered by position sort order.
+     */
+    public List<PlayerMatchStat> getByD11MatchIdAndD11TeamId(final Long d11MatchId, final Long d11TeamId) {
+        if (d11MatchId == null || d11MatchId <= 0) {
+            throw new BadRequestException(D11_MATCH_ID, MUST_BE_POSITIVE);
+        }
+        if (d11TeamId == null || d11TeamId <= 0) {
+            throw new BadRequestException("d11TeamId", MUST_BE_POSITIVE);
+        }
+
+        return getJpaRepository().findByD11MatchIdAndD11TeamIdOrderByPositionSortOrder(d11MatchId, d11TeamId);
     }
 
     /**
