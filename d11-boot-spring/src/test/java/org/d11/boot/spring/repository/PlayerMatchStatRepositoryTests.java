@@ -5,6 +5,7 @@ import org.d11.boot.spring.model.Match;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerMatchStat;
 import org.d11.boot.spring.model.Season;
+import org.d11.boot.spring.model.Team;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
@@ -87,6 +88,43 @@ class PlayerMatchStatRepositoryTests extends AbstractRepositoryTests<PlayerMatch
             assertNotNull(result);
             assertFalse(result.isEmpty());
             assertEquals(expected, result);
+        }
+    }
+
+    /**
+     * Tests PlayerMatchStatRepository::findByMatchIdAndTeamIdOrderByPositionSortOrder.
+     */
+    @Test
+    void testFindByMatchIdAndTeamIdOrderByPositionSortOrder() {
+        final List<PlayerMatchStat> entities = getEntities();
+        entities.sort(Comparator.comparing(playerMatchStat -> playerMatchStat.getPosition().getSortOrder()));
+
+        final Set<Match> matches = entities.stream()
+                .map(PlayerMatchStat::getMatch).collect(Collectors.toSet());
+
+        assertTrue(matches.size() > 1);
+
+        for (final Match match : matches) {
+            final Set<Team> teams = entities.stream()
+                    .filter(playerMatchStat -> playerMatchStat.getMatch().equals(match))
+                    .map(PlayerMatchStat::getTeam)
+                    .collect(Collectors.toSet());
+
+            assertTrue(teams.size() > 1);
+
+            for (final Team team : teams) {
+                final List<PlayerMatchStat> result =
+                        getRepository().findByMatchIdAndTeamIdOrderByPositionSortOrder(match.getId(), team.getId());
+
+                final List<PlayerMatchStat> expected = entities.stream()
+                        .filter(playerMatchStat -> playerMatchStat.getMatch().equals(match)
+                                                   && playerMatchStat.getTeam().equals(team))
+                        .toList();
+
+                assertNotNull(result);
+                assertFalse(result.isEmpty());
+                assertEquals(expected, result);
+            }
         }
     }
 

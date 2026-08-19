@@ -67,6 +67,55 @@ class PlayerMatchStatServiceTests extends BaseD11BootServiceTests {
     }
 
     /**
+     * Tests PlayerMatchStatService::getByMatchIdAndTeamId.
+     */
+    @Test
+    void testGetByMatchIdAndTeamId() {
+
+        // Validation --------------------------------------------------------------------------------------------------
+
+        final String matchIdProperty = "matchId";
+
+        final BadRequestException nullMatchIdException =
+                assertThrows(BadRequestException.class,
+                             () -> this.playerMatchStatService.getByMatchIdAndTeamId(null, 1L));
+        assertEquals(matchIdProperty, nullMatchIdException.getParameter());
+
+        final BadRequestException invalidMatchIdException =
+                assertThrows(BadRequestException.class,
+                             () -> this.playerMatchStatService.getByMatchIdAndTeamId(-1L, 1L));
+        assertEquals(matchIdProperty, invalidMatchIdException.getParameter());
+
+        final String teamIdProperty = "teamId";
+
+        final BadRequestException nullTeamIdException =
+                assertThrows(BadRequestException.class,
+                             () -> this.playerMatchStatService.getByMatchIdAndTeamId(1L, null));
+        assertEquals(teamIdProperty, nullTeamIdException.getParameter());
+
+        final BadRequestException invalidTeamIdException =
+                assertThrows(BadRequestException.class,
+                             () -> this.playerMatchStatService.getByMatchIdAndTeamId(1L, -1L));
+        assertEquals(teamIdProperty, invalidTeamIdException.getParameter());
+
+        // Success -----------------------------------------------------------------------------------------------------
+
+        final long matchId = 1L;
+        final long teamId = 1L;
+        final List<PlayerMatchStat> playerMatchStats = generateList(PlayerMatchStat.class);
+
+        when(this.playerMatchStatRepository.findByMatchIdAndTeamIdOrderByPositionSortOrder(eq(matchId), eq(teamId)))
+                .thenReturn(playerMatchStats);
+
+        final List<PlayerMatchStat> result = this.playerMatchStatService.getByMatchIdAndTeamId(matchId, teamId);
+
+        assertEquals(playerMatchStats, result);
+
+        verify(this.playerMatchStatRepository, times(1))
+                .findByMatchIdAndTeamIdOrderByPositionSortOrder(eq(matchId), eq(teamId));
+    }
+
+    /**
      * Tests PlayerMatchStatService::getByD11MatchId.
      */
     @Test

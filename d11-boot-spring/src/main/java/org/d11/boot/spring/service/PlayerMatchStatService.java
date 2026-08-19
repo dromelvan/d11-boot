@@ -44,6 +44,24 @@ public class PlayerMatchStatService extends RepositoryService<PlayerMatchStat, P
     }
 
     /**
+     * Get player match stats by match id and team id ordered by position sort order.
+     *
+     * @param matchId The match id.
+     * @param teamId  The team id.
+     * @return Player match stats by match id and team id ordered by position sort order.
+     */
+    public List<PlayerMatchStat> getByMatchIdAndTeamId(final Long matchId, final Long teamId) {
+        if (matchId == null || matchId <= 0) {
+            throw new BadRequestException("matchId", MUST_BE_POSITIVE);
+        }
+        if (teamId == null || teamId <= 0) {
+            throw new BadRequestException("teamId", MUST_BE_POSITIVE);
+        }
+
+        return getJpaRepository().findByMatchIdAndTeamIdOrderByPositionSortOrder(matchId, teamId);
+    }
+
+    /**
      * Get player match stats by D11 match id ordered by position sort order.
      *
      * @param d11MatchId The D11 match id.
