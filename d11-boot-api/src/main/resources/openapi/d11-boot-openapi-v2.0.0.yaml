@@ -1157,6 +1157,13 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: teamId
+          in: query
+          required: false
+          description: Optional id of the team to filter player match stats by.
+          schema:
+            type: integer
+            format: int64
       responses:
         200:
           description: OK

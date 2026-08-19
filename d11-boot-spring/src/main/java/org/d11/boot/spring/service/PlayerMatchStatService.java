@@ -15,6 +15,11 @@ import java.util.List;
 public class PlayerMatchStatService extends RepositoryService<PlayerMatchStat, PlayerMatchStatRepository> {
 
     /**
+     * Match id parameter name.
+     */
+    private static final String MATCH_ID = "matchId";
+
+    /**
      * Must be positive error value.
      */
     private static final String MUST_BE_POSITIVE = "must be positive";
@@ -37,7 +42,7 @@ public class PlayerMatchStatService extends RepositoryService<PlayerMatchStat, P
      */
     public List<PlayerMatchStat> getByMatchId(final Long matchId) {
         if (matchId == null || matchId <= 0) {
-            throw new BadRequestException("matchId", MUST_BE_POSITIVE);
+            throw new BadRequestException(MATCH_ID, MUST_BE_POSITIVE);
         }
 
         return getJpaRepository().findByMatchIdOrderByPositionSortOrder(matchId);
@@ -52,7 +57,7 @@ public class PlayerMatchStatService extends RepositoryService<PlayerMatchStat, P
      */
     public List<PlayerMatchStat> getByMatchIdAndTeamId(final Long matchId, final Long teamId) {
         if (matchId == null || matchId <= 0) {
-            throw new BadRequestException("matchId", MUST_BE_POSITIVE);
+            throw new BadRequestException(MATCH_ID, MUST_BE_POSITIVE);
         }
         if (teamId == null || teamId <= 0) {
             throw new BadRequestException("teamId", MUST_BE_POSITIVE);

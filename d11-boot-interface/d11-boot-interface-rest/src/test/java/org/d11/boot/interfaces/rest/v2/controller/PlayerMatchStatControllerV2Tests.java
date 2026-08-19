@@ -9,6 +9,7 @@ import org.d11.boot.spring.model.Match;
 import org.d11.boot.spring.model.Player;
 import org.d11.boot.spring.model.PlayerMatchStat;
 import org.d11.boot.spring.model.Season;
+import org.d11.boot.spring.model.Team;
 import org.d11.boot.spring.repository.PlayerMatchStatRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,11 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
     void testGetPlayerMatchStatsByMatchId() {
         final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
 
-        assertThrows(FeignException.BadRequest.class, () -> playerMatchStatApi.getPlayerMatchStatsByMatchId(null));
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerMatchStatApi.getPlayerMatchStatsByMatchId(null, (Long) null));
 
-        assertThrows(FeignException.BadRequest.class, () -> playerMatchStatApi.getPlayerMatchStatsByMatchId(-1L));
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerMatchStatApi.getPlayerMatchStatsByMatchId(-1L, (Long) null));
 
         final List<PlayerMatchStat> playerMatchStats = this.playerMatchStatRepository.findAll();
         playerMatchStats.sort(Comparator.comparing(PlayerMatchStat::getPosition));
@@ -57,7 +60,7 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
 
         for (final Match match : matches) {
             final PlayerMatchStatsResponseBodyDTO response =
-                    playerMatchStatApi.getPlayerMatchStatsByMatchId(match.getId());
+                    playerMatchStatApi.getPlayerMatchStatsByMatchId(match.getId(), (Long) null);
             assertNotNull(response);
 
             final List<PlayerMatchStat> expected = playerMatchStats.stream()
@@ -71,6 +74,58 @@ class PlayerMatchStatControllerV2Tests extends D11BootControllerV2Tests {
             assertNotNull(result);
             assertFalse(result.isEmpty());
             assertEquals(map(expected, PlayerMatchStatDTO.class), result);
+        }
+    }
+
+    /**
+     * Tests PlayerMatchStatController::getPlayerMatchStatsByMatchIdAndTeamId.
+     */
+    @Test
+    void testGetPlayerMatchStatsByMatchIdAndTeamId() {
+        final PlayerMatchStatApi playerMatchStatApi = getApi(PlayerMatchStatApi.class);
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerMatchStatApi.getPlayerMatchStatsByMatchId(null, 1L));
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerMatchStatApi.getPlayerMatchStatsByMatchId(-1L, 1L));
+
+        assertThrows(FeignException.BadRequest.class,
+                     () -> playerMatchStatApi.getPlayerMatchStatsByMatchId(1L, -1L));
+
+        final List<PlayerMatchStat> playerMatchStats = this.playerMatchStatRepository.findAll();
+        playerMatchStats.sort(Comparator.comparing(PlayerMatchStat::getPosition));
+
+        final Set<Match> matches = playerMatchStats.stream()
+                .map(PlayerMatchStat::getMatch)
+                .collect(Collectors.toSet());
+
+        assertTrue(matches.size() > 1);
+
+        for (final Match match : matches) {
+            final Set<Team> teams = playerMatchStats.stream()
+                    .filter(playerMatchStat -> playerMatchStat.getMatch().equals(match))
+                    .map(PlayerMatchStat::getTeam)
+                    .collect(Collectors.toSet());
+
+            assertTrue(teams.size() > 1);
+
+            for (final Team team : teams) {
+                final PlayerMatchStatsResponseBodyDTO response =
+                        playerMatchStatApi.getPlayerMatchStatsByMatchId(match.getId(), team.getId());
+                assertNotNull(response);
+
+                final List<PlayerMatchStat> expected = playerMatchStats.stream()
+                        .filter(playerMatchStat -> playerMatchStat.getMatch().equals(match)
+                                                   && playerMatchStat.getTeam().equals(team))
+                        .toList();
+
+                final List<PlayerMatchStatDTO> result = response.getPlayerMatchStats();
+
+                assertNotNull(result);
+                assertFalse(result.isEmpty());
+                assertEquals(map(expected, PlayerMatchStatDTO.class), result);
+            }
         }
     }
 
