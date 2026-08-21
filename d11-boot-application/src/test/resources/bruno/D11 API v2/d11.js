@@ -322,6 +322,7 @@ function transferWindowBase(transferWindow1, transferWindow2) {
     expect(transferWindow1.transferWindowNumber).to.eq(transferWindow2.transferWindowNumber);
     expect(transferWindow1.draft).to.eq(transferWindow2.draft);
     expect(transferWindow1.status).to.eq(transferWindow2.status);
+    matchWeekBase(transferWindow1.matchWeek, transferWindow2.matchWeek);
 }
 
 function transferWindow(transferWindow1, transferWindow2) {
@@ -330,6 +331,7 @@ function transferWindow(transferWindow1, transferWindow2) {
     expect(transferWindow1.draft).to.eq(transferWindow2.draft);
     expect(transferWindow1.status).to.eq(transferWindow2.status);
     //expect(transferWindow1.datetime).to.eq(transferWindow2.datetime);
+    matchWeekBase(transferWindow1.matchWeek, transferWindow2.matchWeek);
 
     if (transferWindow1.transferWindowPositionCounts) {
         expect(transferWindow1.transferWindowPositionCounts.length)

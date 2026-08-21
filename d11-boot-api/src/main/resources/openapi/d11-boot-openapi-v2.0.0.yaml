@@ -3915,6 +3915,7 @@ components:
         - draft
         - status
         - datetime
+        - matchWeek
       properties:
         id:
           $ref: '#/components/schemas/Id'
@@ -3928,6 +3929,8 @@ components:
         datetime:
           type: string
           format: date-time
+        matchWeek:
+          $ref: '#/components/schemas/MatchWeekBase'
 
     TransferWindow:
       allOf:
